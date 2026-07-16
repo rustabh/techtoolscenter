@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Accordion } from "@/components/ui/accordion";
 import { Icon } from "@/components/icon";
@@ -51,6 +51,20 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   const cat = getCategoryMeta(tool.category);
   const related = tools.filter((t) => t.category === tool.category && t.slug !== tool.slug).slice(0, 3);
 
+  const howToSteps = [
+    { name: `Open the ${tool.name}`, text: `Open the ${tool.name} — it loads instantly and works entirely in your browser. No sign-up or installation is needed.` },
+    { name: "Enter your details", text: "Fill in the fields or paste your content. Everything updates in real time so you always see an accurate live preview." },
+    { name: "Review the live preview", text: "Check the result in the preview panel. Use Undo, Redo or Reset at any time — your work is saved to your browser automatically." },
+    { name: "Copy, download or share", text: "When you're happy, copy the result, download the file, or share it. Nothing is ever uploaded to a server — it all stays on your device." },
+  ];
+
+  const benefits = [
+    "100% free with no sign-up or hidden limits",
+    "Runs entirely in your browser — your data never leaves your device",
+    "Fast, responsive and works great on mobile",
+    "Saves your recent work automatically via local storage",
+  ];
+
   const appJsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -70,11 +84,24 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       acceptedAnswer: { "@type": "Answer", text: f.answer },
     })),
   };
+  const howToJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    name: `How to use the ${tool.name}`,
+    description: tool.description,
+    step: howToSteps.map((s, i) => ({
+      "@type": "HowToStep",
+      position: i + 1,
+      name: s.name,
+      text: s.text,
+    })),
+  };
 
   return (
     <div className="container-tight py-10">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(appJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(howToJsonLd) }} />
 
       <Breadcrumbs
         items={[
@@ -105,9 +132,50 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         <AdSlot />
       </div>
 
-      <section className="mx-auto max-w-3xl">
-        <h2 className="mb-6 text-2xl font-bold tracking-tight">Frequently asked questions</h2>
-        <Accordion items={tool.faq} />
+      <section className="mx-auto max-w-3xl space-y-12">
+        <div>
+          <h2 className="mb-4 text-2xl font-bold tracking-tight">About the {tool.name}</h2>
+          <p className="leading-relaxed text-muted-foreground">{tool.longDescription}</p>
+          <p className="mt-4 leading-relaxed text-muted-foreground">
+            The {tool.name} is part of {siteConfig.name} — a free, privacy-first collection of {tools.length}+ online
+            tools. Like every tool here, it runs 100% in your browser, so your data stays private and results are
+            instant. There is no sign-up, no watermark and no limit on how many times you can use it.
+          </p>
+        </div>
+
+        <div>
+          <h2 className="mb-5 text-2xl font-bold tracking-tight">How to use the {tool.name}</h2>
+          <ol className="space-y-4">
+            {howToSteps.map((s, i) => (
+              <li key={i} className="flex gap-4">
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
+                  {i + 1}
+                </span>
+                <div>
+                  <h3 className="font-semibold">{s.name}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{s.text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <div>
+          <h2 className="mb-5 text-2xl font-bold tracking-tight">Why use our {tool.name}?</h2>
+          <ul className="grid gap-3 sm:grid-cols-2">
+            {benefits.map((b) => (
+              <li key={b} className="flex items-start gap-2 rounded-xl border border-border bg-card p-4 text-sm">
+                <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-primary" />
+                <span>{b}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <h2 className="mb-6 text-2xl font-bold tracking-tight">Frequently asked questions</h2>
+          <Accordion items={tool.faq} />
+        </div>
       </section>
 
       {related.length > 0 && (

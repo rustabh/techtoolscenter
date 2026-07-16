@@ -21,6 +21,7 @@ export const siteConfig = {
     "resume builder",
   ],
   author: "TechToolsCenter",
+  email: "support@techtoolscenter.com",
   developer: {
     name: "Incinc Media",
     url: "https://incincmedia.com",

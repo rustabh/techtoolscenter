@@ -42,6 +42,7 @@ export const metadata: Metadata = {
   },
   icons: { icon: "/favicon.svg", apple: "/favicon.svg" },
   manifest: "/manifest.webmanifest",
+  other: { "google-adsense-account": "ca-pub-8948395080060177" },
 };
 
 export const viewport: Viewport = {
@@ -88,6 +89,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />
         <Script id="ld-site" type="application/ld+json" strategy="afterInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }} />
+        <Script
+          id="adsbygoogle-init"
+          async
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8948395080060177"
+        />
       </body>
     </html>
   );
