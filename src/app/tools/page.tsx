@@ -6,7 +6,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 export const metadata: Metadata = {
   title: "All Tools — Browse the Complete Toolbox",
   description:
-    "Browse every free UtilityHub tool. Invoice makers, PDF utilities, calculators, generators and text tools — all running privately in your browser.",
+    "Browse every free TechToolsCenter tool. Invoice makers, PDF utilities, calculators, generators and text tools — all running privately in your browser.",
   alternates: { canonical: "/tools" },
 };
 

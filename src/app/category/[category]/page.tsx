@@ -24,7 +24,7 @@ export async function generateMetadata({
     title: `${cat.label} Tools`,
     description: cat.description,
     alternates: { canonical: `/category/${cat.id.toLowerCase()}` },
-    openGraph: { title: `${cat.label} Tools | UtilityHub`, description: cat.description },
+    openGraph: { title: `${cat.label} Tools | TechToolsCenter`, description: cat.description },
   };
 }
 

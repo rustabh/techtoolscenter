@@ -6,7 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Icon } from "@/components/icon";
 import { Badge } from "@/components/ui/badge";
 import type { Tool } from "@/lib/tools";
-import { getCategoryMeta } from "@/lib/tools";
+import { getCategoryMeta, isNewTool } from "@/lib/tools";
 
 export function ToolCard({ tool, index = 0 }: { tool: Tool; index?: number }) {
   return (
@@ -24,7 +24,10 @@ export function ToolCard({ tool, index = 0 }: { tool: Tool; index?: number }) {
           <span className="grid size-11 place-items-center rounded-xl bg-accent text-accent-foreground transition-transform group-hover:scale-105">
             <Icon name={tool.icon} className="size-5" />
           </span>
-          <ArrowUpRight className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="flex items-center gap-2">
+            {isNewTool(tool) && <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">New</Badge>}
+            <ArrowUpRight className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+          </div>
         </div>
         <div className="flex-1">
           <h3 className="font-semibold tracking-tight">{tool.name}</h3>

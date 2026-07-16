@@ -1,23 +1,30 @@
 export const siteConfig = {
-  name: "UtilityHub",
-  shortName: "UtilityHub",
+  name: "TechToolsCenter",
+  shortName: "TechToolsCenter",
+  tagline: "All Your Essential Tools. One Center.",
   description:
-    "UtilityHub is a premium collection of free, fast, privacy-first online tools — invoice makers, PDF utilities, calculators, generators and more. Everything runs in your browser.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://utilityhub.app",
-  ogImage: "/opengraph-image.png",
-  twitter: "@utilityhub",
+    "TechToolsCenter is a premium collection of free, fast, privacy-first online tools — invoice makers, PDF & image utilities, calculators, generators, developer and text tools. Everything runs in your browser.",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://techtoolscenter.com",
+  ogImage: "/opengraph-image",
+  twitter: "@techtoolscenter",
   keywords: [
     "online tools",
     "free tools",
+    "tech tools",
     "invoice maker",
     "gst calculator",
     "emi calculator",
     "pdf tools",
-    "qr generator",
+    "qr code generator",
+    "developer tools",
+    "text tools",
     "resume builder",
-    "utility tools",
   ],
-  author: "UtilityHub",
+  author: "TechToolsCenter",
+  developer: {
+    name: "Incinc Media",
+    url: "https://incincmedia.com",
+  },
 };
 
 export type SiteConfig = typeof siteConfig;

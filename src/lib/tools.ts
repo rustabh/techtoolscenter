@@ -4,7 +4,8 @@ export type ToolCategory =
   | "Generators"
   | "Text"
   | "Calculators"
-  | "Image";
+  | "Image"
+  | "Developer";
 
 export interface FaqItem {
   question: string;
@@ -36,6 +37,7 @@ export const categories: {
   { id: "Text", label: "Text Tools", description: "Count words, convert case and manipulate text.", icon: "Type" },
   { id: "Calculators", label: "Calculators", description: "GST, EMI, age and everyday calculations.", icon: "Calculator" },
   { id: "Image", label: "Image Tools", description: "Compress and optimize your images in-browser.", icon: "Image" },
+  { id: "Developer", label: "Developer Tools", description: "Encoders, formatters, hashes and everyday dev utilities.", icon: "Code2" },
 ];
 
 export const tools: Tool[] = [
@@ -53,7 +55,7 @@ export const tools: Tool[] = [
     faq: [
       { question: "Is my invoice data stored anywhere?", answer: "No. Everything is processed locally in your browser and optionally saved to your device's local storage. Nothing is uploaded to a server." },
       { question: "Can I add my company logo and signature?", answer: "Yes. You can upload both a logo and a signature image, which appear on the generated invoice and PDF." },
-      { question: "Does it calculate GST automatically?", answer: "Yes. Enter a tax percentage and UtilityHub calculates the tax amount, discounts and grand total automatically." },
+      { question: "Does it calculate GST automatically?", answer: "Yes. Enter a tax percentage and TechToolsCenter calculates the tax amount, discounts and grand total automatically." },
     ],
   },
   {
@@ -303,7 +305,211 @@ export const tools: Tool[] = [
       { question: "Are my PDFs uploaded anywhere?", answer: "No. Compression is performed entirely within your browser." },
     ],
   },
+  {
+    slug: "percentage-calculator",
+    name: "Percentage Calculator",
+    description: "Work out percentages, increases, decreases and ratios instantly.",
+    longDescription:
+      "A fast, flexible percentage calculator. Find what percent one number is of another, calculate percentage increase or decrease, and apply a percentage to any value — with live results.",
+    category: "Calculators",
+    icon: "Percent",
+    keywords: ["percentage", "percent calculator", "percent change", "increase", "decrease"],
+    addedOn: "2026-07-12",
+    faq: [
+      { question: "Can it calculate percentage change?", answer: "Yes. Enter an original and new value to see the exact percentage increase or decrease." },
+      { question: "Is it free?", answer: "Completely free, with no limits and nothing uploaded." },
+    ],
+  },
+  {
+    slug: "bmi-calculator",
+    name: "BMI Calculator",
+    description: "Calculate your Body Mass Index in metric or imperial units.",
+    longDescription:
+      "Check your Body Mass Index and see which healthy-weight category it falls in. Supports both metric (kg/cm) and imperial (lb/in) units with an instant, colour-coded result.",
+    category: "Calculators",
+    icon: "Scale",
+    keywords: ["bmi", "body mass index", "health calculator", "weight", "fitness"],
+    addedOn: "2026-07-11",
+    faq: [
+      { question: "What is a healthy BMI?", answer: "A BMI between 18.5 and 24.9 is generally considered healthy, though BMI is only one of many health indicators." },
+      { question: "Does it support imperial units?", answer: "Yes. Switch between metric (kg/cm) and imperial (lb/in) at any time." },
+    ],
+  },
+  {
+    slug: "discount-calculator",
+    name: "Discount Calculator",
+    description: "Calculate final price after discount and total savings.",
+    longDescription:
+      "Instantly see the sale price and how much you save. Enter the original price and discount percentage to get the discounted amount and final price — great for shopping and pricing.",
+    category: "Calculators",
+    icon: "Tag",
+    keywords: ["discount", "sale price", "savings", "percent off", "shopping"],
+    addedOn: "2026-07-11",
+    faq: [
+      { question: "Can I stack multiple discounts?", answer: "Enter your combined effective percentage to see the final result. Sequential discounts should be applied one at a time." },
+      { question: "Does it show savings?", answer: "Yes. It displays both the final price and the total amount you save." },
+    ],
+  },
+  {
+    slug: "json-formatter",
+    name: "JSON Formatter",
+    description: "Beautify, minify and validate JSON with error messages.",
+    longDescription:
+      "Format messy JSON into clean, indented output — or minify it to a single line. Instantly validates your input and shows a clear error message with position if anything is wrong.",
+    category: "Developer",
+    icon: "Braces",
+    keywords: ["json", "json formatter", "json validator", "beautify", "minify"],
+    addedOn: "2026-07-13",
+    popular: true,
+    faq: [
+      { question: "Does it validate JSON?", answer: "Yes. Invalid JSON shows a clear error message so you can find and fix the problem quickly." },
+      { question: "Can it minify JSON?", answer: "Yes. Switch to minify mode to compress your JSON into a compact single line." },
+    ],
+  },
+  {
+    slug: "base64-encoder",
+    name: "Base64 Encoder / Decoder",
+    description: "Encode text to Base64 or decode Base64 back to text.",
+    longDescription:
+      "Convert any text to and from Base64 with full Unicode support. Encode data for transport or decode Base64 strings back to readable text — entirely in your browser.",
+    category: "Developer",
+    icon: "Binary",
+    keywords: ["base64", "encode", "decode", "base64 encoder", "base64 decoder"],
+    addedOn: "2026-07-13",
+    faq: [
+      { question: "Does it support Unicode?", answer: "Yes. Emoji and non-Latin characters are handled correctly during both encoding and decoding." },
+      { question: "Is my data uploaded?", answer: "No. All encoding and decoding happens locally in your browser." },
+    ],
+  },
+  {
+    slug: "url-encoder",
+    name: "URL Encoder / Decoder",
+    description: "Percent-encode or decode URLs and query parameters.",
+    longDescription:
+      "Safely encode text for use in URLs, or decode percent-encoded strings back to readable text. Handles spaces, special characters and query parameters correctly.",
+    category: "Developer",
+    icon: "Link2",
+    keywords: ["url encode", "url decode", "percent encoding", "uri", "query string"],
+    addedOn: "2026-07-13",
+    faq: [
+      { question: "What's the difference from Base64?", answer: "URL encoding escapes characters that aren't safe in URLs using percent-encoding, while Base64 converts binary data to ASCII text." },
+      { question: "Does it decode too?", answer: "Yes. Switch modes to decode any percent-encoded string." },
+    ],
+  },
+  {
+    slug: "uuid-generator",
+    name: "UUID Generator",
+    description: "Generate secure random UUID v4 identifiers in bulk.",
+    longDescription:
+      "Generate cryptographically random UUID (v4) values one at a time or in bulk. Copy a single ID or the whole list with one click — perfect for keys, records and test data.",
+    category: "Developer",
+    icon: "Fingerprint",
+    keywords: ["uuid", "guid", "uuid generator", "unique id", "v4"],
+    addedOn: "2026-07-14",
+    popular: true,
+    faq: [
+      { question: "Are these UUIDs random?", answer: "Yes. They are generated using the browser's cryptographically secure random API following the UUID v4 standard." },
+      { question: "Can I generate many at once?", answer: "Yes. Choose how many you need and generate them all in one click." },
+    ],
+  },
+  {
+    slug: "hash-generator",
+    name: "Hash Generator",
+    description: "Generate SHA-1, SHA-256, SHA-384 and SHA-512 hashes.",
+    longDescription:
+      "Compute cryptographic hashes of any text using the Web Crypto API. Supports SHA-1, SHA-256, SHA-384 and SHA-512, with instant results you can copy.",
+    category: "Developer",
+    icon: "Hash",
+    keywords: ["hash", "sha256", "sha512", "checksum", "hash generator"],
+    addedOn: "2026-07-14",
+    faq: [
+      { question: "Which algorithms are supported?", answer: "SHA-1, SHA-256, SHA-384 and SHA-512, all computed locally via the Web Crypto API." },
+      { question: "Is my input sent anywhere?", answer: "No. Hashing happens entirely in your browser." },
+    ],
+  },
+  {
+    slug: "color-converter",
+    name: "Color Picker & Converter",
+    description: "Pick a color and convert between HEX, RGB and HSL.",
+    longDescription:
+      "Pick any color and instantly see its HEX, RGB and HSL values. Copy any format with one click — ideal for design, CSS and theming work.",
+    category: "Developer",
+    icon: "Palette",
+    keywords: ["color picker", "hex to rgb", "hsl", "color converter", "css color"],
+    addedOn: "2026-07-14",
+    faq: [
+      { question: "Which formats are supported?", answer: "HEX, RGB and HSL, all kept in sync as you pick or type." },
+      { question: "Can I copy the values?", answer: "Yes. Each format has a copy button for quick use in your CSS." },
+    ],
+  },
+  {
+    slug: "timestamp-converter",
+    name: "Timestamp Converter",
+    description: "Convert Unix timestamps to human dates and back.",
+    longDescription:
+      "Convert between Unix timestamps (seconds or milliseconds) and human-readable dates in your local time and UTC. Includes a live current timestamp.",
+    category: "Developer",
+    icon: "Clock",
+    keywords: ["unix timestamp", "epoch", "timestamp converter", "date to timestamp"],
+    addedOn: "2026-07-14",
+    faq: [
+      { question: "Does it support milliseconds?", answer: "Yes. It auto-detects seconds vs milliseconds and shows both local and UTC dates." },
+      { question: "What is a Unix timestamp?", answer: "It's the number of seconds elapsed since 1 January 1970 (UTC), widely used in programming." },
+    ],
+  },
+  {
+    slug: "slug-generator",
+    name: "Slug Generator",
+    description: "Turn any title into a clean, SEO-friendly URL slug.",
+    longDescription:
+      "Convert titles and headings into clean, lowercase, hyphenated URL slugs. Strips accents and special characters to produce SEO-friendly slugs ready for your CMS.",
+    category: "Text",
+    icon: "Link",
+    keywords: ["slug", "url slug", "seo slug", "permalink", "slugify"],
+    addedOn: "2026-07-15",
+    faq: [
+      { question: "What is a URL slug?", answer: "A slug is the readable part of a URL that identifies a page, usually lowercase words separated by hyphens." },
+      { question: "Does it remove accents?", answer: "Yes. Accented characters are transliterated so the slug stays clean and URL-safe." },
+    ],
+  },
+  {
+    slug: "lorem-ipsum-generator",
+    name: "Lorem Ipsum Generator",
+    description: "Generate placeholder paragraphs, sentences or words.",
+    longDescription:
+      "Create classic Lorem Ipsum placeholder text for mockups and designs. Choose how many paragraphs, sentences or words you need and copy the result instantly.",
+    category: "Text",
+    icon: "Pilcrow",
+    keywords: ["lorem ipsum", "placeholder text", "dummy text", "filler text"],
+    addedOn: "2026-07-15",
+    faq: [
+      { question: "Can I choose the amount?", answer: "Yes. Generate a specific number of paragraphs, sentences or words." },
+      { question: "Does it start with ‘Lorem ipsum’?", answer: "You can optionally begin with the classic ‘Lorem ipsum dolor sit amet’ opening." },
+    ],
+  },
+  {
+    slug: "remove-duplicate-lines",
+    name: "Remove Duplicate Lines",
+    description: "Clean text by removing duplicate and empty lines.",
+    longDescription:
+      "Tidy up any list or block of text. Remove duplicate lines, strip empty lines, trim whitespace and optionally sort the result alphabetically.",
+    category: "Text",
+    icon: "AlignLeft",
+    keywords: ["remove duplicates", "dedupe lines", "unique lines", "clean text", "sort lines"],
+    addedOn: "2026-07-15",
+    faq: [
+      { question: "Can it sort the lines too?", answer: "Yes. There's an option to sort the cleaned lines alphabetically." },
+      { question: "Is it case-sensitive?", answer: "You can toggle case sensitivity when detecting duplicate lines." },
+    ],
+  },
 ];
+
+// Tools added on or after this date show a "New" badge. Fixed for deterministic SSR.
+export const NEW_SINCE = "2026-07-11";
+
+export function isNewTool(tool: Tool): boolean {
+  return tool.addedOn >= NEW_SINCE;
+}
 
 export function getTool(slug: string): Tool | undefined {
   return tools.find((t) => t.slug === slug);

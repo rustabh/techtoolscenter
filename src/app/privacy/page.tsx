@@ -3,7 +3,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: "UtilityHub privacy policy. All tools run client-side and your data never leaves your browser.",
+  description: "TechToolsCenter privacy policy. All tools run client-side and your data never leaves your browser.",
   alternates: { canonical: "/privacy" },
 };
 
@@ -16,7 +16,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-lg font-semibold text-foreground">Client-side by design</h2>
           <p className="mt-2">
-            Every UtilityHub tool processes your data entirely within your browser. Documents, images and text you
+            Every TechToolsCenter tool processes your data entirely within your browser. Documents, images and text you
             enter are never uploaded to or stored on any server we control.
           </p>
         </section>
@@ -31,7 +31,7 @@ export default function PrivacyPage() {
         <section>
           <h2 className="text-lg font-semibold text-foreground">Advertising</h2>
           <p className="mt-2">
-            UtilityHub may display advertisements. Ad partners such as Google AdSense may use cookies to serve relevant
+            TechToolsCenter may display advertisements. Ad partners such as Google AdSense may use cookies to serve relevant
             ads in accordance with their own privacy policies.
           </p>
         </section>

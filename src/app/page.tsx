@@ -4,6 +4,7 @@ import {
 } from "lucide-react";
 import { HeroSearch } from "@/components/hero-search";
 import { ToolCard } from "@/components/tool-card";
+import { Newsletter } from "@/components/newsletter";
 import { Reveal } from "@/components/reveal";
 import { Icon } from "@/components/icon";
 import { Accordion } from "@/components/ui/accordion";
@@ -25,20 +26,20 @@ const whyChoose = [
 const testimonials = [
   { name: "Aarav Sharma", role: "Freelance Designer", quote: "The invoice maker saved me hours every month. It looks more professional than the paid app I used before." },
   { name: "Priya Nair", role: "Small Business Owner", quote: "GST and EMI calculators are spot on, and I love that nothing gets uploaded. Total peace of mind." },
-  { name: "Daniel Okoro", role: "Product Manager", quote: "The PDF merge and split tools are lightning fast. UtilityHub is now my default toolbox." },
+  { name: "Daniel Okoro", role: "Product Manager", quote: "The PDF merge and split tools are lightning fast. TechToolsCenter is now my default toolbox." },
   { name: "Meera Iyer", role: "Student", quote: "Resume builder + word counter got me through my whole application season. Clean and simple." },
 ];
 
 const homeFaq = [
-  { question: "Is UtilityHub really free?", answer: "Yes. Every tool is completely free with no sign-up, no hidden fees and no usage limits." },
+  { question: "Is TechToolsCenter really free?", answer: "Yes. Every tool is completely free with no sign-up, no hidden fees and no usage limits." },
   { question: "Do my files get uploaded anywhere?", answer: "No. All processing happens locally in your browser. Your documents, images and data never leave your device." },
   { question: "Do I need to create an account?", answer: "Never. Your work is optionally saved to your browser's local storage so you can pick up where you left off." },
   { question: "Can I use the generated documents commercially?", answer: "Yes. Invoices, QR codes, resumes and everything else you create are yours to use however you like." },
-  { question: "Does UtilityHub work on mobile?", answer: "Absolutely. The entire site is mobile-first and fully responsive, so every tool works great on phones and tablets." },
+  { question: "Does TechToolsCenter work on mobile?", answer: "Absolutely. The entire site is mobile-first and fully responsive, so every tool works great on phones and tablets." },
 ];
 
 const stats = [
-  { value: "17+", label: "Free tools" },
+  { value: `${tools.length}+`, label: "Free tools" },
   { value: "100%", label: "Client-side" },
   { value: "0", label: "Uploads" },
   { value: "∞", label: "Free forever" },
@@ -70,7 +71,7 @@ export default function HomePage() {
               <span className="absolute inline-flex size-full animate-ping rounded-full bg-primary opacity-75" />
               <span className="relative inline-flex size-2 rounded-full bg-primary" />
             </span>
-            17+ premium tools, 100% in your browser
+            {tools.length}+ premium tools, 100% in your browser
           </Badge>
         </Reveal>
         <Reveal delay={0.05}>
@@ -153,7 +154,7 @@ export default function HomePage() {
 
       {/* Recently added */}
       <section className="container-tight py-14">
-        <SectionHeading eyebrow="Fresh" title="Recently added" subtitle="The newest additions to the UtilityHub toolbox." href="/tools" />
+        <SectionHeading eyebrow="Fresh" title="Recently added" subtitle="The newest additions to the TechToolsCenter toolbox." href="/tools" />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {recent.map((t, i) => (
             <ToolCard key={t.slug} tool={t} index={i} />
@@ -163,7 +164,7 @@ export default function HomePage() {
 
       {/* Why choose */}
       <section className="container-tight py-14">
-        <SectionHeading eyebrow="Why UtilityHub" title="Built for speed and privacy" subtitle="A premium experience that respects your data and your time." />
+        <SectionHeading eyebrow="Why TechToolsCenter" title="Built for speed and privacy" subtitle="A premium experience that respects your data and your time." />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {whyChoose.map((f, i) => (
             <Reveal key={f.title} delay={i * 0.05}>
@@ -204,10 +205,17 @@ export default function HomePage() {
 
       {/* FAQ */}
       <section id="faq" className="container-tight py-14">
-        <SectionHeading eyebrow="FAQ" title="Frequently asked questions" subtitle="Everything you need to know about UtilityHub." />
+        <SectionHeading eyebrow="FAQ" title="Frequently asked questions" subtitle="Everything you need to know about TechToolsCenter." />
         <div className="mx-auto mt-10 max-w-3xl">
           <Accordion items={homeFaq} />
         </div>
+      </section>
+
+      {/* Newsletter */}
+      <section className="container-tight py-14">
+        <Reveal>
+          <Newsletter />
+        </Reveal>
       </section>
 
       {/* CTA */}

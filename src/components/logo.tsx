@@ -1,0 +1,36 @@
+import { cn } from "@/lib/utils";
+
+export function LogoMark({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 64 64" className={cn("h-8 w-8", className)} role="img" aria-label="TechToolsCenter logo">
+      <defs>
+        <linearGradient id="ttc-mark" x1="10" y1="54" x2="54" y2="10" gradientUnits="userSpaceOnUse">
+          <stop offset="0" stopColor="#1d4ed8" />
+          <stop offset="1" stopColor="#5b9bff" />
+        </linearGradient>
+      </defs>
+      <path
+        fill="url(#ttc-mark)"
+        d="M28.7 3.9a6.6 6.6 0 0 1 6.6 0l19 11a6.6 6.6 0 0 1 3.3 5.7v22a6.6 6.6 0 0 1-3.3 5.7l-19 11a6.6 6.6 0 0 1-6.6 0l-19-11A6.6 6.6 0 0 1 6.4 42.6v-22a6.6 6.6 0 0 1 3.3-5.7z"
+      />
+      <g fill="#fff">
+        <path d="M16.5 24.2c4.7 2.3 9.9 3.4 15.5 3.4s10.8-1.1 15.5-3.4c-1.7 3.1-4.3 4.9-7.4 5.8-2.5.7-5.2 1-8.1 1s-5.6-.3-8.1-1c-3.1-.9-5.7-2.7-7.4-5.8Z" />
+        <rect x="30" y="27" width="4" height="14" rx="2" />
+      </g>
+      <path fill="#fff" d="M32 38.6a5.4 5.4 0 1 0 0 10.8 5.4 5.4 0 0 0 0-10.8Zm0 3.4a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z" />
+    </svg>
+  );
+}
+
+export function Logo({ className, textClassName }: { className?: string; textClassName?: string }) {
+  return (
+    <span className={cn("flex items-center gap-2", className)}>
+      <LogoMark className="h-8 w-8" />
+      <span className={cn("text-lg font-bold tracking-tight", textClassName)}>
+        <span className="text-foreground">Tech</span>
+        <span className="text-primary">Tools</span>
+        <span className="text-foreground">Center</span>
+      </span>
+    </span>
+  );
+}

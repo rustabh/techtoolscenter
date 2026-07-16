@@ -3,8 +3,8 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { tools } from "@/lib/tools";
 
 export const metadata: Metadata = {
-  title: "About UtilityHub",
-  description: "Learn about UtilityHub — a free, privacy-first collection of online tools that run entirely in your browser.",
+  title: "About TechToolsCenter",
+  description: "Learn about TechToolsCenter — a free, privacy-first collection of online tools that run entirely in your browser.",
   alternates: { canonical: "/about" },
 };
 
@@ -12,10 +12,10 @@ export default function AboutPage() {
   return (
     <div className="container-tight max-w-3xl py-12">
       <Breadcrumbs items={[{ label: "About" }]} />
-      <h1 className="mt-6 text-4xl font-bold tracking-tight">About UtilityHub</h1>
+      <h1 className="mt-6 text-4xl font-bold tracking-tight">About TechToolsCenter</h1>
       <div className="prose prose-slate mt-6 space-y-4 text-muted-foreground dark:prose-invert">
         <p>
-          UtilityHub is a growing collection of {tools.length}+ free, fast and privacy-first tools for everyday work.
+          TechToolsCenter is a growing collection of {tools.length}+ free, fast and privacy-first tools for everyday work.
           From invoices and receipts to PDF utilities and calculators, every tool is designed to be beautiful,
           accessible and effortless to use.
         </p>

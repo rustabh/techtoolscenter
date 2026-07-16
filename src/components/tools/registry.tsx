@@ -33,6 +33,19 @@ const registry: Record<string, ComponentType> = {
   "pdf-merge": dynamic(() => import("./pdf-merge"), { loading: ToolSkeleton, ssr: false }),
   "pdf-split": dynamic(() => import("./pdf-split"), { loading: ToolSkeleton, ssr: false }),
   "pdf-compress": dynamic(() => import("./pdf-compress"), { loading: ToolSkeleton, ssr: false }),
+  "percentage-calculator": dynamic(() => import("./percentage-calculator"), { loading: ToolSkeleton, ssr: false }),
+  "bmi-calculator": dynamic(() => import("./bmi-calculator"), { loading: ToolSkeleton, ssr: false }),
+  "discount-calculator": dynamic(() => import("./discount-calculator"), { loading: ToolSkeleton, ssr: false }),
+  "json-formatter": dynamic(() => import("./json-formatter"), { loading: ToolSkeleton, ssr: false }),
+  "base64-encoder": dynamic(() => import("./base64-encoder"), { loading: ToolSkeleton, ssr: false }),
+  "url-encoder": dynamic(() => import("./url-encoder"), { loading: ToolSkeleton, ssr: false }),
+  "uuid-generator": dynamic(() => import("./uuid-generator"), { loading: ToolSkeleton, ssr: false }),
+  "hash-generator": dynamic(() => import("./hash-generator"), { loading: ToolSkeleton, ssr: false }),
+  "color-converter": dynamic(() => import("./color-converter"), { loading: ToolSkeleton, ssr: false }),
+  "timestamp-converter": dynamic(() => import("./timestamp-converter"), { loading: ToolSkeleton, ssr: false }),
+  "slug-generator": dynamic(() => import("./slug-generator"), { loading: ToolSkeleton, ssr: false }),
+  "lorem-ipsum-generator": dynamic(() => import("./lorem-ipsum-generator"), { loading: ToolSkeleton, ssr: false }),
+  "remove-duplicate-lines": dynamic(() => import("./remove-duplicate-lines"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug }: { slug: string }) {

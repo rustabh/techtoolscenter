@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, Sparkles } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { categories } from "@/lib/tools";
 import { cn } from "@/lib/utils";
@@ -22,11 +23,8 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full">
       <div className="glass border-x-0 border-t-0">
         <nav className="container-tight flex h-16 items-center justify-between" aria-label="Main">
-          <Link href="/" className="flex items-center gap-2 font-semibold tracking-tight">
-            <span className="grid size-8 place-items-center rounded-xl bg-primary text-primary-foreground shadow-sm">
-              <Sparkles className="size-4" />
-            </span>
-            <span className="text-lg">UtilityHub</span>
+          <Link href="/" aria-label="TechToolsCenter home">
+            <Logo />
           </Link>
 
           <div className="hidden items-center gap-1 md:flex">

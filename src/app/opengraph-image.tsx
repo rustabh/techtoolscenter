@@ -29,11 +29,11 @@ export default function OgImage() {
           </div>
           <div style={{ fontSize: 44, fontWeight: 700 }}>{siteConfig.name}</div>
         </div>
-        <div style={{ fontSize: 68, fontWeight: 800, lineHeight: 1.1, maxWidth: 900 }}>
-          Every everyday tool, beautifully simple.
+        <div style={{ fontSize: 64, fontWeight: 800, lineHeight: 1.1, maxWidth: 950 }}>
+          All Your Essential Tools. One Center.
         </div>
         <div style={{ fontSize: 30, color: "#a5b4fc", marginTop: 30 }}>
-          Invoices · PDFs · Calculators · Generators — 100% in your browser
+          Invoices · PDFs · Calculators · Generators · Developer Tools — 100% in your browser
         </div>
       </div>
     ),

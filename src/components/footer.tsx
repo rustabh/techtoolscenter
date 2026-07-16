@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Sparkles } from "lucide-react";
+import { Logo } from "@/components/logo";
 import { categories, tools } from "@/lib/tools";
 import { siteConfig } from "@/lib/site";
 
@@ -9,14 +9,11 @@ export function Footer() {
       <div className="container-tight py-14">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="space-y-3">
-            <Link href="/" className="flex items-center gap-2 font-semibold">
-              <span className="grid size-8 place-items-center rounded-xl bg-primary text-primary-foreground">
-                <Sparkles className="size-4" />
-              </span>
-              UtilityHub
+            <Link href="/" aria-label="TechToolsCenter home">
+              <Logo />
             </Link>
             <p className="max-w-xs text-sm text-muted-foreground">
-              Free, fast, privacy-first online tools that run entirely in your browser.
+              {siteConfig.tagline} Free, fast, privacy-first online tools that run entirely in your browser.
             </p>
           </div>
 
@@ -57,9 +54,22 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-6 text-sm text-muted-foreground sm:flex-row">
-          <p>© {new Date().getFullYear()} {siteConfig.name}. All rights reserved.</p>
-          <p>Made for the web. No data ever leaves your browser.</p>
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-sm text-muted-foreground sm:flex-row">
+          <p>
+            Copyright © 2026 {siteConfig.name}. All Rights Reserved.
+          </p>
+          <p className="text-xs">
+            Designed &amp; Developed by{" "}
+            <a
+              href={siteConfig.developer.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-foreground/80 underline-offset-4 transition-colors hover:text-primary hover:underline"
+            >
+              {siteConfig.developer.name}
+            </a>{" "}
+            Team
+          </p>
         </div>
       </div>
     </footer>
