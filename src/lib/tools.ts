@@ -608,6 +608,22 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "calculator-hub",
+    name: "Calculator Hub",
+    description: "Every calculator in one workspace — 20+ modes with tabs.",
+    longDescription:
+      "One unified calculator workspace with 20+ modes — basic, scientific and programmer calculators, plus GST, EMI, loan, SIP, compound & simple interest, BMI, BMR, body fat, age, date difference, working days, tip, fuel, electricity, Roman numerals and more. Switch modes instantly; your last-used mode is remembered.",
+    category: "Calculators",
+    icon: "Calculator",
+    keywords: ["calculator", "calculator hub", "scientific calculator", "programmer calculator", "financial calculator", "all calculators"],
+    addedOn: "2026-07-17",
+    popular: true,
+    faq: [
+      { question: "What calculators are included?", answer: "Basic, scientific and programmer calculators, plus finance (GST, EMI, loan, SIP, compound/simple interest), health (BMI, BMR, body fat), date & time, and utility calculators — all in one place." },
+      { question: "Does it remember my last mode?", answer: "Yes. The hub remembers the last calculator you used so you can pick up right where you left off." },
+    ],
+  },
+  {
     slug: "scientific-calculator",
     name: "Scientific Calculator",
     description: "A full scientific calculator with trig, logs, powers and memory.",
@@ -625,10 +641,10 @@ export const tools: Tool[] = [
   },
   {
     slug: "unit-converter",
-    name: "Unit Converter",
-    description: "Convert length, weight, temperature, area, volume, speed, data & more.",
+    name: "Unit Converter Hub",
+    description: "Convert length, weight, temperature, pressure, power, energy & more.",
     longDescription:
-      "A powerful all-in-one unit converter. Instantly convert between units of length, weight, temperature, area, volume, speed, data storage, time and cooking measures — with live two-way conversion.",
+      "A powerful unified converter hub. Instantly convert between units of length, weight, temperature, area, volume, speed, storage, data rate, time, pressure, power, energy, angle, typography and cooking measures — with live two-way conversion.",
     category: "Calculators",
     icon: "ArrowLeftRight",
     keywords: ["unit converter", "length converter", "weight converter", "temperature converter", "metric imperial"],

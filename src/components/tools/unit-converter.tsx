@@ -15,8 +15,14 @@ const CATS: Record<string, { base: string; units: Units }> = {
   Area: { base: "m²", units: { "mm²": 1e-6, "cm²": 1e-4, "m²": 1, "km²": 1e6, hectare: 10000, acre: 4046.86, "ft²": 0.092903 } },
   Volume: { base: "L", units: { ml: 0.001, L: 1, "m³": 1000, gallon: 3.78541, quart: 0.946353, pint: 0.473176, cup: 0.24 } },
   Speed: { base: "m/s", units: { "m/s": 1, "km/h": 0.277778, "mph": 0.44704, knot: 0.514444, "ft/s": 0.3048 } },
-  Data: { base: "byte", units: { bit: 0.125, byte: 1, KB: 1024, MB: 1048576, GB: 1073741824, TB: 1.0995e12 } },
+  Storage: { base: "byte", units: { bit: 0.125, byte: 1, KB: 1024, MB: 1048576, GB: 1073741824, TB: 1.0995e12, PB: 1.1259e15 } },
+  "Data rate": { base: "bps", units: { bps: 1, Kbps: 1000, Mbps: 1e6, Gbps: 1e9, "KB/s": 8000, "MB/s": 8e6 } },
   Time: { base: "s", units: { ms: 0.001, s: 1, min: 60, hour: 3600, day: 86400, week: 604800 } },
+  Pressure: { base: "Pa", units: { Pa: 1, kPa: 1000, bar: 100000, psi: 6894.76, atm: 101325, mmHg: 133.322, torr: 133.322 } },
+  Power: { base: "W", units: { W: 1, kW: 1000, MW: 1e6, hp: 745.7, "BTU/h": 0.293071 } },
+  Energy: { base: "J", units: { J: 1, kJ: 1000, cal: 4.184, kcal: 4184, Wh: 3600, kWh: 3.6e6, BTU: 1055.06 } },
+  Angle: { base: "deg", units: { deg: 1, rad: 57.2958, grad: 0.9, arcmin: 0.016667, turn: 360 } },
+  Typography: { base: "px", units: { px: 1, pt: 1.3333, pc: 16, in: 96, cm: 37.7952, mm: 3.77952, em: 16, rem: 16 } },
   Cooking: { base: "ml", units: { ml: 1, tsp: 4.92892, tbsp: 14.7868, cup: 240, "fl oz": 29.5735, L: 1000 } },
 };
 

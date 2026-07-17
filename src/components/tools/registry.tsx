@@ -65,6 +65,7 @@ const registry: Record<string, ComponentType> = {
   "gradient-generator": dynamic(() => import("./gradient-generator"), { loading: ToolSkeleton, ssr: false }),
   "cron-expression-helper": dynamic(() => import("./cron-expression-helper"), { loading: ToolSkeleton, ssr: false }),
   "diff-checker": dynamic(() => import("./diff-checker"), { loading: ToolSkeleton, ssr: false }),
+  "calculator-hub": dynamic(() => import("./calculator-hub"), { loading: ToolSkeleton, ssr: false }),
   "scientific-calculator": dynamic(() => import("./scientific-calculator"), { loading: ToolSkeleton, ssr: false }),
   "unit-converter": dynamic(() => import("./unit-converter"), { loading: ToolSkeleton, ssr: false }),
   "tip-calculator": dynamic(() => import("./tip-calculator"), { loading: ToolSkeleton, ssr: false }),
