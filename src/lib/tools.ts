@@ -318,6 +318,22 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "pdf-studio",
+    name: "PDF Studio",
+    description: "All-in-one PDF workspace — merge, split, rotate, watermark, sign & more.",
+    longDescription:
+      "A complete PDF workspace in your browser. Merge, split, compress and rotate PDFs, delete or reorder pages, add watermarks, page numbers, headers and footers, stamp a signature, and convert images to PDF — plus batch compression. Everything is processed locally with pdf-lib; your files never leave your device.",
+    category: "Documents",
+    icon: "FileText",
+    keywords: ["pdf studio", "pdf editor", "merge pdf", "split pdf", "compress pdf", "watermark pdf", "sign pdf"],
+    addedOn: "2026-07-17",
+    popular: true,
+    faq: [
+      { question: "Are my PDFs uploaded?", answer: "No. All operations run locally in your browser using pdf-lib. Your documents never leave your device." },
+      { question: "Can I sign a PDF?", answer: "Yes. Upload a signature image and place it on the page — great for quick approvals. For legally binding e-signatures use a certified service." },
+    ],
+  },
+  {
     slug: "pdf-merge",
     name: "PDF Merge",
     description: "Combine multiple PDF files into one document, in any order.",
