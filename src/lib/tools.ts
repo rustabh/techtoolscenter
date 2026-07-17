@@ -83,6 +83,24 @@ export const categories: {
 
 export const tools: Tool[] = [
   {
+    slug: "business-studio",
+    name: "Business Studio",
+    description: "One editor for invoices, quotations, POs, receipts, challans & more — 20 templates.",
+    longDescription:
+      "A single professional editor for every business document — invoice, quotation, estimate, purchase order, receipt, delivery challan, credit note, debit note, packing slip and letterhead. Pick from 20 designer templates, add your logo, GSTIN, QR code, barcode, discount, shipping, tax, signature, stamp and watermark, then export a print-ready PDF or PNG, or print directly. An AI smart-draft hook auto-fills items, notes and terms for each document type. Everything runs in your browser and autosaves locally.",
+    category: "Business",
+    icon: "Briefcase",
+    keywords: ["business studio", "invoice generator", "quotation maker", "purchase order", "delivery challan", "credit note", "debit note", "packing slip", "letterhead", "gst invoice", "receipt maker"],
+    addedOn: "2026-07-17",
+    popular: true,
+    faq: [
+      { question: "Which documents can I create?", answer: "Invoice, quotation, estimate, purchase order, receipt, delivery challan, credit note, debit note, packing slip and letterhead — all from one editor with a live preview." },
+      { question: "Can I add GST, a QR code and a barcode?", answer: "Yes. Add GSTIN for both parties, a configurable tax/GST rate, discount and shipping, plus an auto-generated QR code (document summary) and a CODE128 barcode of the document number." },
+      { question: "How do I export?", answer: "Download a print-ready PDF, export a high-resolution PNG of the preview, or print directly. You can also add a logo, signature, stamp and watermark." },
+      { question: "What does AI smart draft do?", answer: "It auto-fills realistic line items, notes and terms tailored to the selected document type — a fast starting point you can edit. It's a built-in hook designed to connect to a live AI model later." },
+    ],
+  },
+  {
     slug: "invoice-maker",
     name: "Invoice Maker",
     description: "Create professional GST invoices with logo, signature and PDF download.",
