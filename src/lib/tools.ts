@@ -919,18 +919,19 @@ export const tools: Tool[] = [
   },
   {
     slug: "brand-kit-generator",
-    name: "Brand Kit Generator",
-    description: "Build a brand kit from any URL — colours, fonts, favicons & ZIP.",
+    name: "Brand Studio",
+    description: "Detect a brand from any URL and generate a full enterprise brand kit.",
     longDescription:
-      "Enter a website URL and TechToolsCenter builds a starter brand kit — extracting the brand colour and generating a full tint/shade palette, a suggested font pairing, favicon set and mini brand guidelines. Preview everything, then download a ZIP with the colour tokens (CSS + JSON), guidelines, favicons and manifest.",
+      "Enter a website URL, upload a logo or type a business name and TechToolsCenter detects the logo, colours, fonts and favicons, then generates a complete brand system in one download — a Brand Book PDF, a logo pack (PNG, SVG and transparent), favicon and app-icon packs with maskable variants, branded business card, letterhead, invoice, quotation, receipt and email signature, a social kit, a website QR code and a web manifest, all wrapped in a single ZIP alongside colour tokens (CSS + JSON).",
     category: "Creative",
     icon: "Palette",
-    keywords: ["brand kit", "brand guidelines", "color palette", "brand colors", "style guide"],
+    keywords: ["brand studio", "brand kit", "brand book", "logo pack", "favicon generator", "app icons", "brand guidelines", "color palette", "style guide"],
     addedOn: "2026-07-16",
     popular: true,
     faq: [
-      { question: "How are the brand colours chosen?", answer: "We read the site's theme colour and generate a balanced palette of tints and shades, plus neutral and accent suggestions." },
-      { question: "What's in the ZIP?", answer: "A colours.css and colours.json, a brand-guidelines.txt, favicons, and a web manifest — a ready starting point for your brand." },
+      { question: "What does Brand Studio detect from a URL?", answer: "It reads the site's logo (apple-touch-icon / favicon), theme and inline colours, Google Fonts and font-family declarations, and favicons — then builds a balanced palette and font pairing you can refine." },
+      { question: "What's inside the ZIP?", answer: "A Brand Book PDF, logo pack (PNG/SVG/transparent), favicon pack, app icons with a maskable variant, business card, letterhead, invoice, quotation, receipt and email-signature templates, social banners, a website QR code, a web manifest and colour tokens (CSS + JSON)." },
+      { question: "Do I need a logo file?", answer: "No. If no logo is detected or uploaded, Brand Studio generates a clean monogram from your business name and uses it across every asset." },
     ],
   },
   {

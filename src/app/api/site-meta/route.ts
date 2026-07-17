@@ -67,13 +67,39 @@ export async function GET(request: Request) {
     /<meta property="og:image" content="([^"]+)"/i,
     /<meta name="twitter:image" content="([^"]+)"/i,
   ]));
+  // Prefer a large square icon as the "logo" source; fall back to standard favicons.
+  const appleIcon = abs(pick(html, [/<link[^>]+rel="apple-touch-icon"[^>]*href="([^"]+)"/i]));
   const faviconHref = abs(pick(html, [
     /<link[^>]+rel="(?:shortcut )?icon"[^>]*href="([^"]+)"/i,
     /<link[^>]+rel="apple-touch-icon"[^>]*href="([^"]+)"/i,
   ])) || `${origin.origin}/favicon.ico`;
 
-  const [favicon, preview] = await Promise.all([
+  // Detect colours from theme-color, tile colour and inline hex usage.
+  const detectedColors = Array.from(
+    new Set(
+      [
+        themeColor,
+        pick(html, [/<meta name="msapplication-TileColor"[^>]*content="([^"]+)"/i]),
+        ...(html.match(/#[0-9a-fA-F]{6}\b/g) || []),
+      ].filter((c): c is string => !!c && /^#[0-9a-fA-F]{6}$/.test(c)),
+    ),
+  ).slice(0, 8);
+
+  // Detect fonts from Google Fonts links and font-family declarations.
+  const fonts = Array.from(
+    new Set(
+      [
+        ...Array.from(html.matchAll(/fonts\.googleapis\.com\/css2?\?family=([^&"':)]+)/gi)).map((m) =>
+          decodeURIComponent(m[1].split(":")[0].replace(/\+/g, " ")),
+        ),
+        ...Array.from(html.matchAll(/font-family:\s*['"]?([A-Za-z][A-Za-z0-9 ]{1,30})['"]?/gi)).map((m) => m[1].trim()),
+      ].filter((f) => f && !/^(inherit|initial|sans-serif|serif|monospace)$/i.test(f)),
+    ),
+  ).slice(0, 6);
+
+  const [favicon, logo, preview] = await Promise.all([
     toDataUrl(faviconHref),
+    appleIcon ? toDataUrl(appleIcon) : Promise.resolve(null),
     ogImage ? toDataUrl(ogImage) : Promise.resolve(null),
   ]);
 
@@ -82,7 +108,10 @@ export async function GET(request: Request) {
     host: origin.hostname,
     title: title.slice(0, 120),
     themeColor,
+    colors: detectedColors,
+    fonts,
     favicon,
+    logo: logo || favicon,
     preview,
   });
 }
