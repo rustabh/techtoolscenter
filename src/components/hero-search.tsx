@@ -22,7 +22,7 @@ export function HeroSearch() {
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Search 17+ tools — invoice, GST, PDF, QR…"
+        placeholder="Search 30+ tools — invoice, GST, PDF, QR…"
         aria-label="Search tools"
         className="h-10 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
       />
