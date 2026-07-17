@@ -73,6 +73,7 @@ const registry: Record<string, ComponentType> = {
   "font-style-generator": dynamic(() => import("./font-style-generator"), { loading: ToolSkeleton, ssr: false }),
   "text-decorator": dynamic(() => import("./text-decorator"), { loading: ToolSkeleton, ssr: false }),
   "symbol-library": dynamic(() => import("./symbol-library"), { loading: ToolSkeleton, ssr: false }),
+  "emoji-studio": dynamic(() => import("./emoji-studio"), { loading: ToolSkeleton, ssr: false }),
   "reverse-text": dynamic(() => import("./reverse-text"), { loading: ToolSkeleton, ssr: false }),
   "find-and-replace": dynamic(() => import("./find-and-replace"), { loading: ToolSkeleton, ssr: false }),
   "text-cleaner": dynamic(() => import("./text-cleaner"), { loading: ToolSkeleton, ssr: false }),

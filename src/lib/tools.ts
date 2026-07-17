@@ -687,10 +687,10 @@ export const tools: Tool[] = [
   },
   {
     slug: "font-style-generator",
-    name: "Fancy Font Generator",
-    description: "Turn text into 30+ stylish Unicode fonts for social media.",
+    name: "Text Studio — Fancy Fonts",
+    description: "40+ stylish Unicode fonts with search & platform filters.",
     longDescription:
-      "Type anything and instantly get dozens of stylish Unicode font versions — bold, italic, script, bubble, squared, tiny, Fraktur, double-struck, upside-down and more. Perfect for Instagram, TikTok, Discord and bios. One-click copy for every style.",
+      "Type anything and instantly get 40+ stylish Unicode font versions — bold, italic, script, bubble, squared, small caps, Fraktur, double-struck, Cyrillic, Greek, glitch, upside-down and more. Search styles and filter by platform (Instagram, WhatsApp, Discord, TikTok, gaming, luxury). One-click copy for every style.",
     category: "Text",
     icon: "Type",
     keywords: ["font generator", "fancy text", "stylish fonts", "instagram fonts", "cool text", "unicode fonts"],
@@ -718,10 +718,10 @@ export const tools: Tool[] = [
   },
   {
     slug: "symbol-library",
-    name: "Symbol & Emoji Library",
-    description: "Searchable library of symbols and emoji — copy with one click.",
+    name: "Symbol Studio",
+    description: "Searchable symbol database — 15 categories, one-click copy.",
     longDescription:
-      "A searchable collection of hundreds of symbols and emoji — hearts, stars, arrows, currency, math, music, weather, and more. Search by name and copy any character instantly.",
+      "A searchable symbol database with 15 categories — hearts, arrows, stars, currency, math, music, phone, weather, gaming, chess, bullets, box-drawing, dividers, kaomoji and more. Search by name and copy any symbol instantly.",
     category: "Text",
     icon: "Asterisk",
     keywords: ["symbols", "special characters", "copy symbols", "emoji", "unicode symbols", "star symbol"],
@@ -729,6 +729,22 @@ export const tools: Tool[] = [
     faq: [
       { question: "How do I copy a symbol?", answer: "Just click any symbol and it's copied to your clipboard, ready to paste." },
       { question: "Can I search?", answer: "Yes. Type a name like 'heart', 'arrow' or 'star' to filter the library." },
+    ],
+  },
+  {
+    slug: "emoji-studio",
+    name: "Emoji Studio",
+    description: "Search, copy, combine and translate emoji — with favorites.",
+    longDescription:
+      "A complete emoji workspace — search hundreds of emoji by name, browse by category, save favorites and see your recently used. Combine emoji, copy with one click, and translate text into emoji. Everything works in your browser.",
+    category: "Text",
+    icon: "Sparkles",
+    keywords: ["emoji", "emoji search", "emoji copy", "emoji translator", "emoji combiner", "copy emoji"],
+    addedOn: "2026-07-17",
+    popular: true,
+    faq: [
+      { question: "How do I copy an emoji?", answer: "Just click any emoji and it's copied to your clipboard, ready to paste anywhere." },
+      { question: "Can I save favorite emoji?", answer: "Yes. Star any emoji to keep it in your favorites, and your recently used emoji appear automatically." },
     ],
   },
   {
