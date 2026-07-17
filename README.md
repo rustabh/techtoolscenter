@@ -1,11 +1,11 @@
 # TechToolsCenter
 
-A premium, SaaS-quality collection of **30+ free, privacy-first online tools** — built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion and Lucide icons. Every tool runs **100% client-side**: nothing is ever uploaded to a server.
+A premium, SaaS-quality collection of **49+ free, privacy-first online tools** — built with Next.js App Router, TypeScript, Tailwind CSS, Framer Motion and Lucide icons. Every tool runs **100% client-side**: nothing is ever uploaded to a server.
 
 ## Features
 
 - **Premium UI** — minimal, glassmorphism, rounded cards, soft shadows, full light/dark mode, mobile-first & fully responsive.
-- **30+ working tools**, each on its own SEO-optimized page with dynamic metadata, breadcrumbs, FAQ, canonical URLs and Schema.org structured data.
+- **49+ working tools**, each on its own SEO-optimized page with dynamic metadata, breadcrumbs, FAQ, canonical URLs and Schema.org structured data.
 - **Client-side everything** — PDF generation (jsPDF), PDF merge/split/compress (pdf-lib), QR (qrcode), barcodes (jsbarcode), image compression (Canvas), calculators and text tools.
 - **Local storage** persistence with **Undo / Redo / Reset / Duplicate / Copy / Download** actions.
 - **SEO** — dynamic sitemap, robots.txt, web manifest, OpenGraph + Twitter cards, dynamic OG image, JSON-LD (Organization, WebSite, SoftwareApplication, FAQPage, BreadcrumbList).

@@ -6,7 +6,9 @@ export type ToolCategory =
   | "Calculators"
   | "Image"
   | "Developer"
-  | "Creative";
+  | "Creative"
+  | "AI"
+  | "SEO";
 
 export interface FaqItem {
   question: string;
@@ -40,6 +42,8 @@ export const categories: {
   { id: "Image", label: "Image Tools", description: "Compress and optimize your images in-browser.", icon: "Image" },
   { id: "Developer", label: "Developer Tools", description: "Encoders, formatters, hashes and everyday dev utilities.", icon: "Code2" },
   { id: "Creative", label: "Creative Studio", description: "Website mockups, app screenshots and social media kits.", icon: "Wand2" },
+  { id: "AI", label: "AI Studio", description: "Smart generators for prompts, emails, hashtags and more.", icon: "Bot" },
+  { id: "SEO", label: "SEO Studio", description: "Meta tags, schema, SERP previews and on-page SEO helpers.", icon: "Rocket" },
 ];
 
 export const tools: Tool[] = [
@@ -566,6 +570,234 @@ export const tools: Tool[] = [
     faq: [
       { question: "Can it sort the lines too?", answer: "Yes. There's an option to sort the cleaned lines alphabetically." },
       { question: "Is it case-sensitive?", answer: "You can toggle case sensitivity when detecting duplicate lines." },
+    ],
+  },
+  {
+    slug: "brand-kit-generator",
+    name: "Brand Kit Generator",
+    description: "Build a brand kit from any URL — colours, fonts, favicons & ZIP.",
+    longDescription:
+      "Enter a website URL and TechToolsCenter builds a starter brand kit — extracting the brand colour and generating a full tint/shade palette, a suggested font pairing, favicon set and mini brand guidelines. Preview everything, then download a ZIP with the colour tokens (CSS + JSON), guidelines, favicons and manifest.",
+    category: "Creative",
+    icon: "Palette",
+    keywords: ["brand kit", "brand guidelines", "color palette", "brand colors", "style guide"],
+    addedOn: "2026-07-16",
+    popular: true,
+    faq: [
+      { question: "How are the brand colours chosen?", answer: "We read the site's theme colour and generate a balanced palette of tints and shades, plus neutral and accent suggestions." },
+      { question: "What's in the ZIP?", answer: "A colours.css and colours.json, a brand-guidelines.txt, favicons, and a web manifest — a ready starting point for your brand." },
+    ],
+  },
+  {
+    slug: "prompt-generator",
+    name: "AI Prompt Generator",
+    description: "Build clear, structured AI prompts from role, task and tone.",
+    longDescription:
+      "Craft high-quality prompts for any AI model. Pick a role, describe the task, choose tone, format and constraints, and get a well-structured prompt you can paste into Claude, ChatGPT or any assistant.",
+    category: "AI",
+    icon: "Sparkles",
+    keywords: ["prompt generator", "ai prompt", "chatgpt prompt", "prompt engineering"],
+    addedOn: "2026-07-16",
+    popular: true,
+    faq: [
+      { question: "Does this call an AI model?", answer: "No. It assembles a clear, structured prompt from your inputs using proven prompt-engineering patterns — you then paste it into your AI of choice." },
+      { question: "Which assistants does it work with?", answer: "Any — Claude, ChatGPT, Gemini and others all benefit from well-structured prompts." },
+    ],
+  },
+  {
+    slug: "email-generator",
+    name: "Email Generator",
+    description: "Generate professional emails for any purpose in seconds.",
+    longDescription:
+      "Write polished emails fast. Choose a purpose (outreach, follow-up, apology, application and more), add the details and tone, and get a ready-to-send draft with subject line — copy and personalise.",
+    category: "AI",
+    icon: "Mail",
+    keywords: ["email generator", "email template", "professional email", "email writer"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Are the emails customisable?", answer: "Yes. The generator fills a proven template from your inputs; edit any part before sending." },
+      { question: "Is my data stored?", answer: "No. Everything is generated locally in your browser." },
+    ],
+  },
+  {
+    slug: "hashtag-generator",
+    name: "Hashtag Generator",
+    description: "Generate relevant hashtags for social media posts.",
+    longDescription:
+      "Turn a topic or keywords into a set of relevant, well-formatted hashtags for Instagram, X, LinkedIn and TikTok — mixing broad and niche tags to maximise reach.",
+    category: "AI",
+    icon: "Hash",
+    keywords: ["hashtag generator", "instagram hashtags", "social media", "hashtags"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "How many hashtags should I use?", answer: "It varies by platform — around 3-5 on X, up to 30 on Instagram. The tool lets you copy exactly what you need." },
+      { question: "Are the hashtags trending?", answer: "They're generated from your topic and common variations; always review for current relevance." },
+    ],
+  },
+  {
+    slug: "blog-outline-generator",
+    name: "Blog Outline Generator",
+    description: "Create a structured, SEO-friendly blog post outline.",
+    longDescription:
+      "Turn a title or topic into a complete blog outline — intro, H2/H3 headings, key points, FAQ and a conclusion — a solid, SEO-friendly skeleton you can flesh out.",
+    category: "AI",
+    icon: "ListTree",
+    keywords: ["blog outline", "content outline", "article structure", "blog planner"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Is the outline SEO-friendly?", answer: "Yes. It uses a clear heading hierarchy and includes an FAQ section, which helps with search visibility." },
+      { question: "Can I use it for any niche?", answer: "Yes. The structure adapts to your topic across any subject." },
+    ],
+  },
+  {
+    slug: "excel-formula-generator",
+    name: "Excel Formula Generator",
+    description: "Generate Excel & Google Sheets formulas from plain English.",
+    longDescription:
+      "Describe what you want to calculate and get the matching Excel / Google Sheets formula — SUM, VLOOKUP, IF, SUMIF, COUNTIF, concatenation and more — with a short explanation.",
+    category: "AI",
+    icon: "Sigma",
+    keywords: ["excel formula", "google sheets formula", "vlookup", "sumif", "formula generator"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Does it work with Google Sheets?", answer: "Yes. The generated formulas work in both Microsoft Excel and Google Sheets." },
+      { question: "Can it explain the formula?", answer: "Yes. Each result includes a short explanation of how the formula works." },
+    ],
+  },
+  {
+    slug: "meta-tags-generator",
+    name: "Meta Tags Generator",
+    description: "Generate SEO meta, OpenGraph and Twitter Card tags.",
+    longDescription:
+      "Produce a complete set of SEO tags for any page — title, description, canonical, OpenGraph and Twitter Card — from a simple form, with a live character-count check and copy-ready HTML.",
+    category: "SEO",
+    icon: "Tags",
+    keywords: ["meta tags", "og tags", "twitter card", "seo tags", "meta generator"],
+    addedOn: "2026-07-16",
+    popular: true,
+    faq: [
+      { question: "What tags are generated?", answer: "Meta title & description, canonical, OpenGraph (title, description, image, url, type) and Twitter Card tags." },
+      { question: "How long should title & description be?", answer: "Aim for ~60 characters for titles and ~155 for descriptions — the tool shows live counts." },
+    ],
+  },
+  {
+    slug: "schema-generator",
+    name: "Schema Markup Generator",
+    description: "Generate Schema.org JSON-LD structured data.",
+    longDescription:
+      "Create valid Schema.org JSON-LD for common types — Organization, Website, Article, Product, FAQ, Breadcrumb and LocalBusiness — from a simple form, ready to paste into your page head.",
+    category: "SEO",
+    icon: "Braces",
+    keywords: ["schema generator", "json-ld", "structured data", "rich results", "schema.org"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Which schema types are supported?", answer: "Organization, Website, Article, Product, FAQPage, BreadcrumbList and LocalBusiness." },
+      { question: "Is the output valid?", answer: "Yes. It produces well-formed JSON-LD following Schema.org; test it in Google's Rich Results tool." },
+    ],
+  },
+  {
+    slug: "robots-txt-generator",
+    name: "Robots.txt Generator",
+    description: "Create a robots.txt file with rules and sitemap.",
+    longDescription:
+      "Build a robots.txt for your site — allow or disallow paths, target specific bots, set a crawl delay and add your sitemap URL — then copy or download the file.",
+    category: "SEO",
+    icon: "Bot",
+    keywords: ["robots.txt", "robots generator", "crawl rules", "seo", "disallow"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Where do I put robots.txt?", answer: "At the root of your domain, e.g. techtoolscenter.com/robots.txt." },
+      { question: "Can I block specific bots?", answer: "Yes. Add rules targeting a specific user-agent, or apply rules to all bots at once." },
+    ],
+  },
+  {
+    slug: "serp-preview",
+    name: "Google SERP Preview",
+    description: "Preview how your page looks in Google search results.",
+    longDescription:
+      "See a live preview of your title, URL and meta description exactly as they'd appear in Google search — on desktop and mobile — with pixel-width warnings so nothing gets truncated.",
+    category: "SEO",
+    icon: "Search",
+    keywords: ["serp preview", "google preview", "snippet preview", "seo preview", "meta preview"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Why do results get truncated?", answer: "Google truncates by pixel width, not character count. This tool warns you before your title or description is cut off." },
+      { question: "Does it show mobile too?", answer: "Yes, switch between desktop and mobile previews." },
+    ],
+  },
+  {
+    slug: "keyword-density-checker",
+    name: "Keyword Density Checker",
+    description: "Analyse keyword frequency and density in your text.",
+    longDescription:
+      "Paste your content to see word counts, one/two/three-word phrase frequencies and keyword density percentages — helping you optimise without keyword stuffing.",
+    category: "SEO",
+    icon: "Gauge",
+    keywords: ["keyword density", "keyword checker", "seo analysis", "word frequency"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "What's a good keyword density?", answer: "Generally 1-2% for a primary keyword. Much higher can look like keyword stuffing to search engines." },
+      { question: "Does it count phrases?", answer: "Yes. It shows single words plus two- and three-word phrase frequencies." },
+    ],
+  },
+  {
+    slug: "jwt-decoder",
+    name: "JWT Decoder",
+    description: "Decode and inspect JSON Web Token header and payload.",
+    longDescription:
+      "Paste a JWT to instantly decode its header and payload, see the algorithm and readable expiry/issued-at times. Decoding happens entirely in your browser — tokens are never sent anywhere.",
+    category: "Developer",
+    icon: "KeyRound",
+    keywords: ["jwt", "jwt decoder", "json web token", "token decoder", "auth"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Is my token sent to a server?", answer: "No. Decoding is 100% local in your browser. Never paste production secrets into any online tool, though." },
+      { question: "Does it verify the signature?", answer: "It decodes and displays the token contents; signature verification requires the secret key and is out of scope." },
+    ],
+  },
+  {
+    slug: "gradient-generator",
+    name: "CSS Gradient Generator",
+    description: "Design CSS gradients visually and copy the code.",
+    longDescription:
+      "Create beautiful linear and radial CSS gradients. Pick colours and angle, preview live, and copy production-ready CSS — perfect for backgrounds, buttons and hero sections.",
+    category: "Developer",
+    icon: "Blend",
+    keywords: ["css gradient", "gradient generator", "linear gradient", "radial gradient", "background"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Which gradient types are supported?", answer: "Linear and radial gradients with adjustable colours and angle." },
+      { question: "Is the CSS ready to use?", answer: "Yes. Copy the generated background property straight into your stylesheet." },
+    ],
+  },
+  {
+    slug: "cron-expression-helper",
+    name: "Cron Expression Helper",
+    description: "Build and understand cron schedules in plain English.",
+    longDescription:
+      "Create cron expressions from common presets or fields, and see a plain-English description plus the next run times — no more guessing at cron syntax.",
+    category: "Developer",
+    icon: "CalendarClock",
+    keywords: ["cron", "cron expression", "crontab", "schedule", "cron generator"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "What cron format is used?", answer: "Standard 5-field cron (minute, hour, day-of-month, month, day-of-week)." },
+      { question: "Does it show the next run times?", answer: "Yes. It lists the upcoming scheduled times so you can confirm the schedule." },
+    ],
+  },
+  {
+    slug: "diff-checker",
+    name: "Diff Checker",
+    description: "Compare two texts and highlight the differences line by line.",
+    longDescription:
+      "Paste two versions of any text or code and see a clear, line-by-line diff with additions and removals highlighted — great for spotting changes quickly.",
+    category: "Developer",
+    icon: "GitCompare",
+    keywords: ["diff checker", "text compare", "compare text", "diff tool", "code diff"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Does it work for code?", answer: "Yes. It compares any plain text including code, config and prose, line by line." },
+      { question: "Is my text uploaded?", answer: "No. The comparison runs entirely in your browser." },
     ],
   },
 ];

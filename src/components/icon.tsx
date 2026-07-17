@@ -5,6 +5,7 @@ import {
   FilePlus2, Scissors, FileArchive, Code2, Braces, Binary, Link2, AlignLeft,
   Pilcrow, Link as LinkIcon, Fingerprint, Hash, Palette, Clock, Scale, Tag,
   AppWindow, Wand2, MonitorSmartphone, Smartphone, Share2,
+  Mail, ListTree, Sigma, Tags, Bot, Search, Gauge, Blend, CalendarClock, GitCompare, Rocket,
   type LucideProps,
 } from "lucide-react";
 
@@ -15,6 +16,7 @@ const map = {
   FilePlus2, Scissors, FileArchive, Code2, Braces, Binary, Link2, AlignLeft,
   Pilcrow, Link: LinkIcon, Fingerprint, Hash, Palette, Clock, Scale, Tag,
   AppWindow, Wand2, MonitorSmartphone, Smartphone, Share2,
+  Mail, ListTree, Sigma, Tags, Bot, Search, Gauge, Blend, CalendarClock, GitCompare, Rocket,
 } as const;
 
 export type IconName = keyof typeof map;

@@ -50,6 +50,21 @@ const registry: Record<string, ComponentType> = {
   "website-mockup-generator": dynamic(() => import("./website-mockup-generator"), { loading: ToolSkeleton, ssr: false }),
   "app-screenshot-generator": dynamic(() => import("./app-screenshot-generator"), { loading: ToolSkeleton, ssr: false }),
   "social-media-kit": dynamic(() => import("./social-media-kit"), { loading: ToolSkeleton, ssr: false }),
+  "brand-kit-generator": dynamic(() => import("./brand-kit-generator"), { loading: ToolSkeleton, ssr: false }),
+  "prompt-generator": dynamic(() => import("./prompt-generator"), { loading: ToolSkeleton, ssr: false }),
+  "email-generator": dynamic(() => import("./email-generator"), { loading: ToolSkeleton, ssr: false }),
+  "hashtag-generator": dynamic(() => import("./hashtag-generator"), { loading: ToolSkeleton, ssr: false }),
+  "blog-outline-generator": dynamic(() => import("./blog-outline-generator"), { loading: ToolSkeleton, ssr: false }),
+  "excel-formula-generator": dynamic(() => import("./excel-formula-generator"), { loading: ToolSkeleton, ssr: false }),
+  "meta-tags-generator": dynamic(() => import("./meta-tags-generator"), { loading: ToolSkeleton, ssr: false }),
+  "schema-generator": dynamic(() => import("./schema-generator"), { loading: ToolSkeleton, ssr: false }),
+  "robots-txt-generator": dynamic(() => import("./robots-txt-generator"), { loading: ToolSkeleton, ssr: false }),
+  "serp-preview": dynamic(() => import("./serp-preview"), { loading: ToolSkeleton, ssr: false }),
+  "keyword-density-checker": dynamic(() => import("./keyword-density-checker"), { loading: ToolSkeleton, ssr: false }),
+  "jwt-decoder": dynamic(() => import("./jwt-decoder"), { loading: ToolSkeleton, ssr: false }),
+  "gradient-generator": dynamic(() => import("./gradient-generator"), { loading: ToolSkeleton, ssr: false }),
+  "cron-expression-helper": dynamic(() => import("./cron-expression-helper"), { loading: ToolSkeleton, ssr: false }),
+  "diff-checker": dynamic(() => import("./diff-checker"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug }: { slug: string }) {
