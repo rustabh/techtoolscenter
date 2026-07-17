@@ -91,6 +91,20 @@ export default function HomePage() {
             <HeroSearch />
           </div>
         </Reveal>
+        <Reveal delay={0.18}>
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+            <span className="text-xs font-medium text-muted-foreground">Trending:</span>
+            {popular.slice(0, 6).map((t) => (
+              <Link
+                key={t.slug}
+                href={`/tools/${t.slug}`}
+                className="rounded-full border border-border bg-card/60 px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+              >
+                {t.name}
+              </Link>
+            ))}
+          </div>
+        </Reveal>
         <Reveal delay={0.2}>
           <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
             {["No sign-up", "No uploads", "Free forever"].map((t) => (
