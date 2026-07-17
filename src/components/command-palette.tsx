@@ -5,7 +5,8 @@ import { useRouter } from "next/navigation";
 import { Search, CornerDownLeft, Star } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Icon } from "@/components/icon";
-import { tools, categories } from "@/lib/tools";
+import { tools, searchText } from "@/lib/tools";
+import { collections, collectionOf, getCollection } from "@/lib/collections";
 import { useToolPrefs } from "@/hooks/use-tool-prefs";
 import { cn } from "@/lib/utils";
 
@@ -53,12 +54,10 @@ export function CommandPalette() {
       return [...base, ...rest].slice(0, 8) as typeof tools;
     }
     return tools
-      .filter(
-        (t) =>
-          t.name.toLowerCase().includes(query) ||
-          t.description.toLowerCase().includes(query) ||
-          t.keywords.some((k) => k.includes(query))
-      )
+      .filter((t) => {
+        const colName = getCollection(collectionOf(t))?.name.toLowerCase() ?? "";
+        return searchText(t).includes(query) || colName.includes(query);
+      })
       .slice(0, 10);
   }, [q, favorites, recents]);
 
@@ -133,7 +132,7 @@ export function CommandPalette() {
               )}
             </div>
             <div className="flex items-center justify-between border-t border-border px-4 py-2 text-[11px] text-muted-foreground">
-              <span>{categories.length} categories · {tools.length} tools</span>
+              <span>{collections.length} collections · {tools.length} tools</span>
               <span>↑↓ navigate · ↵ open</span>
             </div>
           </motion.div>

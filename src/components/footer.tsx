@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
-import { categories, tools } from "@/lib/tools";
+import { tools } from "@/lib/tools";
+import { collectionsWithCounts } from "@/lib/collections";
 import { siteConfig } from "@/lib/site";
 
 export function Footer() {
@@ -18,12 +19,12 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="mb-3 text-sm font-semibold">Categories</h4>
+            <h4 className="mb-3 text-sm font-semibold">Collections</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              {categories.map((c) => (
-                <li key={c.id}>
-                  <Link href={`/category/${c.id.toLowerCase()}`} className="hover:text-foreground">
-                    {c.label}
+              {collectionsWithCounts().slice(0, 7).map((c) => (
+                <li key={c.slug}>
+                  <Link href={`/collections/${c.slug}`} className="hover:text-foreground">
+                    {c.name}
                   </Link>
                 </li>
               ))}

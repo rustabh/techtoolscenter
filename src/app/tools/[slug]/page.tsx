@@ -10,6 +10,7 @@ import { AdSlot } from "@/components/ad-slot";
 import { ToolRenderer } from "@/components/tools/registry";
 import { TrackRecent } from "@/components/tools/track-recent";
 import { getTool, getCategoryMeta, tools } from "@/lib/tools";
+import { collectionOf, collectionForTool } from "@/lib/collections";
 import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -50,7 +51,10 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   if (!tool) notFound();
 
   const cat = getCategoryMeta(tool.category);
-  const related = tools.filter((t) => t.category === tool.category && t.slug !== tool.slug).slice(0, 3);
+  const col = collectionForTool(tool);
+  const related = tools
+    .filter((t) => collectionOf(t) === col.slug && t.slug !== tool.slug)
+    .slice(0, 3);
 
   const howToSteps = [
     { name: `Open the ${tool.name}`, text: `Open the ${tool.name} — it loads instantly and works entirely in your browser. No sign-up or installation is needed.` },

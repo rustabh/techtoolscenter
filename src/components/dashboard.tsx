@@ -5,7 +5,8 @@ import { Star, History, TrendingUp, LayoutGrid, Pin } from "lucide-react";
 import { ToolCard } from "@/components/tool-card";
 import { Icon } from "@/components/icon";
 import { useToolPrefs } from "@/hooks/use-tool-prefs";
-import { categories, getPopularTools, getTool, tools } from "@/lib/tools";
+import { getPopularTools, getTool, tools } from "@/lib/tools";
+import { collectionsWithCounts } from "@/lib/collections";
 
 export function Dashboard() {
   const { favorites, recents, ready } = useToolPrefs();
@@ -45,22 +46,19 @@ export function Dashboard() {
       <section>
         <SectionHead icon={<LayoutGrid className="size-5 text-primary" />} title="Collections" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((c) => {
-            const count = tools.filter((t) => t.category === c.id).length;
-            return (
-              <Link key={c.id} href={`/category/${c.id.toLowerCase()}`}
-                className="group flex items-start gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg">
-                <span className="grid size-11 place-items-center rounded-xl bg-accent text-accent-foreground">
-                  <Icon name={c.icon} className="size-5" />
-                </span>
-                <div>
-                  <h3 className="font-semibold">{c.label}</h3>
-                  <p className="mt-0.5 text-sm text-muted-foreground">{c.description}</p>
-                  <span className="mt-1 inline-block text-xs font-medium text-primary">{count} tools →</span>
-                </div>
-              </Link>
-            );
-          })}
+          {collectionsWithCounts().map((c) => (
+            <Link key={c.slug} href={`/collections/${c.slug}`}
+              className="group flex items-start gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg">
+              <span className="grid size-11 place-items-center rounded-xl bg-accent text-accent-foreground">
+                <Icon name={c.icon} className="size-5" />
+              </span>
+              <div>
+                <h3 className="font-semibold">{c.name}</h3>
+                <p className="mt-0.5 text-sm text-muted-foreground">{c.description}</p>
+                <span className="mt-1 inline-block text-xs font-medium text-primary">{c.count} tools →</span>
+              </div>
+            </Link>
+          ))}
         </div>
       </section>
     </div>

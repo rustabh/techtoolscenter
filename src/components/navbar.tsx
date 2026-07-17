@@ -7,15 +7,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { categories } from "@/lib/tools";
+import { collectionsWithCounts } from "@/lib/collections";
 import { cn } from "@/lib/utils";
 
 const links = [
+  { href: "/collections", label: "Collections" },
   { href: "/tools", label: "All Tools" },
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/#categories", label: "Categories" },
   { href: "/#faq", label: "FAQ" },
 ];
+
+const navCollections = collectionsWithCounts();
 
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -88,14 +90,14 @@ export function Navbar() {
                 </Link>
               ))}
               <div className="grid grid-cols-2 gap-2 pt-2">
-                {categories.map((c) => (
+                {navCollections.map((c) => (
                   <Link
-                    key={c.id}
-                    href={`/category/${c.id.toLowerCase()}`}
+                    key={c.slug}
+                    href={`/collections/${c.slug}`}
                     onClick={() => setOpen(false)}
                     className={cn("rounded-xl bg-secondary px-3 py-2 text-xs font-medium")}
                   >
-                    {c.label}
+                    {c.name}
                   </Link>
                 ))}
               </div>

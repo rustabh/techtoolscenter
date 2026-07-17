@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { tools, categories } from "@/lib/tools";
+import { collections } from "@/lib/collections";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -10,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/tools`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/dashboard`, lastModified: now, changeFrequency: "weekly", priority: 0.5 },
+    { url: `${base}/collections`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
     { url: `${base}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
     { url: `${base}/privacy`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
@@ -19,7 +21,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${base}/category/${c.id.toLowerCase()}`,
     lastModified: now,
     changeFrequency: "weekly",
-    priority: 0.7,
+    priority: 0.6,
+  }));
+
+  const collectionRoutes: MetadataRoute.Sitemap = collections.map((c) => ({
+    url: `${base}/collections/${c.slug}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.8,
   }));
 
   const toolRoutes: MetadataRoute.Sitemap = tools.map((t) => ({
@@ -29,5 +38,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticRoutes, ...categoryRoutes, ...toolRoutes];
+  return [...staticRoutes, ...collectionRoutes, ...categoryRoutes, ...toolRoutes];
 }

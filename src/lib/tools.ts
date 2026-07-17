@@ -27,6 +27,39 @@ export interface Tool {
   addedOn: string; // ISO date, drives "Recently Added"
   popular?: boolean;
   faq: FaqItem[];
+  // Optional registry metadata (derived when omitted).
+  seoTitle?: string;
+  seoDescription?: string;
+  status?: "stable" | "beta" | "new";
+  version?: string;
+}
+
+/** Stable identifier — the slug is the tool ID. */
+export function toolId(tool: Tool): string {
+  return tool.slug;
+}
+
+/** SEO title, from override or derived from the name. */
+export function seoTitle(tool: Tool): string {
+  return tool.seoTitle ?? `${tool.name} — Free Online ${tool.name}`;
+}
+
+/** SEO description, from override or the short description. */
+export function seoDescription(tool: Tool): string {
+  return tool.seoDescription ?? tool.description;
+}
+
+export function toolStatus(tool: Tool): "stable" | "beta" | "new" {
+  return tool.status ?? (isNewTool(tool) ? "new" : "stable");
+}
+
+export function toolVersion(tool: Tool): string {
+  return tool.version ?? "1.0.0";
+}
+
+/** All searchable text for a tool: name, description, category, tags/keywords. */
+export function searchText(tool: Tool): string {
+  return [tool.name, tool.description, tool.category, ...tool.keywords].join(" ").toLowerCase();
 }
 
 export const categories: {

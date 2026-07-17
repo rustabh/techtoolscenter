@@ -4,15 +4,17 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Search, X, Star, History } from "lucide-react";
 import { ToolCard } from "@/components/tool-card";
-import { categories, tools, getTool, type ToolCategory } from "@/lib/tools";
+import { tools, getTool, searchText } from "@/lib/tools";
+import { collectionsWithCounts, collectionOf, getCollection } from "@/lib/collections";
 import { useToolPrefs } from "@/hooks/use-tool-prefs";
 import { cn } from "@/lib/utils";
 
 export function ToolsExplorer() {
   const params = useSearchParams();
   const [q, setQ] = useState(params.get("q") ?? "");
-  const [active, setActive] = useState<ToolCategory | "all">("all");
+  const [active, setActive] = useState<string>("all");
   const { favorites, recents, ready } = useToolPrefs();
+  const cols = collectionsWithCounts();
 
   const favTools = favorites.map(getTool).filter(Boolean);
   const recentTools = recents.map(getTool).filter(Boolean);
@@ -21,13 +23,10 @@ export function ToolsExplorer() {
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
     return tools.filter((t) => {
-      const inCat = active === "all" || t.category === active;
-      const inQuery =
-        !query ||
-        t.name.toLowerCase().includes(query) ||
-        t.description.toLowerCase().includes(query) ||
-        t.keywords.some((k) => k.includes(query));
-      return inCat && inQuery;
+      const inCol = active === "all" || collectionOf(t) === active;
+      const colName = getCollection(collectionOf(t))?.name.toLowerCase() ?? "";
+      const inQuery = !query || searchText(t).includes(query) || colName.includes(query);
+      return inCol && inQuery;
     });
   }, [q, active]);
 
@@ -59,16 +58,16 @@ export function ToolsExplorer() {
         >
           All
         </button>
-        {categories.map((c) => (
+        {cols.map((c) => (
           <button
-            key={c.id}
-            onClick={() => setActive(c.id)}
+            key={c.slug}
+            onClick={() => setActive(c.slug)}
             className={cn(
               "rounded-full border px-4 py-1.5 text-sm font-medium transition-colors",
-              active === c.id ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-secondary"
+              active === c.slug ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-secondary"
             )}
           >
-            {c.label}
+            {c.name}
           </button>
         ))}
       </div>

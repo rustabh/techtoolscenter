@@ -11,7 +11,8 @@ import { Accordion } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ad-slot";
 import { buttonVariants } from "@/components/ui/button";
-import { categories, getPopularTools, getRecentTools, tools } from "@/lib/tools";
+import { getPopularTools, getRecentTools, tools } from "@/lib/tools";
+import { collectionsWithCounts } from "@/lib/collections";
 import { cn } from "@/lib/utils";
 
 const whyChoose = [
@@ -48,6 +49,7 @@ const stats = [
 export default function HomePage() {
   const popular = getPopularTools();
   const recent = getRecentTools(6);
+  const homeCollections = collectionsWithCounts();
 
   const faqJsonLd = {
     "@context": "https://schema.org",
@@ -125,30 +127,27 @@ export default function HomePage() {
         <AdSlot />
       </div>
 
-      {/* Categories */}
-      <section id="categories" className="container-tight py-14">
-        <SectionHeading eyebrow="Browse" title="Explore by category" subtitle="Find the right tool for the job in seconds." />
+      {/* Collections */}
+      <section id="collections" className="container-tight py-14">
+        <SectionHeading eyebrow="Browse" title="Explore collections" subtitle="Every tool, neatly organised into focused hubs." href="/collections" />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {categories.map((c, i) => {
-            const count = tools.filter((t) => t.category === c.id).length;
-            return (
-              <Reveal key={c.id} delay={i * 0.04}>
-                <Link
-                  href={`/category/${c.id.toLowerCase()}`}
-                  className="group flex h-full items-start gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
-                >
-                  <span className="grid size-12 place-items-center rounded-xl bg-accent text-accent-foreground">
-                    <Icon name={c.icon} className="size-6" />
-                  </span>
-                  <div>
-                    <h3 className="font-semibold">{c.label}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{c.description}</p>
-                    <span className="mt-2 inline-block text-xs font-medium text-primary">{count} tools →</span>
-                  </div>
-                </Link>
-              </Reveal>
-            );
-          })}
+          {homeCollections.map((c, i) => (
+            <Reveal key={c.slug} delay={i * 0.04}>
+              <Link
+                href={`/collections/${c.slug}`}
+                className="group flex h-full items-start gap-4 rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg"
+              >
+                <span className="grid size-12 place-items-center rounded-xl bg-accent text-accent-foreground">
+                  <Icon name={c.icon} className="size-6" />
+                </span>
+                <div>
+                  <h3 className="font-semibold">{c.name}</h3>
+                  <p className="mt-1 text-sm text-muted-foreground">{c.description}</p>
+                  <span className="mt-2 inline-block text-xs font-medium text-primary">{c.count} tools →</span>
+                </div>
+              </Link>
+            </Reveal>
+          ))}
         </div>
       </section>
 
