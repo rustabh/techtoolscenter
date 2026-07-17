@@ -287,6 +287,22 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "image-studio",
+    name: "Image Studio",
+    description: "All-in-one image editor — compress, resize, crop, convert, filters & more.",
+    longDescription:
+      "A complete image workspace in your browser. Compress, resize, upscale, rotate, flip, crop, convert (JPG/PNG/WebP), add a watermark, and adjust brightness, contrast, blur and sharpness — all with a live preview. Plus extract a colour palette, pick colours from the image, view metadata, remove a solid background and batch-process multiple images. Nothing is uploaded — everything runs on your device.",
+    category: "Image",
+    icon: "Image",
+    keywords: ["image editor", "image studio", "compress", "resize", "crop", "convert", "watermark", "image tools"],
+    addedOn: "2026-07-17",
+    popular: true,
+    faq: [
+      { question: "Are my images uploaded anywhere?", answer: "No. Every operation — compression, resizing, filters, conversion — runs locally in your browser using the Canvas API. Your images never leave your device." },
+      { question: "Which formats can I convert between?", answer: "JPG, PNG and WebP, with an adjustable quality setting for compression." },
+    ],
+  },
+  {
     slug: "image-compressor",
     name: "Image Compressor",
     description: "Compress JPG and PNG images in your browser without quality loss.",

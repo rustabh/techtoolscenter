@@ -29,6 +29,7 @@ const registry: Record<string, ComponentType> = {
   "word-counter": dynamic(() => import("./word-counter"), { loading: ToolSkeleton, ssr: false }),
   "case-converter": dynamic(() => import("./case-converter"), { loading: ToolSkeleton, ssr: false }),
   "password-generator": dynamic(() => import("./password-generator"), { loading: ToolSkeleton, ssr: false }),
+  "image-studio": dynamic(() => import("./image-studio"), { loading: ToolSkeleton, ssr: false }),
   "image-compressor": dynamic(() => import("./image-compressor"), { loading: ToolSkeleton, ssr: false }),
   "pdf-merge": dynamic(() => import("./pdf-merge"), { loading: ToolSkeleton, ssr: false }),
   "pdf-split": dynamic(() => import("./pdf-split"), { loading: ToolSkeleton, ssr: false }),
