@@ -200,7 +200,16 @@ export default function QrGenerator() {
       }
     } catch { /* cancelled */ }
   };
-  const saveToHistory = () => { if (value && !history.includes(value)) setHistory([value, ...history].slice(0, 12)); };
+  const saveToHistory = async () => {
+    if (value && !history.includes(value)) setHistory([value, ...history].slice(0, 12));
+    const { saveItem } = await import("@/lib/saved");
+    let thumb: string | undefined;
+    try {
+      const blob = await getBlob("png");
+      if (blob) thumb = await new Promise<string>((res) => { const r = new FileReader(); r.onload = () => res(r.result as string); r.readAsDataURL(blob); });
+    } catch { /* ignore */ }
+    saveItem({ type: "qr", title: value.slice(0, 48) || "QR code", subtitle: type, thumb, href: "/tools/qr-generator" });
+  };
 
   const onLogo = (file?: File) => {
     if (!file) return;

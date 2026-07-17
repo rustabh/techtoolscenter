@@ -458,6 +458,9 @@ th{color:${base};font-size:12px;text-transform:uppercase;letter-spacing:.05em}.t
             <Button variant="outline" onClick={downloadBrandBook} disabled={!!busy}>
               <FileText /> {busy === "pdf" ? "Rendering…" : "Brand Book PDF"}
             </Button>
+            <Button variant="ghost" onClick={async () => { const { saveItem } = await import("@/lib/saved"); saveItem({ type: "brandkit", title: brandName, subtitle: base, thumb: logoSrc ?? undefined, href: "/tools/brand-kit-generator" }); }} disabled={!!busy}>
+              Save to dashboard
+            </Button>
           </div>
         </CardContent>
       </Card>

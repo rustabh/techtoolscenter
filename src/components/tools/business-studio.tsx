@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
 import { formatCurrency } from "@/lib/utils";
+import { saveItem } from "@/lib/saved";
 import { newItem, subtotal, type LineItem, type Party } from "./doc-types";
 
 /* ------------------------------------------------------------------ */
@@ -412,6 +413,8 @@ export default function BusinessStudio() {
           <Button variant="outline" size="sm" onClick={downloadPng}><ImageDown className="size-4" /> PNG</Button>
           <Button variant="outline" size="sm" onClick={downloadPdf}><FileDown className="size-4" /> PDF</Button>
           <Button variant="outline" size="sm" onClick={() => window.print()}><Printer className="size-4" /> Print</Button>
+          <Button variant="outline" size="sm" onClick={() => saveItem({ type: "project", title: `${kind.label} ${value.number}`, subtitle: value.customer.name || value.company.name, href: "/tools/business-studio" })}>Save project</Button>
+          <Button variant="outline" size="sm" onClick={() => saveItem({ type: "template", title: `${kind.label} · ${template.name}`, subtitle: "Template", href: "/tools/business-studio" })}>Save template</Button>
         </div>
       </div>
 

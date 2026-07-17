@@ -90,6 +90,18 @@ export default function WebsiteMockupGenerator() {
     } finally { setBusy(false); }
   };
 
+  const saveMockup = async () => {
+    const { saveItem } = await import("@/lib/saved");
+    let thumb: string | undefined;
+    try {
+      if (stageRef.current) {
+        const htmlToImage = await import("html-to-image");
+        thumb = await htmlToImage.toPng(stageRef.current, { pixelRatio: 0.5, cacheBust: true });
+      }
+    } catch { /* ignore */ }
+    saveItem({ type: "mockup", title: `${device} mockup`, subtitle: bg.label ?? bgId, thumb, href: "/tools/website-mockup-generator" });
+  };
+
   return (
     <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
       <div className="space-y-6">
@@ -152,6 +164,7 @@ export default function WebsiteMockupGenerator() {
               <Button variant="outline" onClick={() => exportAs("pdf")} disabled={busy}><Download /> PDF</Button>
               <Button variant="outline" onClick={() => exportAs("zip")} disabled={busy}><Download /> ZIP</Button>
             </div>
+            <Button variant="ghost" size="sm" className="w-full" onClick={saveMockup}>Save to dashboard</Button>
           </CardContent>
         </Card>
       </div>
