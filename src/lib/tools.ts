@@ -578,17 +578,19 @@ export const tools: Tool[] = [
   },
   {
     slug: "app-screenshot-generator",
-    name: "App Store Screenshot Generator",
-    description: "Design polished App Store & Play Store screenshots in device frames.",
+    name: "App Store Studio",
+    description: "Generate exact App Store Connect & Google Play screenshots that pass upload.",
     longDescription:
-      "Create professional app store screenshots in minutes. Upload your app screenshot, add a title and subtitle, choose a device frame (iPhone, Android, iPad) and a gradient template, then export a store-ready image in portrait or landscape — all in your browser.",
+      "Create store-ready marketing screenshots at the exact pixel dimensions Apple and Google accept — Apple 6.9″, 6.7″, 6.5″, 5.5″ and iPad, plus Google Play phone, 7″ tablet, 10″ tablet, feature graphic and TV banner. Upload your app screenshot, add a headline and subtitle, pick from Business, Gaming, Finance, Travel, Education, Health, AI, Minimal, Luxury or Gradient templates, and every asset auto-scales inside safe areas with a live preview. Export a single PNG or a ZIP of all sizes ready to drop straight into App Store Connect and Google Play Console.",
     category: "Creative",
     icon: "Smartphone",
-    keywords: ["app store screenshot", "play store screenshot", "app mockup", "device frame", "app marketing"],
+    keywords: ["app store screenshot", "play store screenshot", "app store connect", "google play console", "exact dimensions", "feature graphic", "tv banner", "app marketing"],
     addedOn: "2026-07-16",
+    popular: true,
     faq: [
-      { question: "Which devices are supported?", answer: "iPhone, Android phones and tablets (iPad / Android tablet) in both portrait and landscape, with several gradient templates." },
-      { question: "What size are the exports?", answer: "Screenshots export at high resolution suitable for App Store and Google Play listings." },
+      { question: "Are the exports the exact sizes the stores accept?", answer: "Yes. Every image is rendered on a canvas at the precise pixel dimensions Apple App Store Connect and Google Play Console require, so uploads aren't rejected for wrong size or oversized screenshots." },
+      { question: "Which sizes are supported?", answer: "Apple 6.9″ (1320×2868), 6.7″ (1290×2796), 6.5″ (1242×2688), 5.5″ (1242×2208) and iPad (2048×2732); Google Play phone (1080×1920), 7″ tablet (1200×1920), 10″ tablet (1600×2560), feature graphic (1024×500) and TV banner (1280×720)." },
+      { question: "What do the safe-area guides do?", answer: "They show the recommended margin so titles and devices never get clipped by rounded corners or store UI. Guides appear only in the preview and are never baked into the exported image." },
     ],
   },
   {
