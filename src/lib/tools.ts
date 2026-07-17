@@ -5,7 +5,8 @@ export type ToolCategory =
   | "Text"
   | "Calculators"
   | "Image"
-  | "Developer";
+  | "Developer"
+  | "Creative";
 
 export interface FaqItem {
   question: string;
@@ -38,6 +39,7 @@ export const categories: {
   { id: "Calculators", label: "Calculators", description: "GST, EMI, age and everyday calculations.", icon: "Calculator" },
   { id: "Image", label: "Image Tools", description: "Compress and optimize your images in-browser.", icon: "Image" },
   { id: "Developer", label: "Developer Tools", description: "Encoders, formatters, hashes and everyday dev utilities.", icon: "Code2" },
+  { id: "Creative", label: "Creative Studio", description: "Website mockups, app screenshots and social media kits.", icon: "Wand2" },
 ];
 
 export const tools: Tool[] = [
@@ -485,6 +487,53 @@ export const tools: Tool[] = [
     faq: [
       { question: "Can I choose the amount?", answer: "Yes. Generate a specific number of paragraphs, sentences or words." },
       { question: "Does it start with ‘Lorem ipsum’?", answer: "You can optionally begin with the classic ‘Lorem ipsum dolor sit amet’ opening." },
+    ],
+  },
+  {
+    slug: "website-mockup-generator",
+    name: "Website Mockup Generator",
+    description: "Turn any URL into a clean browser & device mockup image.",
+    longDescription:
+      "Enter any website URL and TechToolsCenter automatically fetches its title, favicon, theme colour and preview image, then wraps it in a beautiful browser window or device frame — desktop, laptop, tablet or phone. Toggle dark mode, pick a background and download a crisp PNG for decks, portfolios and social posts.",
+    category: "Creative",
+    icon: "MonitorSmartphone",
+    keywords: ["website mockup", "browser mockup", "device mockup", "screenshot frame", "url preview"],
+    addedOn: "2026-07-16",
+    popular: true,
+    faq: [
+      { question: "How does it fetch the website details?", answer: "TechToolsCenter reads the page's public metadata (title, favicon, theme colour and OpenGraph image) and renders it inside a device frame. Nothing about your visit is stored." },
+      { question: "Why can't it capture a full live screenshot?", answer: "For privacy and speed we use each site's official preview image and branding rather than rendering the full page. You can also drop in your own screenshot." },
+    ],
+  },
+  {
+    slug: "app-screenshot-generator",
+    name: "App Store Screenshot Generator",
+    description: "Design polished App Store & Play Store screenshots in device frames.",
+    longDescription:
+      "Create professional app store screenshots in minutes. Upload your app screenshot, add a title and subtitle, choose a device frame (iPhone, Android, iPad) and a gradient template, then export a store-ready image in portrait or landscape — all in your browser.",
+    category: "Creative",
+    icon: "Smartphone",
+    keywords: ["app store screenshot", "play store screenshot", "app mockup", "device frame", "app marketing"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Which devices are supported?", answer: "iPhone, Android phones and tablets (iPad / Android tablet) in both portrait and landscape, with several gradient templates." },
+      { question: "What size are the exports?", answer: "Screenshots export at high resolution suitable for App Store and Google Play listings." },
+    ],
+  },
+  {
+    slug: "social-media-kit",
+    name: "Social Media Kit Generator",
+    description: "Create perfectly-sized graphics for every social platform.",
+    longDescription:
+      "Design on-brand graphics for every platform from one place — Instagram posts & stories, Facebook covers, LinkedIn banners, Twitter/X headers, YouTube thumbnails & banners, Pinterest pins, blog covers and OpenGraph images. Edit the text, colours, gradient and logo, then export a pixel-perfect PNG at the exact size each platform needs.",
+    category: "Creative",
+    icon: "Share2",
+    keywords: ["social media kit", "instagram post", "youtube thumbnail", "og image", "banner maker", "social graphics"],
+    addedOn: "2026-07-16",
+    popular: true,
+    faq: [
+      { question: "Are the sizes correct for each platform?", answer: "Yes. Every preset uses the current recommended dimensions — e.g. 1080×1080 for Instagram posts, 1280×720 for YouTube thumbnails and 1200×630 for OpenGraph images." },
+      { question: "Can I add my own logo?", answer: "Yes. Upload a logo and it's placed on the graphic; you can also edit all text, colours and the background gradient." },
     ],
   },
   {

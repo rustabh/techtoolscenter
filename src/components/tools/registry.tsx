@@ -47,6 +47,9 @@ const registry: Record<string, ComponentType> = {
   "lorem-ipsum-generator": dynamic(() => import("./lorem-ipsum-generator"), { loading: ToolSkeleton, ssr: false }),
   "remove-duplicate-lines": dynamic(() => import("./remove-duplicate-lines"), { loading: ToolSkeleton, ssr: false }),
   "favicon-generator": dynamic(() => import("./favicon-generator"), { loading: ToolSkeleton, ssr: false }),
+  "website-mockup-generator": dynamic(() => import("./website-mockup-generator"), { loading: ToolSkeleton, ssr: false }),
+  "app-screenshot-generator": dynamic(() => import("./app-screenshot-generator"), { loading: ToolSkeleton, ssr: false }),
+  "social-media-kit": dynamic(() => import("./social-media-kit"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug }: { slug: string }) {

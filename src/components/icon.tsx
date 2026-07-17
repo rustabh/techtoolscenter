@@ -4,7 +4,7 @@ import {
   QrCode, Barcode, Cake, Landmark, CaseSensitive, KeyRound, ImageDown,
   FilePlus2, Scissors, FileArchive, Code2, Braces, Binary, Link2, AlignLeft,
   Pilcrow, Link as LinkIcon, Fingerprint, Hash, Palette, Clock, Scale, Tag,
-  AppWindow,
+  AppWindow, Wand2, MonitorSmartphone, Smartphone, Share2,
   type LucideProps,
 } from "lucide-react";
 
@@ -14,7 +14,7 @@ const map = {
   QrCode, Barcode, Cake, Landmark, CaseSensitive, KeyRound, ImageDown,
   FilePlus2, Scissors, FileArchive, Code2, Braces, Binary, Link2, AlignLeft,
   Pilcrow, Link: LinkIcon, Fingerprint, Hash, Palette, Clock, Scale, Tag,
-  AppWindow,
+  AppWindow, Wand2, MonitorSmartphone, Smartphone, Share2,
 } as const;
 
 export type IconName = keyof typeof map;
