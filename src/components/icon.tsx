@@ -6,6 +6,8 @@ import {
   Pilcrow, Link as LinkIcon, Fingerprint, Hash, Palette, Clock, Scale, Tag,
   AppWindow, Wand2, MonitorSmartphone, Smartphone, Share2,
   Mail, ListTree, Sigma, Tags, Bot, Search, Gauge, Blend, CalendarClock, GitCompare, Rocket,
+  ArrowLeftRight, Coins, Fuel, Asterisk, FlipHorizontal, Replace, Eraser, Dices, Timer,
+  StickyNote, Contrast, Ruler, LayoutGrid,
   type LucideProps,
 } from "lucide-react";
 
@@ -17,6 +19,8 @@ const map = {
   Pilcrow, Link: LinkIcon, Fingerprint, Hash, Palette, Clock, Scale, Tag,
   AppWindow, Wand2, MonitorSmartphone, Smartphone, Share2,
   Mail, ListTree, Sigma, Tags, Bot, Search, Gauge, Blend, CalendarClock, GitCompare, Rocket,
+  ArrowLeftRight, Coins, Fuel, Asterisk, FlipHorizontal, Replace, Eraser, Dices, Timer,
+  StickyNote, Contrast, Ruler, LayoutGrid,
 } as const;
 
 export type IconName = keyof typeof map;

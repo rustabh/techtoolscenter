@@ -65,6 +65,22 @@ const registry: Record<string, ComponentType> = {
   "gradient-generator": dynamic(() => import("./gradient-generator"), { loading: ToolSkeleton, ssr: false }),
   "cron-expression-helper": dynamic(() => import("./cron-expression-helper"), { loading: ToolSkeleton, ssr: false }),
   "diff-checker": dynamic(() => import("./diff-checker"), { loading: ToolSkeleton, ssr: false }),
+  "scientific-calculator": dynamic(() => import("./scientific-calculator"), { loading: ToolSkeleton, ssr: false }),
+  "unit-converter": dynamic(() => import("./unit-converter"), { loading: ToolSkeleton, ssr: false }),
+  "tip-calculator": dynamic(() => import("./tip-calculator"), { loading: ToolSkeleton, ssr: false }),
+  "fuel-cost-calculator": dynamic(() => import("./fuel-cost-calculator"), { loading: ToolSkeleton, ssr: false }),
+  "font-style-generator": dynamic(() => import("./font-style-generator"), { loading: ToolSkeleton, ssr: false }),
+  "text-decorator": dynamic(() => import("./text-decorator"), { loading: ToolSkeleton, ssr: false }),
+  "symbol-library": dynamic(() => import("./symbol-library"), { loading: ToolSkeleton, ssr: false }),
+  "reverse-text": dynamic(() => import("./reverse-text"), { loading: ToolSkeleton, ssr: false }),
+  "find-and-replace": dynamic(() => import("./find-and-replace"), { loading: ToolSkeleton, ssr: false }),
+  "text-cleaner": dynamic(() => import("./text-cleaner"), { loading: ToolSkeleton, ssr: false }),
+  "random-number-generator": dynamic(() => import("./random-number-generator"), { loading: ToolSkeleton, ssr: false }),
+  "pomodoro-timer": dynamic(() => import("./pomodoro-timer"), { loading: ToolSkeleton, ssr: false }),
+  "quick-notes": dynamic(() => import("./quick-notes"), { loading: ToolSkeleton, ssr: false }),
+  "screen-ruler": dynamic(() => import("./screen-ruler"), { loading: ToolSkeleton, ssr: false }),
+  "contrast-checker": dynamic(() => import("./contrast-checker"), { loading: ToolSkeleton, ssr: false }),
+  "color-palette-generator": dynamic(() => import("./color-palette-generator"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug }: { slug: string }) {

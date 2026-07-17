@@ -8,7 +8,8 @@ export type ToolCategory =
   | "Developer"
   | "Creative"
   | "AI"
-  | "SEO";
+  | "SEO"
+  | "Everyday";
 
 export interface FaqItem {
   question: string;
@@ -44,6 +45,7 @@ export const categories: {
   { id: "Creative", label: "Creative Studio", description: "Website mockups, app screenshots and social media kits.", icon: "Wand2" },
   { id: "AI", label: "AI Studio", description: "Smart generators for prompts, emails, hashtags and more.", icon: "Bot" },
   { id: "SEO", label: "SEO Studio", description: "Meta tags, schema, SERP previews and on-page SEO helpers.", icon: "Rocket" },
+  { id: "Everyday", label: "Everyday Tools", description: "Timers, notes, rulers and small tools you use every day.", icon: "LayoutGrid" },
 ];
 
 export const tools: Tool[] = [
@@ -570,6 +572,250 @@ export const tools: Tool[] = [
     faq: [
       { question: "Can it sort the lines too?", answer: "Yes. There's an option to sort the cleaned lines alphabetically." },
       { question: "Is it case-sensitive?", answer: "You can toggle case sensitivity when detecting duplicate lines." },
+    ],
+  },
+  {
+    slug: "scientific-calculator",
+    name: "Scientific Calculator",
+    description: "A full scientific calculator with trig, logs, powers and memory.",
+    longDescription:
+      "A complete online scientific calculator. Do everyday arithmetic plus trigonometry, logarithms, powers, roots, factorials and constants like π and e — with a live expression display and keyboard support.",
+    category: "Calculators",
+    icon: "Calculator",
+    keywords: ["scientific calculator", "calculator", "trigonometry", "logarithm", "math calculator"],
+    addedOn: "2026-07-16",
+    popular: true,
+    faq: [
+      { question: "Does it support trigonometry?", answer: "Yes — sin, cos, tan and their inverses (in degrees), plus logs, powers, roots, factorials and constants." },
+      { question: "Can I use my keyboard?", answer: "Yes. Type digits and operators directly, press Enter to evaluate and Backspace to delete." },
+    ],
+  },
+  {
+    slug: "unit-converter",
+    name: "Unit Converter",
+    description: "Convert length, weight, temperature, area, volume, speed, data & more.",
+    longDescription:
+      "A powerful all-in-one unit converter. Instantly convert between units of length, weight, temperature, area, volume, speed, data storage, time and cooking measures — with live two-way conversion.",
+    category: "Calculators",
+    icon: "ArrowLeftRight",
+    keywords: ["unit converter", "length converter", "weight converter", "temperature converter", "metric imperial"],
+    addedOn: "2026-07-16",
+    popular: true,
+    faq: [
+      { question: "Which categories are supported?", answer: "Length, weight, temperature, area, volume, speed, data storage, time and cooking units." },
+      { question: "Is it accurate?", answer: "Yes. Conversions use precise standard factors and update instantly as you type." },
+    ],
+  },
+  {
+    slug: "tip-calculator",
+    name: "Tip Calculator",
+    description: "Split the bill and calculate tips per person in seconds.",
+    longDescription:
+      "Work out the tip and total for any bill, then split it evenly between any number of people. Choose a tip percentage or enter your own and see the per-person amount instantly.",
+    category: "Calculators",
+    icon: "Coins",
+    keywords: ["tip calculator", "bill split", "gratuity", "split bill", "restaurant tip"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Can I split between people?", answer: "Yes. Enter the number of people and see the exact amount each person owes, tip included." },
+      { question: "Can I set a custom tip?", answer: "Yes. Pick a preset percentage or type your own." },
+    ],
+  },
+  {
+    slug: "fuel-cost-calculator",
+    name: "Fuel Cost Calculator",
+    description: "Estimate trip fuel cost from distance, mileage and fuel price.",
+    longDescription:
+      "Plan any journey's fuel cost. Enter the distance, your vehicle's mileage and the fuel price to see how much fuel you'll use and what the trip will cost.",
+    category: "Calculators",
+    icon: "Fuel",
+    keywords: ["fuel cost", "trip cost", "mileage calculator", "petrol cost", "fuel calculator"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "What units does it use?", answer: "Enter distance, mileage (distance per unit of fuel) and price per unit — the tool handles the maths." },
+      { question: "Can I plan a round trip?", answer: "Yes. Just enter the total round-trip distance." },
+    ],
+  },
+  {
+    slug: "font-style-generator",
+    name: "Fancy Font Generator",
+    description: "Turn text into 30+ stylish Unicode fonts for social media.",
+    longDescription:
+      "Type anything and instantly get dozens of stylish Unicode font versions — bold, italic, script, bubble, squared, tiny, Fraktur, double-struck, upside-down and more. Perfect for Instagram, TikTok, Discord and bios. One-click copy for every style.",
+    category: "Text",
+    icon: "Type",
+    keywords: ["font generator", "fancy text", "stylish fonts", "instagram fonts", "cool text", "unicode fonts"],
+    addedOn: "2026-07-16",
+    popular: true,
+    faq: [
+      { question: "Will these fonts work everywhere?", answer: "They use Unicode characters, so they work in most apps and social platforms that support Unicode — Instagram, TikTok, Discord, X and more." },
+      { question: "How do I use a style?", answer: "Type your text, then click any style to copy it instantly." },
+    ],
+  },
+  {
+    slug: "text-decorator",
+    name: "Text Decorator",
+    description: "Wrap your text in symbols, borders and aesthetic decorations.",
+    longDescription:
+      "Decorate any text with hearts, stars, sparkles, arrows, borders and aesthetic symbols — great for social media bios, usernames and channel names. Pick a style and copy the result.",
+    category: "Text",
+    icon: "Sparkles",
+    keywords: ["text decorator", "bio decoration", "aesthetic text", "symbols text", "username decorator"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Where can I use decorated text?", answer: "Anywhere that accepts Unicode — Instagram and Discord bios, usernames, YouTube channel names and more." },
+      { question: "Can I edit the result?", answer: "Yes. Pick a decoration style, then copy and tweak it as you like." },
+    ],
+  },
+  {
+    slug: "symbol-library",
+    name: "Symbol & Emoji Library",
+    description: "Searchable library of symbols and emoji — copy with one click.",
+    longDescription:
+      "A searchable collection of hundreds of symbols and emoji — hearts, stars, arrows, currency, math, music, weather, and more. Search by name and copy any character instantly.",
+    category: "Text",
+    icon: "Asterisk",
+    keywords: ["symbols", "special characters", "copy symbols", "emoji", "unicode symbols", "star symbol"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "How do I copy a symbol?", answer: "Just click any symbol and it's copied to your clipboard, ready to paste." },
+      { question: "Can I search?", answer: "Yes. Type a name like 'heart', 'arrow' or 'star' to filter the library." },
+    ],
+  },
+  {
+    slug: "reverse-text",
+    name: "Reverse Text Generator",
+    description: "Reverse text, flip words, mirror or make upside-down text.",
+    longDescription:
+      "Transform text in fun ways — reverse the whole string, reverse word order, create upside-down text or mirrored text. Great for social posts and puzzles. Copy any result instantly.",
+    category: "Text",
+    icon: "FlipHorizontal",
+    keywords: ["reverse text", "upside down text", "mirror text", "flip text", "backwards text"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "What transformations are available?", answer: "Reverse characters, reverse word order, upside-down text and mirrored text." },
+      { question: "Does upside-down text work on social media?", answer: "Yes. It uses Unicode characters supported by most platforms." },
+    ],
+  },
+  {
+    slug: "find-and-replace",
+    name: "Find & Replace",
+    description: "Find and replace text in bulk, with case and regex options.",
+    longDescription:
+      "Quickly find and replace text across a whole document. Toggle case sensitivity, match whole words, or use regular expressions for advanced replacements — with a live match count.",
+    category: "Text",
+    icon: "Replace",
+    keywords: ["find and replace", "replace text", "bulk replace", "regex replace", "text replace"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Does it support regex?", answer: "Yes. Enable regex mode for pattern-based find and replace." },
+      { question: "Is it case sensitive?", answer: "You choose — toggle case sensitivity on or off." },
+    ],
+  },
+  {
+    slug: "text-cleaner",
+    name: "Text Cleaner",
+    description: "Remove extra spaces, line breaks and formatting from text.",
+    longDescription:
+      "Clean up messy text in one click — trim extra spaces, collapse blank lines, remove line breaks, strip special characters and fix spacing. Perfect for tidying pasted content.",
+    category: "Text",
+    icon: "Eraser",
+    keywords: ["text cleaner", "remove spaces", "clean text", "strip formatting", "trim whitespace"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "What can it remove?", answer: "Extra spaces, tabs, blank lines, line breaks and optionally special characters." },
+      { question: "Is my text kept private?", answer: "Yes. Cleaning happens entirely in your browser." },
+    ],
+  },
+  {
+    slug: "random-number-generator",
+    name: "Random Number Generator",
+    description: "Generate random numbers in any range, unique or repeating.",
+    longDescription:
+      "Generate one or many random numbers within any minimum and maximum range. Choose whether numbers can repeat, and copy the results — great for draws, testing and games.",
+    category: "Generators",
+    icon: "Dices",
+    keywords: ["random number", "number generator", "random picker", "raffle", "rng"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Are the numbers truly random?", answer: "They use the browser's secure random API, which is suitable for draws and everyday use." },
+      { question: "Can I get unique numbers?", answer: "Yes. Enable 'unique' so no number repeats within a batch." },
+    ],
+  },
+  {
+    slug: "pomodoro-timer",
+    name: "Pomodoro Timer",
+    description: "Focus timer with work/break cycles, stopwatch and countdown.",
+    longDescription:
+      "Stay focused with a Pomodoro timer — 25-minute work sessions and short breaks, with session tracking. Includes a stopwatch and custom countdown, plus a sound alert when time's up.",
+    category: "Everyday",
+    icon: "Timer",
+    keywords: ["pomodoro", "focus timer", "countdown", "stopwatch", "productivity timer"],
+    addedOn: "2026-07-16",
+    popular: true,
+    faq: [
+      { question: "What is the Pomodoro technique?", answer: "Work in focused 25-minute sprints separated by short breaks to boost concentration and avoid burnout." },
+      { question: "Does it alert me?", answer: "Yes. A sound plays when a session ends, and the tab title updates with the remaining time." },
+    ],
+  },
+  {
+    slug: "quick-notes",
+    name: "Quick Notes",
+    description: "A fast scratchpad that saves your notes in your browser.",
+    longDescription:
+      "A distraction-free notepad that automatically saves to your browser as you type. Keep multiple notes, with word and character counts — perfect for quick thoughts, to-dos and drafts.",
+    category: "Everyday",
+    icon: "StickyNote",
+    keywords: ["notes", "notepad", "scratchpad", "quick notes", "online notepad"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Are my notes saved?", answer: "Yes. Notes are stored in your browser's local storage and remain after you close the tab. They never leave your device." },
+      { question: "Can I keep multiple notes?", answer: "Yes. Create, rename and switch between several notes." },
+    ],
+  },
+  {
+    slug: "screen-ruler",
+    name: "Online Screen Ruler",
+    description: "Measure anything on screen in pixels, cm, mm or inches.",
+    longDescription:
+      "A responsive on-screen ruler for measuring elements and images. Switch between pixels, centimetres, millimetres and inches, and calibrate for your display.",
+    category: "Everyday",
+    icon: "Ruler",
+    keywords: ["screen ruler", "online ruler", "pixel ruler", "measure screen", "cm ruler"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "Which units are supported?", answer: "Pixels, centimetres, millimetres and inches, with a calibration option for accuracy." },
+      { question: "Is it accurate for physical measurements?", answer: "Screen DPI varies by device, so calibrate using a known object (like a card) for physical accuracy." },
+    ],
+  },
+  {
+    slug: "contrast-checker",
+    name: "Color Contrast Checker",
+    description: "Check text/background contrast against WCAG accessibility levels.",
+    longDescription:
+      "Test the contrast ratio between a text and background colour and see whether it passes WCAG AA and AAA accessibility standards for normal and large text — with a live preview.",
+    category: "Developer",
+    icon: "Contrast",
+    keywords: ["contrast checker", "wcag contrast", "accessibility", "color contrast", "a11y"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "What contrast ratio do I need?", answer: "WCAG AA requires 4.5:1 for normal text and 3:1 for large text; AAA requires 7:1 and 4.5:1 respectively." },
+      { question: "Does it preview the result?", answer: "Yes. You see your colours applied to sample text with pass/fail badges." },
+    ],
+  },
+  {
+    slug: "color-palette-generator",
+    name: "Color Palette Generator",
+    description: "Generate harmonious colour palettes from a base colour.",
+    longDescription:
+      "Create beautiful colour palettes from any base colour — complementary, analogous, triadic and shades. Copy individual colours or the whole palette as CSS variables.",
+    category: "Developer",
+    icon: "Palette",
+    keywords: ["color palette", "palette generator", "color scheme", "complementary colors", "css palette"],
+    addedOn: "2026-07-16",
+    faq: [
+      { question: "What palette types are supported?", answer: "Complementary, analogous, triadic and a tint/shade scale from your base colour." },
+      { question: "Can I copy the palette?", answer: "Yes. Copy any single colour or export the whole palette as CSS custom properties." },
     ],
   },
   {
