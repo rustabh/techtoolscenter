@@ -83,6 +83,23 @@ export const categories: {
 
 export const tools: Tool[] = [
   {
+    slug: "ai-studio",
+    name: "AI Studio",
+    description: "Ten AI generators in one hub — prompts, meta, email, regex, SQL, hashtags & more.",
+    longDescription:
+      "One workspace for ten smart generators: Prompt, Meta, Email, Regex, SQL, Hashtag, Caption, Blog Outline, Slug and Excel Formula. Pick a generator, fill a few fields and get instant, structured output you can copy. Everything runs on a private built-in engine in your browser, and the architecture is modular — hosted models like GPT, Claude or Gemini can be plugged in later without changing the tools.",
+    category: "AI",
+    icon: "Sparkles",
+    keywords: ["ai studio", "ai tools", "prompt generator", "meta generator", "email generator", "regex generator", "sql generator", "hashtag generator", "caption generator", "blog outline", "slug generator", "excel formula"],
+    addedOn: "2026-07-17",
+    popular: true,
+    faq: [
+      { question: "Which generators are included?", answer: "Prompt, Meta, Email, Regex, SQL, Hashtag, Caption, Blog Outline, Slug and Excel Formula — all in one interface with a shared engine selector." },
+      { question: "Does it use a real AI model?", answer: "By default it uses a fast, private built-in engine that runs entirely in your browser — no data leaves your device. The provider layer is modular, so hosted models can be connected later." },
+      { question: "Can I plug in OpenAI or Claude later?", answer: "Yes. Each generator defines both an offline implementation and a prompt builder, so a hosted provider only needs to be added once and every generator gains AI output." },
+    ],
+  },
+  {
     slug: "business-studio",
     name: "Business Studio",
     description: "One editor for invoices, quotations, POs, receipts, challans & more — 20 templates.",

@@ -16,6 +16,7 @@ function ToolSkeleton() {
 }
 
 const registry: Record<string, ComponentType> = {
+  "ai-studio": dynamic(() => import("./ai-studio"), { loading: ToolSkeleton, ssr: false }),
   "business-studio": dynamic(() => import("./business-studio"), { loading: ToolSkeleton, ssr: false }),
   "invoice-maker": dynamic(() => import("./invoice-maker"), { loading: ToolSkeleton, ssr: false }),
   "quotation-generator": dynamic(() => import("./quotation-generator"), { loading: ToolSkeleton, ssr: false }),
