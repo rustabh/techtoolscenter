@@ -179,10 +179,10 @@ export const tools: Tool[] = [
   },
   {
     slug: "qr-generator",
-    name: "QR Generator",
-    description: "Generate custom QR codes for URLs, text, Wi-Fi and more.",
+    name: "QR Studio",
+    description: "Design premium QR codes — 22 types, shapes, gradients, logo, PDF/ZIP.",
     longDescription:
-      "Create high-resolution QR codes for links, plain text, email, phone numbers and Wi-Fi credentials. Customise the colors and size, then download as PNG or SVG.",
+      "A complete QR Studio. Create QR codes for 22 content types — website, text, email, phone, SMS, WhatsApp, Telegram, Instagram, Facebook, LinkedIn, WiFi, Google Maps, Google review, UPI, vCard, event, crypto, PDF/image/video links, and Play/App Store. Customise dot styles, eye/corner shapes, gradient colours, transparent background, logo and frame caption. Live preview, templates, history, and export as PNG, SVG, PDF or ZIP in high resolution.",
     category: "Generators",
     icon: "QrCode",
     keywords: ["qr", "qr code", "qr generator", "barcode", "scan"],
