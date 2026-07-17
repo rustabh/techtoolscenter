@@ -2,15 +2,21 @@
 
 import { useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Search, X } from "lucide-react";
+import { Search, X, Star, History } from "lucide-react";
 import { ToolCard } from "@/components/tool-card";
-import { categories, tools, type ToolCategory } from "@/lib/tools";
+import { categories, tools, getTool, type ToolCategory } from "@/lib/tools";
+import { useToolPrefs } from "@/hooks/use-tool-prefs";
 import { cn } from "@/lib/utils";
 
 export function ToolsExplorer() {
   const params = useSearchParams();
   const [q, setQ] = useState(params.get("q") ?? "");
   const [active, setActive] = useState<ToolCategory | "all">("all");
+  const { favorites, recents, ready } = useToolPrefs();
+
+  const favTools = favorites.map(getTool).filter(Boolean);
+  const recentTools = recents.map(getTool).filter(Boolean);
+  const showCollections = ready && !q.trim() && active === "all";
 
   const filtered = useMemo(() => {
     const query = q.trim().toLowerCase();
@@ -67,15 +73,40 @@ export function ToolsExplorer() {
         ))}
       </div>
 
-      {filtered.length === 0 ? (
-        <p className="py-16 text-center text-muted-foreground">No tools match “{q}”.</p>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((t, i) => (
-            <ToolCard key={t.slug} tool={t} index={i} />
-          ))}
-        </div>
+      {showCollections && favTools.length > 0 && (
+        <Collection title="Your favorites" icon={<Star className="size-4 fill-amber-400 text-amber-400" />} items={favTools as typeof tools} />
       )}
+      {showCollections && recentTools.length > 0 && (
+        <Collection title="Recently used" icon={<History className="size-4 text-primary" />} items={recentTools as typeof tools} />
+      )}
+
+      <div>
+        {(showCollections && (favTools.length > 0 || recentTools.length > 0)) && (
+          <h2 className="mb-4 text-sm font-semibold text-muted-foreground">All tools</h2>
+        )}
+        {filtered.length === 0 ? (
+          <p className="py-16 text-center text-muted-foreground">No tools match “{q}”.</p>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((t, i) => (
+              <ToolCard key={t.slug} tool={t} index={i} />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function Collection({ title, icon, items }: { title: string; icon: React.ReactNode; items: typeof tools }) {
+  return (
+    <div>
+      <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold">{icon} {title}</h2>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((t, i) => (
+          <ToolCard key={t.slug} tool={t} index={i} />
+        ))}
+      </div>
     </div>
   );
 }

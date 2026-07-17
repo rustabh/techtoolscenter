@@ -488,6 +488,23 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "favicon-generator",
+    name: "Favicon Generator",
+    description: "Create favicons from text, emoji or an image — all sizes + ZIP.",
+    longDescription:
+      "Generate a complete favicon set from text, an emoji or an uploaded image. Customise the background, colour and shape, then download every size (16 to 512px), favicon.ico, Apple & Android/PWA icons, a web manifest and the ready-to-paste HTML — all in a single ZIP, generated in your browser.",
+    category: "Generators",
+    icon: "AppWindow",
+    keywords: ["favicon", "favicon generator", "favicon.ico", "app icon", "pwa icon", "apple touch icon"],
+    addedOn: "2026-07-16",
+    popular: true,
+    faq: [
+      { question: "Which files does it generate?", answer: "PNG icons from 16×16 up to 512×512, a favicon.ico, Apple touch icon, Android/PWA icons, a site.webmanifest and the HTML snippet — bundled in one ZIP." },
+      { question: "Can I use an emoji as a favicon?", answer: "Yes. Pick the emoji mode and type any emoji — it's rendered crisply at every size." },
+      { question: "Is my image uploaded anywhere?", answer: "No. Everything is generated locally in your browser using the canvas API." },
+    ],
+  },
+  {
     slug: "remove-duplicate-lines",
     name: "Remove Duplicate Lines",
     description: "Clean text by removing duplicate and empty lines.",

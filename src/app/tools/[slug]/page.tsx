@@ -8,6 +8,7 @@ import { Icon } from "@/components/icon";
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ad-slot";
 import { ToolRenderer } from "@/components/tools/registry";
+import { TrackRecent } from "@/components/tools/track-recent";
 import { getTool, getCategoryMeta, tools } from "@/lib/tools";
 import { siteConfig } from "@/lib/site";
 
@@ -124,6 +125,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         </div>
       </header>
 
+      <TrackRecent slug={tool.slug} />
       <section className="mt-10" aria-label={`${tool.name} tool`}>
         <ToolRenderer slug={tool.slug} />
       </section>

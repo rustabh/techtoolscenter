@@ -2,13 +2,17 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Star } from "lucide-react";
 import { Icon } from "@/components/icon";
 import { Badge } from "@/components/ui/badge";
 import type { Tool } from "@/lib/tools";
 import { getCategoryMeta, isNewTool } from "@/lib/tools";
+import { useToolPrefs } from "@/hooks/use-tool-prefs";
+import { cn } from "@/lib/utils";
 
 export function ToolCard({ tool, index = 0 }: { tool: Tool; index?: number }) {
+  const { isFavorite, toggleFavorite, ready } = useToolPrefs();
+  const fav = ready && isFavorite(tool.slug);
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -26,6 +30,14 @@ export function ToolCard({ tool, index = 0 }: { tool: Tool; index?: number }) {
           </span>
           <div className="flex items-center gap-2">
             {isNewTool(tool) && <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">New</Badge>}
+            <button
+              type="button"
+              aria-label={fav ? "Remove from favorites" : "Add to favorites"}
+              onClick={(e) => { e.preventDefault(); toggleFavorite(tool.slug); }}
+              className="rounded-full p-1 text-muted-foreground transition-colors hover:text-amber-400"
+            >
+              <Star className={cn("size-4", fav && "fill-amber-400 text-amber-400")} />
+            </button>
             <ArrowUpRight className="size-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
           </div>
         </div>

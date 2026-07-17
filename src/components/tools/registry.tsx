@@ -46,6 +46,7 @@ const registry: Record<string, ComponentType> = {
   "slug-generator": dynamic(() => import("./slug-generator"), { loading: ToolSkeleton, ssr: false }),
   "lorem-ipsum-generator": dynamic(() => import("./lorem-ipsum-generator"), { loading: ToolSkeleton, ssr: false }),
   "remove-duplicate-lines": dynamic(() => import("./remove-duplicate-lines"), { loading: ToolSkeleton, ssr: false }),
+  "favicon-generator": dynamic(() => import("./favicon-generator"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug }: { slug: string }) {

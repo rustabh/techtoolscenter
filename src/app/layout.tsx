@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
+import { CommandPalette } from "@/components/command-palette";
 import { siteConfig } from "@/lib/site";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
@@ -82,6 +83,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <div className="glow pointer-events-none fixed inset-x-0 top-0 h-[400px]" aria-hidden />
           <Navbar />
+          <CommandPalette />
           <main id="main" className="relative">{children}</main>
           <Footer />
         </ThemeProvider>

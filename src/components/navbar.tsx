@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
@@ -40,6 +40,15 @@ export function Navbar() {
           </div>
 
           <div className="flex items-center gap-1">
+            <button
+              onClick={() => window.dispatchEvent(new Event("ttc:open-command"))}
+              aria-label="Search tools (Command K)"
+              className="hidden items-center gap-2 rounded-full border border-border bg-secondary/50 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary sm:flex"
+            >
+              <Search className="size-4" />
+              <span>Search</span>
+              <kbd className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px] font-medium">⌘K</kbd>
+            </button>
             <ThemeToggle />
             <Link href="/tools" className={cn(buttonVariants(), "hidden md:inline-flex")}>
               Explore tools
