@@ -562,13 +562,13 @@ export const tools: Tool[] = [
   },
   {
     slug: "website-mockup-generator",
-    name: "Website Mockup Generator",
-    description: "Turn any URL into a clean browser & device mockup image.",
+    name: "Mockup Studio",
+    description: "Wrap any screenshot or website in a premium device & scene mockup.",
     longDescription:
-      "Enter any website URL and TechToolsCenter automatically fetches its title, favicon, theme colour and preview image, then wraps it in a beautiful browser window or device frame — desktop, laptop, tablet or phone. Toggle dark mode, pick a background and download a crisp PNG for decks, portfolios and social posts.",
+      "Upload a screenshot, paste an image from your clipboard, or drop in any website URL, then wrap it inside a photoreal device frame — iPhone, Samsung, Pixel, Nothing, OnePlus, iPad, MacBook, Laptop, Desktop or a browser window. Style the scene with glass, gradient, office, minimal, luxury, floating, clay or transparent backgrounds and export a crisp PNG, vector SVG, print-ready PDF or a bundled ZIP for decks, portfolios, App Store listings and social posts.",
     category: "Creative",
     icon: "MonitorSmartphone",
-    keywords: ["website mockup", "browser mockup", "device mockup", "screenshot frame", "url preview"],
+    keywords: ["mockup studio", "device mockup", "iphone mockup", "browser mockup", "screenshot frame", "macbook mockup", "app mockup", "url preview"],
     addedOn: "2026-07-16",
     popular: true,
     faq: [
