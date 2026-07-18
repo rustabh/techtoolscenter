@@ -119,9 +119,9 @@ export const tools: Tool[] = [
   {
     slug: "invoice-maker",
     name: "Invoice Maker",
-    description: "Create professional GST invoices with logo, signature and PDF download.",
+    description: "Create GST invoices in 20 designs with CGST/SGST/IGST breakdown, logo & PDF.",
     longDescription:
-      "Build polished, print-ready invoices in seconds. Add your company and customer details, GST number, itemised billing, discounts, taxes, notes and terms. Upload a logo and signature, preview live, then download a PDF or print — all entirely in your browser.",
+      "Build polished, print-ready invoices in seconds. Choose from 20 professional designs, add your company and customer details, GSTIN, itemised billing, discounts and shipping, and a proper tax breakdown — CGST + SGST, IGST or a single VAT/tax line. Upload a logo, signature and stamp, add a QR code, preview live, then download a PDF or PNG, or print — all entirely in your browser.",
     category: "Business",
     icon: "ReceiptText",
     keywords: ["invoice", "billing", "gst invoice", "tax invoice", "invoice generator"],
@@ -136,9 +136,9 @@ export const tools: Tool[] = [
   {
     slug: "quotation-generator",
     name: "Quotation Generator",
-    description: "Generate detailed price quotations for clients with itemised pricing.",
+    description: "Send professional quotations in 20 designs with itemised pricing & tax.",
     longDescription:
-      "Send professional quotations to your clients. Add line items, quantities, rates, taxes and validity terms, then export a clean PDF. Your last quotation is remembered automatically.",
+      "Send professional quotations to your clients. Pick from 20 designs, add line items, quantities, rates, discounts, a CGST/SGST/IGST or single tax breakdown, and validity terms, then export a clean PDF or PNG. Add your logo, signature and a QR code, and your last quotation is remembered automatically.",
     category: "Business",
     icon: "FileSpreadsheet",
     keywords: ["quotation", "quote", "estimate", "proposal", "pricing"],
@@ -152,9 +152,9 @@ export const tools: Tool[] = [
   {
     slug: "receipt-generator",
     name: "Receipt Generator",
-    description: "Create payment receipts instantly and download them as PDF.",
+    description: "Create payment receipts in 20 designs and download as PDF or PNG.",
     longDescription:
-      "Generate simple, professional payment receipts. Record who paid, how much, the payment method and purpose, then download a PDF receipt for your records.",
+      "Generate simple, professional payment receipts. Record who paid, how much and for what, pick from 20 designs, add your logo and a QR code, then download a PDF or PNG receipt — or print it — for your records.",
     category: "Business",
     icon: "Receipt",
     keywords: ["receipt", "payment receipt", "cash receipt", "proof of payment"],

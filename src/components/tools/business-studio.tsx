@@ -105,11 +105,12 @@ function autoNumber(prefix: string) {
   return `${prefix}-${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}-${String(Math.floor(Math.random() * 9000) + 1000)}`;
 }
 
-function initial(): BizState {
+function initial(kind: DocKind = "invoice"): BizState {
+  const prefix = DOC_TYPES.find((d) => d.id === kind)?.prefix ?? "INV";
   return {
-    kind: "invoice",
+    kind,
     templateId: "indigo-classic",
-    number: autoNumber("INV"),
+    number: autoNumber(prefix),
     date: new Date().toISOString().slice(0, 10),
     dueDate: new Date(Date.now() + 12096e5).toISOString().slice(0, 10),
     currency: "INR",
@@ -146,8 +147,9 @@ const AI_DRAFTS: Record<DocKind, { notes: string; terms: string; items: [string,
   letterhead: { notes: "", terms: "", items: [] },
 };
 
-export default function BusinessStudio() {
-  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<BizState>("uh:business-studio", initial());
+export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
+  const storageKey = lockKind ? `uh:doc-${lockKind}` : "uh:business-studio";
+  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<BizState>(storageKey, initial(lockKind));
   const printRef = useRef<HTMLDivElement>(null);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [barUrl, setBarUrl] = useState<string | null>(null);
@@ -340,21 +342,23 @@ export default function BusinessStudio() {
       {/* Editor */}
       <div className="space-y-6 print:hidden">
         <Card>
-          <CardHeader><CardTitle>Document</CardTitle></CardHeader>
+          <CardHeader><CardTitle>{lockKind ? kind.label : "Document"}</CardTitle></CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-1.5">
-              <Label>Type</Label>
-              <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
-                {DOC_TYPES.map((d) => (
-                  <button key={d.id} onClick={() => changeKind(d.id)}
-                    className={`rounded-lg border px-2 py-1.5 text-xs font-medium transition-colors ${value.kind === d.id ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}>
-                    {d.label}
-                  </button>
-                ))}
+            {!lockKind && (
+              <div className="space-y-1.5">
+                <Label>Type</Label>
+                <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+                  {DOC_TYPES.map((d) => (
+                    <button key={d.id} onClick={() => changeKind(d.id)}
+                      className={`rounded-lg border px-2 py-1.5 text-xs font-medium transition-colors ${value.kind === d.id ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}>
+                      {d.label}
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
             <div className="space-y-1.5">
-              <Label>Template ({TEMPLATES.length})</Label>
+              <Label>Design ({TEMPLATES.length})</Label>
               <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
                 {TEMPLATES.map((t) => (
                   <button key={t.id} onClick={() => patch({ templateId: t.id })} title={`${t.name} · ${t.layout}`}
