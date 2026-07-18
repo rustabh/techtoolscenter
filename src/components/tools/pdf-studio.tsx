@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import PdfCompress from "./pdf-compress";
 
 type Tab = "merge" | "split" | "compress" | "rotate" | "organize" | "watermark" | "numbers" | "headerfooter" | "sign" | "img2pdf" | "batch" | "advanced";
 const TABS: { id: Tab; label: string }[] = [
@@ -50,12 +51,7 @@ export default function PdfStudio() {
           (await out.copyPages(src, pages.map((p) => p - 1))).forEach((p) => out.addPage(p));
           return out.save();
         }} fields={[{ key: "range", label: "Pages (e.g. 1-3, 5)", def: "1-1" }]} name="split.pdf" />}
-      {tab === "compress" && <SingleFileTab title="Compress" action={async (file) => {
-        const src = await loadPdf(file); const { PDFDocument } = await import("pdf-lib");
-        const out = await PDFDocument.create();
-        (await out.copyPages(src, src.getPageIndices())).forEach((p) => out.addPage(p));
-        return out.save({ useObjectStreams: true });
-      }} fields={[]} name="compressed.pdf" showSize />}
+      {tab === "compress" && <PdfCompress />}
       {tab === "rotate" && <SingleFileTab title="Rotate pages" action={async (file, opts) => {
         const { degrees } = await import("pdf-lib"); const doc = await loadPdf(file);
         const deg = parseInt(opts.deg, 10);

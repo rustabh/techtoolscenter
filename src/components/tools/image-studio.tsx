@@ -9,10 +9,11 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import ImageCompressor from "./image-compressor";
 
-type Tab = "edit" | "palette" | "picker" | "info" | "background" | "batch";
+type Tab = "edit" | "compress" | "palette" | "picker" | "info" | "background" | "batch";
 const TABS: { id: Tab; label: string }[] = [
-  { id: "edit", label: "Edit" }, { id: "palette", label: "Palette" }, { id: "picker", label: "Color Picker" },
+  { id: "edit", label: "Edit" }, { id: "compress", label: "Compress" }, { id: "palette", label: "Palette" }, { id: "picker", label: "Color Picker" },
   { id: "info", label: "Metadata" }, { id: "background", label: "Background" }, { id: "batch", label: "Batch" },
 ];
 
@@ -64,6 +65,7 @@ export default function ImageStudio() {
             <Button size="sm" variant="ghost" onClick={() => location.reload()}>New image</Button>
           </div>
           {tab === "edit" && <EditTab img={img} meta={meta} />}
+          {tab === "compress" && <ImageCompressor />}
           {tab === "palette" && <PaletteTab img={img} />}
           {tab === "picker" && <PickerTab img={img} />}
           {tab === "info" && <InfoTab img={img} meta={meta} />}
