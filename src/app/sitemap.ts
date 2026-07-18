@@ -4,6 +4,7 @@ import { collections } from "@/lib/collections";
 import { ogImageFor } from "@/lib/seo/metadata";
 import { allPosts } from "@/lib/blog/posts";
 import { blogCategories } from "@/lib/blog/categories";
+import { landingPages } from "@/lib/landing/landing";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -58,5 +59,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ];
 
-  return [...staticRoutes, ...collectionRoutes, ...categoryRoutes, ...toolRoutes, ...blogRoutes];
+  const toolSlugs = new Set(tools.map((t) => t.slug));
+  const landingRoutes: MetadataRoute.Sitemap = landingPages
+    .filter((l) => !toolSlugs.has(l.slug))
+    .map((l) => ({
+      url: `${base}/tools/${l.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }));
+
+  return [...staticRoutes, ...collectionRoutes, ...categoryRoutes, ...toolRoutes, ...landingRoutes, ...blogRoutes];
 }

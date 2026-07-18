@@ -13,11 +13,11 @@ function formatBytes(bytes: number) {
   return `${(bytes / 1048576).toFixed(2)} MB`;
 }
 
-export default function ImageCompressor() {
+export default function ImageCompressor({ preset }: { preset?: Record<string, unknown> }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [original, setOriginal] = useState<{ url: string; size: number; name: string } | null>(null);
-  const [quality, setQuality] = useState(0.7);
-  const [maxWidth, setMaxWidth] = useState(1600);
+  const [quality, setQuality] = useState(typeof preset?.quality === "number" ? (preset.quality as number) : 0.7);
+  const [maxWidth, setMaxWidth] = useState(typeof preset?.maxWidth === "number" ? (preset.maxWidth as number) : 1600);
   const [result, setResult] = useState<{ url: string; size: number; blob: Blob } | null>(null);
   const [busy, setBusy] = useState(false);
 

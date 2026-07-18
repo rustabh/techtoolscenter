@@ -97,8 +97,8 @@ const TEMPLATES: { name: string; fg: string; fg2?: string; dot: DotType; corner:
   { name: "Mono", fg: "#111827", dot: "classy", corner: "square" },
 ];
 
-export default function QrGenerator() {
-  const [type, setType] = useState<QrType>("url");
+export default function QrGenerator({ preset }: { preset?: Record<string, unknown> }) {
+  const [type, setType] = useState<QrType>((preset?.type as QrType) || "url");
   const [fields, setFields] = useState<Fields>({ url: "https://techtoolscenter.com" });
   const [fg, setFg] = useState("#0b1220");
   const [fg2, setFg2] = useState("");

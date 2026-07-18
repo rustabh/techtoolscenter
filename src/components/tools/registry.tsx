@@ -15,7 +15,7 @@ function ToolSkeleton() {
   );
 }
 
-const registry: Record<string, ComponentType> = {
+const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> }>> = {
   "ai-studio": dynamic(() => import("./ai-studio"), { loading: ToolSkeleton, ssr: false }),
   "invoice-maker": dynamic(() => import("./invoice-maker"), { loading: ToolSkeleton, ssr: false }),
   "quotation-generator": dynamic(() => import("./quotation-generator"), { loading: ToolSkeleton, ssr: false }),
@@ -95,8 +95,8 @@ const registry: Record<string, ComponentType> = {
   "color-palette-generator": dynamic(() => import("./color-palette-generator"), { loading: ToolSkeleton, ssr: false }),
 };
 
-export function ToolRenderer({ slug }: { slug: string }) {
+export function ToolRenderer({ slug, preset }: { slug: string; preset?: Record<string, unknown> }) {
   const Cmp = registry[slug];
   if (!Cmp) return <p className="text-muted-foreground">This tool is coming soon.</p>;
-  return <Cmp />;
+  return <Cmp preset={preset} />;
 }
