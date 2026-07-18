@@ -7,6 +7,15 @@ import { siteConfig } from "@/lib/site";
 export function Footer() {
   return (
     <footer className="mt-24 border-t border-border">
+      <div className="container-tight pt-12">
+        <div className="flex flex-col items-center justify-between gap-4 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/10 to-transparent p-6 text-center sm:flex-row sm:text-left">
+          <div>
+            <p className="text-lg font-bold tracking-tight">Can&apos;t find the tool you&apos;re looking for?</p>
+            <p className="text-sm text-muted-foreground">Request it and vote on what we build next — it takes 20 seconds.</p>
+          </div>
+          <Link href="/community?compose=tool" className="shrink-0 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">Request a Tool</Link>
+        </div>
+      </div>
       <div className="container-tight py-14">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="space-y-3">

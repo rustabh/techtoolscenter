@@ -5,6 +5,7 @@ import {
 import { HeroSearch } from "@/components/hero-search";
 import { ToolCard } from "@/components/tool-card";
 import { Newsletter } from "@/components/newsletter";
+import { CommunityWidget } from "@/components/community/community-widget";
 import { Reveal } from "@/components/reveal";
 import { Icon } from "@/components/icon";
 import { Accordion } from "@/components/ui/accordion";
@@ -215,6 +216,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Community */}
+      <CommunityWidget />
 
       {/* FAQ */}
       <section id="faq" className="container-tight py-14">
