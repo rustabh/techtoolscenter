@@ -1,12 +1,14 @@
 import Link from "next/link";
 import {
-  Shield, Zap, Lock, Cpu, Heart, Gauge, ArrowRight, Star, CheckCircle2,
+  Zap, ArrowRight, Star, CheckCircle2,
+  ShieldCheck, MonitorSmartphone, Globe, BadgeCheck, Rocket,
 } from "lucide-react";
 import { HeroSearch } from "@/components/hero-search";
 import { ToolCard } from "@/components/tool-card";
 import { Newsletter } from "@/components/newsletter";
 import { CommunityWidget } from "@/components/community/community-widget";
 import { LiveStats } from "@/components/stats/live-stats";
+import { MostUsedTools } from "@/components/stats/most-used-tools";
 import { Reveal } from "@/components/reveal";
 import { Icon } from "@/components/icon";
 import { Accordion } from "@/components/ui/accordion";
@@ -18,12 +20,12 @@ import { collectionsWithCounts } from "@/lib/collections";
 import { cn } from "@/lib/utils";
 
 const whyChoose = [
-  { icon: Lock, title: "100% Private", desc: "Every tool runs in your browser. Your files and data never touch a server." },
-  { icon: Zap, title: "Blazing Fast", desc: "No uploads, no waiting. Results are instant, even offline after first load." },
-  { icon: Heart, title: "Always Free", desc: "No sign-up, no paywalls, no limits. Every tool is free to use, forever." },
-  { icon: Gauge, title: "Lighthouse 95+", desc: "Optimized for speed, accessibility, best practices and SEO out of the box." },
-  { icon: Cpu, title: "Works Offline", desc: "Client-side by design — many tools keep working with no connection at all." },
-  { icon: Shield, title: "No Tracking", desc: "We don't sell your data. Your work stays on your device via local storage." },
+  { icon: ShieldCheck, emoji: "🔒", title: "Privacy First", desc: "Files are processed securely in your browser — nothing is ever uploaded to a server.", tint: "from-emerald-500/15" },
+  { icon: Zap, emoji: "⚡", title: "Lightning Fast", desc: "Optimized for speed — no uploads, no waiting, results appear instantly.", tint: "from-amber-500/15" },
+  { icon: MonitorSmartphone, emoji: "📱", title: "Works Everywhere", desc: "Fully responsive on desktop, tablet and mobile — use any tool anywhere.", tint: "from-blue-500/15" },
+  { icon: Globe, emoji: "🌍", title: "No Installation", desc: "Everything works in your browser. Nothing to download, nothing to set up.", tint: "from-cyan-500/15" },
+  { icon: BadgeCheck, emoji: "🎯", title: "Free to Use", desc: "Most tools are completely free — no sign-up, no paywalls, no limits.", tint: "from-violet-500/15" },
+  { icon: Rocket, emoji: "🚀", title: "Always Improving", desc: "New tools and updates ship regularly, guided by the community.", tint: "from-rose-500/15" },
 ];
 
 const testimonials = [
@@ -177,23 +179,31 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Why choose */}
+      {/* Trust & social proof */}
       <section className="container-tight py-14">
-        <SectionHeading eyebrow="Why TechToolsCenter" title="Built for speed and privacy" subtitle="A premium experience that respects your data and your time." />
+        <SectionHeading eyebrow="Why TechToolsCenter" title="Trusted, private and always free" subtitle="A premium experience that respects your data and your time." />
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {whyChoose.map((f, i) => (
             <Reveal key={f.title} delay={i * 0.05}>
-              <div className="glass h-full rounded-2xl p-6">
-                <span className="grid size-11 place-items-center rounded-xl bg-primary/10 text-primary">
-                  <f.icon className="size-5" />
-                </span>
-                <h3 className="mt-4 font-semibold">{f.title}</h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">{f.desc}</p>
+              <div className={`group relative h-full overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg`}>
+                <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${f.tint} to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100`} />
+                <div className="relative">
+                  <span className="grid size-12 place-items-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
+                    <f.icon className="size-6" />
+                  </span>
+                  <h3 className="mt-4 flex items-center gap-2 font-semibold">
+                    <span aria-hidden>{f.emoji}</span> {f.title}
+                  </h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground">{f.desc}</p>
+                </div>
               </div>
             </Reveal>
           ))}
         </div>
       </section>
+
+      {/* Most used tools (real stats — hidden until data exists) */}
+      <MostUsedTools />
 
       {/* Testimonials */}
       <section className="container-tight py-14">
