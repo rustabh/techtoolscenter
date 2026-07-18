@@ -11,6 +11,7 @@ import { ToolRenderer } from "@/components/tools/registry";
 import { TrackRecent } from "@/components/tools/track-recent";
 import { getTool, getCategoryMeta, tools } from "@/lib/tools";
 import { collectionOf, collectionForTool } from "@/lib/collections";
+import { toolHowTo, toolBenefits, toolFaqs, toolFeatures, toolIntro } from "@/lib/tool-content";
 import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -56,19 +57,11 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
     .filter((t) => collectionOf(t) === col.slug && t.slug !== tool.slug)
     .slice(0, 3);
 
-  const howToSteps = [
-    { name: `Open the ${tool.name}`, text: `Open the ${tool.name} — it loads instantly and works entirely in your browser. No sign-up or installation is needed.` },
-    { name: "Enter your details", text: "Fill in the fields or paste your content. Everything updates in real time so you always see an accurate live preview." },
-    { name: "Review the live preview", text: "Check the result in the preview panel. Use Undo, Redo or Reset at any time — your work is saved to your browser automatically." },
-    { name: "Copy, download or share", text: "When you're happy, copy the result, download the file, or share it. Nothing is ever uploaded to a server — it all stays on your device." },
-  ];
-
-  const benefits = [
-    "100% free with no sign-up or hidden limits",
-    "Runs entirely in your browser — your data never leaves your device",
-    "Fast, responsive and works great on mobile",
-    "Saves your recent work automatically via local storage",
-  ];
+  const howToSteps = toolHowTo(tool);
+  const benefits = toolBenefits(tool);
+  const features = toolFeatures(tool);
+  const faqs = toolFaqs(tool);
+  const intro = toolIntro(tool);
 
   const appJsonLd = {
     "@context": "https://schema.org",
@@ -83,7 +76,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
   const faqJsonLd = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: tool.faq.map((f) => ({
+    mainEntity: faqs.map((f) => ({
       "@type": "Question",
       name: f.question,
       acceptedAnswer: { "@type": "Answer", text: f.answer },
@@ -142,12 +135,24 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         <div>
           <h2 className="mb-4 text-2xl font-bold tracking-tight">About the {tool.name}</h2>
           <p className="leading-relaxed text-muted-foreground">{tool.longDescription}</p>
+          <p className="mt-4 leading-relaxed text-muted-foreground">{intro}</p>
           <p className="mt-4 leading-relaxed text-muted-foreground">
             The {tool.name} is part of {siteConfig.name} — a free, privacy-first collection of {tools.length}+ online
             tools. Like every tool here, it runs 100% in your browser, so your data stays private and results are
             instant. There is no sign-up, no watermark and no limit on how many times you can use it.
           </p>
         </div>
+
+        {features.length > 0 && (
+          <div>
+            <h2 className="mb-5 text-2xl font-bold tracking-tight">Key features</h2>
+            <div className="flex flex-wrap gap-2">
+              {features.map((f) => (
+                <span key={f} className="rounded-full border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground">{f}</span>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div>
           <h2 className="mb-5 text-2xl font-bold tracking-tight">How to use the {tool.name}</h2>
@@ -180,7 +185,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
         <div>
           <h2 className="mb-6 text-2xl font-bold tracking-tight">Frequently asked questions</h2>
-          <Accordion items={tool.faq} />
+          <Accordion items={faqs} />
         </div>
       </section>
 

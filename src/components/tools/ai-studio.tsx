@@ -72,14 +72,16 @@ export default function AIStudio() {
             <p className="text-sm text-muted-foreground">{active.description}</p>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-1.5">
-              <Label>Engine</Label>
-              <Select value={providerId} onChange={(e) => setProviderId(e.target.value)}>
-                {PROVIDERS.map((p) => (
-                  <option key={p.id} value={p.id} disabled={!p.available}>{p.label}</option>
-                ))}
-              </Select>
-            </div>
+            {PROVIDERS.length > 1 && (
+              <div className="space-y-1.5">
+                <Label>Engine</Label>
+                <Select value={providerId} onChange={(e) => setProviderId(e.target.value)}>
+                  {PROVIDERS.map((p) => (
+                    <option key={p.id} value={p.id} disabled={!p.available}>{p.label}</option>
+                  ))}
+                </Select>
+              </div>
+            )}
             {active.fields.map((f) => (
               <div key={f.name} className="space-y-1.5">
                 <Label>{f.label}</Label>

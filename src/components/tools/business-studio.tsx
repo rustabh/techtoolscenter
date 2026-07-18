@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
 import { formatCurrency } from "@/lib/utils";
@@ -61,6 +62,16 @@ const TEMPLATES: Template[] = [
   { id: "plum-minimal", name: "Plum Minimal", accent: "#9333ea", layout: "minimal" },
 ];
 
+/* Tax modes — Indian GST splits into CGST+SGST for intra-state and IGST for
+   inter-state; "single" is a plain sales/VAT tax; "none" disables tax. */
+type TaxMode = "gst-split" | "igst" | "single" | "none";
+const TAX_MODES: { id: TaxMode; label: string }[] = [
+  { id: "gst-split", label: "GST — CGST + SGST" },
+  { id: "igst", label: "GST — IGST" },
+  { id: "single", label: "Single tax / VAT" },
+  { id: "none", label: "No tax" },
+];
+
 /* ------------------------------------------------------------------ */
 interface BizState {
   kind: DocKind;
@@ -75,6 +86,7 @@ interface BizState {
   discount: number;
   shipping: number;
   taxRate: number;
+  taxType: TaxMode;
   notes: string;
   terms: string;
   bodyText: string; // letterhead
@@ -107,6 +119,7 @@ function initial(): BizState {
     discount: 0,
     shipping: 0,
     taxRate: 18,
+    taxType: "gst-split",
     notes: "Thank you for your business!",
     terms: "Payment due within 14 days.",
     bodyText: "Dear Sir/Madam,\n\nWrite your letter content here.\n\nWarm regards,",
@@ -149,10 +162,25 @@ export default function BusinessStudio() {
     const sub = subtotal(value.items);
     const discountAmt = (sub * (value.discount || 0)) / 100;
     const taxable = sub - discountAmt;
-    const taxAmt = (taxable * (value.taxRate || 0)) / 100;
+    const rate = value.taxType === "none" ? 0 : value.taxRate || 0;
+    const taxAmt = (taxable * rate) / 100;
     const grand = taxable + taxAmt + (value.shipping || 0);
-    return { sub, discountAmt, taxable, taxAmt, grand };
+    return { sub, discountAmt, taxable, taxAmt, grand, rate };
   }, [value]);
+
+  // Individual tax lines to render (label + amount) based on the chosen mode.
+  const taxLines = useMemo((): { label: string; amt: number }[] => {
+    const { taxAmt, rate } = totals;
+    if (!rate || value.taxType === "none") return [];
+    if (value.taxType === "gst-split") {
+      return [
+        { label: `CGST (${(rate / 2).toFixed(rate % 2 ? 1 : 0)}%)`, amt: taxAmt / 2 },
+        { label: `SGST (${(rate / 2).toFixed(rate % 2 ? 1 : 0)}%)`, amt: taxAmt / 2 },
+      ];
+    }
+    if (value.taxType === "igst") return [{ label: `IGST (${rate}%)`, amt: taxAmt }];
+    return [{ label: `Tax / VAT (${rate}%)`, amt: taxAmt }];
+  }, [totals, value.taxType]);
 
   // QR encodes a payment/summary payload; barcode encodes the document number.
   useEffect(() => {
@@ -267,7 +295,7 @@ export default function BusinessStudio() {
         };
         put("Subtotal", money(totals.sub));
         if (value.discount) put(`Discount (${value.discount}%)`, `- ${money(totals.discountAmt)}`);
-        if (value.taxRate) put(`Tax / GST (${value.taxRate}%)`, money(totals.taxAmt));
+        taxLines.forEach((t) => put(t.label, money(t.amt)));
         if (value.shipping) put("Shipping", money(value.shipping));
         put("Total", money(totals.grand), true);
       }
@@ -302,7 +330,10 @@ export default function BusinessStudio() {
     a.click();
   };
 
-  const isSidebar = template.layout === "sidebar";
+  const layout = template.layout;
+  // Minimal is deliberately monochrome; every other layout uses the accent.
+  const headBg = layout === "minimal" ? "#0f172a" : accent;
+  const titleColor = layout === "minimal" ? "#0f172a" : accent;
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -381,10 +412,15 @@ export default function BusinessStudio() {
             {kind.priced && (
               <Card>
                 <CardHeader><CardTitle>Charges</CardTitle></CardHeader>
-                <CardContent className="grid grid-cols-3 gap-3">
+                <CardContent className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5"><Label>Discount (%)</Label><Input type="number" value={value.discount} onChange={(e) => patch({ discount: Number(e.target.value) })} /></div>
-                  <div className="space-y-1.5"><Label>Tax / GST (%)</Label><Input type="number" value={value.taxRate} onChange={(e) => patch({ taxRate: Number(e.target.value) })} /></div>
                   <div className="space-y-1.5"><Label>Shipping</Label><Input type="number" value={value.shipping} onChange={(e) => patch({ shipping: Number(e.target.value) })} /></div>
+                  <div className="space-y-1.5"><Label>Tax type</Label>
+                    <Select value={value.taxType} onChange={(e) => patch({ taxType: e.target.value as TaxMode })}>
+                      {TAX_MODES.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
+                    </Select>
+                  </div>
+                  <div className="space-y-1.5"><Label>Total tax rate (%)</Label><Input type="number" value={value.taxRate} disabled={value.taxType === "none"} onChange={(e) => patch({ taxRate: Number(e.target.value) })} /></div>
                 </CardContent>
               </Card>
             )}
@@ -428,67 +464,55 @@ export default function BusinessStudio() {
             <span className="pointer-events-none absolute inset-0 flex items-center justify-center text-7xl font-black uppercase tracking-widest opacity-[0.06]" style={{ transform: "rotate(-30deg)" }}>{value.watermark}</span>
           )}
 
-          {/* Header */}
-          <div className={`flex items-start justify-between ${isSidebar ? "border-l-8 pl-4" : ""}`} style={isSidebar ? { borderColor: accent } : undefined}>
-            <div>
-              {value.logo ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={value.logo} alt="Logo" className="mb-2 h-14 w-auto object-contain" />
-              ) : (
-                <p className="text-lg font-bold">{value.company.name}</p>
-              )}
-              {value.logo && <p className="text-sm font-semibold">{value.company.name}</p>}
-            </div>
-            <div className="text-right">
-              {kind.title && <p className="text-2xl font-bold" style={{ color: accent }}>{kind.title}</p>}
-              <p className="text-xs text-slate-500">#{value.number}</p>
-              <p className="text-xs text-slate-500">Date: {value.date}</p>
-              {kind.priced && <p className="text-xs text-slate-500">Due: {value.dueDate}</p>}
-              {barUrl && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={barUrl} alt="Barcode" className="ml-auto mt-1 h-8 w-auto" />
-              )}
-            </div>
-          </div>
+          <DocHeader layout={layout} value={value} kind={kind} accent={accent} titleColor={titleColor} barUrl={barUrl} />
 
           {value.kind === "letterhead" ? (
             <p className="mt-8 whitespace-pre-line text-sm leading-relaxed text-slate-700">{value.bodyText}</p>
           ) : (
-            <>
+            <div className={layout === "sidebar" ? "pl-4" : ""}>
               <div className="mt-6 grid grid-cols-2 gap-4 text-xs">
-                <div><p className="mb-1 font-semibold text-slate-700">From</p><PartyView party={value.company} /></div>
-                <div><p className="mb-1 font-semibold text-slate-700">{value.kind === "purchase-order" ? "Vendor" : "Bill To"}</p><PartyView party={value.customer} /></div>
+                <div><p className="mb-1 font-semibold" style={{ color: titleColor }}>From</p><PartyView party={value.company} /></div>
+                <div><p className="mb-1 font-semibold" style={{ color: titleColor }}>{value.kind === "purchase-order" ? "Vendor" : "Bill To"}</p><PartyView party={value.customer} /></div>
               </div>
 
               <table className="mt-6 w-full text-xs">
                 <thead>
-                  <tr className="text-white" style={{ background: accent }}>
-                    <th className="p-2 text-left">Description</th>
-                    <th className="p-2 text-right">Qty</th>
-                    {kind.priced && <th className="p-2 text-right">Rate</th>}
-                    {kind.priced && <th className="p-2 text-right">Amount</th>}
-                  </tr>
+                  {layout === "minimal" ? (
+                    <tr className="border-b-2 border-slate-800 text-left text-slate-800">
+                      <th className="py-2 pr-2 font-semibold uppercase tracking-wide">Description</th>
+                      <th className="py-2 px-2 text-right font-semibold uppercase tracking-wide">Qty</th>
+                      {kind.priced && <th className="py-2 px-2 text-right font-semibold uppercase tracking-wide">Rate</th>}
+                      {kind.priced && <th className="py-2 pl-2 text-right font-semibold uppercase tracking-wide">Amount</th>}
+                    </tr>
+                  ) : (
+                    <tr className="text-white" style={{ background: headBg }}>
+                      <th className="p-2 text-left">Description</th>
+                      <th className="p-2 text-right">Qty</th>
+                      {kind.priced && <th className="p-2 text-right">Rate</th>}
+                      {kind.priced && <th className="p-2 text-right">Amount</th>}
+                    </tr>
+                  )}
                 </thead>
                 <tbody>
                   {value.items.map((it, i) => (
-                    <tr key={it.id} className={i % 2 ? "bg-slate-50" : ""}>
-                      <td className="p-2">{it.description || "—"}</td>
-                      <td className="p-2 text-right">{it.qty}</td>
-                      {kind.priced && <td className="p-2 text-right">{money(it.rate)}</td>}
-                      {kind.priced && <td className="p-2 text-right">{money(it.qty * it.rate)}</td>}
+                    <tr key={it.id} className={layout === "minimal" ? "border-b border-slate-100" : i % 2 ? "bg-slate-50" : ""}>
+                      <td className={layout === "minimal" ? "py-2 pr-2" : "p-2"}>{it.description || "—"}</td>
+                      <td className={`text-right ${layout === "minimal" ? "py-2 px-2" : "p-2"}`}>{it.qty}</td>
+                      {kind.priced && <td className={`text-right ${layout === "minimal" ? "py-2 px-2" : "p-2"}`}>{money(it.rate)}</td>}
+                      {kind.priced && <td className={`text-right ${layout === "minimal" ? "py-2 pl-2" : "p-2"}`}>{money(it.qty * it.rate)}</td>}
                     </tr>
                   ))}
                 </tbody>
               </table>
 
               {kind.priced && (
-                <div className="mt-4 ml-auto w-60 space-y-1 text-xs">
+                <div className={`mt-4 w-64 space-y-1 text-xs ${layout === "bold" ? "" : "ml-auto"}`}>
                   <Line label="Subtotal" value={money(totals.sub)} />
                   {value.discount > 0 && <Line label={`Discount (${value.discount}%)`} value={`- ${money(totals.discountAmt)}`} />}
-                  {value.taxRate > 0 && <Line label={`Tax / GST (${value.taxRate}%)`} value={money(totals.taxAmt)} />}
+                  {taxLines.map((t) => <Line key={t.label} label={t.label} value={money(t.amt)} />)}
                   {value.shipping > 0 && <Line label="Shipping" value={money(value.shipping)} />}
-                  <div className="flex justify-between border-t border-slate-200 pt-1 text-sm font-bold">
-                    <span>Total</span><span style={{ color: accent }}>{money(totals.grand)}</span>
+                  <div className={`flex justify-between border-t border-slate-200 pt-1.5 text-sm font-bold ${layout === "modern" || layout === "bold" ? "rounded-md px-2 py-1.5 text-white" : ""}`} style={layout === "modern" || layout === "bold" ? { background: accent } : undefined}>
+                    <span>Total</span><span style={layout === "modern" || layout === "bold" ? undefined : { color: titleColor }}>{money(totals.grand)}</span>
                   </div>
                 </div>
               )}
@@ -519,9 +543,140 @@ export default function BusinessStudio() {
                   </div>
                 )}
               </div>
-            </>
+            </div>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- document headers — one genuinely different design per layout ---------- */
+type HeaderProps = {
+  layout: Layout;
+  value: BizState;
+  kind: (typeof DOC_TYPES)[number];
+  accent: string;
+  titleColor: string;
+  barUrl: string | null;
+};
+
+function Logo({ src, name, className = "h-12" }: { src: string | null; name: string; className?: string }) {
+  return src ? (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt="Logo" className={`${className} w-auto object-contain`} />
+  ) : (
+    <p className="text-lg font-bold">{name}</p>
+  );
+}
+
+function Meta({ value, kind, muted }: { value: BizState; kind: HeaderProps["kind"]; muted?: string }) {
+  const c = muted ?? "text-slate-500";
+  return (
+    <div className={`text-right text-xs ${c}`}>
+      <p>#{value.number}</p>
+      <p>Date: {value.date}</p>
+      {kind.priced && <p>Due: {value.dueDate}</p>}
+    </div>
+  );
+}
+
+function Barcode({ url, className = "ml-auto mt-1 h-8" }: { url: string | null; className?: string }) {
+  if (!url) return null;
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={url} alt="Barcode" className={`${className} w-auto`} />;
+}
+
+function DocHeader({ layout, value, kind, accent, titleColor, barUrl }: HeaderProps) {
+  const title = kind.title || value.company.name;
+
+  if (layout === "modern") {
+    return (
+      <div>
+        <div className="-mx-8 -mt-8 mb-6 flex items-center justify-between px-8 py-6 text-white" style={{ background: accent }}>
+          <div>
+            <p className="text-2xl font-bold tracking-tight">{title}</p>
+            <p className="text-xs opacity-90">{value.company.name}</p>
+          </div>
+          <div className="text-right text-xs opacity-95">
+            <p>#{value.number}</p>
+            <p>Date: {value.date}</p>
+            {kind.priced && <p>Due: {value.dueDate}</p>}
+          </div>
+        </div>
+        <div className="flex items-center justify-between">
+          <Logo src={value.logo} name={value.company.name} />
+          <Barcode url={barUrl} />
+        </div>
+      </div>
+    );
+  }
+
+  if (layout === "bold") {
+    return (
+      <div className="flex items-start justify-between gap-4">
+        <div className="-ml-8 -mt-8 mb-2 rounded-br-3xl px-8 py-6 text-white" style={{ background: accent }}>
+          <p className="text-3xl font-black uppercase leading-none tracking-tight">{title}</p>
+          <p className="mt-1 text-xs opacity-90">#{value.number}</p>
+        </div>
+        <div className="text-right">
+          <Logo src={value.logo} name={value.company.name} className="ml-auto h-12" />
+          <p className="mt-1 text-sm font-semibold">{value.company.name}</p>
+          <p className="text-xs text-slate-500">Date: {value.date}</p>
+          {kind.priced && <p className="text-xs text-slate-500">Due: {value.dueDate}</p>}
+          <Barcode url={barUrl} />
+        </div>
+      </div>
+    );
+  }
+
+  if (layout === "minimal") {
+    return (
+      <div className="flex items-end justify-between border-b border-slate-300 pb-4">
+        <div>
+          <Logo src={value.logo} name={value.company.name} className="h-10" />
+          <p className="mt-1 text-sm font-medium text-slate-700">{value.company.name}</p>
+        </div>
+        <div className="text-right">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-800">{title}</p>
+          <Meta value={value} kind={kind} />
+          <Barcode url={barUrl} />
+        </div>
+      </div>
+    );
+  }
+
+  if (layout === "sidebar") {
+    return (
+      <div className="flex items-stretch gap-4">
+        <div className="-ml-8 -mt-8 mb-2 flex flex-col justify-center px-4 py-6 text-white" style={{ background: accent }}>
+          <p className="text-sm font-bold uppercase tracking-widest [writing-mode:vertical-rl] rotate-180">{title}</p>
+        </div>
+        <div className="flex flex-1 items-start justify-between pt-1">
+          <div>
+            <Logo src={value.logo} name={value.company.name} />
+            {value.logo && <p className="mt-1 text-sm font-semibold">{value.company.name}</p>}
+          </div>
+          <div>
+            <Meta value={value} kind={kind} />
+            <Barcode url={barUrl} />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // classic
+  return (
+    <div className="flex items-start justify-between border-b-2 pb-4" style={{ borderColor: accent }}>
+      <div>
+        <Logo src={value.logo} name={value.company.name} className="mb-2 h-14" />
+        {value.logo && <p className="text-sm font-semibold">{value.company.name}</p>}
+      </div>
+      <div className="text-right">
+        {kind.title && <p className="text-2xl font-bold" style={{ color: titleColor }}>{kind.title}</p>}
+        <Meta value={value} kind={kind} />
+        <Barcode url={barUrl} />
       </div>
     </div>
   );
