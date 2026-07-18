@@ -468,6 +468,38 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "image-converter",
+    name: "Image Converter",
+    description: "Convert images between PNG, JPG and WEBP online — free and private.",
+    longDescription:
+      "Convert your images between PNG, JPG and WEBP right in your browser. Upload any PNG, JPG, WEBP or AVIF image, pick your output format and quality, and download instantly. Nothing is uploaded — the whole conversion happens on your device.",
+    category: "Image",
+    icon: "Replace",
+    keywords: ["image converter", "png to jpg", "jpg to png", "png to webp", "webp to png", "avif to png", "convert image"],
+    addedOn: "2026-07-18",
+    popular: true,
+    faq: [
+      { question: "Which image formats can I convert?", answer: "You can convert between PNG, JPG and WEBP, and convert AVIF images to any of those. HEIC isn't supported because browsers can't decode it." },
+      { question: "Is my image uploaded anywhere?", answer: "No. The conversion runs entirely in your browser using the canvas API — your image never leaves your device." },
+    ],
+  },
+  {
+    slug: "image-resizer",
+    name: "Image Resizer",
+    description: "Resize images to any size or social preset online — free and private.",
+    longDescription:
+      "Resize any image to exact pixel dimensions or a ready-made social preset — Instagram, Facebook, LinkedIn, YouTube and more. Lock the aspect ratio, preview the result, and download — all privately in your browser with nothing uploaded.",
+    category: "Image",
+    icon: "Scaling",
+    keywords: ["image resizer", "resize image", "resize photo", "image dimensions", "instagram size", "social media image size"],
+    addedOn: "2026-07-18",
+    popular: true,
+    faq: [
+      { question: "Can I resize to exact pixel dimensions?", answer: "Yes. Enter any width and height, optionally lock the aspect ratio, or pick a social/document preset for one-click sizing." },
+      { question: "Are my images uploaded?", answer: "No. Resizing happens entirely in your browser — your images never leave your device." },
+    ],
+  },
+  {
     slug: "pdf-studio",
     name: "PDF Studio",
     description: "All-in-one PDF workspace — merge, split, rotate, watermark, sign & more.",

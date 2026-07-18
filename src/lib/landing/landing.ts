@@ -343,6 +343,93 @@ const faviconLandings: LandingPage[] = faviconVariants.map((v) => ({
   tags: ["favicon generator", v.label.toLowerCase(), "favicon"],
 }));
 
+/* ================================================================== *
+ * IMAGE CONVERTER landing pages (core: image-converter)              *
+ * ================================================================== */
+const convVariants: { slug: string; from: string; to: string; toFmt: string }[] = [
+  { slug: "png-to-jpg", from: "PNG", to: "JPG", toFmt: "jpeg" },
+  { slug: "jpg-to-png", from: "JPG", to: "PNG", toFmt: "png" },
+  { slug: "png-to-webp", from: "PNG", to: "WEBP", toFmt: "webp" },
+  { slug: "webp-to-png", from: "WEBP", to: "PNG", toFmt: "png" },
+  { slug: "avif-to-png", from: "AVIF", to: "PNG", toFmt: "png" },
+];
+const convRelated = ["image-converter", "image-compressor", "image-resizer"];
+
+const converterLandings: LandingPage[] = convVariants.map((v) => ({
+  slug: v.slug,
+  core: "image-converter",
+  h1: `${v.from} to ${v.to} Converter`,
+  title: `${v.from} to ${v.to} — Free Online ${v.from} to ${v.to} Converter`,
+  description: `Convert ${v.from} to ${v.to} online for free. Fast, private ${v.from} to ${v.to} conversion in your browser — no upload, no watermark, no sign-up.`,
+  intro: `Convert ${v.from} images to ${v.to} in seconds. This page opens the converter with ${v.to} already selected — just drop your ${v.from} file in and download the ${v.to}. Everything happens in your browser, so your image is never uploaded to a server.`,
+  benefits: [
+    `Output is pre-set to ${v.to} — one click and done`,
+    `Keeps your image crisp while converting ${v.from} → ${v.to}`,
+    "100% private — nothing is uploaded",
+    "Free, unlimited and works on any device",
+  ],
+  howTo: [
+    `Open this ${v.from} to ${v.to} converter — ${v.to} output is already selected.`,
+    `Upload your ${v.from} image.`,
+    v.toFmt === "png" ? "Click convert." : "Set the quality if you want, then click convert.",
+    `Download your ${v.to} file.`,
+  ],
+  examples: [{ title: `Convert ${v.from} to ${v.to}`, input: `A ${v.from} image`, output: `The same image saved as ${v.to}` }],
+  faq: [
+    { question: `How do I convert ${v.from} to ${v.to}?`, answer: `Upload your ${v.from} here — ${v.to} is already selected as the output. Click convert and download. It's instant and free.` },
+    { question: `Will ${v.to} lose quality?`, answer: v.toFmt === "png" ? "No — PNG is lossless, so your image keeps full quality." : `You control the quality with a slider, so you can balance size and sharpness.` },
+    ...commonFaq("converter"),
+  ],
+  relatedTools: convRelated,
+  preset: { to: v.toFmt },
+  tags: ["image converter", v.slug.replace(/-/g, " "), `${v.from.toLowerCase()} to ${v.to.toLowerCase()}`],
+}));
+
+/* ================================================================== *
+ * IMAGE RESIZER landing pages (core: image-resizer)                  *
+ * ================================================================== */
+const resizeVariants: { slug: string; label: string; w: number; h: number; use: string }[] = [
+  { slug: "resize-image-for-instagram", label: "Instagram", w: 1080, h: 1080, use: "the perfect square for Instagram posts" },
+  { slug: "resize-image-for-facebook", label: "Facebook", w: 1200, h: 630, use: "the ideal Facebook post and link size" },
+  { slug: "resize-image-for-linkedin", label: "LinkedIn", w: 1200, h: 627, use: "the recommended LinkedIn post size" },
+  { slug: "resize-image-for-twitter", label: "Twitter / X", w: 1600, h: 900, use: "the 16:9 size that looks best on X" },
+  { slug: "resize-image-for-youtube", label: "YouTube", w: 1280, h: 720, use: "the exact YouTube thumbnail size" },
+  { slug: "resize-image-for-whatsapp", label: "WhatsApp", w: 640, h: 640, use: "a crisp square for your WhatsApp display picture" },
+  { slug: "resize-image-for-passport", label: "passport photo", w: 600, h: 600, use: "a square passport-style photo size" },
+  { slug: "resize-image-for-aadhar", label: "Aadhaar", w: 400, h: 400, use: "a small square suited to Aadhaar-style forms" },
+];
+const resizeRelated = ["image-resizer", "image-compressor", "image-converter"];
+
+const resizerLandings: LandingPage[] = resizeVariants.map((v) => ({
+  slug: v.slug,
+  core: "image-resizer",
+  h1: `Resize Image for ${v.label[0].toUpperCase() + v.label.slice(1)}`,
+  title: `Resize Image for ${v.label} — Free ${v.w}×${v.h} Image Resizer`,
+  description: `Resize any image for ${v.label} to ${v.w}×${v.h} online for free. Get ${v.use} in one click — private, no upload, no sign-up.`,
+  intro: `Get ${v.use}. This ${v.label} image resizer opens pre-set to ${v.w}×${v.h}, so you just upload your photo and download the perfectly sized result. It all happens in your browser — nothing is uploaded.`,
+  benefits: [
+    `Pre-set to ${v.w}×${v.h} — ${v.use}`,
+    "Lock the aspect ratio or set exact dimensions",
+    "100% private — your image never leaves your device",
+    "Free, unlimited and works on mobile",
+  ],
+  howTo: [
+    `Open this ${v.label} resizer — the ${v.w}×${v.h} size is already set.`,
+    "Upload your image.",
+    "Adjust the size if you need something custom.",
+    "Click resize and download.",
+  ],
+  examples: [{ title: `Resize for ${v.label}`, input: "Any photo", output: `A ${v.w}×${v.h} image ready for ${v.label}` }],
+  faq: [
+    { question: `What size should an image be for ${v.label}?`, answer: `${v.w}×${v.h} pixels — which is why this page is pre-set to it. You can still enter a custom size if you need one.` },
+    { question: "Will my image be stretched?", answer: "No. The resizer fills the target size without distorting your image, so it always looks natural." },
+    ...commonFaq("resizer"),
+  ],
+  relatedTools: resizeRelated,
+  preset: { width: v.w, height: v.h, label: v.label },
+  tags: ["image resizer", v.label.toLowerCase(), `${v.w}x${v.h}`],
+}));
+
 /* ================================================================== */
 export const landingPages: LandingPage[] = [
   ...imageLandings,
@@ -350,6 +437,8 @@ export const landingPages: LandingPage[] = [
   ...pdfLandings,
   ...fontLandings,
   ...faviconLandings,
+  ...converterLandings,
+  ...resizerLandings,
 ];
 
 export function getLanding(slug: string): LandingPage | undefined {

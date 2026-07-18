@@ -39,6 +39,8 @@ const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> 
   "password-generator": dynamic(() => import("./password-generator"), { loading: ToolSkeleton, ssr: false }),
   "image-studio": dynamic(() => import("./image-studio"), { loading: ToolSkeleton, ssr: false }),
   "image-compressor": dynamic(() => import("./image-compressor"), { loading: ToolSkeleton, ssr: false }),
+  "image-converter": dynamic(() => import("./image-converter"), { loading: ToolSkeleton, ssr: false }),
+  "image-resizer": dynamic(() => import("./image-resizer"), { loading: ToolSkeleton, ssr: false }),
   "pdf-studio": dynamic(() => import("./pdf-studio"), { loading: ToolSkeleton, ssr: false }),
   "pdf-merge": dynamic(() => import("./pdf-merge"), { loading: ToolSkeleton, ssr: false }),
   "pdf-split": dynamic(() => import("./pdf-split"), { loading: ToolSkeleton, ssr: false }),
