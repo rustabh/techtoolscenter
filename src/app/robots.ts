@@ -9,6 +9,7 @@ export default function robots(): MetadataRoute.Robots {
       `${siteConfig.url}/tools-sitemap.xml`,
       `${siteConfig.url}/collections-sitemap.xml`,
       `${siteConfig.url}/image-sitemap.xml`,
+      `${siteConfig.url}/blog-sitemap.xml`,
     ],
     host: siteConfig.url,
   };

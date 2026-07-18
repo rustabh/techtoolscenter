@@ -114,6 +114,40 @@ export function howToLd(tool: Tool): Json {
   };
 }
 
+export function articleLd(input: {
+  slug: string;
+  title: string;
+  description: string;
+  authorName: string;
+  publishedOn: string;
+  updatedOn?: string;
+  image?: string;
+}): Json {
+  const url = `${BASE}/blog/${input.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: input.title,
+    description: input.description,
+    url,
+    mainEntityOfPage: url,
+    datePublished: input.publishedOn,
+    dateModified: input.updatedOn ?? input.publishedOn,
+    author: { "@type": "Organization", name: input.authorName, url: BASE },
+    publisher: { "@type": "Organization", name: siteConfig.name, logo: { "@type": "ImageObject", url: `${BASE}/favicon.svg` } },
+    image: input.image ?? `${BASE}${siteConfig.ogImage}`,
+    isAccessibleForFree: true,
+  };
+}
+
+export function faqPageFromItemsLd(items: { question: string; answer: string }[]): Json {
+  return {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: items.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
+  };
+}
+
 /** Every JSON-LD graph a tool page should emit, ready to render. */
 export function toolSchemas(tool: Tool): Json[] {
   const col = collectionForTool(tool);

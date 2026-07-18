@@ -13,8 +13,8 @@ import { cn } from "@/lib/utils";
 const links = [
   { href: "/collections", label: "Collections" },
   { href: "/tools", label: "All Tools" },
+  { href: "/blog", label: "Blog" },
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/#faq", label: "FAQ" },
 ];
 
 const navCollections = collectionsWithCounts();
