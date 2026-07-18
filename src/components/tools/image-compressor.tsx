@@ -13,11 +13,23 @@ function formatBytes(bytes: number) {
   return `${(bytes / 1048576).toFixed(2)} MB`;
 }
 
+function encode(img: HTMLImageElement, maxWidth: number, quality: number): Promise<Blob> {
+  const scale = Math.min(1, maxWidth / img.width);
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(img.width * scale));
+  canvas.height = Math.max(1, Math.round(img.height * scale));
+  const ctx = canvas.getContext("2d")!;
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  return new Promise((res) => canvas.toBlob((b) => res(b as Blob), "image/jpeg", quality));
+}
+
 export default function ImageCompressor({ preset }: { preset?: Record<string, unknown> }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [original, setOriginal] = useState<{ url: string; size: number; name: string } | null>(null);
+  const [mode, setMode] = useState<"quality" | "target">(typeof preset?.targetKB === "number" ? "target" : "quality");
   const [quality, setQuality] = useState(typeof preset?.quality === "number" ? (preset.quality as number) : 0.7);
   const [maxWidth, setMaxWidth] = useState(typeof preset?.maxWidth === "number" ? (preset.maxWidth as number) : 1600);
+  const [targetKB, setTargetKB] = useState(typeof preset?.targetKB === "number" ? (preset.targetKB as number) : 100);
   const [result, setResult] = useState<{ url: string; size: number; blob: Blob } | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -32,20 +44,23 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
     const img = new Image();
     img.src = original.url;
     await img.decode();
-    const scale = Math.min(1, maxWidth / img.width);
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.round(img.width * scale);
-    canvas.height = Math.round(img.height * scale);
-    const ctx = canvas.getContext("2d")!;
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-    canvas.toBlob(
-      (blob) => {
-        if (blob) setResult({ url: URL.createObjectURL(blob), size: blob.size, blob });
-        setBusy(false);
-      },
-      "image/jpeg",
-      quality
-    );
+    let blob: Blob;
+    if (mode === "target") {
+      // Step quality (then width) down until we fit under the target size.
+      const target = targetKB * 1024;
+      blob = await encode(img, maxWidth, quality);
+      const widths = [maxWidth, 1280, 1024, 800, 640, 480];
+      outer: for (const w of widths) {
+        for (let q = 0.9; q >= 0.2; q -= 0.1) {
+          blob = await encode(img, w, q);
+          if (blob.size <= target) break outer;
+        }
+      }
+    } else {
+      blob = await encode(img, maxWidth, quality);
+    }
+    setResult({ url: URL.createObjectURL(blob), size: blob.size, blob });
+    setBusy(false);
   };
 
   const savings = original && result ? Math.max(0, Math.round((1 - result.size / original.size) * 100)) : 0;
@@ -72,16 +87,41 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
           <Card>
             <CardHeader><CardTitle>Settings</CardTitle></CardHeader>
             <CardContent className="space-y-5">
-              <div className="space-y-1.5">
-                <Label>Quality: {Math.round(quality * 100)}%</Label>
-                <input type="range" min={0.1} max={1} step={0.05} value={quality}
-                  onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+              <div className="grid grid-cols-2 gap-2">
+                <button onClick={() => setMode("quality")}
+                  className={`rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${mode === "quality" ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}>By quality</button>
+                <button onClick={() => setMode("target")}
+                  className={`rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${mode === "target" ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}>By target size</button>
               </div>
-              <div className="space-y-1.5">
-                <Label>Max width: {maxWidth}px</Label>
-                <input type="range" min={400} max={4000} step={100} value={maxWidth}
-                  onChange={(e) => setMaxWidth(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
-              </div>
+
+              {mode === "target" ? (
+                <div className="space-y-1.5">
+                  <Label>Target size (KB)</Label>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <input type="number" min={5} value={targetKB} onChange={(e) => setTargetKB(Math.max(5, Number(e.target.value)))}
+                      className="w-24 rounded-lg border border-border bg-transparent px-3 py-1.5 text-sm" />
+                    <div className="flex gap-1">
+                      {[10, 20, 50, 100, 200].map((kb) => (
+                        <button key={kb} onClick={() => setTargetKB(kb)} className="rounded-lg border border-border px-2 py-1 text-xs hover:bg-secondary">{kb}KB</button>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">We&apos;ll auto-tune quality and width to fit under your target.</p>
+                </div>
+              ) : (
+                <>
+                  <div className="space-y-1.5">
+                    <Label>Quality: {Math.round(quality * 100)}%</Label>
+                    <input type="range" min={0.1} max={1} step={0.05} value={quality}
+                      onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label>Max width: {maxWidth}px</Label>
+                    <input type="range" min={400} max={4000} step={100} value={maxWidth}
+                      onChange={(e) => setMaxWidth(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+                  </div>
+                </>
+              )}
               <Button onClick={compress} disabled={busy} className="w-full">
                 {busy ? "Compressing…" : "Compress image"}
               </Button>
