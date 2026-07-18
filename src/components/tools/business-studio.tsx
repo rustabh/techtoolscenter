@@ -34,6 +34,20 @@ const DOC_TYPES: { id: DocKind; label: string; title: string; prefix: string; pr
   { id: "letterhead", label: "Letterhead", title: "", prefix: "LTR", priced: false },
 ];
 
+/* Each document type has its own dedicated, searchable tool page. */
+const KIND_SLUG: Record<DocKind, string> = {
+  invoice: "invoice-maker",
+  quotation: "quotation-generator",
+  estimate: "estimate-maker",
+  "purchase-order": "purchase-order-generator",
+  receipt: "receipt-generator",
+  "delivery-challan": "delivery-challan",
+  "credit-note": "credit-note",
+  "debit-note": "debit-note",
+  "packing-slip": "packing-slip",
+  letterhead: "letterhead-maker",
+};
+
 /* ------------------------------------------------------------------ */
 /* 20 professional templates (layout × accent)                        */
 /* ------------------------------------------------------------------ */
@@ -453,8 +467,8 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
           <Button variant="outline" size="sm" onClick={downloadPng}><ImageDown className="size-4" /> PNG</Button>
           <Button variant="outline" size="sm" onClick={downloadPdf}><FileDown className="size-4" /> PDF</Button>
           <Button variant="outline" size="sm" onClick={() => window.print()}><Printer className="size-4" /> Print</Button>
-          <Button variant="outline" size="sm" onClick={() => saveItem({ type: "project", title: `${kind.label} ${value.number}`, subtitle: value.customer.name || value.company.name, href: "/tools/business-studio" })}>Save project</Button>
-          <Button variant="outline" size="sm" onClick={() => saveItem({ type: "template", title: `${kind.label} · ${template.name}`, subtitle: "Template", href: "/tools/business-studio" })}>Save template</Button>
+          <Button variant="outline" size="sm" onClick={() => saveItem({ type: "project", title: `${kind.label} ${value.number}`, subtitle: value.customer.name || value.company.name, href: `/tools/${KIND_SLUG[value.kind]}` })}>Save project</Button>
+          <Button variant="outline" size="sm" onClick={() => saveItem({ type: "template", title: `${kind.label} · ${template.name}`, subtitle: "Template", href: `/tools/${KIND_SLUG[value.kind]}` })}>Save template</Button>
         </div>
       </div>
 

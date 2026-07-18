@@ -17,10 +17,16 @@ function ToolSkeleton() {
 
 const registry: Record<string, ComponentType> = {
   "ai-studio": dynamic(() => import("./ai-studio"), { loading: ToolSkeleton, ssr: false }),
-  "business-studio": dynamic(() => import("./business-studio"), { loading: ToolSkeleton, ssr: false }),
   "invoice-maker": dynamic(() => import("./invoice-maker"), { loading: ToolSkeleton, ssr: false }),
   "quotation-generator": dynamic(() => import("./quotation-generator"), { loading: ToolSkeleton, ssr: false }),
+  "estimate-maker": dynamic(() => import("./estimate-maker"), { loading: ToolSkeleton, ssr: false }),
+  "purchase-order-generator": dynamic(() => import("./purchase-order-generator"), { loading: ToolSkeleton, ssr: false }),
   "receipt-generator": dynamic(() => import("./receipt-generator"), { loading: ToolSkeleton, ssr: false }),
+  "delivery-challan": dynamic(() => import("./delivery-challan"), { loading: ToolSkeleton, ssr: false }),
+  "credit-note": dynamic(() => import("./credit-note"), { loading: ToolSkeleton, ssr: false }),
+  "debit-note": dynamic(() => import("./debit-note"), { loading: ToolSkeleton, ssr: false }),
+  "packing-slip": dynamic(() => import("./packing-slip"), { loading: ToolSkeleton, ssr: false }),
+  "letterhead-maker": dynamic(() => import("./letterhead-maker"), { loading: ToolSkeleton, ssr: false }),
   "gst-calculator": dynamic(() => import("./gst-calculator"), { loading: ToolSkeleton, ssr: false }),
   "salary-slip-generator": dynamic(() => import("./salary-slip-generator"), { loading: ToolSkeleton, ssr: false }),
   "resume-builder": dynamic(() => import("./resume-builder"), { loading: ToolSkeleton, ssr: false }),

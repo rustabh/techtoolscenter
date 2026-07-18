@@ -10,8 +10,8 @@ import { getPopularTools, getTool, tools } from "@/lib/tools";
 import { collectionsWithCounts } from "@/lib/collections";
 
 const SAVED_SECTIONS: { type: SavedType; title: string; icon: React.ReactNode; empty: string }[] = [
-  { type: "project", title: "Projects", icon: <FolderKanban className="size-5 text-primary" />, empty: "Save a document in Business Studio to start a project." },
-  { type: "template", title: "Saved templates", icon: <LayoutTemplate className="size-5 text-primary" />, empty: "Save a template from Business Studio to reuse it later." },
+  { type: "project", title: "Projects", icon: <FolderKanban className="size-5 text-primary" />, empty: "Save a document from any business tool (Invoice Maker, Quotation Maker…) to start a project." },
+  { type: "template", title: "Saved templates", icon: <LayoutTemplate className="size-5 text-primary" />, empty: "Save a design from any business tool to reuse it later." },
   { type: "qr", title: "Saved QR codes", icon: <QrCode className="size-5 text-primary" />, empty: "Generate and save a QR in QR Studio." },
   { type: "mockup", title: "Saved mockups", icon: <MonitorSmartphone className="size-5 text-primary" />, empty: "Save a mockup from Mockup Studio." },
   { type: "brandkit", title: "Saved brand kits", icon: <Palette className="size-5 text-primary" />, empty: "Save a brand kit from Brand Studio." },
