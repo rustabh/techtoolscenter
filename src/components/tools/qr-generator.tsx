@@ -153,7 +153,9 @@ export default function QrGenerator({ preset }: { preset?: Record<string, unknow
     if (!qrRef.current) return null;
     return (await qrRef.current.getRawData(ext)) as Blob;
   };
+  const countQr = () => { import("@/lib/stats/stats").then((m) => m.track("qrCodes")).catch(() => {}); };
   const download = async (ext: "png" | "svg") => {
+    countQr();
     const blob = await getBlob(ext);
     if (blob) downloadBlob(blob, `qr-code.${ext}`);
   };

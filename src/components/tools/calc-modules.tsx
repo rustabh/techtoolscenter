@@ -50,6 +50,7 @@ export function BasicCalc() {
         // eslint-disable-next-line no-new-func
         const r = Function(`return ${js || 0}`)();
         setOut(isFinite(r) ? String(Math.round(r * 1e10) / 1e10) : "Error");
+        import("@/lib/stats/stats").then((m) => m.track("calculations")).catch(() => {});
       } catch { setOut("Error"); }
     } else setExpr((e) => e + k);
   };

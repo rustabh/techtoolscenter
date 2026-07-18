@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { track } from "@/lib/stats/stats";
 
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -41,6 +42,7 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
   const compress = async () => {
     if (!original) return;
     setBusy(true);
+    const t0 = performance.now();
     const img = new Image();
     img.src = original.url;
     await img.decode();
@@ -60,6 +62,7 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
       blob = await encode(img, maxWidth, quality);
     }
     setResult({ url: URL.createObjectURL(blob), size: blob.size, blob });
+    track(["imagesOptimized", "filesProcessed"], performance.now() - t0);
     setBusy(false);
   };
 

@@ -22,9 +22,10 @@ export function downloadBlob(blob: Blob, filename: string) {
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  // Record the download in the private workspace (client-only, best effort).
+  // Record the download in the private workspace + stats (client-only, best effort).
   if (typeof window !== "undefined") {
     import("./saved").then((m) => m.recordDownload(filename)).catch(() => {});
+    import("./stats/stats").then((m) => m.track("downloads")).catch(() => {});
   }
 }
 

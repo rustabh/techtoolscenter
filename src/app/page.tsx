@@ -6,6 +6,7 @@ import { HeroSearch } from "@/components/hero-search";
 import { ToolCard } from "@/components/tool-card";
 import { Newsletter } from "@/components/newsletter";
 import { CommunityWidget } from "@/components/community/community-widget";
+import { LiveStats } from "@/components/stats/live-stats";
 import { Reveal } from "@/components/reveal";
 import { Icon } from "@/components/icon";
 import { Accordion } from "@/components/ui/accordion";
@@ -216,6 +217,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Live activity stats (only shows once real data exists) */}
+      <LiveStats />
 
       {/* Community */}
       <CommunityWidget />

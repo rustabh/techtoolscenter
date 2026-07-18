@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { track } from "@/lib/stats/stats";
 
 type Fmt = "png" | "jpeg" | "webp";
 const FORMATS: { id: Fmt; label: string; mime: string; ext: string; lossy: boolean }[] = [
@@ -58,6 +59,7 @@ export default function ImageConverter({ preset }: { preset?: Record<string, unk
       const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, fmt.mime, fmt.lossy ? quality : undefined));
       if (!blob) throw new Error("Your browser couldn't convert this image. Try a PNG or JPG source.");
       setResult({ url: URL.createObjectURL(blob), size: blob.size, blob });
+      track(["conversions", "filesProcessed"]);
     } catch {
       setError("Couldn't read this image. Formats like HEIC aren't supported by browsers — try PNG, JPG, WEBP or AVIF.");
     } finally {

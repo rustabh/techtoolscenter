@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { track } from "@/lib/stats/stats";
 
 // Common social/document presets.
 const PRESETS: { label: string; w: number; h: number }[] = [
@@ -67,7 +68,7 @@ export default function ImageResizer({ preset }: { preset?: Record<string, unkno
     const dh = img.naturalHeight * scale;
     ctx.drawImage(img, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
     const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/png"));
-    if (blob) setResult({ url: URL.createObjectURL(blob), size: blob.size, blob });
+    if (blob) { setResult({ url: URL.createObjectURL(blob), size: blob.size, blob }); track(["imagesOptimized", "filesProcessed"]); }
     setBusy(false);
   };
 

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { track } from "@/lib/stats/stats";
 
 function formatBytes(b: number) {
   if (b < 1048576) return `${(b / 1024).toFixed(1)} KB`;
@@ -94,6 +95,7 @@ export default function PdfCompress({ preset }: { preset?: Record<string, unknow
     if (!file) return;
     setBusy(true);
     setResult(null);
+    const t0 = performance.now();
     try {
       if (mode === "level") {
         const l = LEVELS.find((x) => x.id === level)!;
@@ -111,6 +113,7 @@ export default function PdfCompress({ preset }: { preset?: Record<string, unknow
         }
         if (best) setResult({ size: best.size, blob: best });
       }
+      track(["pdfsConverted", "filesProcessed"], performance.now() - t0);
     } finally {
       setBusy(false);
       setProgress("");
