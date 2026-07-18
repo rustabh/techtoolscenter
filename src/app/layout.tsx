@@ -8,6 +8,7 @@ import { Footer } from "@/components/footer";
 import { CommandPalette } from "@/components/command-palette";
 import { siteConfig } from "@/lib/site";
 import { organizationLd, websiteLd } from "@/lib/seo/schema";
+import { PwaProvider } from "@/components/pwa/pwa-provider";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
@@ -44,7 +45,12 @@ export const metadata: Metadata = {
   },
   icons: { icon: "/favicon.svg", apple: "/favicon.svg" },
   manifest: "/manifest.webmanifest",
-  other: { "google-adsense-account": "ca-pub-8948395080060177" },
+  appleWebApp: { capable: true, statusBarStyle: "default", title: siteConfig.shortName },
+  other: {
+    "google-adsense-account": "ca-pub-8948395080060177",
+    "mobile-web-app-capable": "yes",
+    "apple-mobile-web-app-capable": "yes",
+  },
 };
 
 export const viewport: Viewport = {
@@ -69,6 +75,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <CommandPalette />
           <main id="main" className="relative">{children}</main>
           <Footer />
+          <PwaProvider />
         </ThemeProvider>
         <Script id="ld-org" type="application/ld+json" strategy="afterInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />

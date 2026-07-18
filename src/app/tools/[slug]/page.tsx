@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
+import { WifiOff } from "lucide-react";
 import { Icon } from "@/components/icon";
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ad-slot";
@@ -13,6 +14,9 @@ import { buildToolMetadata } from "@/lib/seo/metadata";
 import { toolSchemas } from "@/lib/seo/schema";
 import { getLanding, landingPages } from "@/lib/landing/landing";
 import { siteConfig } from "@/lib/site";
+
+// Tools that need the network at runtime (so no offline badge).
+const NETWORK_TOOLS = new Set(["website-mockup-generator", "brand-kit-generator", "app-screenshot-generator"]);
 
 export function generateStaticParams() {
   const toolSlugs = new Set(tools.map((t) => t.slug));
@@ -72,9 +76,14 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           <Icon name={tool.icon} className="size-7" />
         </span>
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-3xl font-bold tracking-tight">{tool.name}</h1>
             <Badge variant="secondary">{cat.label}</Badge>
+            {!NETWORK_TOOLS.has(tool.slug) && (
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+                <WifiOff className="size-3" /> Works offline
+              </span>
+            )}
           </div>
           <p className="mt-1 max-w-2xl text-muted-foreground">{tool.longDescription}</p>
         </div>

@@ -41,6 +41,7 @@ const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> 
   "image-compressor": dynamic(() => import("./image-compressor"), { loading: ToolSkeleton, ssr: false }),
   "image-converter": dynamic(() => import("./image-converter"), { loading: ToolSkeleton, ssr: false }),
   "image-resizer": dynamic(() => import("./image-resizer"), { loading: ToolSkeleton, ssr: false }),
+  "bulk-image-processor": dynamic(() => import("./bulk-image-processor"), { loading: ToolSkeleton, ssr: false }),
   "pdf-studio": dynamic(() => import("./pdf-studio"), { loading: ToolSkeleton, ssr: false }),
   "pdf-merge": dynamic(() => import("./pdf-merge"), { loading: ToolSkeleton, ssr: false }),
   "pdf-split": dynamic(() => import("./pdf-split"), { loading: ToolSkeleton, ssr: false }),

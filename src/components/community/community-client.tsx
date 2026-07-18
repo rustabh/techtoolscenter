@@ -157,7 +157,8 @@ function ComposeForm({ kind, onDone, add, onSubmitted }: {
     });
     setDone(true);
     onSubmitted(kind === "tool" ? "feature" : kind === "bug" ? "bug" : "idea");
-    setTimeout(onDone, 1200);
+    import("@/lib/confetti").then((m) => m.confetti(60)).catch(() => {});
+    setTimeout(onDone, 1400);
   };
 
   if (done) {

@@ -25,6 +25,9 @@ export function Footer() {
             <p className="max-w-xs text-sm text-muted-foreground">
               {siteConfig.tagline} Free, fast, privacy-first online tools that run entirely in your browser.
             </p>
+            <p className="max-w-xs text-sm font-medium">
+              Built for speed. Designed for privacy. Made for everyone.
+            </p>
           </div>
 
           <div>

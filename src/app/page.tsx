@@ -1,7 +1,7 @@
 import Link from "next/link";
 import {
   Zap, ArrowRight, Star, CheckCircle2,
-  ShieldCheck, MonitorSmartphone, Globe, BadgeCheck, Rocket,
+  ShieldCheck, MonitorSmartphone, Globe, BadgeCheck, Rocket, Droplet, Wallet,
 } from "lucide-react";
 import { HeroSearch } from "@/components/hero-search";
 import { ToolCard } from "@/components/tool-card";
@@ -18,6 +18,15 @@ import { buttonVariants } from "@/components/ui/button";
 import { getPopularTools, getRecentTools, tools } from "@/lib/tools";
 import { collectionsWithCounts } from "@/lib/collections";
 import { cn } from "@/lib/utils";
+
+const premiumPromise = [
+  { icon: BadgeCheck, title: "No Sign-Up Required", desc: "Use every tool instantly." },
+  { icon: Droplet, title: "No Watermarks", desc: "Your files stay clean." },
+  { icon: ShieldCheck, title: "Privacy First", desc: "Processed securely." },
+  { icon: Wallet, title: "No Hidden Charges", desc: "No surprises." },
+  { icon: Zap, title: "Lightning Fast", desc: "Optimized for speed." },
+  { icon: MonitorSmartphone, title: "Works Everywhere", desc: "Desktop, tablet & mobile." },
+];
 
 const whyChoose = [
   { icon: ShieldCheck, emoji: "🔒", title: "Privacy First", desc: "Files are processed securely in your browser — nothing is ever uploaded to a server.", tint: "from-emerald-500/15" },
@@ -129,6 +138,27 @@ export default function HomePage() {
             ))}
           </dl>
         </Reveal>
+      </section>
+
+      {/* Premium Promise */}
+      <section className="container-tight pb-4 pt-6">
+        <div className="mb-8 text-center">
+          <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">The productivity platform built around simplicity</h2>
+          <p className="mt-2 text-muted-foreground">No Sign-Up Required. No Watermarks. No Hidden Charges. Just Open. Use. Done.</p>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          {premiumPromise.map((p, i) => (
+            <Reveal key={p.title} delay={i * 0.05}>
+              <div className="group h-full rounded-2xl border border-border bg-card p-4 text-center transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg">
+                <span className="mx-auto grid size-11 place-items-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
+                  <p.icon className="size-5" />
+                </span>
+                <p className="mt-3 text-sm font-semibold">{p.title}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">{p.desc}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
       </section>
 
       {/* Popular tools */}

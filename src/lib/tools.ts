@@ -500,6 +500,23 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "bulk-image-processor",
+    name: "Bulk Image Processor",
+    description: "Compress, resize, convert & rotate hundreds of images at once — with a ZIP download.",
+    longDescription:
+      "Process hundreds of images in one go — compress, convert to WebP, resize or rotate them in a single batch. Drag in files or a whole folder, set your options and auto-naming rules (prefix, suffix, counter, timestamp), then run the queue with pause, resume, cancel and retry. Watch live progress with an estimated time remaining, and download everything as a ZIP. Everything runs privately in your browser.",
+    category: "Image",
+    icon: "Layers",
+    keywords: ["bulk image", "batch image", "compress multiple images", "bulk resize", "batch convert webp", "mass image processing", "zip images"],
+    addedOn: "2026-07-18",
+    popular: true,
+    faq: [
+      { question: "How many images can I process at once?", answer: "As many as your device can handle — the queue processes files one by one with pause, resume, cancel and retry, so hundreds of images work fine." },
+      { question: "Are my images uploaded?", answer: "No. Every image is processed entirely in your browser — nothing is uploaded, and you download the results as a ZIP." },
+      { question: "Can I keep my folder structure?", answer: "Yes. Upload a folder and the ZIP preserves the original folder structure, with your auto-naming rules applied." },
+    ],
+  },
+  {
     slug: "pdf-studio",
     name: "PDF Studio",
     description: "All-in-one PDF workspace — merge, split, rotate, watermark, sign & more.",
