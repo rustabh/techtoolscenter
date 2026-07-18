@@ -7,6 +7,7 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { CommandPalette } from "@/components/command-palette";
 import { siteConfig } from "@/lib/site";
+import { organizationLd, websiteLd } from "@/lib/seo/schema";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
@@ -55,26 +56,8 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-const orgJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: siteConfig.name,
-  url: siteConfig.url,
-  description: siteConfig.description,
-  logo: `${siteConfig.url}/favicon.svg`,
-};
-
-const siteJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: siteConfig.name,
-  url: siteConfig.url,
-  potentialAction: {
-    "@type": "SearchAction",
-    target: `${siteConfig.url}/tools?q={search_term_string}`,
-    "query-input": "required name=search_term_string",
-  },
-};
+const orgJsonLd = organizationLd();
+const siteJsonLd = websiteLd();
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -4,6 +4,8 @@ import { ToolCard } from "@/components/tool-card";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icon } from "@/components/icon";
 import { collections, getCollection, getToolsByCollection } from "@/lib/collections";
+import { buildCollectionMetadata } from "@/lib/seo/metadata";
+import { breadcrumbLd } from "@/lib/seo/schema";
 import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -14,12 +16,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const col = getCollection(slug);
   if (!col) return {};
-  return {
-    title: `${col.name} — ${getToolsByCollection(slug).length} Free Tools`,
-    description: col.description,
-    alternates: { canonical: `/collections/${col.slug}` },
-    openGraph: { title: `${col.name} | ${siteConfig.name}`, description: col.description },
-  };
+  return buildCollectionMetadata(col, getToolsByCollection(slug).length);
 }
 
 export default async function CollectionPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -34,11 +31,18 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
     name: col.name,
     description: col.description,
     url: `${siteConfig.url}/collections/${col.slug}`,
+    hasPart: items.map((t) => ({ "@type": "SoftwareApplication", name: t.name, url: `${siteConfig.url}/tools/${t.slug}` })),
   };
+  const crumbLd = breadcrumbLd([
+    { name: "Home", url: "/" },
+    { name: "Collections", url: "/collections" },
+    { name: col.name, url: `/collections/${col.slug}` },
+  ]);
 
   return (
     <div className="container-tight py-12">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(crumbLd) }} />
       <Breadcrumbs items={[{ label: "Collections", href: "/collections" }, { label: col.name }]} />
       <header className="mt-6 flex items-center gap-4">
         <span className="grid size-14 shrink-0 place-items-center rounded-2xl bg-accent text-accent-foreground">

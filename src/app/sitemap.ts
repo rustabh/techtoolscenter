@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { tools, categories } from "@/lib/tools";
 import { collections } from "@/lib/collections";
+import { ogImageFor } from "@/lib/seo/metadata";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -36,6 +37,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date(t.addedOn),
     changeFrequency: "monthly",
     priority: 0.8,
+    images: [ogImageFor(t)], // drives the image sitemap
   }));
 
   return [...staticRoutes, ...collectionRoutes, ...categoryRoutes, ...toolRoutes];

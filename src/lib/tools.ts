@@ -16,6 +16,21 @@ export interface FaqItem {
   answer: string;
 }
 
+export interface ToolExample {
+  title: string;
+  input: string;
+  output: string;
+}
+
+export interface ToolHowTo {
+  steps?: string[];
+  tips?: string[];
+  mistakes?: string[];
+  bestPractices?: string[];
+}
+
+export type Difficulty = "Beginner" | "Intermediate" | "Advanced";
+
 export interface Tool {
   slug: string;
   name: string;
@@ -27,11 +42,22 @@ export interface Tool {
   addedOn: string; // ISO date, drives "Recently Added"
   popular?: boolean;
   faq: FaqItem[];
-  // Optional registry metadata (derived when omitted).
+  // Optional registry metadata (derived by the SEO engine when omitted).
   seoTitle?: string;
   seoDescription?: string;
   status?: "stable" | "beta" | "new";
   version?: string;
+  // --- Structured SEO fields (all optional; the SEO engine fills the gaps) ---
+  tags?: string[];
+  difficulty?: Difficulty;
+  useCases?: string[];
+  supportedFormats?: string[];
+  inputTypes?: string[];
+  outputTypes?: string[];
+  relatedSlugs?: string[]; // explicit related tools; auto-derived otherwise
+  ogImage?: string; // absolute or root-relative; defaults to dynamic OG image
+  examples?: ToolExample[];
+  howTo?: ToolHowTo;
 }
 
 /** Stable identifier — the slug is the tool ID. */
