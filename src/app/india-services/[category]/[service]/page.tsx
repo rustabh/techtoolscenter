@@ -9,6 +9,8 @@ import { PremiumAd } from "@/components/ads/premium-ad";
 import { IndiaDisclaimer } from "@/components/india/disclaimer";
 import { TrustStrip } from "@/components/india/trust-strip";
 import { SaveButton } from "@/components/india/save-button";
+import { LangToggle } from "@/components/india/lang-toggle";
+import { hasHindiService } from "@/lib/india/hindi";
 import { indiaServices, getIndiaService, relatedIndiaServices, popularIndiaServices } from "@/lib/india/services";
 import { getIndiaCategory } from "@/lib/india/categories";
 import { getTool } from "@/lib/tools";
@@ -31,7 +33,12 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
     title,
     description,
     keywords: svc.keywords,
-    alternates: { canonical: `/india-services/${svc.category}/${svc.slug}` },
+    alternates: {
+      canonical: `/india-services/${svc.category}/${svc.slug}`,
+      ...(hasHindiService(svc.slug)
+        ? { languages: { "en-IN": `/india-services/${svc.category}/${svc.slug}`, "hi-IN": `/hi/india-services/${svc.slug}` } }
+        : {}),
+    },
     openGraph: { type: "article", title, description, url: `${siteConfig.url}/india-services/${svc.category}/${svc.slug}` },
   };
 }
@@ -113,6 +120,10 @@ export default async function IndiaServicePage({ params }: { params: Promise<{ c
         </a>
         <p className="mt-3 text-xs text-muted-foreground">You are leaving TechToolsCenter and going to the official government site. We never ask for your details.</p>
       </div>
+
+      {hasHindiService(svc.slug) && (
+        <div className="mt-6"><LangToggle current="en" enHref={`/india-services/${svc.category}/${svc.slug}`} hiHref={`/hi/india-services/${svc.slug}`} /></div>
+      )}
 
       <SaveButton className="mt-6" slug={svc.slug} />
 

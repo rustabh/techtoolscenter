@@ -10,6 +10,7 @@ import { indiaServices } from "@/lib/india/services";
 import { indiaStates } from "@/lib/india/states";
 import { indiaCities } from "@/lib/india/cities";
 import { schemes } from "@/lib/india/schemes";
+import { hindiServices } from "@/lib/india/hindi";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -109,6 +110,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.55,
+    })),
+    { url: `${base}/hi/india-services`, lastModified: now, changeFrequency: "weekly" as const, priority: 0.75 },
+    ...hindiServices.map((h) => ({
+      url: `${base}/hi/india-services/${h.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
     })),
   ];
 
