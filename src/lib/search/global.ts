@@ -2,6 +2,7 @@ import { smartSearch } from "./intent";
 import { searchIndiaServices, getIndiaService } from "../india/services";
 import { indiaStates } from "../india/states";
 import { indiaCities } from "../india/cities";
+import { schemes } from "../india/schemes";
 import { allPosts } from "../blog/posts";
 
 /**
@@ -76,6 +77,29 @@ function finderMatch(query: string): GlobalResult[] {
   }];
 }
 
+function schemeSearch(query: string, limit: number): GlobalResult[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  const tokens = q.split(/\s+/).filter(Boolean);
+  const scored = schemes
+    .map((s) => {
+      const hay = `${s.name} ${s.fullName ?? ""} ${s.keywords.join(" ")} ${s.tagline}`.toLowerCase();
+      const score = tokens.reduce((acc, t) => acc + (hay.includes(t) ? 1 : 0), 0);
+      return { s, score };
+    })
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+  return scored.map(({ s }) => ({
+    key: `scheme:${s.slug}`,
+    href: `/india-services/schemes/${s.slug}`,
+    name: s.name,
+    icon: INDIA_ICON,
+    reason: `Scheme · ${s.tagline}`,
+    kind: "india" as const,
+  }));
+}
+
 function citySearch(query: string, limit: number): GlobalResult[] {
   const q = query.trim().toLowerCase();
   if (!q) return [];
@@ -122,7 +146,7 @@ export function globalSearch(query: string, limit = 12): GlobalResult[] {
     reason: r.reason,
     kind: "tool" as const,
   }));
-  const indiaHits = [...finderMatch(q), ...indiaSearch(q, 5), ...stateSearch(q, 3), ...citySearch(q, 3)];
+  const indiaHits = [...finderMatch(q), ...schemeSearch(q, 4), ...indiaSearch(q, 5), ...stateSearch(q, 3), ...citySearch(q, 3)];
   const blogHits = blogSearch(q, 4);
 
   const seen = new Set<string>();

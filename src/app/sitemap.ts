@@ -9,6 +9,7 @@ import { indiaCategories } from "@/lib/india/categories";
 import { indiaServices } from "@/lib/india/services";
 import { indiaStates } from "@/lib/india/states";
 import { indiaCities } from "@/lib/india/cities";
+import { schemes } from "@/lib/india/schemes";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -77,6 +78,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const indiaRoutes: MetadataRoute.Sitemap = [
     { url: `${base}/india-services/finder`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/india-services/schemes`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    ...schemes.map((s) => ({
+      url: `${base}/india-services/schemes/${s.slug}`,
+      lastModified: new Date(s.updatedOn ?? now),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
     ...indiaCategories.map((c) => ({
       url: `${base}/india-services/${c.slug}`,
       lastModified: now,
