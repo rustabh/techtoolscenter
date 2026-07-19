@@ -4,9 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const CLIENT = "ca-pub-8948395080060177";
-// Configure real ad-unit slot IDs from AdSense via env. A single
-// NEXT_PUBLIC_ADSENSE_SLOT powers everything; add per-shape slots for finer control.
-const SLOT_INLINE = process.env.NEXT_PUBLIC_ADSENSE_SLOT;
+// "TTC Responsive" ad unit — powers every placement/shape by default. Override
+// per-shape with NEXT_PUBLIC_ADSENSE_SLOT[_RECTANGLE|_VERTICAL] env vars if you
+// create dedicated units later.
+const SLOT_DEFAULT = "6988078158";
+const SLOT_INLINE = process.env.NEXT_PUBLIC_ADSENSE_SLOT || SLOT_DEFAULT;
 const SLOT_RECT = process.env.NEXT_PUBLIC_ADSENSE_SLOT_RECTANGLE || SLOT_INLINE;
 const SLOT_VERT = process.env.NEXT_PUBLIC_ADSENSE_SLOT_VERTICAL || SLOT_INLINE;
 
