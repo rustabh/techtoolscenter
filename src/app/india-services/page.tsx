@@ -40,6 +40,13 @@ export default function IndiaServicesPage() {
 
       <div className="mt-8"><IndiaSearch /></div>
 
+      <div className="mt-4 text-center">
+        <Link href="/india-services/finder"
+          className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary/60">
+          🧭 Not sure what you need? Try the Document Finder <ArrowRight className="size-4" />
+        </Link>
+      </div>
+
       {/* Categories */}
       <section className="mt-16">
         <h2 className="mb-6 text-2xl font-bold tracking-tight">Browse by category</h2>

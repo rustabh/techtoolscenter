@@ -75,6 +75,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }));
 
   const indiaRoutes: MetadataRoute.Sitemap = [
+    { url: `${base}/india-services/finder`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     ...indiaCategories.map((c) => ({
       url: `${base}/india-services/${c.slug}`,
       lastModified: now,

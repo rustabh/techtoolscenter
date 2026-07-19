@@ -61,6 +61,20 @@ function stateSearch(query: string, limit: number): GlobalResult[] {
     }));
 }
 
+function finderMatch(query: string): GlobalResult[] {
+  const q = query.trim().toLowerCase();
+  const keys = ["which document", "which certificate", "what document", "what certificate", "finder", "document finder", "which paper", "kaunsa", "konsa"];
+  if (!keys.some((k) => q.includes(k))) return [];
+  return [{
+    key: "india:finder",
+    href: "/india-services/finder",
+    name: "Which document do I need? — Finder",
+    icon: INDIA_ICON,
+    reason: "India Service · Interactive finder",
+    kind: "india" as const,
+  }];
+}
+
 function indiaSearch(query: string, limit: number): GlobalResult[] {
   return searchIndiaServices(query, limit).map((r) => {
     const svc = getIndiaService(r.slug);
@@ -91,7 +105,7 @@ export function globalSearch(query: string, limit = 12): GlobalResult[] {
     reason: r.reason,
     kind: "tool" as const,
   }));
-  const indiaHits = [...indiaSearch(q, 5), ...stateSearch(q, 3)];
+  const indiaHits = [...finderMatch(q), ...indiaSearch(q, 5), ...stateSearch(q, 3)];
   const blogHits = blogSearch(q, 4);
 
   const seen = new Set<string>();
