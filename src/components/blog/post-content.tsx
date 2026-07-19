@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import type { Block } from "@/lib/blog/types";
 import { headingSlug } from "@/lib/blog/posts";
+import { PremiumAd } from "@/components/ads/premium-ad";
 
 /** Renders inline **bold** and [text](href) inside a paragraph or list item. */
 function inline(text: string, keyBase: string): React.ReactNode[] {
@@ -32,28 +33,43 @@ function inline(text: string, keyBase: string): React.ReactNode[] {
   return nodes;
 }
 
+function renderBlock(b: Block, i: number): React.ReactNode {
+  switch (b.type) {
+    case "h2":
+      return <h2 key={i} id={headingSlug(b.text)} className="scroll-mt-24 pt-4 text-2xl font-bold tracking-tight text-foreground">{b.text}</h2>;
+    case "h3":
+      return <h3 key={i} id={headingSlug(b.text)} className="scroll-mt-24 text-xl font-semibold text-foreground">{b.text}</h3>;
+    case "p":
+      return <p key={i}>{inline(b.text, `p${i}`)}</p>;
+    case "ul":
+      return <ul key={i} className="ml-5 list-disc space-y-1.5">{b.items.map((it, j) => <li key={j}>{inline(it, `p${i}-${j}`)}</li>)}</ul>;
+    case "ol":
+      return <ol key={i} className="ml-5 list-decimal space-y-1.5">{b.items.map((it, j) => <li key={j}>{inline(it, `p${i}-${j}`)}</li>)}</ol>;
+    case "callout":
+      return <div key={i} className="rounded-xl border-l-4 border-primary bg-primary/5 p-4 text-foreground">{inline(b.text, `c${i}`)}</div>;
+    case "code":
+      return <pre key={i} className="overflow-x-auto rounded-xl bg-secondary/60 p-4 font-mono text-sm text-foreground">{b.text}</pre>;
+    default:
+      return null;
+  }
+}
+
 export function PostContent({ content }: { content: Block[] }) {
+  // Inject one ad after the first few paragraphs, at a natural heading break.
+  const adIndex = content.findIndex((b, i) => i >= 3 && b.type === "h2");
   return (
     <div className="space-y-5 leading-relaxed text-muted-foreground">
       {content.map((b, i) => {
-        switch (b.type) {
-          case "h2":
-            return <h2 key={i} id={headingSlug(b.text)} className="scroll-mt-24 pt-4 text-2xl font-bold tracking-tight text-foreground">{b.text}</h2>;
-          case "h3":
-            return <h3 key={i} id={headingSlug(b.text)} className="scroll-mt-24 text-xl font-semibold text-foreground">{b.text}</h3>;
-          case "p":
-            return <p key={i}>{inline(b.text, `p${i}`)}</p>;
-          case "ul":
-            return <ul key={i} className="ml-5 list-disc space-y-1.5">{b.items.map((it, j) => <li key={j}>{inline(it, `p${i}-${j}`)}</li>)}</ul>;
-          case "ol":
-            return <ol key={i} className="ml-5 list-decimal space-y-1.5">{b.items.map((it, j) => <li key={j}>{inline(it, `p${i}-${j}`)}</li>)}</ol>;
-          case "callout":
-            return <div key={i} className="rounded-xl border-l-4 border-primary bg-primary/5 p-4 text-foreground">{inline(b.text, `c${i}`)}</div>;
-          case "code":
-            return <pre key={i} className="overflow-x-auto rounded-xl bg-secondary/60 p-4 font-mono text-sm text-foreground">{b.text}</pre>;
-          default:
-            return null;
+        const node = renderBlock(b, i);
+        if (i === adIndex) {
+          return (
+            <React.Fragment key={i}>
+              <PremiumAd className="!px-0 !py-6" />
+              {node}
+            </React.Fragment>
+          );
         }
+        return node;
       })}
     </div>
   );

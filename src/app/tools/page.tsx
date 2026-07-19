@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ToolsExplorer } from "@/components/tools-explorer";
+import { PremiumAd } from "@/components/ads/premium-ad";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 
 export const metadata: Metadata = {
@@ -25,6 +26,9 @@ export default function ToolsPage() {
           <ToolsExplorer />
         </Suspense>
       </div>
+
+      {/* Ad — after the results, before the footer */}
+      <PremiumAd />
     </div>
   );
 }

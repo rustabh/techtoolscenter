@@ -113,3 +113,8 @@
     padding: 0 !important;
   }
 }
+
+/* Collapse unfilled AdSense units so the premium container never shows an empty box. */
+ins.adsbygoogle[data-ad-status="unfilled"] {
+  display: none !important;
+}

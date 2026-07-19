@@ -14,7 +14,7 @@ import { Reveal } from "@/components/reveal";
 import { Icon } from "@/components/icon";
 import { Accordion } from "@/components/ui/accordion";
 import { Badge } from "@/components/ui/badge";
-import { AdSlot } from "@/components/ad-slot";
+import { PremiumAd } from "@/components/ads/premium-ad";
 import { buttonVariants } from "@/components/ui/button";
 import { getPopularTools, getRecentTools, tools } from "@/lib/tools";
 import { collectionsWithCounts } from "@/lib/collections";
@@ -175,9 +175,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div className="container-tight my-4">
-        <AdSlot />
-      </div>
+      {/* Ad — after the first major content section (Popular tools) */}
+      <PremiumAd />
 
       {/* Collections */}
       <section id="collections" className="container-tight py-14">
@@ -300,6 +299,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Ad — near the bottom, before the footer */}
+      <PremiumAd />
     </>
   );
 }

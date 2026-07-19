@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icon } from "@/components/icon";
 import { Badge } from "@/components/ui/badge";
 import { Accordion } from "@/components/ui/accordion";
-import { AdSlot } from "@/components/ad-slot";
+import { PremiumAd } from "@/components/ads/premium-ad";
 import { ToolRenderer } from "@/components/tools/registry";
 import { getTool, getCategoryMeta } from "@/lib/tools";
 import { collectionForTool } from "@/lib/collections";
@@ -84,8 +84,6 @@ export function LandingView({ page }: { page: LandingPage }) {
         <ToolRenderer slug={page.core} preset={page.preset} />
       </section>
 
-      <div className="my-12"><AdSlot /></div>
-
       <section className="mx-auto max-w-3xl space-y-12">
         {/* Benefits */}
         <div>
@@ -129,6 +127,9 @@ export function LandingView({ page }: { page: LandingPage }) {
             </div>
           </div>
         )}
+
+        {/* Ad — before the FAQ, well away from the tool & download */}
+        <PremiumAd className="!px-0" />
 
         {/* FAQ */}
         <div>

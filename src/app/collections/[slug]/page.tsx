@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ToolCard } from "@/components/tool-card";
+import { PremiumAd } from "@/components/ads/premium-ad";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icon } from "@/components/icon";
 import { collections, getCollection, getToolsByCollection } from "@/lib/collections";
@@ -58,6 +59,9 @@ export default async function CollectionPage({ params }: { params: Promise<{ slu
           <ToolCard key={t.slug} tool={t} index={i} />
         ))}
       </div>
+
+      {/* Ad — after the tool grid, before the footer */}
+      <PremiumAd />
     </div>
   );
 }

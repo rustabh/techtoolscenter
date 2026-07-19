@@ -6,6 +6,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icon } from "@/components/icon";
 import { Accordion } from "@/components/ui/accordion";
 import { PostContent } from "@/components/blog/post-content";
+import { PremiumAd } from "@/components/ads/premium-ad";
 import { AuthorBox, BlogCard, TableOfContents } from "@/components/blog/blog-bits";
 import { allPosts, getPost, relatedPosts, tableOfContents, estimateReadingMinutes } from "@/lib/blog/posts";
 import { getAuthor } from "@/lib/blog/authors";
@@ -104,6 +105,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               </div>
             </section>
           )}
+
+          {/* Ad — before the FAQ / conclusion */}
+          <PremiumAd className="!px-0" />
 
           {/* FAQ */}
           {post.faq?.length ? (

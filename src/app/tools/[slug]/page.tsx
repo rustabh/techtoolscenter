@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { WifiOff } from "lucide-react";
 import { Icon } from "@/components/icon";
 import { Badge } from "@/components/ui/badge";
-import { AdSlot } from "@/components/ad-slot";
+import { PremiumAd } from "@/components/ads/premium-ad";
 import { ToolRenderer } from "@/components/tools/registry";
 import { TrackRecent } from "@/components/tools/track-recent";
 import { ToolSeoContent } from "@/components/seo/tool-seo-content";
@@ -117,15 +117,14 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         </div>
       )}
 
-      <div className="my-12">
-        <AdSlot />
-      </div>
-
       {/* Health panel + privacy */}
-      <div className="mb-12 grid gap-4 lg:grid-cols-2">
+      <div className="mb-4 mt-12 grid gap-4 lg:grid-cols-2">
         <ToolHealth tool={tool} network={NETWORK_TOOLS.has(tool.slug)} />
         <PrivacyFirst />
       </div>
+
+      {/* Ad — well below the tool & download area, before the deep content */}
+      <PremiumAd />
 
       <ToolSeoContent tool={tool} totalTools={tools.length} />
     </div>
