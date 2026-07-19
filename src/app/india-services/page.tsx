@@ -54,6 +54,10 @@ export default function IndiaServicesPage() {
           className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary/60">
           🔎 Check Status <ArrowRight className="size-4" />
         </Link>
+        <Link href="/india-services/my-documents"
+          className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary/60">
+          📁 My Documents <ArrowRight className="size-4" />
+        </Link>
       </div>
 
       {/* Categories */}

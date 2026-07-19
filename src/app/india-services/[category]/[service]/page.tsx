@@ -8,6 +8,7 @@ import { Accordion } from "@/components/ui/accordion";
 import { PremiumAd } from "@/components/ads/premium-ad";
 import { IndiaDisclaimer } from "@/components/india/disclaimer";
 import { TrustStrip } from "@/components/india/trust-strip";
+import { SaveButton } from "@/components/india/save-button";
 import { indiaServices, getIndiaService, relatedIndiaServices, popularIndiaServices } from "@/lib/india/services";
 import { getIndiaCategory } from "@/lib/india/categories";
 import { getTool } from "@/lib/tools";
@@ -112,6 +113,8 @@ export default async function IndiaServicePage({ params }: { params: Promise<{ c
         </a>
         <p className="mt-3 text-xs text-muted-foreground">You are leaving TechToolsCenter and going to the official government site. We never ask for your details.</p>
       </div>
+
+      <SaveButton className="mt-6" slug={svc.slug} />
 
       <TrustStrip className="mt-6" updatedOn={svc.updatedOn} sourceName={svc.officialName} sourceUrl={svc.officialUrl} />
 
