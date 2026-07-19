@@ -65,16 +65,41 @@ function stateSearch(query: string, limit: number): GlobalResult[] {
 
 function finderMatch(query: string): GlobalResult[] {
   const q = query.trim().toLowerCase();
-  const keys = ["which document", "which certificate", "what document", "what certificate", "finder", "document finder", "which paper", "kaunsa", "konsa"];
-  if (!keys.some((k) => q.includes(k))) return [];
-  return [{
-    key: "india:finder",
-    href: "/india-services/finder",
-    name: "Which document do I need? — Finder",
-    icon: INDIA_ICON,
-    reason: "India Service · Interactive finder",
-    kind: "india" as const,
-  }];
+  const out: GlobalResult[] = [];
+  const finderKeys = ["which document", "which certificate", "what document", "what certificate", "finder", "document finder", "which paper", "kaunsa", "konsa"];
+  if (finderKeys.some((k) => q.includes(k))) {
+    out.push({
+      key: "india:finder",
+      href: "/india-services/finder",
+      name: "Which document do I need? — Finder",
+      icon: INDIA_ICON,
+      reason: "India Service · Interactive finder",
+      kind: "india" as const,
+    });
+  }
+  const statusKeys = ["status", "track", "check status", "beneficiary status"];
+  if (statusKeys.some((k) => q.includes(k))) {
+    out.push({
+      key: "india:status",
+      href: "/india-services/status",
+      name: "Check application status — PAN, passport, PF & more",
+      icon: INDIA_ICON,
+      reason: "India Service · Status trackers",
+      kind: "india" as const,
+    });
+  }
+  const schemeKeys = ["yojana", "scheme", "sarkari", "sarkari yojana", "government scheme"];
+  if (schemeKeys.some((k) => q.includes(k))) {
+    out.push({
+      key: "india:schemes",
+      href: "/india-services/schemes",
+      name: "Government Schemes List (Sarkari Yojana)",
+      icon: INDIA_ICON,
+      reason: "India Service · Schemes hub",
+      kind: "india" as const,
+    });
+  }
+  return out;
 }
 
 function schemeSearch(query: string, limit: number): GlobalResult[] {

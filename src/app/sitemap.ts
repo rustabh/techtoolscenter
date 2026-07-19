@@ -79,6 +79,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const indiaRoutes: MetadataRoute.Sitemap = [
     { url: `${base}/india-services/finder`, lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/india-services/schemes`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/india-services/status`, lastModified: now, changeFrequency: "weekly", priority: 0.75 },
     ...schemes.map((s) => ({
       url: `${base}/india-services/schemes/${s.slug}`,
       lastModified: new Date(s.updatedOn ?? now),
