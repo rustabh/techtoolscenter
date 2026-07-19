@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ExternalLink, FileText, CheckCircle2, ListChecks, IndianRupee, Clock, AlertTriangle, ArrowRight } from "lucide-react";
+import { ExternalLink, FileText, CheckCircle2, ListChecks, IndianRupee, Clock, AlertTriangle, ArrowRight, CalendarClock, Monitor } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icon } from "@/components/icon";
 import { Accordion } from "@/components/ui/accordion";
@@ -148,8 +148,8 @@ export default async function IndiaServicePage({ params }: { params: Promise<{ c
             </ol>
           </Section>
 
-          {/* Fees + processing */}
-          {(svc.fees || svc.processingTime) && (
+          {/* Quick facts: fees, processing, validity, modes */}
+          {(svc.fees || svc.processingTime || svc.validity || svc.applyModes?.length) && (
             <div className="grid gap-4 sm:grid-cols-2">
               {svc.fees && (
                 <div className="rounded-2xl border border-border bg-card p-5">
@@ -162,6 +162,42 @@ export default async function IndiaServicePage({ params }: { params: Promise<{ c
                   <p className="flex items-center gap-2 text-sm font-semibold"><Clock className="size-4 text-primary" /> Processing time</p>
                   <p className="mt-1.5 text-sm text-muted-foreground">{svc.processingTime}</p>
                 </div>
+              )}
+              {svc.validity && (
+                <div className="rounded-2xl border border-border bg-card p-5">
+                  <p className="flex items-center gap-2 text-sm font-semibold"><CalendarClock className="size-4 text-primary" /> Validity</p>
+                  <p className="mt-1.5 text-sm text-muted-foreground">{svc.validity}</p>
+                </div>
+              )}
+              {svc.applyModes?.length ? (
+                <div className="rounded-2xl border border-border bg-card p-5">
+                  <p className="flex items-center gap-2 text-sm font-semibold"><Monitor className="size-4 text-primary" /> How to apply</p>
+                  <p className="mt-1.5 text-sm text-muted-foreground">{svc.applyModes.join(" · ")}</p>
+                </div>
+              ) : null}
+            </div>
+          )}
+
+          {/* Official quick links + helpline */}
+          {(svc.officialLinks?.length || svc.helpline) && (
+            <div className="rounded-2xl border border-border bg-card p-5">
+              {svc.officialLinks?.length ? (
+                <>
+                  <p className="mb-2 text-sm font-semibold">Official quick links</p>
+                  <div className="flex flex-wrap gap-2">
+                    {svc.officialLinks.map((l) => (
+                      <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer nofollow"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-sm hover:border-primary/40 hover:text-primary">
+                        {l.label} <ExternalLink className="size-3.5" />
+                      </a>
+                    ))}
+                  </div>
+                </>
+              ) : null}
+              {svc.helpline && (
+                <p className={`text-sm text-muted-foreground ${svc.officialLinks?.length ? "mt-3" : ""}`}>
+                  <span className="font-medium text-foreground">Helpline:</span> {svc.helpline}
+                </p>
               )}
             </div>
           )}

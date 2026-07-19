@@ -19,6 +19,10 @@ export interface IndiaService {
   steps: string[];
   fees?: string; // only when publicly available
   processingTime?: string; // only when officially published
+  validity?: string; // how long the document/registration stays valid
+  applyModes?: string[]; // e.g. ["Online", "Offline (at office)", "CSC / Seva Kendra"]
+  helpline?: string; // official toll-free / support (when publicly listed)
+  officialLinks?: { label: string; url: string }[]; // quick official links (check status, download, etc.)
   faq: FaqItem[];
   mistakes: string[];
   relatedServices?: string[]; // service slugs
