@@ -64,6 +64,7 @@ export function Footer() {
               <li><Link href="/community" className="hover:text-foreground">Community</Link></li>
               <li><Link href="/stats" className="hover:text-foreground">Analytics</Link></li>
               <li><Link href="/contact" className="hover:text-foreground">Contact</Link></li>
+              <li><Link href="/editorial-policy" className="hover:text-foreground">Editorial policy</Link></li>
               <li><Link href="/privacy" className="hover:text-foreground">Privacy</Link></li>
               <li><Link href="/sitemap.xml" className="hover:text-foreground">Sitemap</Link></li>
             </ul>

@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ExternalLink, ArrowRight, CheckCircle2, Gift, FileText, ListChecks } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { IndiaDisclaimer } from "@/components/india/disclaimer";
+import { TrustStrip } from "@/components/india/trust-strip";
 import { PremiumAd } from "@/components/ads/premium-ad";
 import { schemes, getScheme, relatedSchemesOf, getSchemeAudience } from "@/lib/india/schemes";
 import { getIndiaService } from "@/lib/india/services";
@@ -85,6 +86,8 @@ export default async function SchemePage({ params }: { params: Promise<{ scheme:
           Visit official site <ExternalLink className="size-4" />
         </span>
       </a>
+
+      <TrustStrip className="mt-6" updatedOn={s.updatedOn} sourceName={s.ministry} sourceUrl={s.officialUrl} />
 
       <div className="mt-6"><IndiaDisclaimer /></div>
 
