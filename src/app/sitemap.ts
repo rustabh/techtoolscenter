@@ -8,6 +8,7 @@ import { landingPages } from "@/lib/landing/landing";
 import { indiaCategories } from "@/lib/india/categories";
 import { indiaServices } from "@/lib/india/services";
 import { indiaStates } from "@/lib/india/states";
+import { indiaCities } from "@/lib/india/cities";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -93,6 +94,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.6,
+    })),
+    ...indiaCities.map((c) => ({
+      url: `${base}/india-services/city/${c.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.55,
     })),
   ];
 

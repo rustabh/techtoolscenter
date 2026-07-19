@@ -1,6 +1,7 @@
 import { smartSearch } from "./intent";
 import { searchIndiaServices, getIndiaService } from "../india/services";
 import { indiaStates } from "../india/states";
+import { indiaCities } from "../india/cities";
 import { allPosts } from "../blog/posts";
 
 /**
@@ -75,6 +76,22 @@ function finderMatch(query: string): GlobalResult[] {
   }];
 }
 
+function citySearch(query: string, limit: number): GlobalResult[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  return indiaCities
+    .filter((c) => c.name.toLowerCase().includes(q) || c.slug.includes(q))
+    .slice(0, limit)
+    .map((c) => ({
+      key: `city:${c.slug}`,
+      href: `/india-services/city/${c.slug}`,
+      name: `${c.name} — Government Services`,
+      icon: INDIA_ICON,
+      reason: `India Service · ${c.stateName}`,
+      kind: "india" as const,
+    }));
+}
+
 function indiaSearch(query: string, limit: number): GlobalResult[] {
   return searchIndiaServices(query, limit).map((r) => {
     const svc = getIndiaService(r.slug);
@@ -105,7 +122,7 @@ export function globalSearch(query: string, limit = 12): GlobalResult[] {
     reason: r.reason,
     kind: "tool" as const,
   }));
-  const indiaHits = [...finderMatch(q), ...indiaSearch(q, 5), ...stateSearch(q, 3)];
+  const indiaHits = [...finderMatch(q), ...indiaSearch(q, 5), ...stateSearch(q, 3), ...citySearch(q, 3)];
   const blogHits = blogSearch(q, 4);
 
   const seen = new Set<string>();

@@ -8,6 +8,7 @@ import { IndiaDisclaimer } from "@/components/india/disclaimer";
 import { indiaCategories } from "@/lib/india/categories";
 import { indiaServices, popularIndiaServices, servicesByCategory } from "@/lib/india/services";
 import { indiaStates } from "@/lib/india/states";
+import { indiaCities } from "@/lib/india/cities";
 import { breadcrumbLd } from "@/lib/seo/schema";
 import { siteConfig } from "@/lib/site";
 
@@ -96,6 +97,22 @@ export default function IndiaServicesPage() {
             <Link key={s.slug} href={`/india-services/state/${s.slug}`}
               className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm transition-colors hover:border-primary/40 hover:text-primary">
               {s.name} <ArrowRight className="size-3.5" />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Browse by city */}
+      <section className="mt-16">
+        <h2 className="mb-1 text-2xl font-bold tracking-tight">Browse by city</h2>
+        <p className="mb-6 text-sm text-muted-foreground">
+          Local guides for passport (PSK), RTO, and municipal certificates in India&apos;s major cities.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {indiaCities.map((c) => (
+            <Link key={c.slug} href={`/india-services/city/${c.slug}`}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm transition-colors hover:border-primary/40 hover:text-primary">
+              {c.name} <ArrowRight className="size-3.5" />
             </Link>
           ))}
         </div>
