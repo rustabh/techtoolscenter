@@ -127,6 +127,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
       <PremiumAd />
 
       <ToolSeoContent tool={tool} totalTools={tools.length} />
+
+      {/* Ad — at the very bottom, before the footer */}
+      <PremiumAd variant="rectangle" />
     </div>
   );
 }

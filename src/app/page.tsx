@@ -212,6 +212,9 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Ad — mid-page rectangle, well spaced from the others */}
+      <PremiumAd variant="rectangle" />
+
       {/* Trust & social proof */}
       <section className="container-tight py-14">
         <SectionHeading eyebrow="Why TechToolsCenter" title="Trusted, private and always free" subtitle="A premium experience that respects your data and your time." />

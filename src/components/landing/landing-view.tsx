@@ -169,6 +169,9 @@ export function LandingView({ page }: { page: LandingPage }) {
           </div>
         </section>
       )}
+
+      {/* Ad — at the very bottom, before the footer */}
+      <PremiumAd variant="rectangle" />
     </div>
   );
 }

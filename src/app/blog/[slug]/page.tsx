@@ -129,9 +129,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           )}
         </div>
 
-        {/* Desktop sticky TOC */}
+        {/* Desktop sticky TOC + vertical ad */}
         <aside className="hidden lg:block">
-          <div className="sticky top-24"><TableOfContents items={toc} /></div>
+          <div className="sticky top-24 space-y-6">
+            <TableOfContents items={toc} />
+            <PremiumAd variant="vertical" />
+          </div>
         </aside>
       </article>
     </div>
