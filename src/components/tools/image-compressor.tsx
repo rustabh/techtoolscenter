@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
+import { CompareSlider } from "@/components/ui/compare-slider";
 
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -140,8 +141,12 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
           <Card>
             <CardHeader><CardTitle>Comparison</CardTitle></CardHeader>
             <CardContent className="space-y-4">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={result?.url || original.url} alt="Preview" className="max-h-64 w-full rounded-xl object-contain" />
+              {result ? (
+                <CompareSlider before={original.url} after={result.url} beforeLabel="Original" afterLabel="Compressed" />
+              ) : (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={original.url} alt="Preview" className="max-h-64 w-full rounded-xl object-contain" />
+              )}
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="rounded-xl bg-secondary/60 p-3">
                   <p className="text-xs text-muted-foreground">Original</p>

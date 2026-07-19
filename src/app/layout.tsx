@@ -9,6 +9,8 @@ import { CommandPalette } from "@/components/command-palette";
 import { siteConfig } from "@/lib/site";
 import { organizationLd, websiteLd } from "@/lib/seo/schema";
 import { PwaProvider } from "@/components/pwa/pwa-provider";
+import { FileDropProvider } from "@/components/files/file-drop-provider";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
@@ -76,6 +78,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="main" className="relative">{children}</main>
           <Footer />
           <PwaProvider />
+          <FileDropProvider />
+          <Toaster />
         </ThemeProvider>
         <Script id="ld-org" type="application/ld+json" strategy="afterInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />

@@ -8,8 +8,12 @@ import { AdSlot } from "@/components/ad-slot";
 import { ToolRenderer } from "@/components/tools/registry";
 import { TrackRecent } from "@/components/tools/track-recent";
 import { ToolSeoContent } from "@/components/seo/tool-seo-content";
+import { ToolHealth } from "@/components/seo/tool-health";
+import { ToolUtilityBar } from "@/components/tools/tool-utility-bar";
+import { PrivacyFirst } from "@/components/privacy-first";
 import { LandingView } from "@/components/landing/landing-view";
 import { getTool, getCategoryMeta, tools } from "@/lib/tools";
+import { internalLinks } from "@/lib/seo/links";
 import { buildToolMetadata } from "@/lib/seo/metadata";
 import { toolSchemas } from "@/lib/seo/schema";
 import { getLanding, landingPages } from "@/lib/landing/landing";
@@ -56,6 +60,7 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
 
   const cat = getCategoryMeta(tool.category);
   const schemas = toolSchemas(tool);
+  const related = internalLinks(tool, 6).related;
 
   return (
     <div className="container-tight py-10">
@@ -87,6 +92,9 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
           </div>
           <p className="mt-1 max-w-2xl text-muted-foreground">{tool.longDescription}</p>
         </div>
+        <div className="sm:ml-auto sm:self-start">
+          <ToolUtilityBar slug={tool.slug} name={tool.name} />
+        </div>
       </header>
 
       <TrackRecent slug={tool.slug} />
@@ -94,8 +102,29 @@ export default async function ToolPage({ params }: { params: Promise<{ slug: str
         <ToolRenderer slug={tool.slug} />
       </section>
 
+      {/* Smart recommendations */}
+      {related.length > 0 && (
+        <div className="mt-8">
+          <p className="mb-2 text-sm font-medium text-muted-foreground">You might also need</p>
+          <div className="flex flex-wrap gap-2">
+            {related.map((r) => (
+              <a key={r.slug} href={`/tools/${r.slug}`}
+                className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-sm transition-colors hover:border-primary/40 hover:text-primary">
+                <Icon name={r.icon} className="size-3.5 text-primary" /> {r.name}
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="my-12">
         <AdSlot />
+      </div>
+
+      {/* Health panel + privacy */}
+      <div className="mb-12 grid gap-4 lg:grid-cols-2">
+        <ToolHealth tool={tool} network={NETWORK_TOOLS.has(tool.slug)} />
+        <PrivacyFirst />
       </div>
 
       <ToolSeoContent tool={tool} totalTools={tools.length} />

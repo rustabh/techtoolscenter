@@ -9,6 +9,7 @@ import { Newsletter } from "@/components/newsletter";
 import { CommunityWidget } from "@/components/community/community-widget";
 import { LiveStats } from "@/components/stats/live-stats";
 import { MostUsedTools } from "@/components/stats/most-used-tools";
+import { ForYou } from "@/components/home/for-you";
 import { Reveal } from "@/components/reveal";
 import { Icon } from "@/components/icon";
 import { Accordion } from "@/components/ui/accordion";
@@ -160,6 +161,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Continue working + Recommended (only shows with local history) */}
+      <ForYou />
 
       {/* Popular tools */}
       <section className="container-tight py-14">

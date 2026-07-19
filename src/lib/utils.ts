@@ -26,6 +26,7 @@ export function downloadBlob(blob: Blob, filename: string) {
   if (typeof window !== "undefined") {
     import("./saved").then((m) => m.recordDownload(filename)).catch(() => {});
     import("./stats/stats").then((m) => m.track("downloads")).catch(() => {});
+    import("@/components/ui/toaster").then((m) => m.showToast(`Downloaded ${filename}`)).catch(() => {});
   }
 }
 
