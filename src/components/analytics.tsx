@@ -1,12 +1,15 @@
 import Script from "next/script";
 
+// Default GA4 Measurement ID for TechToolsCenter. Override per-environment by
+// setting NEXT_PUBLIC_GA_ID (e.g. a separate staging property) if ever needed.
+const GA_ID_DEFAULT = "G-HRX6TPNMWF";
+
 /**
- * Google Analytics 4 — loads only when NEXT_PUBLIC_GA_ID is set (e.g. G-XXXXXXX),
- * so local/dev builds stay clean. Set the env var in your host (Vercel) to turn
- * on traffic measurement. Loaded after interaction so it never blocks paint.
+ * Google Analytics 4 — loads after interaction so it never blocks paint.
+ * Uses the built-in Measurement ID by default; NEXT_PUBLIC_GA_ID overrides it.
  */
 export function Analytics() {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const gaId = process.env.NEXT_PUBLIC_GA_ID || GA_ID_DEFAULT;
   if (!gaId) return null;
   return (
     <>
