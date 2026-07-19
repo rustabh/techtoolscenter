@@ -6,9 +6,8 @@ import { Search, CornerDownLeft, Clock, TrendingUp, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Icon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
-import { tools, searchText, getPopularTools, getTool, type Tool } from "@/lib/tools";
-import { collectionOf, getCollection } from "@/lib/collections";
-import { smartSearch } from "@/lib/search/intent";
+import { getPopularTools, type Tool } from "@/lib/tools";
+import { globalSearch, type GlobalResult } from "@/lib/search/global";
 import { cn } from "@/lib/utils";
 
 const RECENT_KEY = "ttc:recent-searches";
@@ -49,26 +48,11 @@ export function HeroSearch() {
     return () => window.removeEventListener("mousedown", onClick);
   }, []);
 
-  const results = useMemo(() => {
+  // Unified search across tools, India Services and blog guides.
+  const results = useMemo<GlobalResult[]>(() => {
     const query = q.trim();
     if (!query) return [];
-    // Intent-aware matches first (understands problems & use cases), then fuzzy.
-    const intentTools = smartSearch(query, 7).map((r) => getTool(r.slug)).filter(Boolean) as Tool[];
-    const seen = new Set(intentTools.map((t) => t.slug));
-    const lc = query.toLowerCase();
-    const scored = tools
-      .map((t) => {
-        if (seen.has(t.slug)) return null;
-        const colName = getCollection(collectionOf(t))?.name.toLowerCase() ?? "";
-        const hay = searchText(t) + " " + colName;
-        if (!hay.includes(lc)) return null;
-        const name = t.name.toLowerCase();
-        const score = name.startsWith(lc) ? 3 : name.includes(lc) ? 2 : 1;
-        return { tool: t, score };
-      })
-      .filter(Boolean) as { tool: Tool; score: number }[];
-    const fuzzy = scored.sort((a, b) => b.score - a.score).map((s) => s.tool);
-    return [...intentTools, ...fuzzy].slice(0, 7);
+    return globalSearch(query, 8);
   }, [q]);
 
   const commit = (term: string) => {
@@ -77,14 +61,20 @@ export function HeroSearch() {
     try { localStorage.setItem(RECENT_KEY, JSON.stringify(next)); } catch { /* ignore */ }
   };
 
-  const go = (tool: Tool) => {
+  const goResult = (r: GlobalResult) => {
+    commit(r.name);
+    setOpen(false);
+    router.push(r.href);
+  };
+
+  const goTool = (tool: Tool) => {
     commit(tool.name);
     setOpen(false);
     router.push(`/tools/${tool.slug}`);
   };
 
   const submit = () => {
-    if (results[active]) return go(results[active]);
+    if (results[active]) return goResult(results[active]);
     if (q.trim()) { commit(q.trim()); router.push(`/tools?q=${encodeURIComponent(q.trim())}`); }
   };
 
@@ -104,7 +94,7 @@ export function HeroSearch() {
             else if (e.key === "Enter") { e.preventDefault(); submit(); }
             else if (e.key === "Escape") setOpen(false);
           }}
-          placeholder="Search 60+ tools — invoice, GST, PDF, QR, fonts…"
+          placeholder="Search tools, India services & guides — PAN, marriage certificate, PDF…"
           aria-label="Search tools"
           aria-expanded={showPanel}
           role="combobox"
@@ -130,27 +120,34 @@ export function HeroSearch() {
             className="glass absolute left-0 right-0 top-full z-50 mt-2 max-h-96 overflow-auto rounded-2xl p-2 text-left shadow-2xl"
           >
             {q.trim() ? (
-              results.map((t, i) => {
-                const col = getCollection(collectionOf(t));
-                return (
-                  <button
-                    key={t.slug}
-                    onMouseEnter={() => setActive(i)}
-                    onClick={() => go(t)}
-                    className={cn("flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors",
-                      active === i ? "bg-secondary" : "hover:bg-secondary/60")}
-                  >
-                    <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-accent text-accent-foreground">
-                      <Icon name={t.icon} className="size-4" />
+              results.map((r, i) => (
+                <button
+                  key={r.key}
+                  onMouseEnter={() => setActive(i)}
+                  onClick={() => goResult(r)}
+                  className={cn("flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors",
+                    active === i ? "bg-secondary" : "hover:bg-secondary/60")}
+                >
+                  <span className={cn("grid size-8 shrink-0 place-items-center rounded-lg",
+                    r.kind === "india" ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                      : r.kind === "blog" ? "bg-blue-500/15 text-blue-600 dark:text-blue-400"
+                      : "bg-accent text-accent-foreground")}>
+                    <Icon name={r.icon} className="size-4" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-medium">{highlight(r.name, q)}</span>
+                    <span className="block truncate text-xs text-muted-foreground">{r.reason}</span>
+                  </span>
+                  {r.kind !== "tool" && (
+                    <span className={cn("shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium",
+                      r.kind === "india" ? "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+                        : "bg-blue-500/15 text-blue-600 dark:text-blue-400")}>
+                      {r.kind === "india" ? "India" : "Guide"}
                     </span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-sm font-medium">{highlight(t.name, q)}</span>
-                      <span className="block truncate text-xs text-muted-foreground">{col?.name}</span>
-                    </span>
-                    {active === i && <CornerDownLeft className="size-3.5 shrink-0 text-muted-foreground" />}
-                  </button>
-                );
-              })
+                  )}
+                  {active === i && <CornerDownLeft className="size-3.5 shrink-0 text-muted-foreground" />}
+                </button>
+              ))
             ) : (
               <>
                 {recent.length > 0 && (
@@ -165,7 +162,7 @@ export function HeroSearch() {
                 )}
                 <p className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-muted-foreground"><TrendingUp className="size-3.5" /> Trending</p>
                 {trending.map((t) => (
-                  <button key={t.slug} onClick={() => go(t)} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-secondary/60">
+                  <button key={t.slug} onClick={() => goTool(t)} className="flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left hover:bg-secondary/60">
                     <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-accent text-accent-foreground"><Icon name={t.icon} className="size-4" /></span>
                     <span className="text-sm font-medium">{t.name}</span>
                   </button>

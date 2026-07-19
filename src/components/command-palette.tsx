@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { Search, CornerDownLeft, Star } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Icon } from "@/components/icon";
-import { tools, getTool } from "@/lib/tools";
+import { tools } from "@/lib/tools";
 import { collections } from "@/lib/collections";
-import { smartSearch } from "@/lib/search/intent";
+import { globalSearch } from "@/lib/search/global";
 import { useToolPrefs } from "@/hooks/use-tool-prefs";
 import { cn } from "@/lib/utils";
 
@@ -52,20 +52,29 @@ export function CommandPalette() {
       const base = [...favTools, ...recentTools];
       const seen = new Set(base.map((t) => t.slug));
       const rest = tools.filter((t) => !seen.has(t.slug)).slice(0, 8 - base.length);
-      return [...base, ...rest].slice(0, 8).map((t) => ({ slug: t.slug, name: t.name, icon: t.icon, description: t.description }));
+      return [...base, ...rest].slice(0, 8).map((t) => ({
+        key: `tool:${t.slug}`,
+        href: `/tools/${t.slug}`,
+        slug: t.slug,
+        name: t.name,
+        icon: t.icon,
+        description: t.description,
+      }));
     }
-    // Intent-aware smart search: understands problems, questions and use cases.
-    return smartSearch(query, 10).map((r) => ({
-      slug: r.slug,
+    // Unified, intent-aware search across tools, India Services and blog guides.
+    return globalSearch(query, 12).map((r) => ({
+      key: r.key,
+      href: r.href,
+      slug: r.kind === "tool" ? r.href.replace("/tools/", "") : r.key,
       name: r.name,
       icon: r.icon,
-      description: r.reason ?? getTool(r.slug)?.description ?? "",
+      description: r.reason ?? "",
     }));
   }, [q, favorites, recents]);
 
-  const go = (slug: string) => {
+  const go = (href: string) => {
     setOpen(false);
-    router.push(`/tools/${slug}`);
+    router.push(href);
   };
 
   return (
@@ -95,9 +104,9 @@ export function CommandPalette() {
                 onKeyDown={(e) => {
                   if (e.key === "ArrowDown") { e.preventDefault(); setActive((a) => Math.min(a + 1, results.length - 1)); }
                   if (e.key === "ArrowUp") { e.preventDefault(); setActive((a) => Math.max(a - 1, 0)); }
-                  if (e.key === "Enter" && results[active]) go(results[active].slug);
+                  if (e.key === "Enter" && results[active]) go(results[active].href);
                 }}
-                placeholder="Search tools, or describe your problem…"
+                placeholder="Search tools, services, guides — or describe your problem…"
                 className="h-14 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                 aria-label="Search tools"
               />
@@ -112,9 +121,9 @@ export function CommandPalette() {
               ) : (
                 results.map((t, i) => (
                   <button
-                    key={t.slug}
+                    key={t.key}
                     onMouseEnter={() => setActive(i)}
-                    onClick={() => go(t.slug)}
+                    onClick={() => go(t.href)}
                     className={cn(
                       "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-colors",
                       active === i ? "bg-secondary" : "hover:bg-secondary/60"
