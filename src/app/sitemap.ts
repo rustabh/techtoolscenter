@@ -7,6 +7,7 @@ import { blogCategories } from "@/lib/blog/categories";
 import { landingPages } from "@/lib/landing/landing";
 import { indiaCategories } from "@/lib/india/categories";
 import { indiaServices } from "@/lib/india/services";
+import { indiaStates } from "@/lib/india/states";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -85,6 +86,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(s.updatedOn ?? now),
       changeFrequency: "monthly" as const,
       priority: 0.7,
+    })),
+    ...indiaStates.map((s) => ({
+      url: `${base}/india-services/state/${s.slug}`,
+      lastModified: now,
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
     })),
   ];
 

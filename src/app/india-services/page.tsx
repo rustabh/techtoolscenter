@@ -7,6 +7,7 @@ import { IndiaSearch } from "@/components/india/india-search";
 import { IndiaDisclaimer } from "@/components/india/disclaimer";
 import { indiaCategories } from "@/lib/india/categories";
 import { indiaServices, popularIndiaServices, servicesByCategory } from "@/lib/india/services";
+import { indiaStates } from "@/lib/india/states";
 import { breadcrumbLd } from "@/lib/seo/schema";
 import { siteConfig } from "@/lib/site";
 
@@ -75,6 +76,22 @@ export default function IndiaServicesPage() {
           ))}
         </div>
         <p className="mt-4 text-sm text-muted-foreground">{indiaServices.length} services across {indiaCategories.length} categories — and growing.</p>
+      </section>
+
+      {/* Browse by state */}
+      <section className="mt-16">
+        <h2 className="mb-1 text-2xl font-bold tracking-tight">Browse by state</h2>
+        <p className="mb-6 text-sm text-muted-foreground">
+          State certificates (income, caste, domicile, EWS, birth, marriage, ration card) with the official e-District portal for your state.
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {indiaStates.map((s) => (
+            <Link key={s.slug} href={`/india-services/state/${s.slug}`}
+              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm transition-colors hover:border-primary/40 hover:text-primary">
+              {s.name} <ArrowRight className="size-3.5" />
+            </Link>
+          ))}
+        </div>
       </section>
 
       <div className="mt-14"><IndiaDisclaimer /></div>

@@ -11,6 +11,7 @@ import { organizationLd, websiteLd } from "@/lib/seo/schema";
 import { PwaProvider } from "@/components/pwa/pwa-provider";
 import { FileDropProvider } from "@/components/files/file-drop-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { Analytics } from "@/components/analytics";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
@@ -92,6 +93,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           crossOrigin="anonymous"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8948395080060177"
         />
+        <Analytics />
       </body>
     </html>
   );
