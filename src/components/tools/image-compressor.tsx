@@ -15,6 +15,22 @@ function formatBytes(bytes: number) {
   return `${(bytes / 1048576).toFixed(2)} MB`;
 }
 
+// Smart presets — one tap configures quality / width / target size.
+type ImgPreset = { id: string; label: string; mode: "quality" | "target"; quality: number; maxWidth: number; targetKB?: number };
+const IMG_PRESETS: ImgPreset[] = [
+  { id: "instagram", label: "Instagram", mode: "quality", quality: 0.75, maxWidth: 1080 },
+  { id: "facebook", label: "Facebook", mode: "quality", quality: 0.76, maxWidth: 1200 },
+  { id: "linkedin", label: "LinkedIn", mode: "quality", quality: 0.78, maxWidth: 1200 },
+  { id: "whatsapp", label: "WhatsApp", mode: "quality", quality: 0.72, maxWidth: 1600 },
+  { id: "website", label: "Website", mode: "quality", quality: 0.8, maxWidth: 1600 },
+  { id: "email", label: "Email", mode: "target", quality: 0.7, maxWidth: 1024, targetKB: 200 },
+  { id: "gov", label: "Government form", mode: "target", quality: 0.55, maxWidth: 1000, targetKB: 100 },
+  { id: "passport", label: "Passport", mode: "quality", quality: 0.7, maxWidth: 600 },
+  { id: "aadhar", label: "Aadhaar", mode: "target", quality: 0.6, maxWidth: 1000, targetKB: 100 },
+  { id: "maxq", label: "Max quality", mode: "quality", quality: 0.95, maxWidth: 4000 },
+  { id: "maxc", label: "Max compression", mode: "target", quality: 0.35, maxWidth: 800, targetKB: 50 },
+];
+
 function encode(img: HTMLImageElement, maxWidth: number, quality: number): Promise<Blob> {
   const scale = Math.min(1, maxWidth / img.width);
   const canvas = document.createElement("canvas");
@@ -32,8 +48,17 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
   const [quality, setQuality] = useState(typeof preset?.quality === "number" ? (preset.quality as number) : 0.7);
   const [maxWidth, setMaxWidth] = useState(typeof preset?.maxWidth === "number" ? (preset.maxWidth as number) : 1600);
   const [targetKB, setTargetKB] = useState(typeof preset?.targetKB === "number" ? (preset.targetKB as number) : 100);
+  const [presetId, setPresetId] = useState<string>("custom");
   const [result, setResult] = useState<{ url: string; size: number; blob: Blob } | null>(null);
   const [busy, setBusy] = useState(false);
+
+  const applyPreset = (p: ImgPreset) => {
+    setPresetId(p.id);
+    setMode(p.mode);
+    setQuality(p.quality);
+    setMaxWidth(p.maxWidth);
+    if (p.targetKB) setTargetKB(p.targetKB);
+  };
 
   const onFile = (file: File) => {
     setResult(null);
@@ -83,6 +108,12 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
             <span className="font-medium">Click to upload an image</span>
             <span className="text-sm text-muted-foreground">JPG, PNG or WebP · processed locally</span>
           </button>
+          <div className="mt-3 text-center">
+            <button onClick={async () => onFile(await (await import("@/lib/samples")).sampleImageFile())}
+              className="text-sm font-medium text-primary hover:underline">
+              ✨ Try a sample image
+            </button>
+          </div>
         </CardContent>
       </Card>
 
@@ -91,10 +122,21 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
           <Card>
             <CardHeader><CardTitle>Settings</CardTitle></CardHeader>
             <CardContent className="space-y-5">
+              <div className="space-y-1.5">
+                <Label>Smart presets</Label>
+                <div className="flex flex-wrap gap-1.5">
+                  {IMG_PRESETS.map((p) => (
+                    <button key={p.id} onClick={() => applyPreset(p)}
+                      className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${presetId === p.id ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"}`}>{p.label}</button>
+                  ))}
+                  <button onClick={() => setPresetId("custom")}
+                    className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${presetId === "custom" ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"}`}>Custom</button>
+                </div>
+              </div>
               <div className="grid grid-cols-2 gap-2">
-                <button onClick={() => setMode("quality")}
+                <button onClick={() => { setMode("quality"); setPresetId("custom"); }}
                   className={`rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${mode === "quality" ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}>By quality</button>
-                <button onClick={() => setMode("target")}
+                <button onClick={() => { setMode("target"); setPresetId("custom"); }}
                   className={`rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${mode === "target" ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}>By target size</button>
               </div>
 

@@ -83,6 +83,10 @@ export default function ImageResizer({ preset }: { preset?: Record<string, unkno
             <span className="font-medium">{img ? `${name} · ${img.naturalWidth}×${img.naturalHeight}` : "Upload an image to resize"}</span>
             <span className="text-sm text-muted-foreground">Resized privately in your browser — nothing is uploaded</span>
           </button>
+          <div className="mt-3 text-center">
+            <button onClick={async () => onFile(await (await import("@/lib/samples")).sampleImageFile())}
+              className="text-sm font-medium text-primary hover:underline">✨ Try a sample image</button>
+          </div>
         </CardContent>
       </Card>
 

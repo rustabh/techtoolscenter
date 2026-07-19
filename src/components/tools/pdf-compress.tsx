@@ -31,6 +31,16 @@ const LADDER: { scale: number; quality: number }[] = [
   { scale: 0.7, quality: 0.35 }, { scale: 0.6, quality: 0.3 },
 ];
 
+// Named in-tool presets.
+type PdfPreset = { id: string; label: string; mode: "level" | "target"; level?: LevelId; targetKB?: number };
+const PDF_PRESETS: PdfPreset[] = [
+  { id: "email", label: "Email", mode: "target", targetKB: 1024 },
+  { id: "job", label: "Job application", mode: "target", targetKB: 500 },
+  { id: "gov", label: "Government upload", mode: "target", targetKB: 200 },
+  { id: "whatsapp", label: "WhatsApp", mode: "target", targetKB: 500 },
+  { id: "archive", label: "Archive", mode: "level", level: "extreme" },
+];
+
 function presetToState(preset?: Record<string, unknown>): { mode: "level" | "target"; level: LevelId; targetKB: number } {
   const label = String(preset?.label ?? "").toLowerCase();
   const m = label.match(/under\s*(\d+)\s*(kb|mb)/);
@@ -52,6 +62,14 @@ export default function PdfCompress({ preset }: { preset?: Record<string, unknow
   const [result, setResult] = useState<{ size: number; blob: Blob } | null>(null);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState("");
+  const [presetId, setPresetId] = useState("custom");
+
+  const applyPreset = (p: PdfPreset) => {
+    setPresetId(p.id);
+    setMode(p.mode);
+    if (p.level) setLevel(p.level);
+    if (p.targetKB) setTargetKB(p.targetKB);
+  };
 
   const onFile = (f: File) => {
     setFile(f);
@@ -135,6 +153,10 @@ export default function PdfCompress({ preset }: { preset?: Record<string, unknow
             <span className="font-medium">{file ? file.name : "Upload a PDF to compress"}</span>
             <span className="text-sm text-muted-foreground">Compressed privately in your browser — nothing is uploaded</span>
           </button>
+          <div className="mt-3 text-center">
+            <button onClick={async () => onFile(await (await import("@/lib/samples")).samplePdfFile())}
+              className="text-sm font-medium text-primary hover:underline">✨ Try a sample PDF</button>
+          </div>
         </CardContent>
       </Card>
 
@@ -142,6 +164,18 @@ export default function PdfCompress({ preset }: { preset?: Record<string, unknow
         <Card>
           <CardHeader><CardTitle>Compression options</CardTitle></CardHeader>
           <CardContent className="space-y-5">
+            {/* Presets */}
+            <div className="space-y-1.5">
+              <Label>Smart presets</Label>
+              <div className="flex flex-wrap gap-1.5">
+                {PDF_PRESETS.map((p) => (
+                  <button key={p.id} onClick={() => applyPreset(p)}
+                    className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${presetId === p.id ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"}`}>{p.label}</button>
+                ))}
+                <button onClick={() => setPresetId("custom")}
+                  className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${presetId === "custom" ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"}`}>Custom</button>
+              </div>
+            </div>
             {/* Mode */}
             <div className="grid grid-cols-2 gap-2">
               <button onClick={() => setMode("level")}

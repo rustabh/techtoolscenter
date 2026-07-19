@@ -80,6 +80,10 @@ export default function ImageConverter({ preset }: { preset?: Record<string, unk
             <span className="font-medium">{src ? src.name : "Upload an image to convert"}</span>
             <span className="text-sm text-muted-foreground">PNG, JPG, WEBP or AVIF · converted privately in your browser</span>
           </button>
+          <div className="mt-3 text-center">
+            <button onClick={async () => onFile(await (await import("@/lib/samples")).sampleImageFile())}
+              className="text-sm font-medium text-primary hover:underline">✨ Try a sample image</button>
+          </div>
         </CardContent>
       </Card>
 

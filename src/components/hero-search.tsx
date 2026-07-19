@@ -6,8 +6,9 @@ import { Search, CornerDownLeft, Clock, TrendingUp, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Icon } from "@/components/icon";
 import { Button } from "@/components/ui/button";
-import { tools, searchText, getPopularTools, type Tool } from "@/lib/tools";
+import { tools, searchText, getPopularTools, getTool, type Tool } from "@/lib/tools";
 import { collectionOf, getCollection } from "@/lib/collections";
+import { smartSearch } from "@/lib/search/intent";
 import { cn } from "@/lib/utils";
 
 const RECENT_KEY = "ttc:recent-searches";
@@ -49,23 +50,25 @@ export function HeroSearch() {
   }, []);
 
   const results = useMemo(() => {
-    const query = q.trim().toLowerCase();
+    const query = q.trim();
     if (!query) return [];
+    // Intent-aware matches first (understands problems & use cases), then fuzzy.
+    const intentTools = smartSearch(query, 7).map((r) => getTool(r.slug)).filter(Boolean) as Tool[];
+    const seen = new Set(intentTools.map((t) => t.slug));
+    const lc = query.toLowerCase();
     const scored = tools
       .map((t) => {
+        if (seen.has(t.slug)) return null;
         const colName = getCollection(collectionOf(t))?.name.toLowerCase() ?? "";
         const hay = searchText(t) + " " + colName;
-        if (!hay.includes(query)) return null;
-        // rank: name start > name includes > other
-        let score = 0;
+        if (!hay.includes(lc)) return null;
         const name = t.name.toLowerCase();
-        if (name.startsWith(query)) score = 3;
-        else if (name.includes(query)) score = 2;
-        else score = 1;
+        const score = name.startsWith(lc) ? 3 : name.includes(lc) ? 2 : 1;
         return { tool: t, score };
       })
       .filter(Boolean) as { tool: Tool; score: number }[];
-    return scored.sort((a, b) => b.score - a.score).slice(0, 7).map((s) => s.tool);
+    const fuzzy = scored.sort((a, b) => b.score - a.score).map((s) => s.tool);
+    return [...intentTools, ...fuzzy].slice(0, 7);
   }, [q]);
 
   const commit = (term: string) => {

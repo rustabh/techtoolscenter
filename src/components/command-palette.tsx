@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { Search, CornerDownLeft, Star } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Icon } from "@/components/icon";
-import { tools, searchText } from "@/lib/tools";
-import { collections, collectionOf, getCollection } from "@/lib/collections";
+import { tools, getTool } from "@/lib/tools";
+import { collections } from "@/lib/collections";
+import { smartSearch } from "@/lib/search/intent";
 import { useToolPrefs } from "@/hooks/use-tool-prefs";
 import { cn } from "@/lib/utils";
 
@@ -44,21 +45,22 @@ export function CommandPalette() {
   }, [open]);
 
   const results = useMemo(() => {
-    const query = q.trim().toLowerCase();
+    const query = q.trim();
     if (!query) {
-      const favTools = favorites.map((s) => tools.find((t) => t.slug === s)).filter(Boolean);
-      const recentTools = recents.map((s) => tools.find((t) => t.slug === s)).filter(Boolean);
+      const favTools = favorites.map((s) => tools.find((t) => t.slug === s)).filter(Boolean) as typeof tools;
+      const recentTools = recents.map((s) => tools.find((t) => t.slug === s)).filter(Boolean) as typeof tools;
       const base = [...favTools, ...recentTools];
-      const seen = new Set(base.map((t) => t!.slug));
+      const seen = new Set(base.map((t) => t.slug));
       const rest = tools.filter((t) => !seen.has(t.slug)).slice(0, 8 - base.length);
-      return [...base, ...rest].slice(0, 8) as typeof tools;
+      return [...base, ...rest].slice(0, 8).map((t) => ({ slug: t.slug, name: t.name, icon: t.icon, description: t.description }));
     }
-    return tools
-      .filter((t) => {
-        const colName = getCollection(collectionOf(t))?.name.toLowerCase() ?? "";
-        return searchText(t).includes(query) || colName.includes(query);
-      })
-      .slice(0, 10);
+    // Intent-aware smart search: understands problems, questions and use cases.
+    return smartSearch(query, 10).map((r) => ({
+      slug: r.slug,
+      name: r.name,
+      icon: r.icon,
+      description: r.reason ?? getTool(r.slug)?.description ?? "",
+    }));
   }, [q, favorites, recents]);
 
   const go = (slug: string) => {
@@ -95,7 +97,7 @@ export function CommandPalette() {
                   if (e.key === "ArrowUp") { e.preventDefault(); setActive((a) => Math.max(a - 1, 0)); }
                   if (e.key === "Enter" && results[active]) go(results[active].slug);
                 }}
-                placeholder="Search tools…"
+                placeholder="Search tools, or describe your problem…"
                 className="h-14 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
                 aria-label="Search tools"
               />
