@@ -12,6 +12,7 @@ import { PwaProvider } from "@/components/pwa/pwa-provider";
 import { FileDropProvider } from "@/components/files/file-drop-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@/components/analytics";
+import { ConsentBanner } from "@/components/consent-banner";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
@@ -80,6 +81,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <PwaProvider />
           <FileDropProvider />
+          <ConsentBanner />
           <Toaster />
         </ThemeProvider>
         <Script id="ld-org" type="application/ld+json" strategy="afterInteractive"
