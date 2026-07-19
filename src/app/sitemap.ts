@@ -5,6 +5,8 @@ import { ogImageFor } from "@/lib/seo/metadata";
 import { allPosts } from "@/lib/blog/posts";
 import { blogCategories } from "@/lib/blog/categories";
 import { landingPages } from "@/lib/landing/landing";
+import { indiaCategories } from "@/lib/india/categories";
+import { indiaServices } from "@/lib/india/services";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -17,6 +19,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/dashboard`, lastModified: now, changeFrequency: "weekly", priority: 0.5 },
     { url: `${base}/collections`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/blog`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
+    { url: `${base}/india-services`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/community`, lastModified: now, changeFrequency: "daily", priority: 0.6 },
     { url: `${base}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
     { url: `${base}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
@@ -70,5 +73,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7,
     }));
 
-  return [...staticRoutes, ...collectionRoutes, ...categoryRoutes, ...toolRoutes, ...landingRoutes, ...blogRoutes];
+  const indiaRoutes: MetadataRoute.Sitemap = [
+    ...indiaCategories.map((c) => ({
+      url: `${base}/india-services/${c.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
+    ...indiaServices.map((s) => ({
+      url: `${base}/india-services/${s.category}/${s.slug}`,
+      lastModified: new Date(s.updatedOn ?? now),
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    })),
+  ];
+
+  return [...staticRoutes, ...collectionRoutes, ...categoryRoutes, ...toolRoutes, ...landingRoutes, ...blogRoutes, ...indiaRoutes];
 }
