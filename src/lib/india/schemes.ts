@@ -374,6 +374,42 @@ export const schemes: Scheme[] = [
     keywords: ["old age pension", "nsap", "widow pension", "disability pension", "vridha pension"],
     updatedOn: "2026-07-19",
   },
+  {
+    slug: "jan-samarth",
+    name: "Jan Samarth Portal",
+    fullName: "Jan Samarth — National Portal for Credit-Linked Government Schemes",
+    audiences: ["students", "entrepreneurs", "farmers", "workers"],
+    ministry: "Government of India (Ministry of Finance)",
+    officialUrl: "https://www.jansamarth.in",
+    tagline: "One portal to check eligibility and apply for government-linked loans.",
+    overview:
+      "Jan Samarth is a single national portal that connects several credit-linked government loan schemes across four categories — education, business/activity (incl. MUDRA & Stand-Up India), agri-infrastructure and livelihood. You check your eligibility digitally, apply online and get connected to participating banks, all in one place.",
+    benefits: [
+      "Education loans (incl. interest subsidy schemes)",
+      "Business / activity loans (MUDRA, Stand-Up India and more)",
+      "Agri-infrastructure loans",
+      "Livelihood loans",
+      "Digital eligibility check and paperless application",
+    ],
+    eligibility: ["Depends on the specific loan category and scheme you choose", "Individuals, students, entrepreneurs and farmers as per each scheme's rules"],
+    documents: ["Aadhaar", "PAN", "Bank account details", "Category-specific documents (academic / business / land / income) as required"],
+    steps: [
+      "Visit the official Jan Samarth portal (jansamarth.in).",
+      "Choose a loan category (education, business, agri-infra or livelihood).",
+      "Answer the eligibility questions to see the schemes you qualify for.",
+      "Register and complete the digital application.",
+      "Get connected to participating banks for approval and disbursal.",
+    ],
+    faq: [
+      { question: "What is the Jan Samarth portal?", answer: "It is a Government of India portal that brings multiple credit-linked government loan schemes (education, business, agri-infra, livelihood) onto one platform, where you can check eligibility and apply online." },
+      { question: "Which loans can I apply for on Jan Samarth?", answer: "Education loans, business/activity loans (including MUDRA and Stand-Up India), agri-infrastructure loans and livelihood loans — depending on your eligibility." },
+      { question: "Is Jan Samarth official and free to use?", answer: "Yes, it is an official Government of India portal. Always use the official jansamarth.in website and never pay a third party to 'apply' for you." },
+    ],
+    relatedSchemes: ["mudra-loan", "stand-up-india", "kisan-credit-card-scheme"],
+    keywords: ["jan samarth", "jansamarth", "government loan portal", "education loan", "business loan", "credit linked scheme"],
+    popular: true,
+    updatedOn: "2026-07-20",
+  },
   // Flagship schemes that also exist as detailed India Services:
   {
     slug: "pm-kisan-scheme",
