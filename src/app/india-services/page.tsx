@@ -6,11 +6,29 @@ import { Icon } from "@/components/icon";
 import { IndiaSearch } from "@/components/india/india-search";
 import { IndiaDisclaimer } from "@/components/india/disclaimer";
 import { indiaCategories } from "@/lib/india/categories";
-import { indiaServices, popularIndiaServices, servicesByCategory } from "@/lib/india/services";
+import { indiaServices, popularIndiaServices, servicesByCategory, getIndiaService } from "@/lib/india/services";
 import { indiaStates } from "@/lib/india/states";
 import { indiaCities } from "@/lib/india/cities";
+import { allPosts } from "@/lib/blog/posts";
 import { breadcrumbLd } from "@/lib/seo/schema";
 import { siteConfig } from "@/lib/site";
+
+// Popular searches shown as quick chips (deep-linked to the guide).
+const POPULAR_SEARCHES: { label: string; slug: string }[] = [
+  { label: "Passport", slug: "passport" },
+  { label: "Lost Aadhaar", slug: "aadhaar-card" },
+  { label: "Instant e-PAN", slug: "pan-card" },
+  { label: "PAN–Aadhaar link", slug: "pan-aadhaar-link" },
+  { label: "GST registration", slug: "gst-registration" },
+  { label: "Driving licence", slug: "driving-licence" },
+  { label: "Marriage certificate", slug: "marriage-certificate" },
+  { label: "New ration card", slug: "ration-card" },
+  { label: "Check e-challan", slug: "e-challan" },
+  { label: "CIBIL score", slug: "cibil-score" },
+];
+
+// Curated "trending" set (high-interest, distinct from the popular flag).
+const TRENDING_SLUGS = ["pan-aadhaar-link", "e-challan", "cibil-score", "marriage-certificate", "ration-card", "fastag", "sukanya-samriddhi-yojana", "pm-kisan"];
 
 export const metadata: Metadata = {
   title: `India Services — Official Government Services Guide | ${siteConfig.name}`,
@@ -20,6 +38,13 @@ export const metadata: Metadata = {
 
 export default function IndiaServicesPage() {
   const popular = popularIndiaServices();
+  const trending = TRENDING_SLUGS.map(getIndiaService).filter((s): s is NonNullable<typeof s> => !!s);
+  const recentlyUpdated = [...indiaServices]
+    .sort((a, b) => (b.updatedOn ?? "").localeCompare(a.updatedOn ?? ""))
+    .slice(0, 6);
+  const popularGuides = allPosts()
+    .filter((p) => (p.tags ?? []).includes("india services"))
+    .slice(0, 4);
   const crumb = breadcrumbLd([{ name: "Home", url: "/" }, { name: "India Services", url: "/india-services" }]);
 
   return (
@@ -41,7 +66,24 @@ export default function IndiaServicesPage() {
 
       <div className="mt-8"><IndiaSearch /></div>
 
-      <div className="mt-4 flex flex-wrap items-center justify-center gap-3">
+      {/* Popular searches */}
+      <div className="mt-5">
+        <p className="mb-2 text-center text-xs font-medium uppercase tracking-wide text-muted-foreground">Popular searches</p>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          {POPULAR_SEARCHES.map((s) => {
+            const svc = getIndiaService(s.slug);
+            if (!svc) return null;
+            return (
+              <Link key={s.slug} href={`/india-services/${svc.category}/${svc.slug}`}
+                className="rounded-full border border-border bg-card px-3 py-1.5 text-xs transition-colors hover:border-primary/40 hover:text-primary">
+                {s.label}
+              </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
         <Link href="/india-services/finder"
           className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-primary transition-colors hover:border-primary/60">
           🧭 Document Finder <ArrowRight className="size-4" />
@@ -102,6 +144,43 @@ export default function IndiaServicesPage() {
         <p className="mt-4 text-sm text-muted-foreground">{indiaServices.length} services across {indiaCategories.length} categories — and growing.</p>
       </section>
 
+      {/* Trending services */}
+      <section className="mt-16">
+        <h2 className="mb-1 text-2xl font-bold tracking-tight">🔥 Trending now</h2>
+        <p className="mb-6 text-sm text-muted-foreground">What people are checking most right now.</p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {trending.map((s) => (
+            <Link key={s.slug} href={`/india-services/${s.category}/${s.slug}`}
+              className="group rounded-2xl border border-border bg-card p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
+              <span className="block text-sm font-medium group-hover:text-primary">{s.name}</span>
+              <span className="mt-0.5 block text-xs text-muted-foreground">{s.officialName}</span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* Recently updated */}
+      <section className="mt-16">
+        <h2 className="mb-1 text-2xl font-bold tracking-tight">Recently updated</h2>
+        <p className="mb-6 text-sm text-muted-foreground">Guides we&apos;ve reviewed and refreshed most recently.</p>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {recentlyUpdated.map((s) => (
+            <Link key={s.slug} href={`/india-services/${s.category}/${s.slug}`}
+              className="group flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
+              <span>
+                <span className="block text-sm font-medium group-hover:text-primary">{s.name}</span>
+                {s.updatedOn && (
+                  <span className="block text-xs text-muted-foreground">
+                    Updated {new Date(s.updatedOn).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                  </span>
+                )}
+              </span>
+              <ArrowRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* Browse by state */}
       <section className="mt-16">
         <h2 className="mb-1 text-2xl font-bold tracking-tight">Browse by state</h2>
@@ -131,6 +210,42 @@ export default function IndiaServicesPage() {
               {c.name} <ArrowRight className="size-3.5" />
             </Link>
           ))}
+        </div>
+      </section>
+
+      {/* Popular guides */}
+      {popularGuides.length > 0 && (
+        <section className="mt-16">
+          <h2 className="mb-1 text-2xl font-bold tracking-tight">Popular guides</h2>
+          <p className="mb-6 text-sm text-muted-foreground">Step-by-step reads for the most common India services.</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {popularGuides.map((p) => (
+              <Link key={p.slug} href={`/blog/${p.slug}`}
+                className="group flex flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg">
+                <h3 className="font-semibold group-hover:text-primary">{p.title}</h3>
+                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{p.excerpt}</p>
+                <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary">Read guide <ArrowRight className="size-3" /></span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Latest government updates (placeholder — no unofficial claims) */}
+      <section className="mt-16">
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-2xl font-bold tracking-tight">Latest government updates</h2>
+          <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-muted-foreground">Coming soon</span>
+        </div>
+        <div className="mt-6 rounded-2xl border border-dashed border-border bg-secondary/30 p-6 text-sm text-muted-foreground">
+          <p>
+            We&apos;re building a curated feed of important changes to official government services — new portals, deadline
+            reminders and process updates — with a link to the official source for each. Check back soon.
+          </p>
+          <p className="mt-3">
+            In the meantime, every guide shows a <span className="font-medium text-foreground">&ldquo;Last updated&rdquo;</span> date, and the official
+            website linked on each page is always the final authority for current details.
+          </p>
         </div>
       </section>
 
