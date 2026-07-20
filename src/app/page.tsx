@@ -10,6 +10,13 @@ import { CommunityWidget } from "@/components/community/community-widget";
 import { LiveStats } from "@/components/stats/live-stats";
 import { MostUsedTools } from "@/components/stats/most-used-tools";
 import { ForYou } from "@/components/home/for-you";
+import { DailyGreeting } from "@/components/home/daily-greeting";
+import { DailyInspiration } from "@/components/home/daily-inspiration";
+import { TodaysChallenge } from "@/components/home/todays-challenge";
+import { WhatsNewBanner } from "@/components/home/whats-new-banner";
+import { QuickActions } from "@/components/home/quick-actions";
+import { ThisWeek } from "@/components/home/this-week";
+import { StatsStrip } from "@/components/home/stats-strip";
 import { Reveal } from "@/components/reveal";
 import { Icon } from "@/components/icon";
 import { Accordion } from "@/components/ui/accordion";
@@ -79,8 +86,12 @@ export default function HomePage() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
 
+      {/* What's New banner (dismissible) */}
+      <WhatsNewBanner />
+
       {/* Hero */}
-      <section className="container-tight pt-16 pb-14 text-center sm:pt-24">
+      <section className="container-tight pt-10 pb-14 text-center sm:pt-16">
+        <DailyGreeting />
         <Reveal>
           <Badge variant="outline" className="mx-auto mb-6 gap-1.5 py-1">
             <span className="relative flex size-2">
@@ -140,6 +151,17 @@ export default function HomePage() {
           </dl>
         </Reveal>
       </section>
+
+      {/* Daily Inspiration + Today's Challenge */}
+      <section className="container-tight pb-6">
+        <div className="grid gap-4 lg:grid-cols-2">
+          <Reveal><DailyInspiration className="h-full" /></Reveal>
+          <Reveal delay={0.05}><TodaysChallenge className="h-full" /></Reveal>
+        </div>
+      </section>
+
+      {/* Quick actions */}
+      <QuickActions />
 
       {/* Premium Promise */}
       <section className="container-tight pb-4 pt-6">
@@ -211,6 +233,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* This week at TechToolsCenter */}
+      <ThisWeek />
 
       {/* Ad — mid-page rectangle, well spaced from the others */}
       <PremiumAd variant="rectangle" />
@@ -284,6 +309,9 @@ export default function HomePage() {
           <Newsletter />
         </Reveal>
       </section>
+
+      {/* Homepage stats strip */}
+      <StatsStrip />
 
       {/* CTA */}
       <section className="container-tight py-14">
