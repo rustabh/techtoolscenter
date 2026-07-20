@@ -14,6 +14,7 @@ const links = [
   { href: "/collections", label: "Collections" },
   { href: "/tools", label: "All Tools" },
   { href: "/india-services", label: "India Services" },
+  { href: "/updates", label: "Updates" },
   { href: "/blog", label: "Blog" },
   { href: "/community", label: "Community" },
   { href: "/dashboard", label: "Dashboard" },

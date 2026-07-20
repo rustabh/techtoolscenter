@@ -8,6 +8,7 @@ import {
   Mail, ListTree, Sigma, Tags, Bot, Search, Gauge, Blend, CalendarClock, GitCompare, Rocket,
   ArrowLeftRight, Coins, Fuel, Asterisk, FlipHorizontal, Replace, Eraser, Dices, Timer,
   StickyNote, Contrast, Ruler, LayoutGrid,
+  Globe, Wrench, Megaphone, ShieldCheck, Settings, Languages, Award, FolderCheck,
   type LucideProps,
 } from "lucide-react";
 
@@ -21,6 +22,7 @@ const map = {
   Mail, ListTree, Sigma, Tags, Bot, Search, Gauge, Blend, CalendarClock, GitCompare, Rocket,
   ArrowLeftRight, Coins, Fuel, Asterisk, FlipHorizontal, Replace, Eraser, Dices, Timer,
   StickyNote, Contrast, Ruler, LayoutGrid,
+  Globe, Wrench, Megaphone, ShieldCheck, Settings, Languages, Award, FolderCheck,
 } as const;
 
 export type IconName = keyof typeof map;

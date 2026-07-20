@@ -17,6 +17,7 @@ import { WhatsNewBanner } from "@/components/home/whats-new-banner";
 import { QuickActions } from "@/components/home/quick-actions";
 import { ThisWeek } from "@/components/home/this-week";
 import { StatsStrip } from "@/components/home/stats-strip";
+import { LatestUpdates } from "@/components/home/latest-updates";
 import { Reveal } from "@/components/reveal";
 import { Icon } from "@/components/icon";
 import { Accordion } from "@/components/ui/accordion";
@@ -233,6 +234,9 @@ export default function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* Latest updates preview */}
+      <LatestUpdates />
 
       {/* This week at TechToolsCenter */}
       <ThisWeek />

@@ -11,6 +11,7 @@ import { indiaStates } from "@/lib/india/states";
 import { indiaCities } from "@/lib/india/cities";
 import { schemes } from "@/lib/india/schemes";
 import { hindiServices } from "@/lib/india/hindi";
+import { allUpdates, updateCategories } from "@/lib/updates";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -120,5 +121,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ];
 
-  return [...staticRoutes, ...collectionRoutes, ...categoryRoutes, ...toolRoutes, ...landingRoutes, ...blogRoutes, ...indiaRoutes];
+  const updateRoutes: MetadataRoute.Sitemap = [
+    { url: `${base}/updates`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
+    ...updateCategories.map((c) => ({
+      url: `${base}/updates/${c.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
+    ...allUpdates().map((u) => ({
+      url: `${base}/updates/${u.slug}`,
+      lastModified: new Date(u.updatedOn ?? u.publishedOn),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+    })),
+  ];
+
+  return [...staticRoutes, ...collectionRoutes, ...categoryRoutes, ...toolRoutes, ...landingRoutes, ...blogRoutes, ...indiaRoutes, ...updateRoutes];
 }

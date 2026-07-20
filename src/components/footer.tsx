@@ -61,6 +61,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-muted-foreground">
               <li><Link href="/tools" className="hover:text-foreground">All tools</Link></li>
               <li><Link href="/about" className="hover:text-foreground">About</Link></li>
+              <li><Link href="/updates" className="hover:text-foreground">Updates</Link></li>
               <li><Link href="/community" className="hover:text-foreground">Community</Link></li>
               <li><Link href="/stats" className="hover:text-foreground">Analytics</Link></li>
               <li><Link href="/contact" className="hover:text-foreground">Contact</Link></li>
