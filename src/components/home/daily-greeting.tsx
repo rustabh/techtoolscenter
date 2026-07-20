@@ -13,7 +13,7 @@ export function DailyGreeting() {
     <p className="mb-3 h-5 text-sm font-medium text-muted-foreground">
       {g ? (
         <>
-          {g.text} {g.emoji} <span className="text-muted-foreground/70">· Welcome back — have a productive day.</span>
+          {g.text} {g.emoji}
         </>
       ) : null}
     </p>
