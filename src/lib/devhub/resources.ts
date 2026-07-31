@@ -2636,6 +2636,84 @@ export const externalDevResources: DevResource[] = [
     "addedOn": "2026-07-31"
   },
   {
+    "slug": "grok",
+    "name": "Grok",
+    "category": "ai-coding",
+    "description": "xAI's conversational AI assistant, with a code-capable model that can explain, write and debug code alongside general-purpose chat.",
+    "officialUrl": "https://grok.com",
+    "tags": ["chatbot", "code-generation", "xai"],
+    "pricing": "Freemium",
+    "icon": "Sparkles",
+    "addedOn": "2026-07-31"
+  },
+  {
+    "slug": "replit",
+    "name": "Replit",
+    "category": "ai-coding",
+    "description": "A browser-based coding environment with an AI Agent that can scaffold, edit and run a full project from a prompt, no local setup required.",
+    "officialUrl": "https://replit.com",
+    "tags": ["online-ide", "ai-agent", "hosting"],
+    "pricing": "Freemium",
+    "icon": "Terminal",
+    "addedOn": "2026-07-31"
+  },
+  {
+    "slug": "amazon-q-developer",
+    "name": "Amazon Q Developer",
+    "category": "ai-coding",
+    "description": "AWS's AI coding assistant (formerly CodeWhisperer) — inline code suggestions, chat, and automated code reviews inside your editor.",
+    "officialUrl": "https://aws.amazon.com/q/developer",
+    "tags": ["editor-plugin", "autocomplete", "aws"],
+    "pricing": "Freemium",
+    "icon": "Bot",
+    "addedOn": "2026-07-31"
+  },
+  {
+    "slug": "jetbrains-ai-assistant",
+    "name": "JetBrains AI Assistant",
+    "category": "ai-coding",
+    "description": "Built-in AI for JetBrains IDEs (IntelliJ, PyCharm, WebStorm and more) — code completion, chat, refactoring and commit-message generation.",
+    "officialUrl": "https://www.jetbrains.com/ai",
+    "tags": ["ide", "autocomplete", "refactoring"],
+    "pricing": "Freemium",
+    "icon": "Code",
+    "addedOn": "2026-07-31"
+  },
+  {
+    "slug": "sourcegraph-cody",
+    "name": "Cody (Sourcegraph)",
+    "category": "ai-coding",
+    "description": "An AI coding assistant that uses codebase-wide context to answer questions, write code and explain unfamiliar parts of a large repository.",
+    "officialUrl": "https://sourcegraph.com/cody",
+    "tags": ["codebase-context", "chat", "autocomplete"],
+    "pricing": "Freemium",
+    "icon": "SquareCode",
+    "addedOn": "2026-07-31"
+  },
+  {
+    "slug": "devin",
+    "name": "Devin",
+    "category": "ai-coding",
+    "description": "An autonomous AI software engineer from Cognition that can plan, write, test and iterate on multi-step coding tasks with less hand-holding.",
+    "officialUrl": "https://cognition.ai",
+    "tags": ["ai-agent", "autonomous", "software-engineer"],
+    "pricing": "Paid",
+    "icon": "Bot",
+    "addedOn": "2026-07-31"
+  },
+  {
+    "slug": "cline",
+    "name": "Cline",
+    "category": "ai-coding",
+    "description": "An open-source AI coding agent that runs inside VS Code, able to edit files, run terminal commands and use the browser to complete tasks.",
+    "officialUrl": "https://cline.bot",
+    "tags": ["vs-code", "ai-agent", "open-source"],
+    "pricing": "Free",
+    "openSource": true,
+    "icon": "Terminal",
+    "addedOn": "2026-07-31"
+  },
+  {
     "slug": "mdn-web-docs",
     "name": "MDN Web Docs",
     "category": "learning",
