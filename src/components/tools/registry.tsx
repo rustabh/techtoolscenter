@@ -115,6 +115,7 @@ const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> 
   "sitemap-generator": dynamic(() => import("./sitemap-generator"), { loading: ToolSkeleton, ssr: false }),
   "svg-blob-generator": dynamic(() => import("./svg-blob-generator"), { loading: ToolSkeleton, ssr: false }),
   "svg-optimizer": dynamic(() => import("./svg-optimizer"), { loading: ToolSkeleton, ssr: false }),
+  "ui-snippets": dynamic(() => import("./ui-snippets"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug, preset }: { slug: string; preset?: Record<string, unknown> }) {

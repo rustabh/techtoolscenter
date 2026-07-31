@@ -7,6 +7,19 @@ import type { DevResource } from "./types";
  */
 export const playgroundResources: DevResource[] = [
   {
+    slug: "playground-ui-snippets",
+    name: "UI Snippets",
+    category: "browser-tools",
+    description: "Ready-made buttons, toggles, sliders, cards, badges, avatars, loaders and alerts — live preview, copy the code.",
+    officialUrl: "/tools/ui-snippets",
+    tags: ["css", "components", "snippets", "ui kit"],
+    pricing: "Free",
+    badge: "New",
+    internalToolSlug: "ui-snippets",
+    icon: "LayoutTemplate",
+    addedOn: "2026-07-31",
+  },
+  {
     slug: "playground-code-playground",
     name: "Code Playground",
     category: "browser-tools",

@@ -1641,6 +1641,23 @@ export const tools: Tool[] = [
       { question: "Can I generate a sitemap for a large site?", answer: "Yes, add as many URLs as you need — for very large sites, search engines recommend splitting into multiple sitemap files linked from a sitemap index." },
     ],
   },
+  {
+    slug: "ui-snippets",
+    name: "UI Snippets",
+    description: "Ready-made buttons, toggles, sliders, cards and more — live preview, copy the code.",
+    longDescription:
+      "A library of ready-made UI components — buttons, toggle switches, range sliders, cards, badges, avatars, loaders and alerts — each with a live preview and copy-ready HTML + CSS. No sign-up, nothing sent to a server.",
+    category: "Developer",
+    icon: "LayoutTemplate",
+    keywords: ["ui snippets", "css component library", "button code snippets", "css toggle switch", "copy paste ui components"],
+    addedOn: "2026-07-31",
+    popular: true,
+    faq: [
+      { question: "What kind of components are included?", answer: "Buttons, toggle switches, range sliders, cards, badges & tags, avatars, loaders & spinners, and alerts & toasts — with several style variants each." },
+      { question: "Is the code ready to paste into my project?", answer: "Yes — copy includes the CSS and HTML together, ready to drop into a page as-is." },
+      { question: "Do these snippets need JavaScript?", answer: "No — every snippet is pure HTML and CSS, including the toggle switches (checkbox + label CSS trick) and animated loaders (CSS keyframes)." },
+    ],
+  },
 ];
 
 // Tools added on or after this date show a "New" badge. Fixed for deterministic SSR.
