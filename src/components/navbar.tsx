@@ -12,11 +12,12 @@ import { cn } from "@/lib/utils";
 
 const links = [
   { href: "/tools", label: "All Tools" },
+  { href: "/ai-hub", label: "AI Hub" },
+  { href: "/developer-hub", label: "Developer Hub" },
   { href: "/india-services", label: "India Services" },
   { href: "/updates", label: "Updates" },
   { href: "/blog", label: "Blog" },
   { href: "/community", label: "Community" },
-  { href: "/developer-hub", label: "Developer Hub" },
 ];
 
 const navCollections = collectionsWithCounts();

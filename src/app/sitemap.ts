@@ -13,6 +13,8 @@ import { schemes } from "@/lib/india/schemes";
 import { hindiServices } from "@/lib/india/hindi";
 import { allUpdates, updateCategories } from "@/lib/updates";
 import { devCategories } from "@/lib/devhub/categories";
+import { aiCategories } from "@/lib/aihub/categories";
+import { aiCollections } from "@/lib/aihub/collections";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -24,6 +26,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/tools`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/developer-hub`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/developer-hub/playground`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/ai-hub`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${base}/ai-hub/collections`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/collections`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/blog`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${base}/india-services`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
@@ -46,6 +50,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "weekly",
     priority: 0.6,
   }));
+
+  const aiHubRoutes: MetadataRoute.Sitemap = [
+    ...aiCategories.map((c) => ({
+      url: `${base}/ai-hub/${c.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    })),
+    ...aiCollections.map((c) => ({
+      url: `${base}/ai-hub/collections/${c.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.6,
+    })),
+  ];
 
   const collectionRoutes: MetadataRoute.Sitemap = collections.map((c) => ({
     url: `${base}/collections/${c.slug}`,
@@ -146,5 +165,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ];
 
-  return [...staticRoutes, ...collectionRoutes, ...categoryRoutes, ...devHubRoutes, ...toolRoutes, ...landingRoutes, ...blogRoutes, ...indiaRoutes, ...updateRoutes];
+  return [...staticRoutes, ...collectionRoutes, ...categoryRoutes, ...devHubRoutes, ...aiHubRoutes, ...toolRoutes, ...landingRoutes, ...blogRoutes, ...indiaRoutes, ...updateRoutes];
 }
