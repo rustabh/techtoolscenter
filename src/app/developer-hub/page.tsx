@@ -71,6 +71,25 @@ export default function DeveloperHubPage() {
         </div>
       </section>
 
+      {/* Developer Playground */}
+      <section className="mt-14 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-6">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">Developer Playground</h2>
+            <p className="mt-1 max-w-xl text-sm text-muted-foreground">
+              A live HTML/CSS/JS editor, a Tailwind playground, CSS generators for Flexbox, Grid, shadows and
+              glassmorphism, plus a sitemap builder — all interactive, all free.
+            </p>
+          </div>
+          <Link
+            href="/developer-hub/playground"
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+          >
+            Open the Playground
+          </Link>
+        </div>
+      </section>
+
       {/* Recently Added */}
       <Section title="Recently Added" items={recent} />
 

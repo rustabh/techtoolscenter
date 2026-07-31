@@ -1490,6 +1490,157 @@ export const tools: Tool[] = [
       { question: "Does it handle commas inside a CSV field?", answer: "Yes, as long as the field is wrapped in double quotes, e.g. \"Smith, John\" is parsed as one field." },
     ],
   },
+  {
+    slug: "flexbox-generator",
+    name: "Flexbox Generator",
+    description: "Design a CSS Flexbox layout visually and copy the code.",
+    longDescription:
+      "Set flex-direction, justify-content, align-items, wrap and gap with live controls, see the layout update instantly on sample items, and copy production-ready CSS.",
+    category: "Developer",
+    icon: "Columns3",
+    keywords: ["flexbox generator", "css flexbox", "flex layout generator", "justify-content", "align-items"],
+    addedOn: "2026-07-31",
+    faq: [
+      { question: "Does this generate the container or item styles?", answer: "The container's flex properties — direction, wrap, justify-content, align-items and gap — copy-ready as CSS." },
+      { question: "Can I use this for a real project?", answer: "Yes, the generated CSS is standard and works anywhere Flexbox is supported." },
+    ],
+  },
+  {
+    slug: "grid-generator",
+    name: "CSS Grid Generator",
+    description: "Design a CSS Grid layout visually and copy the code.",
+    longDescription:
+      "Set columns, rows, gap and alignment with live controls, preview the grid instantly, and copy production-ready CSS Grid code.",
+    category: "Developer",
+    icon: "Grid3x3",
+    keywords: ["css grid generator", "grid layout generator", "grid-template-columns", "css grid tool"],
+    addedOn: "2026-07-31",
+    faq: [
+      { question: "How many columns and rows can I set?", answer: "Up to 12 columns and 6 rows, with an adjustable gap and item alignment." },
+      { question: "Is the output real CSS Grid?", answer: "Yes — standard grid-template-columns/rows, gap and alignment properties." },
+    ],
+  },
+  {
+    slug: "border-radius-generator",
+    name: "Border Radius Generator",
+    description: "Design rounded corners visually — per corner or all at once.",
+    longDescription:
+      "Adjust each corner's radius independently, or link them together, with a live preview and copy-ready border-radius CSS.",
+    category: "Developer",
+    icon: "Ruler",
+    keywords: ["border radius generator", "css rounded corners", "border-radius css", "rounded corner generator"],
+    addedOn: "2026-07-31",
+    faq: [
+      { question: "Can I set each corner differently?", answer: "Yes — unlink the corners to control top-left, top-right, bottom-right and bottom-left independently." },
+    ],
+  },
+  {
+    slug: "box-shadow-generator",
+    name: "Box Shadow Generator",
+    description: "Design single or layered CSS box-shadows visually.",
+    longDescription:
+      "Adjust offset, blur, spread, colour and opacity, stack multiple shadow layers for depth, preview live, and copy the combined box-shadow CSS.",
+    category: "Developer",
+    icon: "Layers",
+    keywords: ["box shadow generator", "css box-shadow", "shadow generator", "css shadow tool"],
+    addedOn: "2026-07-31",
+    faq: [
+      { question: "Can I add more than one shadow?", answer: "Yes — add multiple shadow layers and they'll be combined into one comma-separated box-shadow value." },
+      { question: "Does it support inset shadows?", answer: "Yes, each layer has an inset toggle." },
+    ],
+  },
+  {
+    slug: "glassmorphism-generator",
+    name: "Glassmorphism Generator",
+    description: "Design a frosted-glass CSS effect visually and copy the code.",
+    longDescription:
+      "Adjust background colour, opacity, blur, border and radius to create a glassmorphism card, previewed live over a colourful background, with copy-ready CSS including the Safari-compatible prefix.",
+    category: "Developer",
+    icon: "Contrast",
+    keywords: ["glassmorphism generator", "glassmorphism css", "backdrop-filter generator", "frosted glass css"],
+    addedOn: "2026-07-31",
+    faq: [
+      { question: "Why does the effect need a colourful background to preview?", answer: "Glassmorphism relies on blurring what's behind it — on a plain background the effect isn't visible, so the preview sits over a gradient." },
+      { question: "Does this work in Safari?", answer: "The generated CSS includes both backdrop-filter and the -webkit-backdrop-filter prefix for Safari support." },
+    ],
+  },
+  {
+    slug: "svg-blob-generator",
+    name: "SVG Blob Generator",
+    description: "Generate random organic blob shapes as SVG.",
+    longDescription:
+      "Create smooth, randomised organic blob shapes for backgrounds and decoration — adjust complexity and points, pick a colour, and copy or download the SVG.",
+    category: "Developer",
+    icon: "Shapes",
+    keywords: ["svg blob generator", "blob maker", "organic shape generator", "svg background shape"],
+    addedOn: "2026-07-31",
+    faq: [
+      { question: "Can I regenerate a new shape?", answer: "Yes — click generate again for a new random blob at the same settings." },
+      { question: "What format can I export?", answer: "Copy the raw SVG markup or download it as an .svg file." },
+    ],
+  },
+  {
+    slug: "svg-optimizer",
+    name: "SVG Optimizer",
+    description: "Shrink SVG file size by removing unnecessary markup.",
+    longDescription:
+      "Paste or upload an SVG to strip comments, metadata and redundant whitespace, and round coordinate precision — see the before/after size and a live preview of both.",
+    category: "Developer",
+    icon: "FileCode2",
+    keywords: ["svg optimizer", "svg minifier", "optimize svg online", "reduce svg file size"],
+    addedOn: "2026-07-31",
+    faq: [
+      { question: "Will optimizing change how my SVG looks?", answer: "No — only markup that doesn't affect rendering is removed or simplified. Compare the before/after preview to confirm." },
+      { question: "Is my SVG uploaded anywhere?", answer: "No, everything runs in your browser." },
+    ],
+  },
+  {
+    slug: "code-playground",
+    name: "Code Playground",
+    description: "Write HTML, CSS and JS and see the result live — like a mini CodePen.",
+    longDescription:
+      "A live HTML + CSS + JS editor with an instant sandboxed preview — write and test snippets without leaving your browser or setting up a project.",
+    category: "Developer",
+    icon: "Code2",
+    keywords: ["html css js playground", "online code editor", "live code preview", "codepen alternative"],
+    addedOn: "2026-07-31",
+    popular: true,
+    faq: [
+      { question: "Is my code sent to a server?", answer: "No. It runs entirely in a sandboxed preview frame in your own browser." },
+      { question: "Can I use external libraries?", answer: "Not directly — this is for quick self-contained HTML/CSS/JS snippets, not full projects with dependencies." },
+    ],
+  },
+  {
+    slug: "tailwind-playground",
+    name: "Tailwind Playground",
+    description: "Try Tailwind CSS utility classes live, powered by the official Play CDN.",
+    longDescription:
+      "Write HTML with Tailwind utility classes and see the result instantly, using the official Tailwind Play CDN — great for prototyping, not a replacement for a proper production build.",
+    category: "Developer",
+    icon: "Wind",
+    keywords: ["tailwind playground", "tailwind css online", "tailwind cdn", "try tailwind css"],
+    addedOn: "2026-07-31",
+    popular: true,
+    faq: [
+      { question: "Is this safe to use for production?", answer: "No — it uses the Tailwind Play CDN, which the Tailwind team recommends only for prototyping. Install Tailwind properly for a real project." },
+      { question: "Do I need an internet connection?", answer: "Yes, it loads the Tailwind Play CDN script live." },
+    ],
+  },
+  {
+    slug: "sitemap-generator",
+    name: "Sitemap.xml Generator",
+    description: "Build a sitemap.xml file from a list of URLs.",
+    longDescription:
+      "Add your site's URLs with a change frequency and priority for each, then copy or download a valid sitemap.xml ready to submit to search engines.",
+    category: "Developer",
+    icon: "ListTree",
+    keywords: ["sitemap generator", "sitemap.xml generator", "create sitemap", "xml sitemap tool"],
+    addedOn: "2026-07-31",
+    faq: [
+      { question: "What is changefreq/priority for?", answer: "Hints to search engines about how often a page changes and its relative importance — they're advisory, not guarantees of crawl behaviour." },
+      { question: "Can I generate a sitemap for a large site?", answer: "Yes, add as many URLs as you need — for very large sites, search engines recommend splitting into multiple sitemap files linked from a sitemap index." },
+    ],
+  },
 ];
 
 // Tools added on or after this date show a "New" badge. Fixed for deterministic SSR.

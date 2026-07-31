@@ -23,6 +23,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/tools`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/developer-hub`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/developer-hub/playground`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/collections`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/blog`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${base}/india-services`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },

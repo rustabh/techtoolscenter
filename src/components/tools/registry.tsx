@@ -105,6 +105,16 @@ const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> 
   "pdf-to-jpg": dynamic(() => import("./pdf-to-jpg"), { loading: ToolSkeleton, ssr: false }),
   "markdown-converter": dynamic(() => import("./markdown-converter"), { loading: ToolSkeleton, ssr: false }),
   "csv-json-converter": dynamic(() => import("./csv-json-converter"), { loading: ToolSkeleton, ssr: false }),
+  "flexbox-generator": dynamic(() => import("./flexbox-generator"), { loading: ToolSkeleton, ssr: false }),
+  "grid-generator": dynamic(() => import("./grid-generator"), { loading: ToolSkeleton, ssr: false }),
+  "border-radius-generator": dynamic(() => import("./border-radius-generator"), { loading: ToolSkeleton, ssr: false }),
+  "box-shadow-generator": dynamic(() => import("./box-shadow-generator"), { loading: ToolSkeleton, ssr: false }),
+  "glassmorphism-generator": dynamic(() => import("./glassmorphism-generator"), { loading: ToolSkeleton, ssr: false }),
+  "code-playground": dynamic(() => import("./code-playground"), { loading: ToolSkeleton, ssr: false }),
+  "tailwind-playground": dynamic(() => import("./tailwind-playground"), { loading: ToolSkeleton, ssr: false }),
+  "sitemap-generator": dynamic(() => import("./sitemap-generator"), { loading: ToolSkeleton, ssr: false }),
+  "svg-blob-generator": dynamic(() => import("./svg-blob-generator"), { loading: ToolSkeleton, ssr: false }),
+  "svg-optimizer": dynamic(() => import("./svg-optimizer"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug, preset }: { slug: string; preset?: Record<string, unknown> }) {
