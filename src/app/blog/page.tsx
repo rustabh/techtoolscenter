@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icon } from "@/components/icon";
 import { BlogCard, Pagination } from "@/components/blog/blog-bits";
 import { BlogSearch } from "@/components/blog/blog-search";
-import { allPosts, featuredPosts, paginate } from "@/lib/blog/posts";
+import { allPosts, paginate } from "@/lib/blog/posts";
 import { blogCategories } from "@/lib/blog/categories";
 import { siteConfig } from "@/lib/site";
 
@@ -16,7 +16,6 @@ export const metadata: Metadata = {
 
 export default function BlogIndex() {
   const all = allPosts();
-  const featured = featuredPosts();
   const { items, current, total } = paginate(all, 1);
 
   return (
@@ -38,14 +37,6 @@ export default function BlogIndex() {
           </Link>
         ))}
       </div>
-
-      {/* Featured */}
-      <section className="mb-12">
-        <h2 className="mb-5 text-xl font-bold tracking-tight">Featured</h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          {featured.map((p) => <BlogCard key={p.slug} post={p} featured />)}
-        </div>
-      </section>
 
       {/* Latest */}
       <section>

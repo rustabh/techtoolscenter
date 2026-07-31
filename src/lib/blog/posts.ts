@@ -11,7 +11,6 @@ export const posts: BlogPost[] = [
     template: "tutorial",
     publishedOn: "2026-07-12",
     tags: ["invoice", "gst", "billing", "small business"],
-    featured: true,
     relatedTools: ["invoice-maker", "gst-calculator", "quotation-generator"],
     content: [
       { type: "p", text: "Sending a clean, professional invoice is one of the fastest ways to get paid on time. But you don't need expensive accounting software to do it. With a free online **Invoice Maker**, you can create a fully GST-compliant invoice in a couple of minutes — add your logo, split the tax into CGST and SGST (or IGST), and download a print-ready PDF." },
@@ -53,7 +52,6 @@ export const posts: BlogPost[] = [
     template: "guide",
     publishedOn: "2026-07-14",
     tags: ["qr code", "marketing", "small business"],
-    featured: true,
     relatedTools: ["qr-generator", "barcode-generator"],
     content: [
       { type: "p", text: "QR codes are everywhere — on menus, posters, business cards and payment counters. The good news is you can make your own **QR code** for free, style it with your brand colours and logo, and download it in high resolution for print or web." },
@@ -125,7 +123,6 @@ export const posts: BlogPost[] = [
     template: "guide",
     publishedOn: "2026-07-19",
     tags: ["marriage certificate", "india services", "government", "certificates"],
-    featured: true,
     relatedTools: ["image-compressor", "pdf-merge", "image-resizer"],
     content: [
       { type: "p", text: "A **marriage certificate** is the legal proof of your marriage in India, and you'll need it for passports, visas, joint bank accounts, insurance and name changes. This guide walks you through the whole process. For the full checklist and official links, see our [Marriage Certificate service page](/india-services/certificates/marriage-certificate)." },
@@ -171,7 +168,6 @@ export const posts: BlogPost[] = [
     template: "tutorial",
     publishedOn: "2026-07-19",
     tags: ["pan card", "india services", "tax", "identity"],
-    featured: true,
     relatedTools: ["image-compressor-for-pan-card", "image-compressor", "pdf-compress"],
     content: [
       { type: "p", text: "You can get a **PAN card completely free** using the Instant e-PAN service on the Income Tax portal — no fees, no agents. This guide shows you how. See the full checklist on our [PAN Card service page](/india-services/identity-documents/pan-card)." },
@@ -304,7 +300,6 @@ export const posts: BlogPost[] = [
     template: "guide",
     publishedOn: "2026-07-19",
     tags: ["pan aadhaar link", "india services", "income tax", "aadhaar"],
-    featured: true,
     relatedTools: ["pdf-compress", "image-compressor"],
     content: [
       { type: "p", text: "Linking your **PAN with Aadhaar** is mandatory for most taxpayers. If they aren't linked, your PAN can become *inoperative* — which blocks ITR filing, refunds and many financial transactions. Here's how to link them and check the status on the official portal. See the full checklist on our [PAN–Aadhaar Link service page](/india-services/identity-documents/pan-aadhaar-link)." },
@@ -1259,10 +1254,6 @@ export function postsByCategory(category: string): BlogPost[] {
 }
 export function postsByAuthor(author: string): BlogPost[] {
   return allPosts().filter((p) => p.author === author);
-}
-export function featuredPosts(): BlogPost[] {
-  const f = allPosts().filter((p) => p.featured);
-  return f.length ? f : allPosts().slice(0, 2);
 }
 export function relatedPosts(post: BlogPost, limit = 3): BlogPost[] {
   const scored = allPosts()
