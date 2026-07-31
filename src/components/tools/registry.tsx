@@ -96,6 +96,15 @@ const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> 
   "screen-ruler": dynamic(() => import("./screen-ruler"), { loading: ToolSkeleton, ssr: false }),
   "contrast-checker": dynamic(() => import("./contrast-checker"), { loading: ToolSkeleton, ssr: false }),
   "color-palette-generator": dynamic(() => import("./color-palette-generator"), { loading: ToolSkeleton, ssr: false }),
+  "qr-scanner": dynamic(() => import("./qr-scanner"), { loading: ToolSkeleton, ssr: false }),
+  "income-tax-calculator": dynamic(() => import("./income-tax-calculator"), { loading: ToolSkeleton, ssr: false }),
+  "ctc-calculator": dynamic(() => import("./ctc-calculator"), { loading: ToolSkeleton, ssr: false }),
+  "rent-receipt-generator": dynamic(() => import("./rent-receipt-generator"), { loading: ToolSkeleton, ssr: false }),
+  "passport-photo-maker": dynamic(() => import("./passport-photo-maker"), { loading: ToolSkeleton, ssr: false }),
+  "image-to-pdf": dynamic(() => import("./image-to-pdf"), { loading: ToolSkeleton, ssr: false }),
+  "pdf-to-jpg": dynamic(() => import("./pdf-to-jpg"), { loading: ToolSkeleton, ssr: false }),
+  "markdown-converter": dynamic(() => import("./markdown-converter"), { loading: ToolSkeleton, ssr: false }),
+  "csv-json-converter": dynamic(() => import("./csv-json-converter"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug, preset }: { slug: string; preset?: Record<string, unknown> }) {

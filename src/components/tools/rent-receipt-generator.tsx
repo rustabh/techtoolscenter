@@ -1,0 +1,367 @@
+"use client";
+
+import { useMemo } from "react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Select } from "@/components/ui/select";
+import { ActionBar } from "@/components/tools/action-bar";
+import { formatCurrency, slugify } from "@/lib/utils";
+
+type PaymentMode = "Cash" | "Cheque" | "Bank Transfer" | "UPI";
+
+interface RentReceiptState {
+  landlordName: string;
+  landlordAddress: string;
+  landlordPan: string;
+  tenantName: string;
+  tenantAddress: string;
+  rentAmount: number;
+  rentPeriodFrom: string;
+  rentPeriodTo: string;
+  paymentMode: PaymentMode;
+  city: string;
+  receiptDate: string;
+}
+
+const PAYMENT_MODES: PaymentMode[] = ["Cash", "Cheque", "Bank Transfer", "UPI"];
+
+function todayIso(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function monthStartIso(): string {
+  const d = new Date();
+  return new Date(d.getFullYear(), d.getMonth(), 1).toISOString().slice(0, 10);
+}
+
+function monthEndIso(): string {
+  const d = new Date();
+  return new Date(d.getFullYear(), d.getMonth() + 1, 0).toISOString().slice(0, 10);
+}
+
+function initial(): RentReceiptState {
+  return {
+    landlordName: "Landlord Name",
+    landlordAddress: "",
+    landlordPan: "",
+    tenantName: "Tenant Name",
+    tenantAddress: "",
+    rentAmount: 15000,
+    rentPeriodFrom: monthStartIso(),
+    rentPeriodTo: monthEndIso(),
+    paymentMode: "Bank Transfer",
+    city: "",
+    receiptDate: todayIso(),
+  };
+}
+
+function formatDate(iso: string): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
+}
+
+const ONES = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+  "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+const TENS = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+
+function twoDigits(n: number): string {
+  if (n < 20) return ONES[n];
+  const tens = Math.floor(n / 10);
+  const ones = n % 10;
+  return `${TENS[tens]}${ones ? " " + ONES[ones] : ""}`;
+}
+
+function threeDigits(n: number): string {
+  const hundred = Math.floor(n / 100);
+  const rest = n % 100;
+  const parts: string[] = [];
+  if (hundred) parts.push(`${ONES[hundred]} Hundred`);
+  if (rest) parts.push(twoDigits(rest));
+  return parts.join(" ");
+}
+
+// Converts a non-negative integer to words using the Indian numbering system (Lakh/Crore).
+function numberToWordsIndian(value: number): string {
+  const n = Math.floor(Math.abs(value));
+  if (n === 0) return "Zero";
+  const crore = Math.floor(n / 10000000);
+  const lakh = Math.floor((n % 10000000) / 100000);
+  const thousand = Math.floor((n % 100000) / 1000);
+  const hundred = n % 1000;
+  const parts: string[] = [];
+  if (crore) parts.push(`${threeDigits(crore)} Crore`);
+  if (lakh) parts.push(`${threeDigits(lakh)} Lakh`);
+  if (thousand) parts.push(`${threeDigits(thousand)} Thousand`);
+  if (hundred) parts.push(threeDigits(hundred));
+  return parts.join(" ").replace(/\s+/g, " ").trim();
+}
+
+function amountInWords(amount: number): string {
+  if (!isFinite(amount) || amount <= 0) return "";
+  return `Rupees ${numberToWordsIndian(amount)} Only`;
+}
+
+export default function RentReceiptGenerator() {
+  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<RentReceiptState>(
+    "uh:rent-receipt",
+    initial()
+  );
+
+  const patch = (p: Partial<RentReceiptState>) => set({ ...value, ...p });
+
+  const words = useMemo(() => amountInWords(value.rentAmount), [value.rentAmount]);
+
+  const downloadPdf = async () => {
+    const { jsPDF } = await import("jspdf");
+    const doc = new jsPDF();
+    const margin = 14;
+    let y = 20;
+
+    doc.setFontSize(16);
+    doc.setTextColor(20, 20, 20);
+    doc.text("RENT RECEIPT", 105, y, { align: "center" });
+    y += 12;
+
+    doc.setFontSize(11);
+    doc.setTextColor(40);
+
+    const bodyLine = `Received a sum of ${formatCurrency(value.rentAmount)}${
+      words ? ` (${words})` : ""
+    } from ${value.tenantName} towards rent of the premises situated at ${value.tenantAddress || "-"} for the period from ${formatDate(value.rentPeriodFrom)} to ${formatDate(value.rentPeriodTo)}, paid via ${value.paymentMode}.`;
+    const bodyLines = doc.splitTextToSize(bodyLine, 182);
+    doc.text(bodyLines, margin, y);
+    y += bodyLines.length * 6 + 8;
+
+    doc.setFontSize(10);
+    doc.text(`Landlord Name: ${value.landlordName}`, margin, y);
+    y += 6;
+    if (value.landlordAddress) {
+      const addrLines = doc.splitTextToSize(`Landlord Address: ${value.landlordAddress}`, 182);
+      doc.text(addrLines, margin, y);
+      y += addrLines.length * 6;
+    }
+    if (value.landlordPan) {
+      doc.text(`Landlord PAN: ${value.landlordPan}`, margin, y);
+      y += 6;
+    }
+    y += 4;
+
+    doc.text(`Place: ${value.city || "-"}`, margin, y);
+    doc.text(`Date: ${formatDate(value.receiptDate)}`, 140, y);
+    y += 24;
+
+    doc.line(140, y, 196, y);
+    y += 5;
+    doc.setFontSize(9);
+    doc.text("Landlord's Signature", 140, y);
+
+    y += 14;
+    doc.setFontSize(8);
+    doc.setTextColor(110);
+    const stampNote =
+      "Note: A ₹1 revenue stamp is required if rent is paid in cash and the receipt amount exceeds ₹5,000 (as per Indian Stamp Act practice) — affix and sign across it physically after printing.";
+    const stampLines = doc.splitTextToSize(stampNote, 182);
+    doc.text(stampLines, margin, y);
+
+    const month = value.rentPeriodFrom ? value.rentPeriodFrom.slice(0, 7) : todayIso().slice(0, 7);
+    const filename = `rent-receipt-${slugify(value.tenantName || "tenant")}-${month}.pdf`;
+    doc.save(filename);
+  };
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-2">
+      <div className="space-y-6">
+        <Card>
+          <CardHeader>
+            <CardTitle>Landlord details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="rr-landlord-name">Landlord name</Label>
+              <Input
+                id="rr-landlord-name"
+                value={value.landlordName}
+                onChange={(e) => patch({ landlordName: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="rr-landlord-address">Landlord address</Label>
+              <Textarea
+                id="rr-landlord-address"
+                value={value.landlordAddress}
+                onChange={(e) => patch({ landlordAddress: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="rr-landlord-pan">Landlord PAN (optional)</Label>
+              <Input
+                id="rr-landlord-pan"
+                value={value.landlordPan}
+                onChange={(e) => patch({ landlordPan: e.target.value.toUpperCase() })}
+                placeholder="ABCDE1234F"
+              />
+              <p className="text-xs text-muted-foreground">
+                Required if annual rent exceeds ₹1,00,000 — ask your employer.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Tenant &amp; rent details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="rr-tenant-name">Tenant name</Label>
+              <Input
+                id="rr-tenant-name"
+                value={value.tenantName}
+                onChange={(e) => patch({ tenantName: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="rr-tenant-address">Rented property address</Label>
+              <Textarea
+                id="rr-tenant-address"
+                value={value.tenantAddress}
+                onChange={(e) => patch({ tenantAddress: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="rr-rent-amount">Monthly rent (₹)</Label>
+              <Input
+                id="rr-rent-amount"
+                type="number"
+                inputMode="decimal"
+                value={value.rentAmount}
+                onChange={(e) => patch({ rentAmount: Number(e.target.value) })}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="rr-period-from">Rent period from</Label>
+                <Input
+                  id="rr-period-from"
+                  type="date"
+                  value={value.rentPeriodFrom}
+                  onChange={(e) => patch({ rentPeriodFrom: e.target.value })}
+                />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="rr-period-to">Rent period to</Label>
+                <Input
+                  id="rr-period-to"
+                  type="date"
+                  value={value.rentPeriodTo}
+                  onChange={(e) => patch({ rentPeriodTo: e.target.value })}
+                />
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="rr-payment-mode">Payment mode</Label>
+              <Select
+                id="rr-payment-mode"
+                value={value.paymentMode}
+                onChange={(e) => patch({ paymentMode: e.target.value as PaymentMode })}
+              >
+                {PAYMENT_MODES.map((m) => (
+                  <option key={m} value={m}>
+                    {m}
+                  </option>
+                ))}
+              </Select>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Receipt details</CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="rr-city">City (place of signing)</Label>
+              <Input id="rr-city" value={value.city} onChange={(e) => patch({ city: e.target.value })} />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="rr-receipt-date">Receipt date</Label>
+              <Input
+                id="rr-receipt-date"
+                type="date"
+                value={value.receiptDate}
+                onChange={(e) => patch({ receiptDate: e.target.value })}
+              />
+            </div>
+          </CardContent>
+        </Card>
+
+        <ActionBar
+          onUndo={undo}
+          onRedo={redo}
+          onReset={() => reset()}
+          onDownload={downloadPdf}
+          downloadLabel="Download PDF"
+          canUndo={canUndo}
+          canRedo={canRedo}
+        />
+      </div>
+
+      <div className="lg:sticky lg:top-20 lg:h-fit">
+        <div className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
+          <h3 className="text-center text-lg font-bold text-indigo-600">RENT RECEIPT</h3>
+
+          <p className="mt-4 text-sm leading-relaxed text-slate-700">
+            Received a sum of{" "}
+            <span className="font-semibold text-slate-900">{formatCurrency(value.rentAmount)}</span>
+            {words && <span className="text-slate-600"> ({words})</span>} from{" "}
+            <span className="font-semibold text-slate-900">{value.tenantName || "-"}</span> towards rent of
+            the premises situated at{" "}
+            <span className="font-semibold text-slate-900">{value.tenantAddress || "-"}</span> for the
+            period from <span className="font-semibold text-slate-900">{formatDate(value.rentPeriodFrom)}</span>{" "}
+            to <span className="font-semibold text-slate-900">{formatDate(value.rentPeriodTo)}</span>, paid
+            via <span className="font-semibold text-slate-900">{value.paymentMode}</span>.
+          </p>
+
+          <div className="mt-5 space-y-1 text-xs text-slate-600">
+            <p>
+              Landlord Name: <span className="font-medium text-slate-800">{value.landlordName || "-"}</span>
+            </p>
+            {value.landlordAddress && (
+              <p>
+                Landlord Address:{" "}
+                <span className="font-medium text-slate-800">{value.landlordAddress}</span>
+              </p>
+            )}
+            {value.landlordPan && (
+              <p>
+                Landlord PAN: <span className="font-medium text-slate-800">{value.landlordPan}</span>
+              </p>
+            )}
+          </div>
+
+          <div className="mt-6 flex items-end justify-between text-xs text-slate-600">
+            <p>Place: {value.city || "-"}</p>
+            <p>Date: {formatDate(value.receiptDate)}</p>
+          </div>
+
+          <div className="mt-10 flex justify-end">
+            <div className="w-40 border-t border-slate-400 pt-1 text-center text-xs text-slate-600">
+              Landlord&apos;s Signature
+            </div>
+          </div>
+
+          <p className="mt-8 text-[10px] leading-relaxed text-slate-400">
+            Note: A ₹1 revenue stamp is required if rent is paid in cash and the receipt amount exceeds
+            ₹5,000 (as per Indian Stamp Act practice) — affix and sign across it physically after printing.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

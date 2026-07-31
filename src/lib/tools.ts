@@ -1345,6 +1345,151 @@ export const tools: Tool[] = [
       { question: "Is my text uploaded?", answer: "No. The comparison runs entirely in your browser." },
     ],
   },
+  {
+    slug: "qr-scanner",
+    name: "QR Code Scanner",
+    description: "Scan a QR code with your camera or an uploaded image — instantly.",
+    longDescription:
+      "Point your camera at a QR code or upload a photo of one to decode it instantly. Copy the result or open it directly if it's a link. Camera video and images are processed locally in your browser — nothing is recorded or uploaded to a server.",
+    category: "Everyday",
+    icon: "ScanLine",
+    keywords: ["qr code scanner", "scan qr code", "read qr code", "qr decoder", "qr reader online"],
+    addedOn: "2026-07-31",
+    popular: true,
+    faq: [
+      { question: "Do I need to allow camera access?", answer: "Yes, to scan live you'll need to grant camera permission. If you'd rather not, upload a photo of the QR code instead — no camera needed." },
+      { question: "Is the camera feed uploaded anywhere?", answer: "No. Every frame is decoded locally in your browser. Nothing is recorded, stored or sent to a server." },
+      { question: "What happens if the QR code links to a website?", answer: "The decoded result shows the link text, plus an \"Open link\" button so you can visit it directly." },
+    ],
+  },
+  {
+    slug: "income-tax-calculator",
+    name: "Income Tax Calculator",
+    description: "Compare old vs new tax regime and estimate your tax for FY 2025-26.",
+    longDescription:
+      "Enter your annual income to see your estimated tax under both the new and old regimes for FY 2025-26 (AY 2026-27) — including standard deduction, Section 87A rebate and cess — with a clear comparison of which regime saves you more.",
+    category: "Calculators",
+    icon: "IndianRupee",
+    keywords: ["income tax calculator", "old vs new tax regime", "tax calculator india", "87a rebate", "income tax slab 2025-26"],
+    addedOn: "2026-07-31",
+    popular: true,
+    faq: [
+      { question: "Which tax year does this use?", answer: "FY 2025-26 (AY 2026-27) slabs. Tax rules can change with each Union Budget — always confirm current rates on the official Income Tax e-filing portal before filing." },
+      { question: "Which regime should I choose?", answer: "The calculator shows both results side by side and tells you which one saves more for the income you entered — there's no single right answer, it depends on your income and deductions." },
+      { question: "Does this account for deductions like 80C or HRA?", answer: "No, this is a simplified estimate using the standard deduction only. Detailed deductions (80C, HRA, home loan interest, etc.) mainly apply under the old regime and aren't factored in here." },
+    ],
+  },
+  {
+    slug: "ctc-calculator",
+    name: "CTC to In-Hand Salary Calculator",
+    description: "Estimate your monthly take-home salary from your annual CTC.",
+    longDescription:
+      "Enter your CTC (Cost to Company), bonus, PF percentage and professional tax to get an estimated monthly and annual take-home salary breakdown — including basic, HRA, employer/employee PF and deductions.",
+    category: "Calculators",
+    icon: "Banknote",
+    keywords: ["ctc calculator", "in hand salary calculator", "take home salary", "ctc to net salary", "salary breakup calculator"],
+    addedOn: "2026-07-31",
+    popular: true,
+    faq: [
+      { question: "Does this include income tax?", answer: "No. This calculator focuses on the CTC-to-gross-to-net salary structure. Use the Income Tax Calculator separately to estimate tax on top of this." },
+      { question: "Why is my actual salary slip different from this estimate?", answer: "Actual salary structures, PF rules and professional tax vary by company and state. This is a simplified, commonly-used estimate — check your offer letter or payslip for exact figures." },
+      { question: "What's a typical Basic and HRA split?", answer: "This calculator assumes Basic is about 50% of CTC (minus bonus) and HRA is about 50% of Basic — common assumptions, though your actual company structure may differ." },
+    ],
+  },
+  {
+    slug: "rent-receipt-generator",
+    name: "Rent Receipt Generator",
+    description: "Create a rent receipt for HRA tax exemption claims — free PDF download.",
+    longDescription:
+      "Generate a clean rent receipt with landlord and tenant details, rent period and payment mode — exactly what's needed to claim HRA (House Rent Allowance) tax exemption from your employer or in your ITR.",
+    category: "Business",
+    icon: "House",
+    keywords: ["rent receipt generator", "hra rent receipt", "rent receipt for hra exemption", "rent receipt format", "rent receipt pdf"],
+    addedOn: "2026-07-31",
+    popular: true,
+    faq: [
+      { question: "Do I need my landlord's PAN?", answer: "It's required by most employers if your annual rent exceeds ₹1,00,000 — ask your landlord for it if that applies to you. It's optional on the receipt otherwise." },
+      { question: "Do I need a revenue stamp?", answer: "As a general practice under the Indian Stamp Act, a ₹1 revenue stamp is affixed and signed across when rent is paid in cash and the receipt amount exceeds ₹5,000. Print the receipt and add one if that applies to you." },
+      { question: "How many receipts do I need for the year?", answer: "Most employers ask for one receipt per month, or a quarterly set — check what your employer's HR/payroll process requires." },
+    ],
+  },
+  {
+    slug: "passport-photo-maker",
+    name: "Passport Photo Maker",
+    description: "Crop a photo to passport size and print multiple copies on one sheet.",
+    longDescription:
+      "Upload a photo and crop it to the exact passport, visa or PAN photo size you need — India, US, UK, Schengen and more — then download a single photo or a ready-to-print sheet with multiple copies for your local print shop.",
+    category: "Image",
+    icon: "IdCard",
+    keywords: ["passport photo maker", "passport size photo online", "passport photo print sheet", "pan card photo size", "visa photo maker"],
+    addedOn: "2026-07-31",
+    popular: true,
+    faq: [
+      { question: "Which sizes are supported?", answer: "India passport/visa (51×51mm), India PAN card (25×35mm), US passport/visa (51×51mm), Schengen/EU visa (35×45mm) and UK passport (35×45mm)." },
+      { question: "Will this photo definitely be accepted?", answer: "Requirements can vary slightly by country and portal — always confirm the exact size and background requirements on the official passport/visa portal before submitting." },
+      { question: "Can I print multiple copies on one sheet?", answer: "Yes. Download the print sheet option, which tiles as many copies as fit on a standard 4×6 inch photo print at 300 DPI." },
+    ],
+  },
+  {
+    slug: "image-to-pdf",
+    name: "Image to PDF",
+    description: "Combine one or more images into a single PDF document.",
+    longDescription:
+      "Convert JPG or PNG images into a PDF — each image becomes its own page. Reorder images before converting, then download the combined PDF, processed entirely in your browser.",
+    category: "Documents",
+    icon: "FileImage",
+    keywords: ["image to pdf", "jpg to pdf", "png to pdf", "convert images to pdf", "combine images into pdf"],
+    addedOn: "2026-07-31",
+    faq: [
+      { question: "Which image formats are supported?", answer: "JPG and PNG. WebP isn't supported directly — convert it to JPG or PNG first using the Image Converter." },
+      { question: "Can I reorder the images before converting?", answer: "Yes, use the up/down arrows to set the page order before generating the PDF." },
+    ],
+  },
+  {
+    slug: "pdf-to-jpg",
+    name: "PDF to JPG",
+    description: "Convert every page of a PDF into separate JPG images.",
+    longDescription:
+      "Turn each page of a PDF into a high-quality JPG image. Single-page PDFs download instantly; multi-page PDFs give you a thumbnail grid with per-page downloads or a single ZIP of everything.",
+    category: "Documents",
+    icon: "Image",
+    keywords: ["pdf to jpg", "pdf to image", "convert pdf to jpg", "extract images from pdf", "pdf page to jpg"],
+    addedOn: "2026-07-31",
+    faq: [
+      { question: "What if my PDF has many pages?", answer: "You'll get a thumbnail grid with a download button per page, plus a \"Download all as .zip\" option for everything at once." },
+      { question: "Is the PDF uploaded anywhere?", answer: "No. Pages are rendered and converted entirely in your browser." },
+    ],
+  },
+  {
+    slug: "markdown-converter",
+    name: "Markdown Converter",
+    description: "Convert Markdown to HTML or HTML back to Markdown, instantly.",
+    longDescription:
+      "Paste Markdown to get clean HTML — headings, bold/italic, links, lists, code blocks, blockquotes and more — or convert simple HTML back to Markdown. Runs entirely in your browser.",
+    category: "Developer",
+    icon: "FileCode",
+    keywords: ["markdown to html", "html to markdown", "markdown converter", "md to html online", "markdown parser"],
+    addedOn: "2026-07-31",
+    faq: [
+      { question: "Does it support full CommonMark syntax?", answer: "It covers the most common Markdown elements — headings, bold/italic, links, lists, code blocks and blockquotes — but isn't a full CommonMark-spec parser for edge cases." },
+      { question: "Is my content uploaded anywhere?", answer: "No, conversion happens entirely in your browser." },
+    ],
+  },
+  {
+    slug: "csv-json-converter",
+    name: "CSV to JSON Converter",
+    description: "Convert CSV to JSON or JSON back to CSV, with quoted-field support.",
+    longDescription:
+      "Paste CSV to get a clean JSON array, or paste a JSON array of flat objects to get CSV — handles quoted fields containing commas correctly in both directions.",
+    category: "Developer",
+    icon: "FileSpreadsheet",
+    keywords: ["csv to json", "json to csv", "csv converter", "csv json online converter", "convert spreadsheet to json"],
+    addedOn: "2026-07-31",
+    faq: [
+      { question: "What if my JSON has nested objects?", answer: "JSON to CSV requires a flat array of objects (no nested objects or arrays) — you'll get a clear error message if the structure doesn't match." },
+      { question: "Does it handle commas inside a CSV field?", answer: "Yes, as long as the field is wrapped in double quotes, e.g. \"Smith, John\" is parsed as one field." },
+    ],
+  },
 ];
 
 // Tools added on or after this date show a "New" badge. Fixed for deterministic SSR.
