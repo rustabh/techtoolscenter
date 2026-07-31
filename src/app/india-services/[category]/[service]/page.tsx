@@ -219,6 +219,22 @@ export default async function IndiaServicePage({ params }: { params: Promise<{ c
             </div>
           )}
 
+          {/* Sponsored / affiliate recommendations — clearly labelled, never mixed with official links */}
+          {svc.partnerLinks?.length ? (
+            <div className="rounded-2xl border border-border bg-card p-5">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Sponsored</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                {svc.partnerLinks.map((l) => (
+                  <a key={l.url} href={l.url} target="_blank" rel="sponsored noopener noreferrer"
+                    className="group rounded-xl border border-border p-4 text-sm transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
+                    <span className="flex items-center justify-between gap-2 font-medium group-hover:text-primary">{l.label} <ExternalLink className="size-3.5 shrink-0" /></span>
+                    <span className="mt-1 block text-xs text-muted-foreground">{l.description}</span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          ) : null}
+
           {/* Ad — after the core guide, before FAQ */}
           <PremiumAd className="!px-0" />
 
