@@ -2458,6 +2458,54 @@ export const indiaServices: IndiaService[] = [
     keywords: ["import export code", "IEC registration", "DGFT IEC apply", "IEC code online", "export import license india"],
     updatedOn: "2026-07-31",
   },
+  {
+    slug: "sir-electoral-roll-revision",
+    name: "Special Intensive Revision (SIR) of Electoral Rolls",
+    category: "identity-documents",
+    officialName: "Election Commission of India",
+    officialUrl: "https://voters.eci.gov.in",
+    overview:
+      "Special Intensive Revision (SIR) is a thorough, house-to-house revision of India's electoral rolls carried out by the Election Commission of India (ECI) — deeper than the routine annual summary revision. Booth Level Officers (BLOs) verify existing voter entries and collect enumeration forms, after which a draft electoral roll is published for claims and objections before the final roll is notified. SIR is conducted in specific states or areas as and when notified by the ECI, not everywhere at once — always check the official portal to see the current status and schedule for your constituency, since this changes with each notified revision.",
+    documents: [
+      "Existing EPIC (Voter ID) card, if you have one",
+      "Proof of age and address (mainly for new inclusions or corrections)",
+      "A recent passport-size photograph",
+      "Any document specified in the current SIR notification for your state — the exact list is set separately for each revision, so check the latest official notification",
+    ],
+    eligibility: [
+      "Indian citizens ordinarily resident in a constituency where SIR has been notified",
+      "Existing electors whose entries need to be verified or corrected",
+      "New applicants otherwise eligible to be added to the electoral roll",
+    ],
+    steps: [
+      "Check the official ECI portal (voters.eci.gov.in) or local notices to see whether SIR is currently active in your constituency.",
+      "If a Booth Level Officer (BLO) visits, fill out and return the enumeration form with the requested details.",
+      "If you aren't visited, or want to check your status yourself, use the ECI's portal to submit your enumeration form online where that option is available.",
+      "Once the draft electoral roll is published, check it carefully for your name and details.",
+      "If your name is missing, file Form 6 (inclusion); to object to another entry, file Form 7; to correct an error in your own entry, file Form 8 — all within the claims/objections window announced for that revision.",
+      "Track your claim/objection and check the final electoral roll once it's published.",
+    ],
+    fees: "There is no fee for the enumeration form or for filing Form 6, Form 7 or Form 8 during SIR.",
+    processingTime: "Enumeration, draft roll publication, the claims/objections window and final roll publication are all fixed by the ECI for each SIR exercise and published in the official notification — timelines vary by state and revision, so check the current schedule on the portal rather than assuming a fixed duration.",
+    faq: [
+      { question: "What is Special Intensive Revision (SIR)?", answer: "It's a deeper, more thorough revision of the electoral roll than the routine annual summary revision — involving house-to-house verification by Booth Level Officers and a fresh enumeration, rather than just incremental additions/deletions." },
+      { question: "Is SIR happening in my area right now?", answer: "SIR is notified state-by-state or area-by-area by the ECI, not nationwide at the same time. Check the official portal or contact your local BLO/Electoral Registration Officer for the current status and schedule where you live." },
+      { question: "What if I don't have the documents listed for SIR?", answer: "The accepted document list is specified separately in each SIR notification and can be updated by the ECI. If you're unsure what's currently accepted, check the latest official notification or ask your BLO/Electoral Registration Officer directly rather than assuming." },
+      { question: "What's the difference between Form 6, Form 7 and Form 8?", answer: "Form 6 is used to add a new name to the roll, Form 7 to object to (or seek deletion of) an existing entry, and Form 8 to correct details in your own existing entry." },
+      { question: "What happens if my name is missing from the final roll?", answer: "You can still apply through the regular ongoing claims/objections process outside the SIR window, or approach your Electoral Registration Officer directly — check the official portal for the current process, since options can vary by state and timing." },
+    ],
+    mistakes: [
+      "Ignoring a BLO visit or missing the enumeration form deadline, risking exclusion from the draft roll",
+      "Assuming SIR is active everywhere at once — it's notified area by area, on its own schedule",
+      "Not checking the published draft roll carefully for your own name and details",
+      "Missing the claims/objections window for Form 6, Form 7 or Form 8",
+    ],
+    relatedServices: ["voter-id", "aadhaar-card", "pan-card"],
+    relatedTools: ["image-compressor", "pdf-compress"],
+    keywords: ["sir electoral roll", "special intensive revision", "voter list revision", "eci sir", "electoral roll revision", "enumeration form", "form 6 form 7 form 8", "sir voter list"],
+    popular: true,
+    updatedOn: "2026-07-31",
+  },
 ];
 
 /* ---------------- helpers ---------------- */
@@ -2516,6 +2564,7 @@ const INDIA_INTENTS: { keys: string[]; slug: string }[] = [
   { keys: ["police clearance", "pcc", "police verification certificate"], slug: "police-clearance-certificate" },
   { keys: ["electricity bill", "bijli bill", "pay electricity", "discom bill"], slug: "electricity-bill-payment" },
   { keys: ["sukanya", "ssy", "girl child scheme", "sukanya samriddhi"], slug: "sukanya-samriddhi-yojana" },
+  { keys: ["sir", "special intensive revision", "voter list revision", "electoral roll revision", "enumeration form", "form 6 form 7 form 8"], slug: "sir-electoral-roll-revision" },
 ];
 
 export interface IndiaSearchResult {
