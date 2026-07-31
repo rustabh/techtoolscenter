@@ -7,3 +7,6 @@
 - Reuse existing components; never duplicate code.
 - Assume reasonable defaults on clear requests. Ask only when genuinely blocking, one concise question.
 - Default tone: short, technical, direct.
+- One feature = one commit. One phase = one chat. Don't mix unrelated tasks.
+- If a request bundles multiple independent features, ask to split into phases before implementing.
+- Keep Git history clean and atomic.
