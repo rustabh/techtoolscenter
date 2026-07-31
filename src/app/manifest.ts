@@ -20,7 +20,7 @@ export default function manifest(): MetadataRoute.Manifest {
     ],
     shortcuts: [
       { name: "All tools", short_name: "Tools", url: "/tools" },
-      { name: "Dashboard", short_name: "Dashboard", url: "/dashboard" },
+      { name: "Developer Hub", short_name: "Dev Hub", url: "/developer-hub" },
       { name: "Community", short_name: "Community", url: "/community" },
     ],
   };

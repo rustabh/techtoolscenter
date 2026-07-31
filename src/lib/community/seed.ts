@@ -22,7 +22,7 @@ export const seedPosts: CommunityPost[] = [
   { id: "seed-req-sign", type: "tool-request", title: "Draw & sign a PDF", description: "Add a hand-drawn signature to a PDF without printing it.", category: "Documents", useCase: "Signing contracts", priority: "high", status: "open", votes: 69, createdAt: "2026-07-10", author: "Community", seeded: true },
 
   // Feature requests
-  { id: "seed-feat-dark", type: "feature", title: "Remember my favourite tools order", description: "Let me reorder pinned tools on the dashboard.", status: "open", votes: 24, createdAt: "2026-07-09", author: "Community", seeded: true },
+  { id: "seed-feat-dark", type: "feature", title: "Remember my favourite tools order", description: "Let me reorder my pinned/favourite tools.", status: "open", votes: 24, createdAt: "2026-07-09", author: "Community", seeded: true },
   { id: "seed-feat-batch-qr", type: "feature", title: "Bulk QR code generation", description: "Generate many QR codes at once from a list.", status: "planned", votes: 48, createdAt: "2026-07-08", author: "Community", seeded: true },
 
   // Ideas

@@ -16,7 +16,7 @@ const links = [
   { href: "/updates", label: "Updates" },
   { href: "/blog", label: "Blog" },
   { href: "/community", label: "Community" },
-  { href: "/dashboard", label: "Dashboard" },
+  { href: "/developer-hub", label: "Developer Hub" },
 ];
 
 const navCollections = collectionsWithCounts();

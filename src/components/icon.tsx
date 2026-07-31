@@ -9,6 +9,15 @@ import {
   ArrowLeftRight, Coins, Fuel, Asterisk, FlipHorizontal, Replace, Eraser, Dices, Timer,
   StickyNote, Contrast, Ruler, LayoutGrid,
   Globe, Wrench, Megaphone, ShieldCheck, Settings, Languages, Award, FolderCheck,
+  Server, Blocks, Code, Database, HardDrive, GitBranch, Package, Component,
+  Shapes, ChartColumn, FileStack, TestTube, Plug, Cloud, Activity, ShieldAlert,
+  Workflow, GraduationCap, ScanLine, Camera, FileCode2, Atom, Layers, Wind,
+  Feather, Zap, Boxes, Cpu, Terminal, FileJson, Grid3x3, Table2, Rows3,
+  Columns3, Puzzle, LayoutTemplate, SquareCode, Gem, Star, GitFork, Github,
+  Gitlab, FolderGit2, Container, Ship, Network, Router, Waypoints, Flame,
+  DatabaseZap, HardDriveDownload, Brush, Film, PenTool, Lock, Newspaper,
+  BadgeCheck, Video, FlaskConical, Beaker, Microscope, Bug, Webhook, Radar,
+  Eye, MessageCircle, BookOpen, Book, Library, School, Compass, Map, Presentation,
   type LucideProps,
 } from "lucide-react";
 
@@ -23,6 +32,15 @@ const map = {
   ArrowLeftRight, Coins, Fuel, Asterisk, FlipHorizontal, Replace, Eraser, Dices, Timer,
   StickyNote, Contrast, Ruler, LayoutGrid,
   Globe, Wrench, Megaphone, ShieldCheck, Settings, Languages, Award, FolderCheck,
+  Server, Blocks, Code, Database, HardDrive, GitBranch, Package, Component,
+  Shapes, ChartColumn, FileStack, TestTube, Plug, Cloud, Activity, ShieldAlert,
+  Workflow, GraduationCap, ScanLine, Camera, FileCode2, Atom, Layers, Wind,
+  Feather, Zap, Boxes, Cpu, Terminal, FileJson, Grid3x3, Table2, Rows3,
+  Columns3, Puzzle, LayoutTemplate, SquareCode, Gem, Star, GitFork, Github,
+  Gitlab, FolderGit2, Container, Ship, Network, Router, Waypoints, Flame,
+  DatabaseZap, HardDriveDownload, Brush, Film, PenTool, Lock, Newspaper,
+  BadgeCheck, Video, FlaskConical, Beaker, Microscope, Bug, Webhook, Radar,
+  Eye, MessageCircle, BookOpen, Book, Library, School, Compass, Map, Presentation,
 } as const;
 
 export type IconName = keyof typeof map;

@@ -164,7 +164,7 @@ export default function WebsiteMockupGenerator() {
               <Button variant="outline" onClick={() => exportAs("pdf")} disabled={busy}><Download /> PDF</Button>
               <Button variant="outline" onClick={() => exportAs("zip")} disabled={busy}><Download /> ZIP</Button>
             </div>
-            <Button variant="ghost" size="sm" className="w-full" onClick={saveMockup}>Save to dashboard</Button>
+            <Button variant="ghost" size="sm" className="w-full" onClick={saveMockup}>Save</Button>
           </CardContent>
         </Card>
       </div>

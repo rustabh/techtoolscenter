@@ -12,6 +12,7 @@ import { indiaCities } from "@/lib/india/cities";
 import { schemes } from "@/lib/india/schemes";
 import { hindiServices } from "@/lib/india/hindi";
 import { allUpdates, updateCategories } from "@/lib/updates";
+import { devCategories } from "@/lib/devhub/categories";
 import { siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -21,7 +22,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: base, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${base}/tools`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/dashboard`, lastModified: now, changeFrequency: "weekly", priority: 0.5 },
+    { url: `${base}/developer-hub`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/collections`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/blog`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${base}/india-services`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
@@ -33,6 +34,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   const categoryRoutes: MetadataRoute.Sitemap = categories.map((c) => ({
     url: `${base}/category/${c.id.toLowerCase()}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
+
+  const devHubRoutes: MetadataRoute.Sitemap = devCategories.map((c) => ({
+    url: `${base}/developer-hub/${c.slug}`,
     lastModified: now,
     changeFrequency: "weekly",
     priority: 0.6,
@@ -137,5 +145,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     })),
   ];
 
-  return [...staticRoutes, ...collectionRoutes, ...categoryRoutes, ...toolRoutes, ...landingRoutes, ...blogRoutes, ...indiaRoutes, ...updateRoutes];
+  return [...staticRoutes, ...collectionRoutes, ...categoryRoutes, ...devHubRoutes, ...toolRoutes, ...landingRoutes, ...blogRoutes, ...indiaRoutes, ...updateRoutes];
 }
