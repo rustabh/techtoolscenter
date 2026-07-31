@@ -10,3 +10,5 @@
 - One feature = one commit. One phase = one chat. Don't mix unrelated tasks.
 - If a request bundles multiple independent features, ask to split into phases before implementing.
 - Keep Git history clean and atomic.
+- Default development branch is `claude/utilityhub-saas-app-ce46e6` (repo has no `main`/`master`). Commit directly to it.
+- Don't create feature branches or PRs unless explicitly requested.
