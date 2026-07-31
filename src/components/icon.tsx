@@ -18,6 +18,9 @@ import {
   DatabaseZap, HardDriveDownload, Brush, Film, PenTool, Lock, Newspaper,
   BadgeCheck, Video, FlaskConical, Beaker, Microscope, Bug, Webhook, Radar,
   Eye, MessageCircle, BookOpen, Book, Library, School, Compass, Map, Presentation,
+  Mic, MicVocal, Users, Building2, HeartPulse, Box, FileSearch, Stethoscope,
+  PenLine, MessagesSquare, Chrome, Monitor, Laptop, Handshake, ShoppingBag,
+  Sparkle, Music2, Speech, CircleUserRound, UserRound, ClipboardList,
   type LucideProps,
 } from "lucide-react";
 
@@ -41,6 +44,9 @@ const map = {
   DatabaseZap, HardDriveDownload, Brush, Film, PenTool, Lock, Newspaper,
   BadgeCheck, Video, FlaskConical, Beaker, Microscope, Bug, Webhook, Radar,
   Eye, MessageCircle, BookOpen, Book, Library, School, Compass, Map, Presentation,
+  Mic, MicVocal, Users, Building2, HeartPulse, Box, FileSearch, Stethoscope,
+  PenLine, MessagesSquare, Chrome, Monitor, Laptop, Handshake, ShoppingBag,
+  Sparkle, Music2, Speech, CircleUserRound, UserRound, ClipboardList,
 } as const;
 
 export type IconName = keyof typeof map;
