@@ -80,19 +80,22 @@
      more blurred than the site-wide .glass utility so page content behind
      the menu is pushed away, not readable through it. */
   .mega-glass {
+    /* Opaque-first: the panel must hide page content even if backdrop-filter
+       doesn't render (older browsers, some GPU/compositor combos). Blur is
+       layered on top as an enhancement, not the only thing doing the work. */
     background:
-      linear-gradient(155deg, hsl(0 0% 100% / 0.86), hsl(0 0% 100% / 0.72));
-    backdrop-filter: blur(36px) saturate(160%);
-    -webkit-backdrop-filter: blur(36px) saturate(160%);
-    border: 1px solid hsl(0 0% 100% / 0.7);
+      linear-gradient(155deg, hsl(0 0% 99% / 0.98), hsl(0 0% 97% / 0.96));
+    backdrop-filter: blur(40px) saturate(160%);
+    -webkit-backdrop-filter: blur(40px) saturate(160%);
+    border: 1px solid hsl(0 0% 100% / 0.8);
     box-shadow:
       0 30px 70px -20px hsl(240 30% 20% / 0.28),
       0 10px 30px -12px hsl(240 30% 20% / 0.18),
-      inset 0 1px 0 hsl(0 0% 100% / 0.85);
+      inset 0 1px 0 hsl(0 0% 100% / 0.9);
   }
   .dark .mega-glass {
     background:
-      linear-gradient(155deg, hsl(230 24% 11% / 0.92), hsl(230 28% 7% / 0.86));
+      linear-gradient(155deg, hsl(230 26% 9% / 0.98), hsl(230 30% 6% / 0.97));
     border: 1px solid hsl(0 0% 100% / 0.08);
     box-shadow:
       0 30px 70px -20px hsl(0 0% 0% / 0.65),
@@ -102,14 +105,14 @@
 
   .mega-card {
     @apply rounded-2xl border;
-    background: linear-gradient(160deg, hsl(0 0% 100% / 0.55), hsl(0 0% 100% / 0.28));
-    border-color: hsl(0 0% 100% / 0.55);
-    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.6);
+    background: linear-gradient(160deg, hsl(0 0% 100% / 0.9), hsl(0 0% 98% / 0.72));
+    border-color: hsl(0 0% 100% / 0.7);
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.7);
   }
   .dark .mega-card {
-    background: linear-gradient(160deg, hsl(0 0% 100% / 0.05), hsl(0 0% 100% / 0.02));
-    border-color: hsl(0 0% 100% / 0.07);
-    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.05);
+    background: linear-gradient(160deg, hsl(230 22% 16% / 0.75), hsl(230 26% 11% / 0.6));
+    border-color: hsl(0 0% 100% / 0.08);
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.06);
   }
 
   .mega-glow {
