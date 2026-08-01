@@ -74,19 +74,19 @@ function TrendingChip({ item, index, onNavigate }: { item: MegaMenuLink; index: 
   const ChipIcon = CHIP_ICONS[index % CHIP_ICONS.length];
   if (item.comingSoon || (!item.href && item.action !== "incinc")) {
     return (
-      <span className="inline-flex items-center gap-1.5 rounded-full border border-white/40 bg-white/30 px-3 py-1.5 text-xs text-muted-foreground/50 dark:border-white/5 dark:bg-white/5">
-        <ChipIcon className="size-3" /> {item.label}
+      <span className="flex w-full items-center gap-1.5 rounded-full border border-white/40 bg-white/30 px-3 py-1.5 text-xs text-muted-foreground/50 dark:border-white/5 dark:bg-white/5">
+        <ChipIcon className="size-3 shrink-0" /> <span className="min-w-0 flex-1 truncate">{item.label}</span>
       </span>
     );
   }
   const content = (
     <>
-      <ChipIcon className="size-3" />
-      <span className="max-w-[9rem] truncate">{item.description ?? item.label}</span>
-      {item.badge && <span className="text-[9px] font-semibold uppercase tracking-wide opacity-70">{item.badge}</span>}
+      <ChipIcon className="size-3 shrink-0" />
+      <span className="min-w-0 flex-1 truncate">{item.description ?? item.label}</span>
+      {item.badge && <span className="shrink-0 text-[9px] font-semibold uppercase tracking-wide opacity-70">{item.badge}</span>}
     </>
   );
-  const className = "group inline-flex items-center gap-1.5 rounded-full border border-white/50 bg-white/50 px-3 py-1.5 text-xs font-medium text-foreground/90 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.03] hover:border-primary/30 hover:bg-white/80 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10";
+  const className = "group flex w-full items-center gap-1.5 rounded-full border border-white/50 bg-white/50 px-3 py-1.5 text-xs font-medium text-foreground/90 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.03] hover:border-primary/30 hover:bg-white/80 dark:border-white/10 dark:bg-white/5 dark:hover:bg-white/10";
   return item.href ? (
     <Link href={item.href} className={className} onClick={onNavigate}>{content}</Link>
   ) : (
@@ -185,7 +185,7 @@ export function MegaMenuPanel({ menu, onNavigate }: { menu: MegaMenuConfig; onNa
         {menu.columns.map((col) => (
           <ColumnCard key={col.title} title={col.title} icon={col.icon}>
             {isChipColumn(col.title) ? (
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-col gap-1.5">
                 {col.groups.flatMap((g) => g.items).map((item, i) => (
                   <TrendingChip key={item.label} item={item} index={i} onNavigate={onNavigate} />
                 ))}
