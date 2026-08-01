@@ -8,12 +8,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { downloadBlob } from "@/lib/utils";
+import { cn, downloadBlob } from "@/lib/utils";
 import ImageCompressor from "./image-compressor";
 
-type Tab = "edit" | "compress" | "palette" | "picker" | "info" | "background" | "batch";
+type Tab = "edit" | "crop" | "compress" | "palette" | "picker" | "info" | "background" | "batch";
 const TABS: { id: Tab; label: string }[] = [
-  { id: "edit", label: "Edit" }, { id: "compress", label: "Compress" }, { id: "palette", label: "Palette" }, { id: "picker", label: "Color Picker" },
+  { id: "edit", label: "Edit" }, { id: "crop", label: "Crop" }, { id: "compress", label: "Compress" }, { id: "palette", label: "Palette" }, { id: "picker", label: "Color Picker" },
   { id: "info", label: "Metadata" }, { id: "background", label: "Background" }, { id: "batch", label: "Batch" },
 ];
 
@@ -31,18 +31,35 @@ function useImage() {
     };
     reader.readAsDataURL(file);
   };
-  return { img, meta, load };
+  const reset = () => { setImg(null); setMeta(null); };
+  return { img, meta, load, reset };
 }
 
 function Dropzone({ onFile, label }: { onFile: (f: File) => void; label: string }) {
   const ref = useRef<HTMLInputElement>(null);
+  const [over, setOver] = useState(false);
   return (
     <>
       <input ref={ref} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
-      <button onClick={() => ref.current?.click()} className="flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-10 text-center transition-colors hover:border-primary/50 hover:bg-secondary/40">
+      <button
+        type="button"
+        onClick={() => ref.current?.click()}
+        onDragOver={(e) => { e.preventDefault(); setOver(true); }}
+        onDragLeave={() => setOver(false)}
+        onDrop={(e) => {
+          e.preventDefault();
+          setOver(false);
+          const f = e.dataTransfer.files?.[0];
+          if (f) onFile(f);
+        }}
+        className={cn(
+          "flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed p-10 text-center transition-colors",
+          over ? "border-primary bg-secondary/60" : "border-border hover:border-primary/50 hover:bg-secondary/40",
+        )}
+      >
         <UploadCloud className="size-8 text-primary" />
         <span className="font-medium">{label}</span>
-        <span className="text-sm text-muted-foreground">JPG, PNG or WebP · processed locally</span>
+        <span className="text-sm text-muted-foreground">JPG, PNG or WebP · drag & drop or click · processed locally</span>
       </button>
     </>
   );
@@ -50,7 +67,7 @@ function Dropzone({ onFile, label }: { onFile: (f: File) => void; label: string 
 
 export default function ImageStudio() {
   const [tab, setTab] = useState<Tab>("edit");
-  const { img, meta, load } = useImage();
+  const { img, meta, load, reset } = useImage();
 
   return (
     <div className="space-y-6">
@@ -62,9 +79,10 @@ export default function ImageStudio() {
             {TABS.map((t) => (
               <Button key={t.id} size="sm" variant={tab === t.id ? "default" : "outline"} onClick={() => setTab(t.id)}>{t.label}</Button>
             ))}
-            <Button size="sm" variant="ghost" onClick={() => location.reload()}>New image</Button>
+            <Button size="sm" variant="ghost" onClick={() => { reset(); setTab("edit"); }}>New image</Button>
           </div>
           {tab === "edit" && <EditTab img={img} meta={meta} />}
+          {tab === "crop" && <CropTab img={img} />}
           {tab === "compress" && <ImageCompressor />}
           {tab === "palette" && <PaletteTab img={img} />}
           {tab === "picker" && <PickerTab img={img} />}
@@ -73,7 +91,6 @@ export default function ImageStudio() {
           {tab === "batch" && <BatchTab />}
         </>
       )}
-      {img && tab === "batch" && null}
     </div>
   );
 }
@@ -204,6 +221,135 @@ function applySharpen(ctx: CanvasRenderingContext2D, w: number, h: number) {
     o[(y * w + x) * 4 + 3] = s[(y * w + x) * 4 + 3];
   }
   ctx.putImageData(dst, 0, 0);
+}
+
+/* ---------- Crop ---------- */
+type Rect = { x: number; y: number; w: number; h: number };
+type Handle = "move" | "nw" | "ne" | "sw" | "se";
+const CROP_MAX_W = 640;
+const CROP_MAX_H = 480;
+const CROP_MIN_SIZE = 24;
+const CROP_RATIOS: [string, number | null][] = [["Free", null], ["1:1", 1], ["4:3", 4 / 3], ["16:9", 16 / 9], ["9:16", 9 / 16]];
+
+function fitDims(img: HTMLImageElement) {
+  const scale = Math.min(1, CROP_MAX_W / img.width, CROP_MAX_H / img.height);
+  return { w: Math.round(img.width * scale), h: Math.round(img.height * scale) };
+}
+
+function CropTab({ img }: { img: HTMLImageElement }) {
+  const [disp] = useState(() => fitDims(img));
+  const [sel, setSel] = useState<Rect>(() => ({ x: disp.w * 0.1, y: disp.h * 0.1, w: disp.w * 0.8, h: disp.h * 0.8 }));
+  const [ratio, setRatio] = useState<number | null>(null);
+  const dragRef = useRef<{ handle: Handle; startX: number; startY: number; start: Rect } | null>(null);
+
+  const clamp = (s: Rect): Rect => {
+    let { x, y, w, h } = s;
+    w = Math.max(CROP_MIN_SIZE, Math.min(w, disp.w));
+    h = Math.max(CROP_MIN_SIZE, Math.min(h, disp.h));
+    x = Math.max(0, Math.min(x, disp.w - w));
+    y = Math.max(0, Math.min(y, disp.h - h));
+    return { x, y, w, h };
+  };
+
+  const startDrag = (handle: Handle) => (e: React.PointerEvent) => {
+    e.stopPropagation();
+    (e.currentTarget as Element).setPointerCapture(e.pointerId);
+    dragRef.current = { handle, startX: e.clientX, startY: e.clientY, start: sel };
+  };
+  const onMove = (e: React.PointerEvent) => {
+    const d = dragRef.current;
+    if (!d) return;
+    const dx = e.clientX - d.startX, dy = e.clientY - d.startY;
+    const s = d.start;
+    let next: Rect = { ...s };
+    if (d.handle === "move") {
+      next.x = s.x + dx; next.y = s.y + dy;
+    } else {
+      if (d.handle === "se" || d.handle === "ne") next.w = s.w + dx;
+      if (d.handle === "sw" || d.handle === "nw") { next.w = s.w - dx; next.x = s.x + dx; }
+      if (ratio) {
+        next.h = next.w / ratio;
+        if (d.handle === "ne" || d.handle === "nw") next.y = s.y + (s.h - next.h);
+      } else {
+        if (d.handle === "se" || d.handle === "sw") next.h = s.h + dy;
+        if (d.handle === "ne" || d.handle === "nw") { next.h = s.h - dy; next.y = s.y + dy; }
+      }
+    }
+    setSel(clamp(next));
+  };
+  const endDrag = () => { dragRef.current = null; };
+
+  const applyRatio = (r: number | null) => {
+    setRatio(r);
+    if (r) setSel((s) => clamp({ ...s, h: s.w / r }));
+  };
+
+  const download = () => {
+    const scaleX = img.width / disp.w, scaleY = img.height / disp.h;
+    const c = document.createElement("canvas");
+    c.width = Math.max(1, Math.round(sel.w * scaleX));
+    c.height = Math.max(1, Math.round(sel.h * scaleY));
+    c.getContext("2d")!.drawImage(img, sel.x * scaleX, sel.y * scaleY, sel.w * scaleX, sel.h * scaleY, 0, 0, c.width, c.height);
+    c.toBlob((b) => b && downloadBlob(b, "cropped.png"), "image/png");
+  };
+
+  return (
+    <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
+      <Card>
+        <CardHeader><CardTitle>Crop</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <div className="space-y-1.5">
+            <Label>Aspect ratio</Label>
+            <div className="flex flex-wrap gap-2">
+              {CROP_RATIOS.map(([label, r]) => (
+                <Button key={label} size="sm" variant={ratio === r ? "default" : "outline"} onClick={() => applyRatio(r)}>{label}</Button>
+              ))}
+            </div>
+          </div>
+          <Button className="w-full" onClick={download}><Download /> Download cropped image</Button>
+          <p className="text-xs text-muted-foreground">Drag the corner handles to resize, or drag inside the box to move it.</p>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader><CardTitle>Preview</CardTitle></CardHeader>
+        <CardContent className="flex justify-center">
+          <div
+            className="relative touch-none overflow-hidden rounded-xl border border-border select-none"
+            style={{ width: disp.w, height: disp.h }}
+            onPointerMove={onMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={img.src} alt="" className="absolute inset-0 h-full w-full object-cover" draggable={false} />
+            <div className="absolute inset-x-0 top-0 bg-black/50" style={{ height: sel.y }} />
+            <div className="absolute inset-x-0 bottom-0 bg-black/50" style={{ top: sel.y + sel.h }} />
+            <div className="absolute bg-black/50" style={{ left: 0, top: sel.y, width: sel.x, height: sel.h }} />
+            <div className="absolute bg-black/50" style={{ left: sel.x + sel.w, right: 0, top: sel.y, height: sel.h }} />
+            <div
+              className="absolute cursor-move border-2 border-white"
+              style={{ left: sel.x, top: sel.y, width: sel.w, height: sel.h }}
+              onPointerDown={startDrag("move")}
+            >
+              {(["nw", "ne", "sw", "se"] as const).map((h) => (
+                <span
+                  key={h}
+                  onPointerDown={startDrag(h)}
+                  className={cn(
+                    "absolute size-4 rounded-full border-2 border-white bg-primary",
+                    h === "nw" && "-left-2 -top-2 cursor-nwse-resize",
+                    h === "ne" && "-right-2 -top-2 cursor-nesw-resize",
+                    h === "sw" && "-left-2 -bottom-2 cursor-nesw-resize",
+                    h === "se" && "-right-2 -bottom-2 cursor-nwse-resize",
+                  )}
+                />
+              ))}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }
 
 /* ---------- Palette ---------- */
