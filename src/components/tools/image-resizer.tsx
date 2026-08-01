@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { downloadBlob } from "@/lib/utils";
+import { downloadBlob, formatBytes } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
 
 // Common social/document presets.
@@ -20,11 +20,6 @@ const PRESETS: { label: string; w: number; h: number }[] = [
   { label: "WhatsApp DP", w: 640, h: 640 },
   { label: "Passport (600×600)", w: 600, h: 600 },
 ];
-
-function formatBytes(b: number) {
-  if (b < 1048576) return `${(b / 1024).toFixed(1)} KB`;
-  return `${(b / 1048576).toFixed(2)} MB`;
-}
 
 export default function ImageResizer({ preset }: { preset?: Record<string, unknown> }) {
   const inputRef = useRef<HTMLInputElement>(null);

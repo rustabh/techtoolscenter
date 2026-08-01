@@ -5,15 +5,9 @@ import { UploadCloud } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { downloadBlob } from "@/lib/utils";
+import { downloadBlob, formatBytes } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
 import { CompareSlider } from "@/components/ui/compare-slider";
-
-function formatBytes(bytes: number) {
-  if (bytes < 1024) return `${bytes} B`;
-  if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${(bytes / 1048576).toFixed(2)} MB`;
-}
 
 // Smart presets — one tap configures quality / width / target size.
 type ImgPreset = { id: string; label: string; mode: "quality" | "target"; quality: number; maxWidth: number; targetKB?: number };

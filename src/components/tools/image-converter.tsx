@@ -5,7 +5,7 @@ import { UploadCloud, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { downloadBlob } from "@/lib/utils";
+import { downloadBlob, formatBytes } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
 
 type Fmt = "png" | "jpeg" | "webp";
@@ -14,12 +14,6 @@ const FORMATS: { id: Fmt; label: string; mime: string; ext: string; lossy: boole
   { id: "jpeg", label: "JPG", mime: "image/jpeg", ext: "jpg", lossy: true },
   { id: "webp", label: "WEBP", mime: "image/webp", ext: "webp", lossy: true },
 ];
-
-function formatBytes(b: number) {
-  if (b < 1024) return `${b} B`;
-  if (b < 1048576) return `${(b / 1024).toFixed(1)} KB`;
-  return `${(b / 1048576).toFixed(2)} MB`;
-}
 
 export default function ImageConverter({ preset }: { preset?: Record<string, unknown> }) {
   const inputRef = useRef<HTMLInputElement>(null);
