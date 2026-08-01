@@ -1,12 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Sparkles, X } from "lucide-react";
 import { IncincPanel } from "./incinc-panel";
 
 export function IncincLauncher() {
   const [open, setOpen] = useState(false);
+
+  // Lets other UI (e.g. the Workspace sidebar's "Workflow Hub") open Incinc AI.
+  useEffect(() => {
+    const onOpen = () => setOpen(true);
+    window.addEventListener("incinc:open", onOpen);
+    return () => window.removeEventListener("incinc:open", onOpen);
+  }, []);
 
   return (
     <>

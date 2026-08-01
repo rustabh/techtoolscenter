@@ -14,6 +14,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Analytics } from "@/components/analytics";
 import { ConsentBanner } from "@/components/consent-banner";
 import { IncincLauncher } from "@/components/incinc/incinc-launcher";
+import { WorkspaceSidebar } from "@/components/sidebar/workspace-sidebar";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
@@ -84,6 +85,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <FileDropProvider />
           <ConsentBanner />
           <Toaster />
+          <WorkspaceSidebar />
           <IncincLauncher />
         </ThemeProvider>
         <Script id="ld-org" type="application/ld+json" strategy="afterInteractive"

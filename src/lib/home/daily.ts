@@ -16,6 +16,16 @@ export function pickForDay<T>(list: T[], offset = 0, date = new Date()): T {
   return list[idx];
 }
 
+export function weekNumber(date = new Date()): number {
+  return Math.floor(dayNumber(date) / 7);
+}
+
+export function pickForWeek<T>(list: T[], offset = 0, date = new Date()): T {
+  if (list.length === 0) throw new Error("pickForWeek: empty list");
+  const idx = ((weekNumber(date) + offset) % list.length + list.length) % list.length;
+  return list[idx];
+}
+
 export type Greeting = { text: string; emoji: string };
 
 export function greetingFor(date = new Date()): Greeting {

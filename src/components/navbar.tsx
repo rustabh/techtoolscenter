@@ -2,21 +2,21 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X, Search, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { collectionsWithCounts } from "@/lib/collections";
 import { cn } from "@/lib/utils";
 
 const links = [
+  { href: "/", label: "Home" },
+  { href: "/tools", label: "Tools" },
   { href: "/ai-hub", label: "AI Hub" },
   { href: "/developer-hub", label: "Developer Hub" },
-  { href: "/india-services", label: "India Services" },
-  { href: "/updates", label: "Updates" },
+  { href: "/india-services", label: "India Hub" },
   { href: "/blog", label: "Blog" },
-  { href: "/community", label: "Community" },
 ];
 
 const navCollections = collectionsWithCounts();
@@ -55,9 +55,14 @@ export function Navbar() {
               <kbd className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px] font-medium">⌘K</kbd>
             </button>
             <ThemeToggle />
-            <Link href="/tools" className={cn(buttonVariants(), "hidden md:inline-flex")}>
-              Explore tools
-            </Link>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event("incinc:open"))}
+              aria-label="Open Incinc AI"
+              className="hidden items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 md:inline-flex"
+            >
+              <Sparkles className="size-4" /> Incinc AI
+            </button>
             <Button
               variant="ghost"
               size="icon"
