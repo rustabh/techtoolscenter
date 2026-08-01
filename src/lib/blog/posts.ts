@@ -1226,6 +1226,510 @@ export const posts: BlogPost[] = [
       { question: "Can I use the unit converter for chemistry problems, not just physics?", answer: "Yes — it covers general metric and imperial conversions (mass, volume, length, energy, etc.) that come up across physics, chemistry and general math coursework." },
     ],
   },
+{
+  "slug": "chatgpt-vs-claude-vs-gemini-2026",
+  "title": "ChatGPT vs Claude vs Gemini: Which AI Chatbot Should You Use in 2026?",
+  "excerpt": "A practical, no-hype comparison of the three biggest AI chatbots — what each is actually good at, their free tiers, and which one fits your specific task.",
+  "category": "guides",
+  "author": "editorial",
+  "template": "comparison",
+  "publishedOn": "2026-08-01",
+  "tags": [
+    "ai",
+    "chatgpt",
+    "claude",
+    "gemini",
+    "ai chatbots"
+  ],
+  "content": [
+    {
+      "type": "p",
+      "text": "ChatGPT, Claude and Gemini all do the same basic thing — you type a question, they write an answer — but they're built by different companies with different priorities, and that shows up in daily use. Instead of declaring one \"the best,\" here's what each is genuinely good at, so you can pick based on what you're actually trying to do."
+    },
+    {
+      "type": "h2",
+      "text": "ChatGPT (OpenAI)"
+    },
+    {
+      "type": "p",
+      "text": "ChatGPT has the largest plugin/app ecosystem and the widest general awareness — it's often the first AI people try. Its free tier gives access to a capable model with usage limits, and paid plans add image generation (via DALL-E), voice conversations, and higher usage caps. It tends to be a strong all-rounder for everyday questions, brainstorming and casual coding help."
+    },
+    {
+      "type": "h2",
+      "text": "Claude (Anthropic)"
+    },
+    {
+      "type": "p",
+      "text": "Claude is frequently praised for longer, more careful writing and for handling large documents or codebases in one go thanks to a large context window. If your task involves reading through a long PDF, refactoring a sizeable file, or getting a nuanced written response rather than a quick one-liner, Claude tends to hold up well. It also has a free tier with usage limits, and paid tiers for heavier use."
+    },
+    {
+      "type": "h2",
+      "text": "Gemini (Google)"
+    },
+    {
+      "type": "p",
+      "text": "Gemini's biggest practical advantage is how deeply it's wired into Google's own products — Search, Docs, Gmail and Android. If you're already in the Google ecosystem, Gemini can act on your Drive files or Gmail directly, which the other two can't do natively. It's also generally available for free with a Google account."
+    },
+    {
+      "type": "h2",
+      "text": "So which one should you actually use?"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "General everyday questions, brainstorming, quick drafts — ChatGPT is a safe default.",
+        "Long documents, careful writing, coding across many files — try Claude.",
+        "You live inside Gmail/Docs/Drive and want AI that can reach into them — Gemini.",
+        "You're not sure — most of these have a free tier, so the fastest way to decide is to try the same real task in two of them and compare the output."
+      ]
+    },
+    {
+      "type": "callout",
+      "text": "There's no single \"best\" chatbot — the right one depends on the task in front of you. Browse [all AI chatbots on AI Hub](/ai-hub/chatbots) to compare pricing and official links side by side."
+    },
+    {
+      "type": "h2",
+      "text": "Beyond the big three"
+    },
+    {
+      "type": "p",
+      "text": "Microsoft Copilot, DeepSeek, Mistral's Le Chat, Meta AI and Perplexity are all worth knowing about too — each has a different angle, from Office integration to web-search-first answers. You can browse the full, regularly updated list on [AI Hub](/ai-hub)."
+    }
+  ],
+  "faq": [
+    {
+      "question": "Is ChatGPT, Claude or Gemini completely free?",
+      "answer": "All three have a free tier with usage limits, and a paid plan for heavier or more advanced use. Exact limits change over time, so check each provider's own pricing page for the current details."
+    },
+    {
+      "question": "Which one is best for coding?",
+      "answer": "All three can help with code, but many developers pair a chatbot with a dedicated AI coding tool like Cursor, GitHub Copilot or Windsurf for actually writing and editing code inside a project — see our roundup of the best free AI tools for coding."
+    },
+    {
+      "question": "Can I use more than one?",
+      "answer": "Yes — many people use different chatbots for different tasks. There's no penalty for having a free account with more than one."
+    }
+  ]
+},
+{
+  "slug": "best-free-ai-tools-for-coding-2026",
+  "title": "10 Best Free AI Tools for Coding in 2026",
+  "excerpt": "From AI-native editors to terminal-based agents, these are the AI coding tools with a genuinely useful free tier — what each does best, and where to start.",
+  "category": "developer",
+  "author": "editorial",
+  "template": "listicle",
+  "publishedOn": "2026-08-01",
+  "tags": [
+    "ai",
+    "coding",
+    "developer tools",
+    "free ai tools"
+  ],
+  "content": [
+    {
+      "type": "p",
+      "text": "You don't need a paid subscription to get real value from AI while coding. Here are ten tools with a genuinely usable free tier (or that are fully open source), covering everything from autocomplete to full autonomous coding agents."
+    },
+    {
+      "type": "h2",
+      "text": "1. GitHub Copilot"
+    },
+    {
+      "type": "p",
+      "text": "GitHub's AI pair-programmer has a free tier for individual developers with monthly usage limits, built directly into VS Code and other major editors."
+    },
+    {
+      "type": "h2",
+      "text": "2. Cursor"
+    },
+    {
+      "type": "p",
+      "text": "An AI-native fork of VS Code with a free tier for its core chat and autocomplete features — a full editor built around AI from the ground up."
+    },
+    {
+      "type": "h2",
+      "text": "3. Windsurf"
+    },
+    {
+      "type": "p",
+      "text": "Another full AI-native editor, with a free tier covering its core AI features — worth trying alongside Cursor to see which workflow you prefer."
+    },
+    {
+      "type": "h2",
+      "text": "4. Continue.dev"
+    },
+    {
+      "type": "p",
+      "text": "A free, open-source AI coding assistant you can plug into VS Code or JetBrains IDEs, and point at the model of your choice."
+    },
+    {
+      "type": "h2",
+      "text": "5. Cline"
+    },
+    {
+      "type": "p",
+      "text": "An open-source autonomous coding agent that runs as a VS Code extension — free to use, since you're just paying for whatever underlying model you connect it to."
+    },
+    {
+      "type": "h2",
+      "text": "6. Aider"
+    },
+    {
+      "type": "p",
+      "text": "A free, open-source AI pair-programmer that runs entirely in your terminal and edits real files in your project directly."
+    },
+    {
+      "type": "h2",
+      "text": "7. Amazon Q Developer"
+    },
+    {
+      "type": "p",
+      "text": "AWS's AI coding assistant has a free tier for individual developers, integrated into popular IDEs."
+    },
+    {
+      "type": "h2",
+      "text": "8. Tabnine"
+    },
+    {
+      "type": "p",
+      "text": "One of the longer-standing AI autocomplete tools, with a free tier for individual use across most major editors."
+    },
+    {
+      "type": "h2",
+      "text": "9. Replit AI"
+    },
+    {
+      "type": "p",
+      "text": "If you build in the browser, Replit's AI features are available on its free tier — useful for quick prototypes without any local setup."
+    },
+    {
+      "type": "h2",
+      "text": "10. ChatGPT / Claude (free tier)"
+    },
+    {
+      "type": "p",
+      "text": "A general chatbot isn't a replacement for an in-editor assistant, but the free tiers of ChatGPT and Claude are still genuinely useful for explaining errors, planning an approach, or reviewing a snippet you paste in."
+    },
+    {
+      "type": "callout",
+      "text": "See pricing, official links and full descriptions for all of these — and more — on [AI Hub's Coding category](/ai-hub/coding), or browse component libraries and other build resources on the [Developer Hub](/developer-hub)."
+    }
+  ],
+  "faq": [
+    {
+      "question": "Are these tools really free, or just a trial?",
+      "answer": "Continue.dev, Cline and Aider are fully open source and free. Cursor, Windsurf, GitHub Copilot, Amazon Q Developer, Tabnine and Replit AI all have an ongoing free tier for individual use (not just a time-limited trial), though usage limits and exact terms can change — check each one's current pricing page."
+    },
+    {
+      "question": "Which one should I start with?",
+      "answer": "If you want a full AI-native editor, try Cursor or Windsurf. If you want to keep your existing editor and just add AI, GitHub Copilot or Continue.dev are the easiest additions."
+    },
+    {
+      "question": "Do any of these work without an internet connection?",
+      "answer": "Most rely on a cloud-hosted model, so no. If fully offline/local model use matters to you, look at pairing an open-source tool like Continue.dev with a locally-hosted model."
+    }
+  ]
+},
+{
+  "slug": "gst-registration-india-step-by-step-guide",
+  "title": "GST Registration in India: Complete Step-by-Step Guide (2026)",
+  "excerpt": "Who needs to register for GST, which documents you need, and the exact steps on the official GST portal — plus what changes once you're registered.",
+  "category": "business",
+  "author": "techtoolscenter-team",
+  "template": "guide",
+  "publishedOn": "2026-08-01",
+  "tags": [
+    "gst",
+    "business",
+    "india",
+    "tax registration"
+  ],
+  "relatedTools": [
+    "invoice-maker",
+    "gst-calculator"
+  ],
+  "content": [
+    {
+      "type": "p",
+      "text": "GST (Goods and Services Tax) registration is the process that gives your business a GSTIN — a unique 15-digit number that lets you legally collect GST from customers and claim credit for GST you've paid. Here's who needs it and exactly how to apply."
+    },
+    {
+      "type": "h2",
+      "text": "Who needs to register for GST?"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "Businesses with annual turnover above the threshold set for your state and business type (this varies for goods vs services, and by state — check the current threshold on the [official GST portal](https://www.gst.gov.in) before applying).",
+        "Anyone selling goods or services inter-state, regardless of turnover.",
+        "E-commerce sellers, in most cases, regardless of turnover.",
+        "Businesses that want to voluntarily register to claim input tax credit, even below the threshold."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Documents you'll need"
+    },
+    {
+      "type": "ul",
+      "items": [
+        "PAN card of the business/proprietor",
+        "Aadhaar card",
+        "Proof of business address (electricity bill, rent agreement, or property documents)",
+        "Bank account details (a cancelled cheque or bank statement)",
+        "Passport-size photograph",
+        "Business registration proof (partnership deed, incorporation certificate, etc., if applicable)"
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Step-by-step registration process"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Go to the [official GST portal](https://www.gst.gov.in) and click Register Now under Taxpayers.",
+        "Fill Part A with your PAN, mobile number and email — you'll get an OTP on both to verify.",
+        "You'll receive a Temporary Reference Number (TRN); use it to log back in and complete Part B.",
+        "Fill in business details, promoter/partner details, and upload the documents listed above.",
+        "Choose your principal place of business and add any additional places of business.",
+        "Submit the application using an OTP, Digital Signature Certificate (DSC), or e-Sign.",
+        "You'll receive an Application Reference Number (ARN) to track your application status.",
+        "Once approved (typically within a few working days), you'll receive your GSTIN and can download your registration certificate from the portal."
+      ]
+    },
+    {
+      "type": "callout",
+      "text": "For the full checklist with eligibility details specific to your situation, see the [India Hub GST Registration guide](/india-services/business-tax/gst-registration)."
+    },
+    {
+      "type": "h2",
+      "text": "What changes once you're registered"
+    },
+    {
+      "type": "p",
+      "text": "Once registered, you must charge GST on your invoices, file regular GST returns (monthly or quarterly depending on your scheme), and maintain proper records. A [GST-compliant Invoice Maker](/tools/invoice-maker) that automatically splits CGST/SGST or IGST makes this much easier to get right from day one."
+    }
+  ],
+  "faq": [
+    {
+      "question": "How long does GST registration take?",
+      "answer": "Once your application and documents are submitted correctly, approval typically takes a few working days. Delays usually come from incomplete or mismatched documents."
+    },
+    {
+      "question": "Is there a fee for GST registration?",
+      "answer": "No — GST registration itself is free on the official government portal. Be cautious of third parties charging a fee just to fill the form for you."
+    },
+    {
+      "question": "What happens if I don't register when I'm required to?",
+      "answer": "Operating above the threshold (or making inter-state/e-commerce sales) without registering can lead to penalties and interest on unpaid tax. It's best to register as soon as you cross the threshold or start qualifying activity."
+    }
+  ]
+},
+{
+  "slug": "how-to-check-epf-pf-balance-online",
+  "title": "How to Check Your EPF/PF Balance Online (2026 Guide)",
+  "excerpt": "Four free ways to check your Provident Fund balance — the EPFO portal, the UMANG app, a missed call, and SMS — with what you need for each.",
+  "category": "guides",
+  "author": "techtoolscenter-team",
+  "template": "tutorial",
+  "publishedOn": "2026-08-01",
+  "tags": [
+    "epf",
+    "pf",
+    "epfo",
+    "india",
+    "employment"
+  ],
+  "content": [
+    {
+      "type": "p",
+      "text": "If you're a salaried employee in India, your Provident Fund (PF) contributions are managed by EPFO (Employees' Provident Fund Organisation). You don't need to visit an office to check your balance — here are four free ways to do it, all using your UAN (Universal Account Number)."
+    },
+    {
+      "type": "h2",
+      "text": "What you need first: your UAN"
+    },
+    {
+      "type": "p",
+      "text": "Your UAN (Universal Account Number) is a 12-digit number assigned to every EPF member, and it stays the same across job changes. It's usually printed on your payslip, or your employer's HR/payroll team can provide it. You'll also need it activated on the EPFO portal at least once (with an OTP to your registered mobile) before some of these methods work."
+    },
+    {
+      "type": "h2",
+      "text": "Method 1: EPFO member portal"
+    },
+    {
+      "type": "ol",
+      "items": [
+        "Go to the [EPFO member e-Sewa portal](https://www.epfindia.gov.in) and log in with your UAN and password.",
+        "Go to the \"View\" menu and select \"Passbook.\"",
+        "You'll see your full contribution history and current balance, employer-wise."
+      ]
+    },
+    {
+      "type": "h2",
+      "text": "Method 2: UMANG app"
+    },
+    {
+      "type": "p",
+      "text": "The UMANG app (a government app covering many services) has an EPFO section where you can check your passbook and balance using your UAN, without needing a separate login for EPFO specifically."
+    },
+    {
+      "type": "h2",
+      "text": "Method 3: Missed call"
+    },
+    {
+      "type": "p",
+      "text": "If your UAN is linked to your Aadhaar, PAN and bank account (KYC-seeded), give a missed call to the EPFO's registered missed-call number from your registered mobile. You'll receive an SMS with your last contribution and balance — no charges, no need to speak to anyone."
+    },
+    {
+      "type": "h2",
+      "text": "Method 4: SMS"
+    },
+    {
+      "type": "p",
+      "text": "You can also send an SMS in the format specified by EPFO from your registered mobile number to get your balance details by return SMS, available in multiple languages."
+    },
+    {
+      "type": "callout",
+      "text": "Exact numbers, SMS formats and portal steps can change — always confirm the current details on the [official EPFO website](https://www.epfindia.gov.in) or the [India Hub EPFO guide](/india-services/employment/epfo)."
+    },
+    {
+      "type": "h2",
+      "text": "If your UAN isn't activated yet"
+    },
+    {
+      "type": "p",
+      "text": "You'll need to activate it once on the EPFO portal using your UAN, and details like date of birth and mobile number, followed by an OTP. After that, all four methods above will work."
+    }
+  ],
+  "faq": [
+    {
+      "question": "Is checking my PF balance free?",
+      "answer": "Yes, all four methods — portal, UMANG app, missed call and SMS — are completely free."
+    },
+    {
+      "question": "What if I don't know my UAN?",
+      "answer": "Check your salary slip, ask your employer's HR/payroll team, or look it up on the EPFO portal using your PF account number and personal details."
+    },
+    {
+      "question": "Why is my balance not updating?",
+      "answer": "Employers deposit PF contributions with some processing delay, so very recent salary months may not show immediately. If it's been several months with no update, follow up with your employer's payroll team."
+    }
+  ]
+},
+{
+  "slug": "best-free-ai-image-generators-2026",
+  "title": "Best Free AI Image Generators in 2026 (And How Midjourney Compares)",
+  "excerpt": "Midjourney gets the most attention, but it's paid-only. Here are the AI image generators that actually have a usable free tier — and where Midjourney fits in.",
+  "category": "design",
+  "author": "editorial",
+  "template": "comparison",
+  "publishedOn": "2026-08-01",
+  "tags": [
+    "ai",
+    "image generation",
+    "midjourney",
+    "free ai tools",
+    "design"
+  ],
+  "content": [
+    {
+      "type": "p",
+      "text": "Midjourney is often the first name people mention for AI image generation — but it's important to know upfront that it's paid-only, with no ongoing free tier. If you want to try AI image generation without paying, here's what actually has a real free option, plus where Midjourney fits if you decide it's worth paying for."
+    },
+    {
+      "type": "h2",
+      "text": "Genuinely free options"
+    },
+    {
+      "type": "h3",
+      "text": "Bing Image Creator"
+    },
+    {
+      "type": "p",
+      "text": "Microsoft's free AI image generator, powered by DALL-E, built right into Bing. No subscription required."
+    },
+    {
+      "type": "h3",
+      "text": "Stable Diffusion"
+    },
+    {
+      "type": "p",
+      "text": "An open-weight model you can run yourself, or access through various free community interfaces. More setup involved, but genuinely free and highly customizable."
+    },
+    {
+      "type": "h2",
+      "text": "Free tier, paid for more"
+    },
+    {
+      "type": "h3",
+      "text": "Adobe Firefly"
+    },
+    {
+      "type": "p",
+      "text": "Adobe's generative image models, with a free tier covering a limited number of monthly generations, and deep integration with Photoshop/Illustrator on paid Creative Cloud plans."
+    },
+    {
+      "type": "h3",
+      "text": "Playground AI"
+    },
+    {
+      "type": "p",
+      "text": "A browser-based canvas for mixing multiple AI models, with a free daily generation allowance."
+    },
+    {
+      "type": "h3",
+      "text": "Leonardo AI"
+    },
+    {
+      "type": "p",
+      "text": "Popular for game and creative asset generation, with a free tier that includes a daily token allowance."
+    },
+    {
+      "type": "h3",
+      "text": "Ideogram"
+    },
+    {
+      "type": "p",
+      "text": "Especially strong at rendering legible text inside generated images (something many models struggle with), with a free tier available."
+    },
+    {
+      "type": "h2",
+      "text": "Where Midjourney fits"
+    },
+    {
+      "type": "p",
+      "text": "Midjourney is known for a distinctive, painterly image style that many artists and designers prefer for certain kinds of work — but it requires a paid subscription with no free trial. If your priority is cost, start with the free options above; if you specifically want Midjourney's look and are willing to pay, it remains one of the most popular choices for that particular aesthetic."
+    },
+    {
+      "type": "callout",
+      "text": "Compare pricing, official links and more image-generation tools on [AI Hub's Image Generation category](/ai-hub/image-generation)."
+    },
+    {
+      "type": "h2",
+      "text": "Already have an image? You don't need AI for everything"
+    },
+    {
+      "type": "p",
+      "text": "If you just need to resize, compress, convert or clean up the background of an existing image, our own free [Image Studio](/tools/image-studio) does all of that privately in your browser — no AI subscription needed."
+    }
+  ],
+  "faq": [
+    {
+      "question": "Does Midjourney have a free trial?",
+      "answer": "No — Midjourney removed its free trial in 2023 due to abuse, and it is currently a paid-only subscription service."
+    },
+    {
+      "question": "Which free AI image generator is best for beginners?",
+      "answer": "Bing Image Creator is the simplest to start with — it's free, requires only a Microsoft account, and needs no setup."
+    },
+    {
+      "question": "Can I use AI-generated images commercially?",
+      "answer": "This depends entirely on each tool's specific terms of service and your subscription tier — always check the current licensing terms on the provider's own site before commercial use."
+    }
+  ]
+},
 ];
 
 /* ---------------- helpers ---------------- */
