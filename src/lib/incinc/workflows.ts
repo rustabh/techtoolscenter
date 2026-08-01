@@ -56,6 +56,36 @@ export const instagramWorkflow: AssistantResponse = {
   ],
 };
 
+export const startBusinessWorkflow: AssistantResponse = {
+  summary:
+    "Starting a business in India usually follows this order: register the business itself, then register for GST if you're liable, then handle invoicing and compliance from day one.",
+  recommendedTools: [
+    { label: "Udyam (MSME) Registration", href: "/india-services/business-tax/msme-udyam", kind: "internal", description: "Free government registration that unlocks MSME benefits and easier loans." },
+    { label: "GST Registration", href: "/india-services/business-tax/gst-registration", kind: "internal", description: "Required once your turnover crosses the threshold, or if you sell online/inter-state." },
+    { label: "Invoice Maker", href: "/tools/invoice-maker", kind: "internal", description: "GST-compliant invoices from day one, with CGST/SGST/IGST breakdown." },
+    { label: "GST Return Filing", href: "/india-services/business-tax/gst-return", kind: "internal", description: "Guide for ongoing monthly/quarterly GST compliance once registered." },
+  ],
+  workflow: [
+    { label: "Udyam (MSME) Registration", href: "/india-services/business-tax/msme-udyam", kind: "internal", description: "Register the business (free, ~10 minutes)" },
+    { label: "GST Registration", href: "/india-services/business-tax/gst-registration", kind: "internal", description: "If applicable to your turnover/business type" },
+    { label: "Invoice Maker", href: "/tools/invoice-maker", kind: "internal", description: "Start invoicing clients correctly" },
+    { label: "Explore Business AI tools", href: "/ai-hub/business", kind: "internal", description: "CRM, data enrichment and workflow AI" },
+    { label: "GST Return Filing", href: "/india-services/business-tax/gst-return", kind: "internal", description: "Stay compliant going forward" },
+  ],
+  relatedBlogs: [],
+  officialResources: [
+    { label: "Udyam Registration Portal", href: "https://udyamregistration.gov.in", kind: "external" },
+    { label: "GST Portal", href: "https://www.gst.gov.in", kind: "external" },
+  ],
+  estimatedTime: "Udyam registration: ~10 minutes. GST: a few days for approval.",
+  difficulty: "Intermediate",
+  nextStep: "Start with Udyam (MSME) Registration — it's free and unlocks the rest.",
+  actions: [
+    { label: "Open India Hub: Business & Tax", href: "/india-services/business-tax/gst-registration", kind: "internal" },
+    { label: "Open Invoice Maker", href: "/tools/invoice-maker", kind: "internal" },
+  ],
+};
+
 export const saasStackWorkflow: AssistantResponse = {
   summary:
     "For a modern SaaS built fast by a small team, this stack covers the frontend, database/auth, hosting, payments and an AI coding workflow.",

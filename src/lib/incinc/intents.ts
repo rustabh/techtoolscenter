@@ -1,11 +1,14 @@
-import type { AssistantResponse, LinkItem } from "./types";
+import type { AssistantResponse, LinkItem, IntentType } from "./types";
 import { getTool } from "@/lib/tools";
-import { getAiTool, featuredAiTools } from "@/lib/aihub/tools";
+import { getAiTool, featuredAiTools, toolsByCategory as aiToolsByCategory } from "@/lib/aihub/tools";
+import { aiCategories } from "@/lib/aihub/categories";
 import { getDevResource, featuredDevResources } from "@/lib/devhub/resources";
-import { getIndiaService, popularIndiaServices } from "@/lib/india/services";
+import { getIndiaService, popularIndiaServices, searchIndiaServices } from "@/lib/india/services";
+import type { IndiaService } from "@/lib/india/types";
 import { lookupGlossaryTerm } from "./glossary";
+import { lookupKnowledge } from "./knowledge";
 import { searchCatalog } from "./catalog";
-import { passportWorkflow, instagramWorkflow, saasStackWorkflow } from "./workflows";
+import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow } from "./workflows";
 
 function toolLink(slug: string): LinkItem | null {
   const t = getTool(slug);
@@ -31,18 +34,70 @@ function devResourceLink(slug: string): LinkItem | null {
   };
 }
 
-function indiaServiceLink(slug: string): LinkItem | null {
-  const s = getIndiaService(slug);
-  if (!s) return null;
-  return { label: s.name, href: `/india-services/${s.category}/${s.slug}`, kind: "internal", description: s.overview };
+function compact<T>(items: (T | null | undefined)[]): T[] {
+  return items.filter((x): x is T => x !== null && x !== undefined);
 }
 
-function compact<T>(items: (T | null)[]): T[] {
-  return items.filter((x): x is T => x !== null);
+function withIntent(intent: IntentType, response: Omit<AssistantResponse, "intent">): AssistantResponse {
+  return { ...response, intent };
 }
+
+// ---------------------------------------------------------------------------
+// 1. Knowledge Question — company facts + glossary. Answer first, tools only
+//    if genuinely useful. Never falls through to a tool search by accident.
+// ---------------------------------------------------------------------------
+
+const KNOWLEDGE_PREFIX =
+  /^(?:what\s+is|what's|whats|explain|define|tell me (?:more )?about|who\s+is|who\s+founded|who\s+made|who\s+owns|who\s+created|how\s+does)\s+(?:an?\s+)?(.+?)[?.!]*$/i;
+
+function knowledgeIntent(q: string): AssistantResponse | null {
+  const prefixMatch = q.match(KNOWLEDGE_PREFIX);
+  const extracted = prefixMatch?.[1]?.trim();
+
+  const candidates = compact([extracted, q.split(/\s+/).length <= 4 ? q : null]);
+
+  for (const candidate of candidates) {
+    const company = lookupKnowledge(candidate);
+    if (company) {
+      return withIntent("knowledge", {
+        summary: company.answer,
+        recommendedTools: company.relatedTools ?? [],
+        relatedBlogs: [],
+        officialResources: company.officialResources ?? [],
+        difficulty: "Beginner",
+        nextStep: company.nextStep,
+        actions: (company.officialResources ?? []).map((r) => ({ label: r.label, href: r.href, kind: r.kind })),
+      });
+    }
+  }
+
+  if (extracted) {
+    const term = lookupGlossaryTerm(extracted);
+    if (term) {
+      const learnMore: LinkItem | null = term.learnMoreHref
+        ? { label: term.learnMoreLabel ?? "Learn more", href: term.learnMoreHref, kind: term.learnMoreHref.startsWith("http") ? "external" : "internal" }
+        : null;
+      return withIntent("knowledge", {
+        summary: term.explanation,
+        recommendedTools: compact([learnMore]),
+        relatedBlogs: [],
+        officialResources: [],
+        difficulty: "Beginner",
+        actions: compact([learnMore]),
+      });
+    }
+  }
+
+  return null;
+}
+
+// ---------------------------------------------------------------------------
+// 2. Tool Request — a specific, named task with one clear tool.
+// ---------------------------------------------------------------------------
 
 interface FastPath {
   id: string;
+  intent: IntentType;
   test: (q: string) => boolean;
   build: (q: string) => AssistantResponse;
 }
@@ -50,136 +105,87 @@ interface FastPath {
 const fastPaths: FastPath[] = [
   {
     id: "compress-pdf",
+    intent: "tool",
     test: (q) => /pdf/.test(q) && /(compress|shrink|smaller|reduce|too\s*(large|big)|under\s*\d+\s*mb)/.test(q),
-    build: () => {
-      const pdfCompress = toolLink("pdf-compress");
-      const pdfStudio = toolLink("pdf-studio");
-      return {
+    build: () =>
+      withIntent("tool", {
         summary: "Compress your PDF right in the browser — nothing is uploaded to a server.",
-        recommendedTools: compact([pdfCompress, pdfStudio]),
+        recommendedTools: compact([toolLink("pdf-compress"), toolLink("pdf-studio")]),
         relatedBlogs: [],
         officialResources: [],
         estimatedTime: "1-2 minutes",
         difficulty: "Beginner",
         nextStep: "Choose a compression level (Low / Medium / High) and download the smaller file.",
-        actions: pdfCompress ? [{ label: "Open PDF Compress", href: pdfCompress.href, kind: "internal" }] : [],
-      };
-    },
+        actions: [{ label: "Open PDF Compress", href: "/tools/pdf-compress", kind: "internal" }],
+      }),
   },
   {
     id: "passport-photo",
+    intent: "workflow",
     test: (q) => /passport/.test(q) && /(photo|pic|picture|image|photograph)/.test(q),
-    build: () => passportWorkflow,
+    build: () => withIntent("workflow", passportWorkflow),
   },
   {
     id: "remove-background",
+    intent: "tool",
     test: (q) => /background/.test(q) && /(remove|removal|delete|erase|cut\s*out)/.test(q),
-    build: () => {
-      const imageStudio = toolLink("image-studio");
-      const removeBg = aiToolLink("remove-bg");
-      const clipdrop = aiToolLink("clipdrop");
-      return {
+    build: () =>
+      withIntent("tool", {
         summary:
           "For a plain / solid background, Image Studio does it free and privately in your browser. For complex backgrounds (people, hair, busy scenes), an AI background remover gives cleaner edges.",
-        recommendedTools: compact([imageStudio, removeBg, clipdrop]),
+        recommendedTools: compact([toolLink("image-studio"), aiToolLink("remove-bg"), aiToolLink("clipdrop")]),
         relatedBlogs: [],
         officialResources: [],
         estimatedTime: "1 minute",
         difficulty: "Beginner",
         nextStep: "Try Image Studio first — it's free and your image never leaves your device.",
-        actions: imageStudio ? [{ label: "Open Image Studio", href: imageStudio.href, kind: "internal" }] : [],
-      };
-    },
+        actions: [{ label: "Open Image Studio", href: "/tools/image-studio", kind: "internal" }],
+      }),
   },
   {
     id: "invoice",
+    intent: "tool",
     test: (q) => /invoice/.test(q),
     build: () => {
-      const invoice = toolLink("invoice-maker");
-      const gst = indiaServiceLink("gst-registration");
-      return {
+      const gst = getIndiaService("gst-registration");
+      return withIntent("tool", {
         summary: "Create a GST-compliant invoice in a few clicks — 20 designs with CGST/SGST/IGST breakdown built in.",
-        recommendedTools: compact([invoice]),
+        recommendedTools: compact([toolLink("invoice-maker")]),
         relatedBlogs: [],
         officialResources: [],
         estimatedTime: "2-3 minutes",
         difficulty: "Beginner",
         nextStep: gst ? "If you're not yet GST-registered, check the GST Registration guide first." : undefined,
         actions: compact([
-          invoice ? { label: "Open Invoice Maker", href: invoice.href, kind: "internal" as const } : null,
-          gst ? { label: "Read GST Guide", href: gst.href, kind: "internal" as const } : null,
+          { label: "Open Invoice Maker", href: "/tools/invoice-maker", kind: "internal" as const },
+          gst ? { label: "Read GST Guide", href: `/india-services/${gst.category}/${gst.slug}`, kind: "internal" as const } : null,
         ]),
-      };
+      });
     },
   },
   {
     id: "qr-code",
+    intent: "tool",
     test: (q) => /\bqr\b/.test(q) || /qr\s*code/.test(q),
-    build: () => {
-      const qr = toolLink("qr-generator");
-      const qrScanner = toolLink("qr-scanner");
-      return {
+    build: () =>
+      withIntent("tool", {
         summary: "Generate a premium QR code — 22 types, custom shapes, colours and an embedded logo.",
-        recommendedTools: compact([qr, qrScanner]),
+        recommendedTools: compact([toolLink("qr-generator"), toolLink("qr-scanner")]),
         relatedBlogs: [],
         officialResources: [],
         estimatedTime: "1 minute",
         difficulty: "Beginner",
         nextStep: "Pick a QR type (URL, Wi-Fi, UPI, vCard...) and customize its look before downloading.",
-        actions: qr ? [{ label: "Open QR Studio", href: qr.href, kind: "internal" }] : [],
-      };
-    },
-  },
-  {
-    id: "build-saas",
-    test: (q) => /saas/.test(q) && /(build|start|launch|create|make)/.test(q),
-    build: () => saasStackWorkflow,
-  },
-  {
-    id: "gst",
-    test: (q) => /\bgst\b/.test(q),
-    build: () => {
-      const gst = indiaServiceLink("gst-registration");
-      const invoice = toolLink("invoice-maker");
-      return {
-        summary: "GST registration is done entirely on the official GST portal — here's the guide, the portal, and a tool for once you're registered.",
-        recommendedTools: compact([gst, invoice]),
-        relatedBlogs: [],
-        officialResources: [{ label: "GST Portal (official)", href: "https://www.gst.gov.in", kind: "external" }],
-        estimatedTime: "Registration: a few days for approval",
-        difficulty: "Intermediate",
-        nextStep: "Read the required-documents list in the India Hub guide before applying.",
-        actions: compact([
-          gst ? { label: "Open India Hub Guide", href: gst.href, kind: "internal" as const } : null,
-          { label: "Visit Official Website", href: "https://www.gst.gov.in", kind: "external" as const },
-        ]),
-      };
-    },
-  },
-  {
-    id: "ai-for-coding",
-    test: (q) => /\bai\b/.test(q) && /(cod(e|ing)|programming|developer|dev\b)/.test(q),
-    build: () => {
-      const slugs = ["claude", "cursor", "github-copilot", "windsurf", "bolt", "v0", "lovable", "replit-ai"];
-      const tools = compact(slugs.map(aiToolLink));
-      return {
-        summary: "The strongest AI tools for writing and shipping code right now, each suited to a slightly different workflow.",
-        recommendedTools: tools,
-        relatedBlogs: [],
-        officialResources: [],
-        difficulty: "Intermediate",
-        nextStep: "Cursor and Windsurf are full editors; Claude and GitHub Copilot fit inside your existing setup.",
-        actions: [{ label: "Compare AI Coding Tools", href: "/ai-hub/coding", kind: "internal" }],
-      };
-    },
+        actions: [{ label: "Open QR Studio", href: "/tools/qr-generator", kind: "internal" }],
+      }),
   },
   {
     id: "react-components",
+    intent: "tool",
     test: (q) => /(react component|ui kit|component librar|ui librar)/.test(q),
     build: () => {
-      const slugs = ["21st-dev", "aceternity-ui", "magic-ui", "shadcn-ui", "react-bits"];
-      const resources = compact(slugs.map(devResourceLink));
-      return {
+      const resources = compact(["21st-dev", "aceternity-ui", "magic-ui", "shadcn-ui", "react-bits"].map(devResourceLink));
+      return withIntent("tool", {
         summary: "Ready-made, copy-paste React/Tailwind component libraries — pick based on the visual style you want.",
         recommendedTools: resources,
         relatedBlogs: [],
@@ -187,59 +193,147 @@ const fastPaths: FastPath[] = [
         difficulty: "Intermediate",
         nextStep: "Shadcn UI is the most common base; the others layer animated/styled components on top of it.",
         actions: [{ label: "Browse Developer Hub", href: "/developer-hub", kind: "internal" }],
-      };
+      });
     },
   },
   {
-    id: "instagram-workflow",
-    test: (q) => /instagram/.test(q),
-    build: () => instagramWorkflow,
-  },
-  {
     id: "build-website",
+    intent: "tool",
     test: (q) => /(build|create|make).*website/.test(q) || /website\s*builder/.test(q),
-    build: () => {
-      const durable = aiToolLink("durable");
-      const framer = aiToolLink("framer-ai");
-      const mockup = toolLink("website-mockup-generator");
-      return {
+    build: () =>
+      withIntent("tool", {
         summary:
-          "If you want a website without writing code, an AI website builder gets you live fastest. If you're building it yourself with code, see the Build-a-SaaS workflow instead.",
-        recommendedTools: compact([durable, framer, mockup]),
+          "If you want a website without writing code, an AI website builder gets you live fastest. If you're building it yourself with code, ask about starting a SaaS instead.",
+        recommendedTools: compact([aiToolLink("durable"), aiToolLink("framer-ai"), toolLink("website-mockup-generator")]),
         relatedBlogs: [],
         officialResources: [],
         difficulty: "Beginner",
         nextStep: "Durable and Framer AI can generate a full site from a prompt in minutes.",
         actions: [{ label: "Browse AI Hub: Design", href: "/ai-hub/design", kind: "internal" }],
-      };
-    },
+      }),
+  },
+  {
+    id: "instagram-workflow",
+    intent: "workflow",
+    test: (q) => /instagram/.test(q),
+    build: () => withIntent("workflow", instagramWorkflow),
+  },
+  {
+    id: "build-saas",
+    intent: "workflow",
+    test: (q) => /saas/.test(q) && /(build|start|launch|create|make)/.test(q),
+    build: () => withIntent("workflow", saasStackWorkflow),
+  },
+  {
+    id: "start-business",
+    intent: "workflow",
+    test: (q) => /(start|open|register|launch).*(business|company|startup|shop|firm)/.test(q),
+    build: () => withIntent("workflow", startBusinessWorkflow),
   },
 ];
+
+// ---------------------------------------------------------------------------
+// 3. Government Services — resolved against the real India Hub dataset, with
+//    official site, required documents and related tools always attached.
+// ---------------------------------------------------------------------------
+
+function governmentServiceResponse(service: IndiaService): AssistantResponse {
+  const relatedTools = compact((service.relatedTools ?? []).map(toolLink));
+  return withIntent("government", {
+    summary: `${service.name}: ${service.overview}`,
+    recommendedTools: relatedTools,
+    requiredDocuments: service.documents,
+    relatedBlogs: [],
+    officialResources: [{ label: `${service.officialName} (official)`, href: service.officialUrl, kind: "external" }],
+    difficulty: "Intermediate",
+    estimatedTime: service.processingTime,
+    nextStep: service.steps?.[0] ? `First step: ${service.steps[0]}` : undefined,
+    actions: [
+      { label: "Open India Hub Guide", href: `/india-services/${service.category}/${service.slug}`, kind: "internal" },
+      { label: "Visit Official Website", href: service.officialUrl, kind: "external" },
+    ],
+  });
+}
+
+function governmentIntent(q: string): AssistantResponse | null {
+  const [top] = searchIndiaServices(q, 1);
+  if (!top) return null;
+  const service = getIndiaService(top.slug);
+  if (!service) return null;
+  return governmentServiceResponse(service);
+}
+
+// ---------------------------------------------------------------------------
+// 4. AI Recommendations — compare tools in a category, with pricing and
+//    official links, generalized beyond just "coding".
+// ---------------------------------------------------------------------------
+
+function matchAiCategorySlug(term: string): string | null {
+  const t = term.toLowerCase().trim();
+  const exact = aiCategories.find((c) => c.name.toLowerCase() === t || c.slug === t.replace(/\s+/g, "-"));
+  if (exact) return exact.slug;
+  const partial = aiCategories.find((c) => t.includes(c.name.toLowerCase()) || c.name.toLowerCase().includes(t));
+  return partial?.slug ?? null;
+}
+
+function aiRecommendationIntent(q: string): AssistantResponse | null {
+  const match = q.match(/(?:best\s+)?ai\s+(?:tools?\s+)?for\s+(.+?)[?.!]*$/);
+  if (!match) return null;
+  const term = match[1].trim();
+  const categorySlug = matchAiCategorySlug(term);
+
+  const tools = categorySlug
+    ? aiToolsByCategory(categorySlug)
+        .slice()
+        .sort((a, b) => (b.badge ? 1 : 0) - (a.badge ? 1 : 0))
+        .slice(0, 8)
+    : [];
+
+  const recommendedTools: LinkItem[] = tools.length
+    ? tools.map((t) => ({ label: t.name, href: t.officialUrl, kind: "external", description: t.overview, meta: t.pricing }))
+    : featuredAiTools(6).map((t) => ({ label: t.name, href: t.officialUrl, kind: "external", description: t.overview, meta: t.pricing }));
+
+  return withIntent("ai-recommendation", {
+    summary: categorySlug
+      ? `The strongest AI tools for ${term}, compared with pricing and official links.`
+      : `I don't have a dedicated "${term}" category yet, so here are some standout AI tools from across AI Hub.`,
+    recommendedTools,
+    relatedBlogs: [],
+    officialResources: [],
+    difficulty: "Intermediate",
+    nextStep: "Most have a free tier — try 2-3 before committing to a paid plan.",
+    actions: [{ label: `Compare in AI Hub${categorySlug ? `: ${term}` : ""}`, href: categorySlug ? `/ai-hub/${categorySlug}` : "/ai-hub", kind: "internal" }],
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Quick-start chip browse responses (exact-match shortcuts)
+// ---------------------------------------------------------------------------
 
 function browseAiTools(): AssistantResponse {
   const featured = featuredAiTools(6).map((t): LinkItem => ({
     label: t.name, href: t.officialUrl, kind: "external", description: t.overview, meta: t.pricing,
   }));
-  return {
+  return withIntent("ai-recommendation", {
     summary: "AI Hub has 250+ AI tools across chatbots, image/video generation, coding, writing, SEO and more.",
     recommendedTools: featured,
     relatedBlogs: [],
     officialResources: [],
     actions: [{ label: "Open AI Hub", href: "/ai-hub", kind: "internal" }],
-  };
+  });
 }
 
 function browseGovernmentHelp(): AssistantResponse {
   const popular = popularIndiaServices().slice(0, 6).map((s): LinkItem => ({
     label: s.name, href: `/india-services/${s.category}/${s.slug}`, kind: "internal", description: s.overview,
   }));
-  return {
+  return withIntent("government", {
     summary: "India Hub covers identity documents, certificates, GST/business, vehicles and travel — with official links and required documents for each.",
     recommendedTools: popular,
     relatedBlogs: [],
     officialResources: [],
     actions: [{ label: "Open India Hub", href: "/india-services", kind: "internal" }],
-  };
+  });
 }
 
 function browseDeveloperResources(): AssistantResponse {
@@ -250,40 +344,26 @@ function browseDeveloperResources(): AssistantResponse {
     description: r.description,
     meta: r.pricing,
   }));
-  return {
+  return withIntent("tool", {
     summary: "Developer Hub curates component libraries, UI kits, hosting, databases, testing tools and more.",
     recommendedTools: featured,
     relatedBlogs: [],
     officialResources: [],
     actions: [{ label: "Open Developer Hub", href: "/developer-hub", kind: "internal" }],
-  };
+  });
 }
 
-function learningMode(q: string): AssistantResponse | null {
-  const match = q.match(/what\s*is\s*(?:an?\s*)?(.+?)[?.!]*$/) ?? q.match(/explain\s*(?:an?\s*)?(.+?)[?.!]*$/);
-  if (!match) return null;
-  const term = lookupGlossaryTerm(match[1]);
-  if (!term) return null;
-  return {
-    summary: term.explanation,
-    recommendedTools: [],
-    relatedBlogs: [],
-    officialResources: term.learnMoreHref
-      ? [{ label: term.learnMoreLabel ?? "Learn more", href: term.learnMoreHref, kind: term.learnMoreHref.startsWith("http") ? "external" : "internal" }]
-      : [],
-    difficulty: "Beginner",
-    actions: term.learnMoreHref
-      ? [{ label: term.learnMoreLabel ?? "Learn more", href: term.learnMoreHref, kind: term.learnMoreHref.startsWith("http") ? "external" : "internal" }]
-      : [],
-  };
-}
+// ---------------------------------------------------------------------------
+// Fallback — generic catalog search, only reached once every specific
+// intent has been ruled out. Never a dead end.
+// ---------------------------------------------------------------------------
 
 function fallbackSearch(q: string): AssistantResponse {
   const results = searchCatalog(q, 6);
   if (!results.length) {
-    return {
+    return withIntent("fallback", {
       summary:
-        "I couldn't find an exact match for that. Try describing the outcome you want — for example \"compress a PDF\", \"remove image background\", or \"AI for coding\".",
+        "I couldn't find an exact match for that. Try describing the outcome you want — for example \"compress a PDF\", \"remove image background\", or \"best AI for coding\".",
       recommendedTools: [],
       relatedBlogs: [],
       officialResources: [],
@@ -291,7 +371,7 @@ function fallbackSearch(q: string): AssistantResponse {
         { label: "Browse All Tools", href: "/tools", kind: "internal" },
         { label: "Open AI Hub", href: "/ai-hub", kind: "internal" },
       ],
-    };
+    });
   }
   const recommendedTools = results
     .filter((r) => r.source === "tool" || r.source === "ai-tool" || r.source === "dev-resource")
@@ -303,14 +383,19 @@ function fallbackSearch(q: string): AssistantResponse {
     .filter((r) => r.source === "india-service" || r.source === "scheme")
     .map((r): LinkItem => ({ label: r.title, href: r.href, kind: r.kind, description: r.description }));
 
-  return {
+  return withIntent("fallback", {
     summary: `Here's what I found across TechToolsCenter for "${q}".`,
     recommendedTools,
     relatedBlogs,
     officialResources,
     actions: [],
-  };
+  });
 }
+
+// ---------------------------------------------------------------------------
+// Classification entry point — Knowledge is checked first so the assistant
+// never defaults to tool-spam for a question that just wants an answer.
+// ---------------------------------------------------------------------------
 
 export function resolveIntent(rawQuery: string): AssistantResponse {
   const q = rawQuery.trim().toLowerCase();
@@ -319,12 +404,18 @@ export function resolveIntent(rawQuery: string): AssistantResponse {
   if (q === "government help") return browseGovernmentHelp();
   if (q === "developer resources") return browseDeveloperResources();
 
+  const knowledge = knowledgeIntent(q);
+  if (knowledge) return knowledge;
+
   for (const path of fastPaths) {
     if (path.test(q)) return path.build(q);
   }
 
-  const learned = learningMode(q);
-  if (learned) return learned;
+  const ai = aiRecommendationIntent(q);
+  if (ai) return ai;
+
+  const government = governmentIntent(q);
+  if (government) return government;
 
   return fallbackSearch(q);
 }

@@ -79,6 +79,19 @@ export function IncincMessage({ response }: { response: AssistantResponse }) {
         </Section>
       )}
 
+      {response.requiredDocuments && response.requiredDocuments.length > 0 && (
+        <Section title="Required Documents">
+          <ul className="space-y-1 text-sm text-muted-foreground">
+            {response.requiredDocuments.map((doc, i) => (
+              <li key={i} className="flex items-start gap-1.5">
+                <span className="mt-1 size-1 shrink-0 rounded-full bg-primary" />
+                {doc}
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
+
       {response.relatedBlogs.length > 0 && (
         <Section title="Related Reading">
           <div className="grid gap-2 sm:grid-cols-2">

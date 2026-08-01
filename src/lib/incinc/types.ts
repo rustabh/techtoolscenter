@@ -21,10 +21,14 @@ export interface SmartAction {
 
 export type Difficulty = "Beginner" | "Intermediate" | "Advanced";
 
+export type IntentType = "knowledge" | "tool" | "government" | "ai-recommendation" | "workflow" | "fallback";
+
 export interface AssistantResponse {
   summary: string;
+  intent?: IntentType;
   recommendedTools: LinkItem[];
   workflow?: WorkflowStep[];
+  requiredDocuments?: string[];
   relatedBlogs: LinkItem[];
   officialResources: LinkItem[];
   estimatedTime?: string;
