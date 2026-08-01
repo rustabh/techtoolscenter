@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Menu, Search, Sparkles } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
@@ -92,14 +92,6 @@ export function Navbar() {
               <kbd className="rounded border border-border bg-background px-1.5 py-0.5 text-[10px] font-medium">⌘K</kbd>
             </button>
             <ThemeToggle />
-            <button
-              type="button"
-              onClick={() => window.dispatchEvent(new Event("incinc:open"))}
-              aria-label="Open Incinc AI"
-              className="hidden items-center gap-1.5 rounded-full bg-primary px-3.5 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 md:inline-flex"
-            >
-              <Sparkles className="size-4" /> Incinc AI
-            </button>
             <Button
               variant="ghost"
               size="icon"
