@@ -12,7 +12,8 @@ import { cn } from "@/lib/utils";
 
 function MobileSection({ menu, open, onToggle, onNavigate }: { menu: MegaMenuConfig; open: boolean; onToggle: () => void; onNavigate: () => void }) {
   return (
-    <div className="border-b border-border/60">
+    <div>
+      <div className="mega-divider h-px" aria-hidden />
       <button
         type="button"
         onClick={onToggle}
@@ -44,23 +45,23 @@ function MobileSection({ menu, open, onToggle, onNavigate }: { menu: MegaMenuCon
                       <div className="grid grid-cols-2 gap-1.5">
                         {group.items.map((item) =>
                           item.comingSoon ? (
-                            <span key={item.label} className="rounded-lg px-2 py-1.5 text-sm text-muted-foreground/50">{item.label}</span>
+                            <span key={item.label} className="rounded-xl px-2 py-1.5 text-sm text-muted-foreground/45">{item.label}</span>
                           ) : item.action === "incinc" ? (
                             <button
                               key={item.label}
                               type="button"
                               onClick={() => { window.dispatchEvent(new Event("incinc:open")); onNavigate(); }}
-                              className="rounded-lg px-2 py-1.5 text-left text-sm hover:bg-secondary/60"
+                              className="rounded-xl px-2 py-1.5 text-left text-sm transition-colors duration-200 hover:bg-white/50 dark:hover:bg-white/10"
                             >
                               {item.label}
                             </button>
                           ) : item.href ? (
                             item.external ? (
-                              <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" onClick={onNavigate} className="flex items-center gap-1 rounded-lg px-2 py-1.5 text-sm hover:bg-secondary/60">
+                              <a key={item.label} href={item.href} target="_blank" rel="noopener noreferrer" onClick={onNavigate} className="flex items-center gap-1 rounded-xl px-2 py-1.5 text-sm transition-colors duration-200 hover:bg-white/50 dark:hover:bg-white/10">
                                 {item.label} <ExternalLink className="size-3 text-muted-foreground" />
                               </a>
                             ) : (
-                              <Link key={item.label} href={item.href} onClick={onNavigate} className="rounded-lg px-2 py-1.5 text-sm hover:bg-secondary/60">
+                              <Link key={item.label} href={item.href} onClick={onNavigate} className="rounded-xl px-2 py-1.5 text-sm transition-colors duration-200 hover:bg-white/50 dark:hover:bg-white/10">
                                 {item.label}
                               </Link>
                             )
@@ -86,17 +87,19 @@ export function MobileNavDrawer({ open, onClose }: { open: boolean; onClose: () 
     <AnimatePresence>
       {open && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[90] flex flex-col bg-background md:hidden"
+          initial={{ opacity: 0, scale: 1.02 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 1.02 }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="mega-glass fixed inset-0 z-[90] flex flex-col rounded-none md:hidden"
         >
-          <div className="flex items-center justify-between border-b border-border/60 px-4 py-4">
+          <div className="flex items-center justify-between px-4 py-4">
             <p className="text-lg font-bold">Menu</p>
-            <button type="button" onClick={onClose} aria-label="Close menu" className="rounded-full p-2 hover:bg-secondary">
+            <button type="button" onClick={onClose} aria-label="Close menu" className="rounded-full p-2 transition-colors duration-200 hover:bg-white/50 dark:hover:bg-white/10">
               <X className="size-5" />
             </button>
           </div>
+          <div className="mega-divider h-px" aria-hidden />
 
           <button
             type="button"
@@ -104,7 +107,7 @@ export function MobileNavDrawer({ open, onClose }: { open: boolean; onClose: () 
               onClose();
               window.dispatchEvent(new Event("ttc:open-command"));
             }}
-            className="mx-4 mt-4 flex items-center gap-2 rounded-full border border-border bg-secondary/50 px-4 py-3 text-sm text-muted-foreground"
+            className="mega-card mx-4 mt-4 flex items-center gap-2 px-4 py-3 text-sm text-muted-foreground transition-transform duration-200 hover:scale-[1.01]"
           >
             <Search className="size-4" /> Search everything…
           </button>
@@ -121,7 +124,8 @@ export function MobileNavDrawer({ open, onClose }: { open: boolean; onClose: () 
             ))}
           </div>
 
-          <div className="flex items-center justify-between gap-2 border-t border-border/60 px-4 py-4">
+          <div className="mega-divider h-px" aria-hidden />
+          <div className="flex items-center justify-between gap-2 px-4 py-4">
             <button
               type="button"
               onClick={() => {

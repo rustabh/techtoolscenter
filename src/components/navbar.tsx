@@ -61,17 +61,31 @@ export function Navbar() {
 
             <AnimatePresence>
               {active && (
+                <motion.div
+                  key="mega-dim"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.25 }}
+                  className="pointer-events-none fixed inset-0 z-30 bg-black/[0.1] dark:bg-black/[0.35]"
+                  aria-hidden
+                />
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence>
+              {active && (
                 <div
                   onMouseEnter={cancelClose}
                   onMouseLeave={scheduleClose}
-                  className="fixed left-1/2 top-16 z-40 mt-2 w-[min(94vw,880px)] -translate-x-1/2"
+                  className="fixed left-1/2 top-16 z-40 mt-2 w-[min(96vw,1040px)] -translate-x-1/2"
                 >
                   <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                    initial={{ opacity: 0, y: -8, scale: 0.98 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8, scale: 0.98 }}
-                    transition={{ duration: 0.16 }}
-                    className="glass overflow-hidden rounded-3xl shadow-2xl"
+                    exit={{ opacity: 0, y: -8, scale: 0.98 }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                    className="mega-glass overflow-hidden rounded-[28px]"
                     role="menu"
                   >
                     <MegaMenuPanel menu={active} onNavigate={() => setActiveMenu(null)} />
