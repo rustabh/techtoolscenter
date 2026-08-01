@@ -4,13 +4,17 @@ import { indiaStates } from "../india/states";
 import { indiaCities } from "../india/cities";
 import { schemes } from "../india/schemes";
 import { allPosts } from "../blog/posts";
+import { searchAiTools } from "../aihub/tools";
+import { searchDevResources } from "../devhub/resources";
+import { updates } from "../updates/updates";
 
 /**
  * Unified global search across the whole site — tools & landing pages,
- * India Services, and blog posts. Powers the ⌘K command palette so every
- * section is discoverable from a single search box (not just from inside it).
+ * India Services, blog posts, AI Hub, Developer Hub and Updates. Powers the
+ * ⌘K command palette so every section is discoverable from a single search
+ * box (not just from inside it).
  */
-export type GlobalKind = "tool" | "india" | "blog";
+export type GlobalKind = "tool" | "india" | "blog" | "ai" | "developer" | "update";
 
 export interface GlobalResult {
   key: string; // unique key + react key
@@ -19,10 +23,61 @@ export interface GlobalResult {
   icon: string; // lucide icon name (Icon component falls back safely)
   reason?: string; // subtitle / why it matched
   kind: GlobalKind;
+  external?: boolean;
 }
 
 const BLOG_ICON = "FileText";
 const INDIA_ICON = "Landmark";
+const AI_ICON = "Bot";
+const DEV_ICON = "Code2";
+const UPDATE_ICON = "Newspaper";
+
+function aiSearch(query: string, limit: number): GlobalResult[] {
+  return searchAiTools(query, limit).map((t) => ({
+    key: `ai:${t.slug}`,
+    href: t.officialUrl,
+    name: t.name,
+    icon: t.icon,
+    reason: `AI Hub · ${t.pricing}`,
+    kind: "ai" as const,
+    external: true,
+  }));
+}
+
+function devSearch(query: string, limit: number): GlobalResult[] {
+  return searchDevResources(query, limit).map((r) => ({
+    key: `dev:${r.slug}`,
+    href: r.internalToolSlug ? `/tools/${r.internalToolSlug}` : r.officialUrl,
+    name: r.name,
+    icon: r.icon,
+    reason: `Developer Hub · ${r.pricing}`,
+    kind: "developer" as const,
+    external: !r.internalToolSlug,
+  }));
+}
+
+function updateSearch(query: string, limit: number): GlobalResult[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  const tokens = q.split(/\s+/).filter(Boolean);
+  const scored = updates
+    .map((u) => {
+      const hay = `${u.title} ${u.summary} ${u.tags.join(" ")} ${u.category}`.toLowerCase();
+      const score = tokens.reduce((s, t) => s + (hay.includes(t) ? 1 : 0), 0);
+      return { u, score };
+    })
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+  return scored.map(({ u }) => ({
+    key: `update:${u.slug}`,
+    href: `/updates/${u.slug}`,
+    name: u.title,
+    icon: UPDATE_ICON,
+    reason: `Update · ${u.category}`,
+    kind: "update" as const,
+  }));
+}
 
 function blogSearch(query: string, limit: number): GlobalResult[] {
   const q = query.trim().toLowerCase();
@@ -157,9 +212,10 @@ function indiaSearch(query: string, limit: number): GlobalResult[] {
 
 /**
  * Blend results so nothing is buried: tools first (it's a tools platform),
- * then India Services and blog guides, de-duplicated and capped.
+ * then AI Hub, Developer Hub, India Services, blog guides and updates,
+ * de-duplicated and capped.
  */
-export function globalSearch(query: string, limit = 12): GlobalResult[] {
+export function globalSearch(query: string, limit = 24): GlobalResult[] {
   const q = query.trim();
   if (!q) return [];
 
@@ -171,8 +227,11 @@ export function globalSearch(query: string, limit = 12): GlobalResult[] {
     reason: r.reason,
     kind: "tool" as const,
   }));
+  const aiHits = aiSearch(q, 6);
+  const devHits = devSearch(q, 6);
   const indiaHits = [...finderMatch(q), ...schemeSearch(q, 4), ...indiaSearch(q, 5), ...stateSearch(q, 3), ...citySearch(q, 3)];
   const blogHits = blogSearch(q, 4);
+  const updateHits = updateSearch(q, 3);
 
   const seen = new Set<string>();
   const out: GlobalResult[] = [];
@@ -183,11 +242,22 @@ export function globalSearch(query: string, limit = 12): GlobalResult[] {
       out.push(r);
     }
   };
-  // Tools first, but always leave room for at least a couple of India/blog hits.
-  push(toolHits.slice(0, indiaHits.length || blogHits.length ? 6 : 8));
+  push(toolHits);
+  push(aiHits);
+  push(devHits);
   push(indiaHits);
   push(blogHits);
-  push(toolHits); // any remaining tool hits fill the rest
+  push(updateHits);
 
   return out.slice(0, limit);
+}
+
+/** Results grouped by kind, for a categorized command palette UI. */
+export function globalSearchGrouped(query: string, perGroupLimit = 5): Record<GlobalKind, GlobalResult[]> {
+  const all = globalSearch(query, 100);
+  const groups: Record<GlobalKind, GlobalResult[]> = { tool: [], ai: [], developer: [], india: [], blog: [], update: [] };
+  for (const r of all) {
+    if (groups[r.kind].length < perGroupLimit) groups[r.kind].push(r);
+  }
+  return groups;
 }
