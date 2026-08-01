@@ -230,6 +230,193 @@ const fastPaths: FastPath[] = [
     test: (q) => /(start|open|register|launch).*(business|company|startup|shop|firm)/.test(q),
     build: () => withIntent("workflow", startBusinessWorkflow),
   },
+  {
+    id: "merge-pdf",
+    intent: "tool",
+    test: (q) => /pdf/.test(q) && /(merge|combine|join)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Merge multiple PDFs into one file, in the order you choose — nothing leaves your browser.",
+        recommendedTools: compact([toolLink("pdf-merge"), toolLink("pdf-studio")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        nextStep: "Drag your PDFs into the order you want before merging.",
+        actions: [{ label: "Open PDF Merge", href: "/tools/pdf-merge", kind: "internal" }],
+      }),
+  },
+  {
+    id: "split-pdf",
+    intent: "tool",
+    test: (q) => /pdf/.test(q) && /(split|separate|extract\s*pages?)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Split a PDF into separate files by page range, or pull out just the pages you need.",
+        recommendedTools: compact([toolLink("pdf-split"), toolLink("pdf-studio")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open PDF Split", href: "/tools/pdf-split", kind: "internal" }],
+      }),
+  },
+  {
+    id: "resize-image",
+    intent: "tool",
+    test: (q) => /resize/.test(q) && /(image|photo|picture|pic)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Resize an image to exact dimensions or a percentage scale, with the aspect ratio locked so nothing stretches.",
+        recommendedTools: compact([toolLink("image-resizer"), toolLink("image-studio")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Image Resizer", href: "/tools/image-resizer", kind: "internal" }],
+      }),
+  },
+  {
+    id: "convert-image-format",
+    intent: "tool",
+    test: (q) => !/pdf/.test(q) && (/\b(jpe?g|png|webp|gif|bmp)\b.*\bto\b.*\b(jpe?g|png|webp|gif|bmp)\b/.test(q) || (/convert/.test(q) && /(image|photo|picture)/.test(q))),
+    build: () =>
+      withIntent("tool", {
+        summary: "Convert between JPG, PNG, WebP, GIF and more, in your browser — no upload, no watermark.",
+        recommendedTools: compact([toolLink("image-converter"), toolLink("image-studio")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Image Converter", href: "/tools/image-converter", kind: "internal" }],
+      }),
+  },
+  {
+    id: "emi-calculator",
+    intent: "tool",
+    test: (q) => /emi/.test(q) || (/loan/.test(q) && /(calculat|monthly|instal)/.test(q)),
+    build: () =>
+      withIntent("tool", {
+        summary: "Calculate your monthly EMI, total interest and full amortization schedule for any loan amount, rate and tenure.",
+        recommendedTools: compact([toolLink("emi-calculator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open EMI Calculator", href: "/tools/emi-calculator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "gst-calculator",
+    intent: "tool",
+    test: (q) => /gst/.test(q) && /(calculat|add|remove|split|inclusive|exclusive)/.test(q),
+    build: () => {
+      const gst = getIndiaService("gst-registration");
+      return withIntent("tool", {
+        summary: "Add or remove GST from an amount, with the CGST/SGST or IGST split shown separately.",
+        recommendedTools: compact([toolLink("gst-calculator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "30 seconds",
+        difficulty: "Beginner",
+        nextStep: gst ? "Not GST-registered yet? See the GST Registration guide." : undefined,
+        actions: compact([
+          { label: "Open GST Calculator", href: "/tools/gst-calculator", kind: "internal" as const },
+          gst ? { label: "Read GST Registration Guide", href: `/india-services/${gst.category}/${gst.slug}`, kind: "internal" as const } : null,
+        ]),
+      });
+    },
+  },
+  {
+    id: "generate-password",
+    intent: "tool",
+    test: (q) => /password/.test(q) && /(generat|creat|strong|random|secure)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Generate a strong, random password with control over length, symbols, numbers and case — created locally, never sent anywhere.",
+        recommendedTools: compact([toolLink("password-generator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "10 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Password Generator", href: "/tools/password-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "build-resume",
+    intent: "tool",
+    test: (q) => /resume/.test(q) || /\bcv\b/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Build a clean, ATS-friendly resume with ready-made templates — fill in your details and export a polished PDF.",
+        recommendedTools: compact([toolLink("resume-builder")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "10-15 minutes",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Resume Builder", href: "/tools/resume-builder", kind: "internal" }],
+      }),
+  },
+  {
+    id: "word-count",
+    intent: "tool",
+    test: (q) => /word\s*count/.test(q) || (/count/.test(q) && /(word|character)/.test(q)),
+    build: () =>
+      withIntent("tool", {
+        summary: "Get a live word, character, sentence and reading-time count as you write or paste in text.",
+        recommendedTools: compact([toolLink("word-counter")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Word Counter", href: "/tools/word-counter", kind: "internal" }],
+      }),
+  },
+  {
+    id: "unit-convert",
+    intent: "tool",
+    test: (q) => !/(image|photo|picture|pdf)/.test(q) && (/unit\s*convert/.test(q) || (/convert/.test(q) && /(cm|kg|km|miles|celsius|fahrenheit|inches|pounds|litre|liter|gallon)/.test(q))),
+    build: () =>
+      withIntent("tool", {
+        summary: "Convert between length, weight, temperature, volume and more — all common unit systems in one place.",
+        recommendedTools: compact([toolLink("unit-converter")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "30 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Unit Converter", href: "/tools/unit-converter", kind: "internal" }],
+      }),
+  },
+  {
+    id: "age-calculator",
+    intent: "tool",
+    test: (q) => /age/.test(q) && /(calculat|how old)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Calculate exact age in years, months and days from a date of birth — useful for eligibility checks on age-restricted forms too.",
+        recommendedTools: compact([toolLink("age-calculator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "10 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Age Calculator", href: "/tools/age-calculator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "generate-barcode",
+    intent: "tool",
+    test: (q) => /barcode/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Generate a barcode in the standard format you need (CODE128, EAN, UPC and more), ready to download and print.",
+        recommendedTools: compact([toolLink("barcode-generator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "30 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Barcode Generator", href: "/tools/barcode-generator", kind: "internal" }],
+      }),
+  },
 ];
 
 // ---------------------------------------------------------------------------
