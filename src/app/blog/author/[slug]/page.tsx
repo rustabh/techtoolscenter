@@ -5,6 +5,7 @@ import { AuthorBox, BlogCard } from "@/components/blog/blog-bits";
 import { authors, getAuthor } from "@/lib/blog/authors";
 import { postsByAuthor } from "@/lib/blog/posts";
 import { siteConfig } from "@/lib/site";
+import { defaultOgImage } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
   return authors.map((a) => ({ slug: a.slug }));
@@ -18,6 +19,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `${author.name} — ${author.role} | ${siteConfig.name}`,
     description: author.bio,
     alternates: { canonical: `/blog/author/${author.slug}` },
+    openGraph: { title: `${author.name} — ${author.role}`, description: author.bio, images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title: author.name, description: author.bio, images: [defaultOgImage()] },
   };
 }
 

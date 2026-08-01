@@ -13,6 +13,7 @@ import { getIndiaService } from "@/lib/india/services";
 import { getTool } from "@/lib/tools";
 import { getLanding } from "@/lib/landing/landing";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
+import { defaultOgImage } from "@/lib/seo/metadata";
 import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -34,7 +35,8 @@ export async function generateMetadata({ params }: { params: Promise<{ service: 
         "hi-IN": `/hi/india-services/${h.slug}`,
       },
     },
-    openGraph: { title: h.seoTitle, description: h.seoDescription, url: `/hi/india-services/${h.slug}`, locale: "hi_IN" },
+    openGraph: { title: h.seoTitle, description: h.seoDescription, url: `/hi/india-services/${h.slug}`, locale: "hi_IN", images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title: h.seoTitle, description: h.seoDescription, images: [defaultOgImage()] },
   };
 }
 

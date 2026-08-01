@@ -13,6 +13,7 @@ import { getAuthor } from "@/lib/blog/authors";
 import { getBlogCategory } from "@/lib/blog/categories";
 import { getTool } from "@/lib/tools";
 import { articleLd, faqPageFromItemsLd, breadcrumbLd } from "@/lib/seo/schema";
+import { defaultOgImage } from "@/lib/seo/metadata";
 import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -29,8 +30,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title,
     description,
     alternates: { canonical: `/blog/${post.slug}` },
-    openGraph: { type: "article", url: `${siteConfig.url}/blog/${post.slug}`, title, description, publishedTime: post.publishedOn },
-    twitter: { card: "summary_large_image", title, description },
+    openGraph: {
+      type: "article",
+      url: `${siteConfig.url}/blog/${post.slug}`,
+      title,
+      description,
+      publishedTime: post.publishedOn,
+      images: [defaultOgImage()],
+    },
+    twitter: { card: "summary_large_image", title, description, images: [defaultOgImage()] },
   };
 }
 

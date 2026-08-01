@@ -25,6 +25,12 @@ export function ogImageFor(tool: Tool): string {
   return img.startsWith("http") ? img : `${BASE}${img}`;
 }
 
+/** Absolute URL for the site-wide default OG image — the fallback for any
+ *  page that doesn't (yet) generate its own dedicated preview image. */
+export function defaultOgImage(): string {
+  return siteConfig.ogImage.startsWith("http") ? siteConfig.ogImage : `${BASE}${siteConfig.ogImage}`;
+}
+
 export function buildToolMetadata(tool: Tool): Metadata {
   const path = `/tools/${tool.slug}`;
   const title = seoTitleFor(tool);
@@ -66,8 +72,9 @@ export function buildCollectionMetadata(col: Collection, count: number): Metadat
       siteName: siteConfig.name,
       title,
       description: col.description,
+      images: [{ url: defaultOgImage(), alt: `${col.name} — ${siteConfig.name}` }],
     },
-    twitter: { card: "summary_large_image", title, description: col.description },
+    twitter: { card: "summary_large_image", title, description: col.description, images: [defaultOgImage()] },
   };
 }
 

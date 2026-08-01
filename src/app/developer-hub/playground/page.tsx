@@ -3,13 +3,24 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ResourceCard } from "@/components/devhub/resource-card";
 import { playgroundResources } from "@/lib/devhub/playground";
 import { siteConfig } from "@/lib/site";
+import { defaultOgImage } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = {
   title: `Developer Playground — Live CSS & Code Tools | ${siteConfig.name}`,
   description:
     "Interactive, in-browser developer tools — a live HTML/CSS/JS editor, Tailwind playground, Flexbox/Grid/box-shadow/glassmorphism generators, a sitemap builder and more. Free, private, no sign-up.",
   alternates: { canonical: "/developer-hub/playground" },
-  openGraph: { title: `Developer Playground | ${siteConfig.name}`, description: "Interactive, in-browser developer tools — free and private." },
+  openGraph: {
+    title: `Developer Playground | ${siteConfig.name}`,
+    description: "Interactive, in-browser developer tools — free and private.",
+    images: [defaultOgImage()],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Developer Playground | ${siteConfig.name}`,
+    description: "Interactive, in-browser developer tools — free and private.",
+    images: [defaultOgImage()],
+  },
 };
 
 export default function DeveloperPlaygroundPage() {

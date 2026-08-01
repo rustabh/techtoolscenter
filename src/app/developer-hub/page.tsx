@@ -16,13 +16,24 @@ import {
 import { builtinDevTools } from "@/lib/devhub/builtin";
 import type { DevResource } from "@/lib/devhub/types";
 import { siteConfig } from "@/lib/site";
+import { defaultOgImage } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = {
   title: `Developer Hub — Tools, Frameworks, Docs & AI Coding Resources | ${siteConfig.name}`,
   description:
     "A curated developer ecosystem: frameworks, component libraries, databases, deployment platforms, AI coding assistants, icons and more — plus TechToolsCenter's own built-in developer tools, all from one place.",
   alternates: { canonical: "/developer-hub" },
-  openGraph: { title: `Developer Hub | ${siteConfig.name}`, description: "Discover the best free developer tools, docs and resources — curated in one place." },
+  openGraph: {
+    title: `Developer Hub | ${siteConfig.name}`,
+    description: "Discover the best free developer tools, docs and resources — curated in one place.",
+    images: [defaultOgImage()],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Developer Hub | ${siteConfig.name}`,
+    description: "Discover the best free developer tools, docs and resources — curated in one place.",
+    images: [defaultOgImage()],
+  },
 };
 
 export default function DeveloperHubPage() {

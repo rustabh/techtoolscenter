@@ -7,11 +7,23 @@ import { BlogSearch } from "@/components/blog/blog-search";
 import { allPosts, paginate } from "@/lib/blog/posts";
 import { blogCategories } from "@/lib/blog/categories";
 import { siteConfig } from "@/lib/site";
+import { defaultOgImage } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = {
   title: `Blog — Guides, Tips & Tutorials | ${siteConfig.name}`,
   description: "Practical how-to guides, tutorials and tips on invoicing, QR codes, design, productivity, SEO and more — from the TechToolsCenter team.",
   alternates: { canonical: "/blog", types: { "application/rss+xml": "/blog/rss.xml" } },
+  openGraph: {
+    title: `Blog — Guides, Tips & Tutorials | ${siteConfig.name}`,
+    description: "Practical how-to guides, tutorials and tips on invoicing, QR codes, design, productivity, SEO and more.",
+    images: [defaultOgImage()],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Blog | ${siteConfig.name}`,
+    description: "Practical how-to guides, tutorials and tips — from the TechToolsCenter team.",
+    images: [defaultOgImage()],
+  },
 };
 
 export default function BlogIndex() {

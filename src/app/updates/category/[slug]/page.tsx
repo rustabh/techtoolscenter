@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CategoryView } from "@/components/updates/category-view";
 import { updateCategories, getUpdateCategory } from "@/lib/updates/categories";
 import { siteConfig } from "@/lib/site";
+import { defaultOgImage } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
   return updateCategories.map((c) => ({ slug: c.slug }));
@@ -16,7 +17,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `${cat.name} — Updates | ${siteConfig.name}`,
     description: cat.description,
     alternates: { canonical: `/updates/category/${cat.slug}` },
-    openGraph: { title: `${cat.name} — Updates`, description: cat.description, url: `/updates/category/${cat.slug}` },
+    openGraph: { title: `${cat.name} — Updates`, description: cat.description, url: `/updates/category/${cat.slug}`, images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title: `${cat.name} — Updates`, description: cat.description, images: [defaultOgImage()] },
   };
 }
 

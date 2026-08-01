@@ -5,11 +5,23 @@ import { Icon } from "@/components/icon";
 import { Reveal } from "@/components/reveal";
 import { collectionsWithCounts } from "@/lib/collections";
 import { siteConfig } from "@/lib/site";
+import { defaultOgImage } from "@/lib/seo/metadata";
 
 export const metadata: Metadata = {
   title: "Collections — Organized Tool Hubs",
   description: `Browse ${siteConfig.name}'s tools by collection — Calculator Hub, Text Studio, PDF Toolkit, Developer Studio and more. Find the right tool in seconds.`,
   alternates: { canonical: "/collections" },
+  openGraph: {
+    title: "Collections — Organized Tool Hubs",
+    description: `Browse ${siteConfig.name}'s tools by collection — find the right tool in seconds.`,
+    images: [defaultOgImage()],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Collections — Organized Tool Hubs",
+    description: `Browse ${siteConfig.name}'s tools by collection.`,
+    images: [defaultOgImage()],
+  },
 };
 
 export default function CollectionsPage() {

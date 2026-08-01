@@ -6,6 +6,7 @@ import { BlogCard } from "@/components/blog/blog-bits";
 import { blogCategories, getBlogCategory } from "@/lib/blog/categories";
 import { postsByCategory } from "@/lib/blog/posts";
 import { siteConfig } from "@/lib/site";
+import { defaultOgImage } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
   return blogCategories.map((c) => ({ category: c.slug }));
@@ -19,6 +20,8 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
     title: `${cat.name} Articles | ${siteConfig.name} Blog`,
     description: cat.description,
     alternates: { canonical: `/blog/category/${cat.slug}` },
+    openGraph: { title: `${cat.name} Articles | ${siteConfig.name} Blog`, description: cat.description, images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title: `${cat.name} Articles`, description: cat.description, images: [defaultOgImage()] },
   };
 }
 

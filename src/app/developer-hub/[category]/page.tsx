@@ -5,6 +5,7 @@ import { DevResourceFilteredGrid } from "@/components/devhub/dev-resource-filter
 import { devCategories, getDevCategory } from "@/lib/devhub/categories";
 import { resourcesByCategory } from "@/lib/devhub/resources";
 import { siteConfig } from "@/lib/site";
+import { defaultOgImage } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
   return devCategories.map((c) => ({ category: c.slug }));
@@ -19,7 +20,8 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
     title,
     description: `${cat.description} Curated, original descriptions with official sites and docs — free to browse on ${siteConfig.name}'s Developer Hub.`,
     alternates: { canonical: `/developer-hub/${cat.slug}` },
-    openGraph: { title, description: cat.description },
+    openGraph: { title, description: cat.description, images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title, description: cat.description, images: [defaultOgImage()] },
   };
 }
 
