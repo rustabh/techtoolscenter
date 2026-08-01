@@ -12,7 +12,7 @@ import { allPosts, getPost, relatedPosts, tableOfContents, estimateReadingMinute
 import { getAuthor } from "@/lib/blog/authors";
 import { getBlogCategory } from "@/lib/blog/categories";
 import { articleLd, faqPageFromItemsLd, breadcrumbLd } from "@/lib/seo/schema";
-import { defaultOgImage } from "@/lib/seo/metadata";
+import { defaultOgImage, socialTitle } from "@/lib/seo/metadata";
 import { relatedToolsFor } from "@/lib/seo/related";
 import { siteConfig } from "@/lib/site";
 
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const post = getPost(slug);
   if (!post) return {};
-  const title = post.seoTitle ?? `${post.title} | ${siteConfig.name}`;
+  const title = post.seoTitle ?? post.title;
   const description = post.seoDescription ?? post.excerpt;
   return {
     title,
@@ -33,12 +33,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     openGraph: {
       type: "article",
       url: `${siteConfig.url}/blog/${post.slug}`,
-      title,
+      title: socialTitle(title),
       description,
       publishedTime: post.publishedOn,
       images: [defaultOgImage()],
     },
-    twitter: { card: "summary_large_image", title, description, images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title: socialTitle(title), description, images: [defaultOgImage()] },
   };
 }
 

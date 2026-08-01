@@ -3,8 +3,7 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { BlogCard, Pagination } from "@/components/blog/blog-bits";
 import { allPosts, paginate, POSTS_PER_PAGE } from "@/lib/blog/posts";
-import { siteConfig } from "@/lib/site";
-import { defaultOgImage } from "@/lib/seo/metadata";
+import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
   const total = Math.max(1, Math.ceil(allPosts().length / POSTS_PER_PAGE));
@@ -13,13 +12,11 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Promise<{ page: string }> }): Promise<Metadata> {
   const { page } = await params;
-  return {
-    title: `Blog — Page ${page} | ${siteConfig.name}`,
+  return buildSimpleMetadata({
+    title: `Blog — Page ${page}`,
     description: "More guides, tutorials and tips from TechToolsCenter.",
-    alternates: { canonical: `/blog/page/${page}` },
-    openGraph: { title: `Blog — Page ${page}`, description: "More guides, tutorials and tips from TechToolsCenter.", images: [defaultOgImage()] },
-    twitter: { card: "summary_large_image", title: `Blog — Page ${page}`, description: "More guides, tutorials and tips from TechToolsCenter.", images: [defaultOgImage()] },
-  };
+    canonical: `/blog/page/${page}`,
+  });
 }
 
 export default async function BlogPaged({ params }: { params: Promise<{ page: string }> }) {

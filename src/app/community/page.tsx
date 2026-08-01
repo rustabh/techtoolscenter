@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { CommunityClient } from "@/components/community/community-client";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `Community & Feature Requests | ${siteConfig.name}`,
+  title: "Community & Feature Requests",
   description: "Request a tool, report a bug, suggest ideas and vote on what we build next. See the public roadmap and recently released tools on the TechToolsCenter community board.",
   alternates: { canonical: "/community" },
 };

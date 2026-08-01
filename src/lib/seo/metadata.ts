@@ -8,12 +8,26 @@ import { getCollection, type Collection } from "../collections";
  * canonical URL, Open Graph and Twitter Card. Because titles are keyed on the
  * unique tool slug and descriptions on the unique tool copy, there are no
  * duplicate titles or descriptions anywhere on the site.
+ *
+ * IMPORTANT: the root layout sets a title template (`%s | ${siteConfig.name}`),
+ * so every `title` returned from here must be bare — it must NOT itself end
+ * in `| ${siteConfig.name}`, or the site name renders twice ("X | TechToolsCenter
+ * | TechToolsCenter"). Open Graph/Twitter titles are NOT run through that
+ * template (they're read out of context on social platforms), so those
+ * should include the site name explicitly. `socialTitle()` below is the one
+ * place that distinction is made — everything else should call it rather
+ * than re-deriving its own "title + site name" string.
  */
 
 const BASE = siteConfig.url;
 
+/** The full, standalone title for contexts with no title template (OG/Twitter cards, RSS, etc). */
+export function socialTitle(bareTitle: string): string {
+  return `${bareTitle} | ${siteConfig.name}`;
+}
+
 export function seoTitleFor(tool: Tool): string {
-  return tool.seoTitle ?? `${tool.name} — Free Online ${tool.name} | ${siteConfig.name}`;
+  return tool.seoTitle ?? `${tool.name} — Free Online ${tool.name}`;
 }
 
 export function seoDescriptionFor(tool: Tool): string {
@@ -45,13 +59,13 @@ export function buildToolMetadata(tool: Tool): Metadata {
       type: "website",
       url: `${BASE}${path}`,
       siteName: siteConfig.name,
-      title,
+      title: socialTitle(title),
       description,
       images: [{ url: image, alt: `${tool.name} — ${siteConfig.name}` }],
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: socialTitle(title),
       description,
       images: [image],
       creator: siteConfig.twitter,
@@ -59,23 +73,47 @@ export function buildToolMetadata(tool: Tool): Metadata {
   };
 }
 
-export function buildCollectionMetadata(col: Collection, count: number): Metadata {
-  const path = `/collections/${col.slug}`;
-  const title = `${col.name} — ${count} Free Online Tools | ${siteConfig.name}`;
+/**
+ * The common case: a page with a title, description, canonical path, and
+ * nothing else unusual (no hreflang, no RSS alternate, no per-page dynamic
+ * OG image). Every hub index/category/listing page on the site fits this
+ * shape — use this instead of hand-writing the same openGraph/twitter
+ * block, so a future field (e.g. a new Twitter Card option) only needs to
+ * change in one place.
+ */
+export function buildSimpleMetadata(input: {
+  title: string; // bare — do NOT include "| {siteName}", the root layout's title template adds it
+  description: string;
+  canonical: string; // root-relative path, e.g. "/blog/category/guides"
+  ogTitle?: string; // defaults to `title` + the site name (OG isn't run through the title template)
+  ogDescription?: string; // defaults to `description`
+  type?: "website" | "article";
+}): Metadata {
+  const ogTitle = input.ogTitle ?? socialTitle(input.title);
+  const ogDescription = input.ogDescription ?? input.description;
+  const image = defaultOgImage();
   return {
-    title,
-    description: col.description,
-    alternates: { canonical: path },
+    title: input.title,
+    description: input.description,
+    alternates: { canonical: input.canonical },
     openGraph: {
-      type: "website",
-      url: `${BASE}${path}`,
+      type: input.type ?? "website",
+      url: `${BASE}${input.canonical}`,
       siteName: siteConfig.name,
-      title,
-      description: col.description,
-      images: [{ url: defaultOgImage(), alt: `${col.name} — ${siteConfig.name}` }],
+      title: ogTitle,
+      description: ogDescription,
+      images: [image],
     },
-    twitter: { card: "summary_large_image", title, description: col.description, images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title: ogTitle, description: ogDescription, images: [image] },
   };
+}
+
+export function buildCollectionMetadata(col: Collection, count: number): Metadata {
+  return buildSimpleMetadata({
+    title: `${col.name} — ${count} Free Online Tools`,
+    description: col.description,
+    canonical: `/collections/${col.slug}`,
+  });
 }
 
 export function buildCollectionMetadataBySlug(slug: string, count: number): Metadata {

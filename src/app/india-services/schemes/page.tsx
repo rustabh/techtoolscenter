@@ -6,10 +6,9 @@ import { IndiaDisclaimer } from "@/components/india/disclaimer";
 import { PremiumAd } from "@/components/ads/premium-ad";
 import { schemes, schemeAudiences } from "@/lib/india/schemes";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `Government Schemes List 2026 — Sarkari Yojana Guide | ${siteConfig.name}`,
+  title: "Government Schemes List 2026 — Sarkari Yojana Guide",
   description: "A simple, up-to-date list of major Indian government schemes (sarkari yojana) for women, farmers, workers, students, seniors and businesses — Ujjwala, PM Awas, Mudra, Atal Pension, Ayushman, Jan Dhan and more. Benefits, eligibility, documents and official links.",
   alternates: { canonical: "/india-services/schemes" },
 };

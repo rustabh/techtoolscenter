@@ -7,10 +7,9 @@ import { PremiumAd } from "@/components/ads/premium-ad";
 import { statusChecks } from "@/lib/india/status-checks";
 import { getIndiaService } from "@/lib/india/services";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `Check Status Online — PAN, Passport, PF, Ration, PM-KISAN & More | ${siteConfig.name}`,
+  title: "Check Status Online — PAN, Passport, PF, Ration, PM-KISAN & More",
   description: "Quickly check the status of your PAN card, PAN–Aadhaar link, passport, PF/EPF claim, ration card, PM-KISAN, traffic challan, Aadhaar update, voter ID, driving licence, tax refund and scholarship — with direct official tracker links and simple steps.",
   alternates: { canonical: "/india-services/status" },
 };

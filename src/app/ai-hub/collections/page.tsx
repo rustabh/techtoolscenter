@@ -3,10 +3,9 @@ import Link from "next/link";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icon } from "@/components/icon";
 import { aiCollections } from "@/lib/aihub/collections";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `AI Tool Collections — Best AI for Students, Developers & More | ${siteConfig.name}`,
+  title: "AI Tool Collections — Best AI for Students, Developers & More",
   description: "Hand-picked collections of the best AI tools for students, developers, designers, marketers, content creators and more.",
   alternates: { canonical: "/ai-hub/collections" },
 };

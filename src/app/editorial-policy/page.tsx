@@ -5,7 +5,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `Editorial Policy & How We Research | ${siteConfig.name}`,
+  title: "Editorial Policy & How We Research",
   description: "How TechToolsCenter researches, writes and keeps its guides accurate and up to date — our sourcing, verification and correction process. We are an independent educational directory, not a government body.",
   alternates: { canonical: "/editorial-policy" },
 };

@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { AnalyticsDashboard } from "@/components/stats/analytics-dashboard";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `Analytics Dashboard | ${siteConfig.name}`,
+  title: "Analytics Dashboard",
   description: "Your real activity analytics on TechToolsCenter — daily activity, top tools and growth, tracked privately in your browser.",
   alternates: { canonical: "/stats" },
   robots: { index: false, follow: true },

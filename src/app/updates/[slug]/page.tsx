@@ -16,7 +16,7 @@ import { getTool } from "@/lib/tools";
 import { getLanding } from "@/lib/landing/landing";
 import { getPost } from "@/lib/blog/posts";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
-import { defaultOgImage } from "@/lib/seo/metadata";
+import { buildSimpleMetadata } from "@/lib/seo/metadata";
 import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -27,23 +27,20 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const cat = getUpdateCategory(slug);
   if (cat) {
-    return {
-      title: `${cat.name} — Updates | ${siteConfig.name}`,
+    return buildSimpleMetadata({
+      title: `${cat.name} — Updates`,
       description: cat.description,
-      alternates: { canonical: `/updates/${cat.slug}` },
-      openGraph: { title: `${cat.name} — Updates`, description: cat.description, url: `/updates/${cat.slug}`, images: [defaultOgImage()] },
-      twitter: { card: "summary_large_image", title: `${cat.name} — Updates`, description: cat.description, images: [defaultOgImage()] },
-    };
+      canonical: `/updates/${cat.slug}`,
+    });
   }
   const u = getUpdate(slug);
   if (!u) return {};
-  return {
-    title: `${u.title} | ${siteConfig.name}`,
+  return buildSimpleMetadata({
+    title: u.title,
     description: u.summary,
-    alternates: { canonical: `/updates/${u.slug}` },
-    openGraph: { type: "article", title: u.title, description: u.summary, url: `/updates/${u.slug}`, images: [defaultOgImage()] },
-    twitter: { card: "summary_large_image", title: u.title, description: u.summary, images: [defaultOgImage()] },
-  };
+    canonical: `/updates/${u.slug}`,
+    type: "article",
+  });
 }
 
 function resolveTool(slug: string) {

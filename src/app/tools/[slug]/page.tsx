@@ -14,7 +14,7 @@ import { PrivacyFirst } from "@/components/privacy-first";
 import { LandingView } from "@/components/landing/landing-view";
 import { getTool, getCategoryMeta, tools } from "@/lib/tools";
 import { internalLinks } from "@/lib/seo/links";
-import { buildToolMetadata } from "@/lib/seo/metadata";
+import { buildToolMetadata, defaultOgImage, socialTitle } from "@/lib/seo/metadata";
 import { toolSchemas } from "@/lib/seo/schema";
 import { getLanding, landingPages } from "@/lib/landing/landing";
 import { siteConfig } from "@/lib/site";
@@ -41,8 +41,15 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: landing.description,
       keywords: landing.tags,
       alternates: { canonical: path },
-      openGraph: { type: "website", url: `${siteConfig.url}${path}`, siteName: siteConfig.name, title: landing.title, description: landing.description },
-      twitter: { card: "summary_large_image", title: landing.title, description: landing.description },
+      openGraph: {
+        type: "website",
+        url: `${siteConfig.url}${path}`,
+        siteName: siteConfig.name,
+        title: socialTitle(landing.title),
+        description: landing.description,
+        images: [defaultOgImage()],
+      },
+      twitter: { card: "summary_large_image", title: socialTitle(landing.title), description: landing.description, images: [defaultOgImage()] },
     };
   }
   return {};

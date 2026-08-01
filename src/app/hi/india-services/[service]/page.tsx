@@ -13,9 +13,8 @@ import { getIndiaService } from "@/lib/india/services";
 import { getTool } from "@/lib/tools";
 import { getLanding } from "@/lib/landing/landing";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
-import { defaultOgImage } from "@/lib/seo/metadata";
+import { defaultOgImage, socialTitle } from "@/lib/seo/metadata";
 import { relatedToolsFor } from "@/lib/seo/related";
-import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
   return hindiServices.map((h) => ({ service: h.slug }));
@@ -27,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ service: 
   const en = getIndiaService(service);
   if (!h || !en) return {};
   return {
-    title: `${h.seoTitle} | ${siteConfig.name}`,
+    title: h.seoTitle,
     description: h.seoDescription,
     alternates: {
       canonical: `/hi/india-services/${h.slug}`,
@@ -36,8 +35,8 @@ export async function generateMetadata({ params }: { params: Promise<{ service: 
         "hi-IN": `/hi/india-services/${h.slug}`,
       },
     },
-    openGraph: { title: h.seoTitle, description: h.seoDescription, url: `/hi/india-services/${h.slug}`, locale: "hi_IN", images: [defaultOgImage()] },
-    twitter: { card: "summary_large_image", title: h.seoTitle, description: h.seoDescription, images: [defaultOgImage()] },
+    openGraph: { title: socialTitle(h.seoTitle), description: h.seoDescription, url: `/hi/india-services/${h.slug}`, locale: "hi_IN", images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title: socialTitle(h.seoTitle), description: h.seoDescription, images: [defaultOgImage()] },
   };
 }
 

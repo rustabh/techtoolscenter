@@ -2,26 +2,15 @@ import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { ResourceCard } from "@/components/devhub/resource-card";
 import { playgroundResources } from "@/lib/devhub/playground";
-import { siteConfig } from "@/lib/site";
-import { defaultOgImage } from "@/lib/seo/metadata";
+import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: `Developer Playground — Live CSS & Code Tools | ${siteConfig.name}`,
+export const metadata: Metadata = buildSimpleMetadata({
+  title: "Developer Playground — Live CSS & Code Tools",
   description:
     "Interactive, in-browser developer tools — a live HTML/CSS/JS editor, Tailwind playground, Flexbox/Grid/box-shadow/glassmorphism generators, a sitemap builder and more. Free, private, no sign-up.",
-  alternates: { canonical: "/developer-hub/playground" },
-  openGraph: {
-    title: `Developer Playground | ${siteConfig.name}`,
-    description: "Interactive, in-browser developer tools — free and private.",
-    images: [defaultOgImage()],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `Developer Playground | ${siteConfig.name}`,
-    description: "Interactive, in-browser developer tools — free and private.",
-    images: [defaultOgImage()],
-  },
-};
+  ogDescription: "Interactive, in-browser developer tools — free and private.",
+  canonical: "/developer-hub/playground",
+});
 
 export default function DeveloperPlaygroundPage() {
   return (

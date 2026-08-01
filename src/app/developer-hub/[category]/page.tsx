@@ -5,7 +5,7 @@ import { DevResourceFilteredGrid } from "@/components/devhub/dev-resource-filter
 import { devCategories, getDevCategory } from "@/lib/devhub/categories";
 import { resourcesByCategory } from "@/lib/devhub/resources";
 import { siteConfig } from "@/lib/site";
-import { defaultOgImage } from "@/lib/seo/metadata";
+import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
   return devCategories.map((c) => ({ category: c.slug }));
@@ -15,14 +15,12 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { category } = await params;
   const cat = getDevCategory(category);
   if (!cat) return {};
-  const title = `${cat.name} — Developer Resources & Tools | ${siteConfig.name}`;
-  return {
-    title,
+  return buildSimpleMetadata({
+    title: `${cat.name} — Developer Resources & Tools`,
     description: `${cat.description} Curated, original descriptions with official sites and docs — free to browse on ${siteConfig.name}'s Developer Hub.`,
-    alternates: { canonical: `/developer-hub/${cat.slug}` },
-    openGraph: { title, description: cat.description, images: [defaultOgImage()] },
-    twitter: { card: "summary_large_image", title, description: cat.description, images: [defaultOgImage()] },
-  };
+    ogDescription: cat.description,
+    canonical: `/developer-hub/${cat.slug}`,
+  });
 }
 
 export default async function DevHubCategoryPage({ params }: { params: Promise<{ category: string }> }) {

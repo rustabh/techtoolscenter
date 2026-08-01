@@ -5,7 +5,7 @@ import { AiToolFilteredGrid } from "@/components/aihub/ai-tool-filtered-grid";
 import { aiCategories, getAiCategory } from "@/lib/aihub/categories";
 import { toolsByCategory } from "@/lib/aihub/tools";
 import { siteConfig } from "@/lib/site";
-import { defaultOgImage } from "@/lib/seo/metadata";
+import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
 function categoryItemListLd(categoryName: string, items: { name: string; officialUrl: string }[]) {
   return {
@@ -29,14 +29,12 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { category } = await params;
   const cat = getAiCategory(category);
   if (!cat) return {};
-  const title = `${cat.name} AI Tools — Compare & Discover | ${siteConfig.name}`;
-  return {
-    title,
+  return buildSimpleMetadata({
+    title: `${cat.name} AI Tools — Compare & Discover`,
     description: `${cat.description} Curated, original overviews with official sites and docs — free to browse on ${siteConfig.name}'s AI Hub.`,
-    alternates: { canonical: `/ai-hub/${cat.slug}` },
-    openGraph: { title, description: cat.description, images: [defaultOgImage()] },
-    twitter: { card: "summary_large_image", title, description: cat.description, images: [defaultOgImage()] },
-  };
+    ogDescription: cat.description,
+    canonical: `/ai-hub/${cat.slug}`,
+  });
 }
 
 export default async function AiHubCategoryPage({ params }: { params: Promise<{ category: string }> }) {

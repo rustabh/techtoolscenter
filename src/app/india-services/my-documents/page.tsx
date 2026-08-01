@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { MyDocuments } from "@/components/india/my-documents";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `My Documents — Your Saved India Services Checklist | ${siteConfig.name}`,
+  title: "My Documents — Your Saved India Services Checklist",
   description: "Your personal checklist of saved India government services. Track the documents you've collected for each application — Aadhaar, PAN, passport, certificates and more. Saved privately in your browser.",
   alternates: { canonical: "/india-services/my-documents" },
   robots: { index: false }, // personal, per-device page

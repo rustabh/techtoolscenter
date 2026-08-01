@@ -7,10 +7,9 @@ import { IndiaDisclaimer } from "@/components/india/disclaimer";
 import { PremiumAd } from "@/components/ads/premium-ad";
 import { finderGoals } from "@/lib/india/finder";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `Which Document or Certificate Do I Need? — India Finder | ${siteConfig.name}`,
+  title: "Which Document or Certificate Do I Need? — India Finder",
   description: "Not sure which government document or certificate you need? Pick your goal — passport, college admission, government job, marriage, welfare scheme, business, vehicle — and get the exact India Services to apply for, with step-by-step guides.",
   alternates: { canonical: "/india-services/finder" },
 };

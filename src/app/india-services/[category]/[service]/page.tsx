@@ -17,6 +17,7 @@ import { getTool } from "@/lib/tools";
 import { getLanding } from "@/lib/landing/landing";
 import { getPost } from "@/lib/blog/posts";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
+import { socialTitle } from "@/lib/seo/metadata";
 import { relatedToolsFor } from "@/lib/seo/related";
 import { siteConfig } from "@/lib/site";
 
@@ -28,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { service } = await params;
   const svc = getIndiaService(service);
   if (!svc) return {};
-  const title = svc.seoTitle ?? `${svc.name} — Documents, Eligibility, Steps & Official Website | ${siteConfig.name}`;
+  const title = svc.seoTitle ?? `${svc.name} — Documents, Eligibility, Steps & Official Website`;
   const description = svc.seoDescription ?? `${svc.name}: required documents, eligibility, step-by-step guide, fees, FAQs and the official ${svc.officialName} website. Educational guide — not a government website.`;
   return {
     title,
@@ -40,7 +41,8 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
         ? { languages: { "en-IN": `/india-services/${svc.category}/${svc.slug}`, "hi-IN": `/hi/india-services/${svc.slug}` } }
         : {}),
     },
-    openGraph: { type: "article", title, description, url: `${siteConfig.url}/india-services/${svc.category}/${svc.slug}` },
+    openGraph: { type: "article", title: socialTitle(title), description, url: `${siteConfig.url}/india-services/${svc.category}/${svc.slug}` },
+    twitter: { card: "summary_large_image", title: socialTitle(title), description },
   };
 }
 

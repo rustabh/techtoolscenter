@@ -11,7 +11,6 @@ import { indiaStates } from "@/lib/india/states";
 import { indiaCities } from "@/lib/india/cities";
 import { allPosts } from "@/lib/blog/posts";
 import { breadcrumbLd } from "@/lib/seo/schema";
-import { siteConfig } from "@/lib/site";
 
 // Popular searches shown as quick chips (deep-linked to the guide).
 const POPULAR_SEARCHES: { label: string; slug: string }[] = [
@@ -31,7 +30,7 @@ const POPULAR_SEARCHES: { label: string; slug: string }[] = [
 const TRENDING_SLUGS = ["pan-aadhaar-link", "e-challan", "cibil-score", "marriage-certificate", "ration-card", "fastag", "sukanya-samriddhi-yojana", "pm-kisan"];
 
 export const metadata: Metadata = {
-  title: `India Services — Official Government Services Guide | ${siteConfig.name}`,
+  title: "India Services — Official Government Services Guide",
   description: "Find official Indian government services in one place — Aadhaar, PAN, Passport, Driving Licence, GST, EPFO, DigiLocker and more. Guides, required documents, steps, FAQs and official website links. Educational directory, not a government site.",
   alternates: { canonical: "/india-services" },
 };

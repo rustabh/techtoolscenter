@@ -7,16 +7,14 @@ import { PremiumAd } from "@/components/ads/premium-ad";
 import { UpdatesBrowser } from "@/components/updates/updates-browser";
 import { allUpdates, featuredUpdates, estimateReadingMinutes, updateCategories, updatesByCategory } from "@/lib/updates";
 import { breadcrumbLd } from "@/lib/seo/schema";
-import { siteConfig } from "@/lib/site";
-import { defaultOgImage } from "@/lib/seo/metadata";
+import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: `Updates Center — Google, Government & Platform Updates | ${siteConfig.name}`,
+export const metadata: Metadata = buildSimpleMetadata({
+  title: "Updates Center — Google, Government & Platform Updates",
   description: "Stay updated with the latest Google Search updates, government notifications, product improvements, new features and platform announcements from TechToolsCenter.",
-  alternates: { canonical: "/updates" },
-  openGraph: { title: `Updates Center | ${siteConfig.name}`, description: "Google, government and TechToolsCenter updates in one place.", url: "/updates", images: [defaultOgImage()] },
-  twitter: { card: "summary_large_image", title: `Updates Center | ${siteConfig.name}`, description: "Google, government and TechToolsCenter updates in one place.", images: [defaultOgImage()] },
-};
+  ogDescription: "Google, government and TechToolsCenter updates in one place.",
+  canonical: "/updates",
+});
 
 function toItems(list: ReturnType<typeof allUpdates>) {
   return list.map((u) => ({

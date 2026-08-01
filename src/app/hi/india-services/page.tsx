@@ -7,10 +7,9 @@ import { LangToggle } from "@/components/india/lang-toggle";
 import { hindiServices } from "@/lib/india/hindi";
 import { getIndiaService } from "@/lib/india/services";
 import { breadcrumbLd } from "@/lib/seo/schema";
-import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: `इंडिया सेवाएं — सरकारी सेवाओं की गाइड (हिंदी में) | ${siteConfig.name}`,
+  title: "इंडिया सेवाएं — सरकारी सेवाओं की गाइड (हिंदी में)",
   description: "आधार, पैन, पासपोर्ट, वोटर आईडी, मैरिज सर्टिफिकेट, राशन कार्ड और ड्राइविंग लाइसेंस जैसी सरकारी सेवाओं की आसान हिंदी गाइड — दस्तावेज़, स्टेप, FAQ और आधिकारिक लिंक। शैक्षिक डायरेक्टरी।",
   alternates: {
     canonical: "/hi/india-services",

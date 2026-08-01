@@ -16,26 +16,15 @@ import {
   toolsByCategory,
 } from "@/lib/aihub/tools";
 import type { AiTool } from "@/lib/aihub/types";
-import { siteConfig } from "@/lib/site";
-import { defaultOgImage } from "@/lib/seo/metadata";
+import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
-export const metadata: Metadata = {
-  title: `AI Hub — Discover, Compare & Learn the World's Best AI Tools | ${siteConfig.name}`,
+export const metadata: Metadata = buildSimpleMetadata({
+  title: "AI Hub — Discover, Compare & Learn the World's Best AI Tools",
   description:
     "An AI discovery platform and learning center — browse, search and compare the best AI chatbots, image and video generators, coding assistants and more, all in one place.",
-  alternates: { canonical: "/ai-hub" },
-  openGraph: {
-    title: `AI Hub | ${siteConfig.name}`,
-    description: "Discover, compare and learn the world's best AI tools — all in one place.",
-    images: [defaultOgImage()],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: `AI Hub | ${siteConfig.name}`,
-    description: "Discover, compare and learn the world's best AI tools — all in one place.",
-    images: [defaultOgImage()],
-  },
-};
+  ogDescription: "Discover, compare and learn the world's best AI tools — all in one place.",
+  canonical: "/ai-hub",
+});
 
 function Section({ title, items }: { title: string; items: AiTool[] }) {
   if (!items.length) return null;

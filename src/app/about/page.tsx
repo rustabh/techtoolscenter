@@ -7,7 +7,7 @@ import { tools } from "@/lib/tools";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "About TechToolsCenter",
+  title: "About",
   description: "The fastest all-in-one online toolkit that respects your privacy. No sign-up, no installation — just instant tools that work, for creators, developers, businesses and students.",
   alternates: { canonical: "/about" },
 };

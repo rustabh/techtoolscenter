@@ -8,7 +8,6 @@ import { IndiaDisclaimer } from "@/components/india/disclaimer";
 import { indiaCategories, getIndiaCategory } from "@/lib/india/categories";
 import { servicesByCategory } from "@/lib/india/services";
 import { breadcrumbLd } from "@/lib/seo/schema";
-import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
   return indiaCategories.map((c) => ({ category: c.slug }));
@@ -20,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   if (!cat) return {};
   const count = servicesByCategory(category).length;
   return {
-    title: `${cat.name} — Indian Government Services Guide | ${siteConfig.name}`,
+    title: `${cat.name} — Indian Government Services Guide`,
     description: `${cat.description} Official websites, required documents, steps and FAQs for ${count} services. Educational directory — not a government website.`,
     alternates: { canonical: `/india-services/${cat.slug}` },
   };

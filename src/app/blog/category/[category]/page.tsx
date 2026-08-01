@@ -5,8 +5,7 @@ import { Icon } from "@/components/icon";
 import { BlogCard } from "@/components/blog/blog-bits";
 import { blogCategories, getBlogCategory } from "@/lib/blog/categories";
 import { postsByCategory } from "@/lib/blog/posts";
-import { siteConfig } from "@/lib/site";
-import { defaultOgImage } from "@/lib/seo/metadata";
+import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
   return blogCategories.map((c) => ({ category: c.slug }));
@@ -16,13 +15,11 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
   const { category } = await params;
   const cat = getBlogCategory(category);
   if (!cat) return {};
-  return {
-    title: `${cat.name} Articles | ${siteConfig.name} Blog`,
+  return buildSimpleMetadata({
+    title: `${cat.name} Articles`,
     description: cat.description,
-    alternates: { canonical: `/blog/category/${cat.slug}` },
-    openGraph: { title: `${cat.name} Articles | ${siteConfig.name} Blog`, description: cat.description, images: [defaultOgImage()] },
-    twitter: { card: "summary_large_image", title: `${cat.name} Articles`, description: cat.description, images: [defaultOgImage()] },
-  };
+    canonical: `/blog/category/${cat.slug}`,
+  });
 }
 
 export default async function BlogCategoryPage({ params }: { params: Promise<{ category: string }> }) {
