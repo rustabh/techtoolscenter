@@ -2124,6 +2124,51 @@ export const posts: BlogPost[] = [
       { question: "Is it safe to paste a JWT into an online decoder?", answer: "Only paste test or non-sensitive tokens into any third-party tool, and confirm the tool decodes entirely in your browser rather than sending the token to a server, especially for anything resembling a real production session token." },
     ],
   },
+  {
+    slug: "meta-titles-descriptions-improve-click-through-rate",
+    title: "How to Write Meta Titles and Descriptions That Improve Click-Through Rate",
+    excerpt:
+      "Meta tags don't affect rankings directly, but they decide whether people click your result at all. Here's how to write ones that actually earn the click.",
+    category: "seo",
+    author: "techtoolscenter-team",
+    template: "guide",
+    publishedOn: "2026-08-01",
+    tags: ["seo", "meta tags", "click-through rate", "on-page seo"],
+    relatedTools: ["meta-tags-generator", "word-counter"],
+    seoTitle: "Meta Titles & Descriptions: How to Improve Click-Through Rate",
+    seoDescription:
+      "A practical guide to writing meta titles and descriptions that get clicked — length limits, what Google actually rewrites, and real examples.",
+    content: [
+      { type: "p", text: "Your meta title and description don't directly move your ranking position — but they're the ad copy for a result Google already decided to show, and a weak pair loses clicks to a competitor sitting right below you at a worse rank. Getting them right is one of the highest-leverage, lowest-effort SEO tasks there is." },
+      { type: "h2", text: "What actually goes into a meta title" },
+      { type: "p", text: "Keep it under roughly 60 characters (Google truncates around 580px of rendered width, which varies by character). Lead with the specific thing someone searched for — not your brand name first, unless you're a well-known brand people search by name. \"Free EMI Calculator — Monthly Payment & Interest Breakdown\" beats \"TechToolsCenter | EMI Calculator\" for almost every query that isn't branded." },
+      { type: "h2", text: "What actually goes into a meta description" },
+      { type: "p", text: "Aim for 150–160 characters. A good description answers the searcher's real question in one line, then gives a reason to click over a competing result — free, no sign-up, instant, private, whatever is genuinely true and differentiating. Google frequently rewrites descriptions it decides don't match the query well, so match the description to what the page actually delivers, not to a general pitch for your brand." },
+      { type: "h2", text: "Step-by-step: writing a page's meta tags" },
+      { type: "ol", items: [
+        "Write the title around the exact phrase people would type to find this page, kept under ~60 characters.",
+        "Draft the description to answer the query directly in the first half, since it's often what gets shown even when the rest is truncated.",
+        "Add one concrete differentiator — free, instant, no watermark, private — only if it's actually true for this specific page.",
+        "Check both in a SERP preview tool or the browser tab / social-share preview before publishing.",
+        "Avoid repeating the exact same title/description template across many pages — it reads as thin content to both users and Google.",
+      ] },
+      { type: "callout", text: "Google rewrites titles it judges to be a poor match for the query roughly a third of the time in various studies — an accurate, specific title makes a rewrite less likely, but you can't fully prevent it." },
+      { type: "h2", text: "Common mistakes" },
+      { type: "ul", items: [
+        "Stuffing keywords unnaturally into the title instead of writing a phrase a human would actually read.",
+        "Writing the exact same description for every product/category page, varying only one word — Google often treats this as near-duplicate content.",
+        "Front-loading the brand name on pages that aren't ranking for branded search, wasting the first ~20 characters that get the most attention.",
+        "Forgetting mobile truncates titles/descriptions shorter than desktop — check both, not just desktop preview.",
+      ] },
+      { type: "h2", text: "Titles vs descriptions: different jobs" },
+      { type: "p", text: "The title is what decides whether your result registers at all when someone is scanning ten blue links quickly. The description is what convinces them to click *your* result specifically once they've noticed it. Write the title for scanability, and the description for persuasion — conflating the two usually makes both weaker." },
+    ],
+    faq: [
+      { question: "Do meta descriptions affect Google rankings directly?", answer: "No — Google has confirmed meta descriptions aren't a ranking factor. They affect click-through rate, which indirectly matters, but they don't move your position in search results." },
+      { question: "Why does Google show a different description than the one I wrote?", answer: "Google dynamically rewrites titles and descriptions when it judges the query and the static tag don't match well — write yours as specifically and accurately as possible to reduce how often this happens." },
+      { question: "What's the ideal meta title length?", answer: "Roughly 50-60 characters is a safe target — Google truncates by pixel width (about 580px), not a fixed character count, so shorter words fit more characters." },
+    ],
+  },
 ];
 
 /* ---------------- helpers ---------------- */

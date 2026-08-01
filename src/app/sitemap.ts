@@ -4,6 +4,7 @@ import { collections } from "@/lib/collections";
 import { ogImageFor } from "@/lib/seo/metadata";
 import { allPosts } from "@/lib/blog/posts";
 import { blogCategories } from "@/lib/blog/categories";
+import { authors } from "@/lib/blog/authors";
 import { landingPages } from "@/lib/landing/landing";
 import { indiaCategories } from "@/lib/india/categories";
 import { indiaServices } from "@/lib/india/services";
@@ -87,6 +88,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "weekly" as const,
       priority: 0.6,
+    })),
+    ...authors.map((a) => ({
+      url: `${base}/blog/author/${a.slug}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.5,
     })),
     ...allPosts().map((p) => ({
       url: `${base}/blog/${p.slug}`,
