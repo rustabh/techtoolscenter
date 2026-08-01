@@ -1,7 +1,43 @@
 import { NextResponse } from "next/server";
+import dns from "node:dns/promises";
+import net from "node:net";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+
+const BLOCKED_HOSTNAMES = new Set(["localhost", "metadata.google.internal"]);
+
+function isPrivateIp(ip: string): boolean {
+  if (net.isIPv4(ip)) {
+    const [a, b] = ip.split(".").map(Number);
+    if (a === 127 || a === 10 || a === 0 || a >= 224) return true;
+    if (a === 172 && b >= 16 && b <= 31) return true;
+    if (a === 192 && b === 168) return true;
+    if (a === 169 && b === 254) return true; // link-local, incl. cloud metadata (169.254.169.254)
+    return false;
+  }
+  if (net.isIPv6(ip)) {
+    const lower = ip.toLowerCase();
+    if (lower === "::1" || lower === "::") return true;
+    if (/^fe[89ab]/.test(lower)) return true; // link-local
+    if (/^f[cd]/.test(lower)) return true; // unique local
+    const mapped = lower.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/);
+    if (mapped) return isPrivateIp(mapped[1]);
+    return false;
+  }
+  return true; // unrecognized format — fail closed
+}
+
+async function isSafeHostname(hostname: string): Promise<boolean> {
+  if (BLOCKED_HOSTNAMES.has(hostname.toLowerCase())) return false;
+  if (net.isIP(hostname)) return !isPrivateIp(hostname);
+  try {
+    const results = await dns.lookup(hostname, { all: true });
+    return results.length > 0 && results.every((r) => !isPrivateIp(r.address));
+  } catch {
+    return false;
+  }
+}
 
 function normalizeUrl(input: string): string | null {
   try {
@@ -23,7 +59,9 @@ function pick(html: string, patterns: RegExp[]): string | null {
 
 async function toDataUrl(url: string): Promise<string | null> {
   try {
-    const res = await fetch(url, { signal: AbortSignal.timeout(6000) });
+    if (!(await isSafeHostname(new URL(url).hostname))) return null;
+    const res = await fetch(url, { signal: AbortSignal.timeout(6000), redirect: "manual" });
+    if (res.type === "opaqueredirect") return null;
     if (!res.ok) return null;
     const type = res.headers.get("content-type") || "image/png";
     if (!type.startsWith("image")) return null;
@@ -42,12 +80,21 @@ export async function GET(request: Request) {
   const target = normalizeUrl(raw);
   if (!target) return NextResponse.json({ error: "Invalid url" }, { status: 400 });
 
+  const targetHostname = new URL(target).hostname;
+  if (!(await isSafeHostname(targetHostname))) {
+    return NextResponse.json({ error: "This host cannot be fetched" }, { status: 400 });
+  }
+
   let html = "";
   try {
     const res = await fetch(target, {
       headers: { "User-Agent": "Mozilla/5.0 (compatible; TechToolsCenterBot/1.0)" },
       signal: AbortSignal.timeout(8000),
+      redirect: "manual",
     });
+    if (res.type === "opaqueredirect" || (res.status >= 300 && res.status < 400)) {
+      return NextResponse.json({ error: "Redirects are not followed" }, { status: 400 });
+    }
     html = await res.text();
   } catch {
     return NextResponse.json({ error: "Could not reach the site" }, { status: 502 });
