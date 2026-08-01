@@ -2105,6 +2105,1668 @@ export const aiTools: AiTool[] = [
     ],
     "icon": "FileText",
     "addedOn": "2026-07-31"
+  },
+  {
+    "slug": "poe",
+    "name": "Poe",
+    "category": "chatbots",
+    "developer": "Quora",
+    "officialUrl": "https://poe.com",
+    "overview": "A chat platform that lets users converse with many different AI models from one interface, and lets creators publish their own bots on top of them.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "platforms": [
+      "Web",
+      "Mobile"
+    ],
+    "tags": [
+      "chatbot",
+      "multi-model",
+      "bots",
+      "aggregator"
+    ],
+    "relatedTools": [],
+    "icon": "MessageCircle",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "you-com",
+    "name": "You.com",
+    "category": "chatbots",
+    "developer": "You.com",
+    "officialUrl": "https://you.com",
+    "overview": "An AI chat assistant that pairs conversational answers with live web search results, letting users verify claims against cited sources.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Web",
+      "Chrome Extension"
+    ],
+    "tags": [
+      "chatbot",
+      "web-search",
+      "ai-assistant",
+      "citations"
+    ],
+    "relatedTools": [],
+    "icon": "Search",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "qwen-chat",
+    "name": "Qwen Chat",
+    "category": "chatbots",
+    "developer": "Alibaba",
+    "officialUrl": "https://chat.qwen.ai",
+    "overview": "The official chat interface for Alibaba's Qwen family of language models, supporting text conversation alongside image and document understanding.",
+    "pricing": "Freemium",
+    "tags": [
+      "chatbot",
+      "llm",
+      "alibaba",
+      "multilingual"
+    ],
+    "relatedTools": [],
+    "icon": "MessageCircle",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "huggingchat",
+    "name": "HuggingChat",
+    "category": "chatbots",
+    "developer": "Hugging Face",
+    "officialUrl": "https://huggingface.co/chat",
+    "overview": "A free chat interface from Hugging Face for conversing with a rotating lineup of leading open-source language models.",
+    "pricing": "Free",
+    "openSource": true,
+    "tags": [
+      "chatbot",
+      "open-source",
+      "llm",
+      "hugging-face"
+    ],
+    "relatedTools": [],
+    "icon": "Bot",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "scite",
+    "name": "Scite",
+    "category": "research",
+    "developer": "scite.ai",
+    "officialUrl": "https://scite.ai",
+    "overview": "A research tool that shows how a published paper has been cited elsewhere, classifying each citation as supporting, contrasting or merely mentioning the original claim.",
+    "pricing": "Freemium",
+    "tags": [
+      "research",
+      "citations",
+      "academic",
+      "papers"
+    ],
+    "relatedTools": [],
+    "icon": "FileSearch",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "scispace",
+    "name": "SciSpace",
+    "category": "research",
+    "developer": "SciSpace",
+    "officialUrl": "https://scispace.com",
+    "overview": "An AI research assistant that helps users read, understand and search scientific literature, including explaining dense passages of a PDF in plain language.",
+    "pricing": "Freemium",
+    "tags": [
+      "research",
+      "papers",
+      "academic",
+      "literature-review"
+    ],
+    "relatedTools": [
+      "pdf-studio"
+    ],
+    "icon": "Microscope",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "reverso",
+    "name": "Reverso",
+    "category": "translation",
+    "developer": "Reverso",
+    "officialUrl": "https://www.reverso.net",
+    "overview": "A translation service that backs up its translations with real-world usage examples in context, plus built-in grammar and conjugation checking tools.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Web",
+      "Mobile"
+    ],
+    "tags": [
+      "translation",
+      "grammar",
+      "context",
+      "language-learning"
+    ],
+    "relatedTools": [
+      "text-cleaner"
+    ],
+    "icon": "Languages",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "papago",
+    "name": "Papago",
+    "category": "translation",
+    "developer": "Naver",
+    "officialUrl": "https://papago.naver.com",
+    "overview": "A neural machine translation app from Naver that is particularly well tuned for Korean alongside Japanese, Chinese and other Asian languages.",
+    "pricing": "Free",
+    "platforms": [
+      "Web",
+      "Mobile"
+    ],
+    "tags": [
+      "translation",
+      "korean",
+      "asian-languages",
+      "neural-mt"
+    ],
+    "relatedTools": [],
+    "icon": "Languages",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "quizlet",
+    "name": "Quizlet",
+    "category": "education",
+    "developer": "Quizlet",
+    "officialUrl": "https://quizlet.com",
+    "overview": "A study platform that uses AI to turn notes into flashcards, practice tests and study sets, adapting questions to what a student still struggles with.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Web",
+      "Mobile"
+    ],
+    "tags": [
+      "flashcards",
+      "study",
+      "practice-tests",
+      "ai-tutor"
+    ],
+    "relatedTools": [],
+    "icon": "BookOpen",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "socratic",
+    "name": "Socratic",
+    "category": "education",
+    "developer": "Google",
+    "officialUrl": "https://socratic.org",
+    "overview": "A homework-help app, acquired by Google, that uses AI to break down a photographed question and walk students through the underlying concept.",
+    "pricing": "Free",
+    "platforms": [
+      "Mobile"
+    ],
+    "tags": [
+      "homework-help",
+      "ai-tutor",
+      "students",
+      "google"
+    ],
+    "relatedTools": [],
+    "icon": "School",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "coursera-coach",
+    "name": "Coursera Coach",
+    "category": "education",
+    "developer": "Coursera",
+    "officialUrl": "https://coursera.org",
+    "overview": "An AI assistant built into Coursera that answers learner questions, summarizes video lectures and quizzes students on course material.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Web",
+      "Mobile"
+    ],
+    "tags": [
+      "ai-tutor",
+      "online-learning",
+      "course-assistant",
+      "coursera"
+    ],
+    "relatedTools": [],
+    "icon": "GraduationCap",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "manus",
+    "name": "Manus",
+    "category": "agents",
+    "developer": "Manus AI",
+    "officialUrl": "https://manus.im",
+    "overview": "A general-purpose autonomous AI agent that plans multi-step tasks and independently executes them, from research to file creation.",
+    "pricing": "Freemium",
+    "tags": [
+      "ai-agent",
+      "autonomous",
+      "task-automation",
+      "general-purpose"
+    ],
+    "relatedTools": [],
+    "icon": "Bot",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "openai-operator",
+    "name": "OpenAI Operator",
+    "category": "agents",
+    "developer": "OpenAI",
+    "officialUrl": "https://openai.com",
+    "overview": "A research-preview AI agent from OpenAI that controls a web browser to carry out tasks like booking or filling out forms on a user's behalf.",
+    "pricing": "Paid",
+    "tags": [
+      "ai-agent",
+      "browser-automation",
+      "autonomous",
+      "research-preview"
+    ],
+    "relatedTools": [],
+    "icon": "Bot",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "multion",
+    "name": "MultiOn",
+    "category": "agents",
+    "developer": "MultiOn",
+    "officialUrl": "https://multion.ai",
+    "overview": "An AI agent platform that lets developers and users automate multi-step actions across websites through an API or browser extension.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "tags": [
+      "ai-agent",
+      "web-automation",
+      "api",
+      "task-automation"
+    ],
+    "relatedTools": [],
+    "icon": "Bot",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "amazon-q-developer",
+    "name": "Amazon Q Developer",
+    "category": "coding",
+    "developer": "Amazon Web Services",
+    "officialUrl": "https://aws.amazon.com/q/developer/",
+    "overview": "An AI coding assistant from AWS that suggests code, explains and transforms existing code, and answers questions directly inside popular IDEs and AWS tooling.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Desktop",
+      "Web"
+    ],
+    "tags": [
+      "coding assistant",
+      "aws",
+      "ide",
+      "code completion"
+    ],
+    "relatedTools": [
+      "code-playground"
+    ],
+    "icon": "Cpu",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "jetbrains-ai-assistant",
+    "name": "JetBrains AI Assistant",
+    "category": "coding",
+    "developer": "JetBrains",
+    "officialUrl": "https://www.jetbrains.com/ai/",
+    "overview": "An AI coding assistant built directly into JetBrains IDEs such as IntelliJ IDEA and PyCharm, offering code completion, chat-based help, and code explanations without leaving the editor.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Desktop"
+    ],
+    "tags": [
+      "coding assistant",
+      "ide",
+      "jetbrains",
+      "code completion"
+    ],
+    "relatedTools": [
+      "code-playground"
+    ],
+    "icon": "Code2",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "cline",
+    "name": "Cline",
+    "category": "coding",
+    "developer": "Cline",
+    "officialUrl": "https://cline.bot",
+    "overview": "An open-source autonomous coding agent that runs as a VS Code extension, able to read and edit files, run terminal commands, and work through multi-step coding tasks with developer oversight.",
+    "pricing": "Freemium",
+    "openSource": true,
+    "platforms": [
+      "Desktop"
+    ],
+    "tags": [
+      "coding agent",
+      "vs code",
+      "open source",
+      "autonomous agent"
+    ],
+    "relatedTools": [
+      "code-playground"
+    ],
+    "icon": "Terminal",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "gumloop",
+    "name": "Gumloop",
+    "category": "automation",
+    "developer": "Gumloop",
+    "officialUrl": "https://www.gumloop.com",
+    "overview": "A visual workflow builder that lets teams chain AI steps and app integrations on a drag-and-drop canvas to automate repetitive, multi-step business tasks.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "workflow automation",
+      "no-code",
+      "ai agents",
+      "visual builder"
+    ],
+    "relatedTools": [
+      "csv-json-converter"
+    ],
+    "icon": "Workflow",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "lindy",
+    "name": "Lindy",
+    "category": "automation",
+    "developer": "Lindy AI",
+    "officialUrl": "https://www.lindy.ai",
+    "overview": "A platform for building AI agents and assistants that handle multi-step business workflows like scheduling, email triage, and lead follow-up on their own.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "ai agents",
+      "workflow automation",
+      "assistant",
+      "business automation"
+    ],
+    "icon": "Bot",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "adalo",
+    "name": "Adalo",
+    "category": "no-code",
+    "developer": "Adalo",
+    "officialUrl": "https://www.adalo.com",
+    "overview": "A no-code platform for building native mobile and web apps using a visual drag-and-drop editor, letting non-developers ship functional apps without writing code.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "no-code",
+      "app builder",
+      "mobile apps",
+      "visual development"
+    ],
+    "icon": "Blocks",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "flutterflow",
+    "name": "FlutterFlow",
+    "category": "no-code",
+    "developer": "FlutterFlow",
+    "officialUrl": "https://flutterflow.io",
+    "overview": "A visual app builder that generates real, exportable Flutter code from a drag-and-drop design canvas, with AI-assisted features for scaffolding screens and logic.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "no-code",
+      "flutter",
+      "app builder",
+      "visual development"
+    ],
+    "relatedTools": [
+      "code-playground"
+    ],
+    "icon": "Boxes",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "thunkable",
+    "name": "Thunkable",
+    "category": "no-code",
+    "developer": "Thunkable",
+    "officialUrl": "https://thunkable.com",
+    "overview": "A drag-and-drop platform for building native iOS and Android apps without writing code, aimed at makers and small teams shipping mobile products quickly.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "no-code",
+      "mobile apps",
+      "app builder",
+      "drag and drop"
+    ],
+    "icon": "Puzzle",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "clay",
+    "name": "Clay",
+    "category": "business",
+    "developer": "Clay",
+    "officialUrl": "https://www.clay.com",
+    "overview": "A data enrichment and outbound sales tool that pulls from dozens of data sources and uses AI to personalize prospect research and messaging at scale.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "sales",
+      "data enrichment",
+      "outbound",
+      "lead generation"
+    ],
+    "relatedTools": [
+      "csv-json-converter"
+    ],
+    "icon": "Table2",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "airtable-ai",
+    "name": "Airtable AI",
+    "category": "business",
+    "developer": "Airtable",
+    "officialUrl": "https://www.airtable.com",
+    "overview": "AI features built into Airtable's spreadsheet-database platform that summarize records, categorize data, and draft content directly inside a team's tables.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "platforms": [
+      "Web",
+      "Desktop",
+      "Mobile"
+    ],
+    "tags": [
+      "database",
+      "spreadsheet",
+      "business",
+      "productivity"
+    ],
+    "relatedTools": [
+      "csv-json-converter",
+      "json-formatter"
+    ],
+    "icon": "Grid3x3",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "coda-ai",
+    "name": "Coda AI",
+    "category": "business",
+    "developer": "Coda",
+    "officialUrl": "https://coda.io",
+    "overview": "AI writing and automation features layered into Coda's all-in-one docs platform, helping teams draft content, summarize pages, and automate doc-based workflows.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "platforms": [
+      "Web",
+      "Desktop",
+      "Mobile"
+    ],
+    "tags": [
+      "docs",
+      "productivity",
+      "business",
+      "writing assistant"
+    ],
+    "icon": "Sparkles",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "freepik-ai",
+    "name": "Freepik AI",
+    "category": "image-generation",
+    "developer": "Freepik",
+    "officialUrl": "https://www.freepik.com",
+    "overview": "AI image generation and editing tools built directly into Freepik's stock-asset platform, letting users create or edit visuals alongside a large library of existing stock content.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "tags": [
+      "image generation",
+      "stock assets",
+      "ai editing",
+      "text-to-image"
+    ],
+    "relatedTools": [
+      "image-studio"
+    ],
+    "icon": "Image",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "magnific-ai",
+    "name": "Magnific AI",
+    "category": "image-generation",
+    "developer": "Magnific",
+    "officialUrl": "https://magnific.ai",
+    "overview": "An AI upscaler and enhancer that adds realistic, high-resolution detail to existing images rather than generating new scenes from scratch.",
+    "pricing": "Freemium",
+    "tags": [
+      "upscaling",
+      "image enhancement",
+      "detail generation",
+      "ai upscaler"
+    ],
+    "relatedTools": [
+      "image-resizer"
+    ],
+    "icon": "Wand2",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "bing-image-creator",
+    "name": "Bing Image Creator",
+    "category": "image-generation",
+    "developer": "Microsoft",
+    "officialUrl": "https://www.bing.com/images/create",
+    "overview": "A free AI image generator built into Bing, powered by DALL-E, that turns text prompts into images directly in the browser.",
+    "pricing": "Free",
+    "tags": [
+      "text-to-image",
+      "free",
+      "dall-e",
+      "bing"
+    ],
+    "icon": "Image",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "recraft",
+    "name": "Recraft",
+    "category": "image-generation",
+    "developer": "Recraft",
+    "officialUrl": "https://www.recraft.ai",
+    "overview": "An AI image and vector generation tool with strong controls for keeping a consistent brand style across generated raster and vector assets.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "tags": [
+      "vector graphics",
+      "brand style",
+      "image generation",
+      "icons"
+    ],
+    "relatedTools": [
+      "image-studio"
+    ],
+    "icon": "Palette",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "looka",
+    "name": "Looka",
+    "category": "design",
+    "developer": "Looka",
+    "officialUrl": "https://looka.com",
+    "overview": "An AI logo and brand identity generator that produces logo options, color palettes and basic brand kits from a business name and style preferences.",
+    "pricing": "Freemium",
+    "tags": [
+      "logo maker",
+      "brand identity",
+      "branding",
+      "logo generator"
+    ],
+    "relatedTools": [
+      "favicon-generator"
+    ],
+    "icon": "PenTool",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "galileo-ai",
+    "name": "Galileo AI",
+    "category": "design",
+    "developer": "Galileo AI",
+    "officialUrl": "https://www.usegalileo.ai",
+    "overview": "Generates editable user interface designs directly from a text description, giving designers a starting point instead of a blank canvas.",
+    "pricing": "Freemium",
+    "tags": [
+      "ui design",
+      "text-to-ui",
+      "product design",
+      "mockups"
+    ],
+    "icon": "LayoutTemplate",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "visily",
+    "name": "Visily",
+    "category": "design",
+    "developer": "Visily",
+    "officialUrl": "https://www.visily.ai",
+    "overview": "An AI-assisted wireframing and UI mockup tool that can also convert existing screenshots or hand-drawn sketches into editable design files.",
+    "pricing": "Freemium",
+    "tags": [
+      "wireframing",
+      "ui mockups",
+      "screenshot-to-design",
+      "prototyping"
+    ],
+    "icon": "Grid3x3",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "tripo-ai",
+    "name": "Tripo AI",
+    "category": "3d",
+    "developer": "Tripo",
+    "officialUrl": "https://www.tripo3d.ai",
+    "overview": "Generates 3D models from text prompts or reference images, aimed at speeding up asset creation for games and design workflows.",
+    "pricing": "Freemium",
+    "tags": [
+      "text-to-3d",
+      "image-to-3d",
+      "3d models",
+      "game assets"
+    ],
+    "icon": "Box",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "immersity-ai",
+    "name": "Immersity AI",
+    "category": "animation",
+    "developer": "Immersity AI",
+    "officialUrl": "https://www.immersity.ai",
+    "overview": "Converts flat, still images into animated depth and parallax video, adding a sense of 3D motion without manual keyframing.",
+    "pricing": "Freemium",
+    "tags": [
+      "depth animation",
+      "parallax video",
+      "image-to-video",
+      "3d effect"
+    ],
+    "relatedTools": [
+      "image-studio"
+    ],
+    "icon": "Layers",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "renderforest",
+    "name": "Renderforest",
+    "category": "animation",
+    "developer": "Renderforest",
+    "officialUrl": "https://www.renderforest.com",
+    "overview": "An AI-assisted video and animation maker that builds animated clips, intros and promos from customizable templates.",
+    "pricing": "Freemium",
+    "tags": [
+      "video maker",
+      "animation templates",
+      "intros",
+      "promo video"
+    ],
+    "icon": "Film",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "animaker",
+    "name": "Animaker",
+    "category": "animation",
+    "developer": "Animaker",
+    "officialUrl": "https://www.animaker.com",
+    "overview": "An online animated video maker with AI-assisted features for turning scripts and templates into animated explainer and marketing videos.",
+    "pricing": "Freemium",
+    "tags": [
+      "animated video",
+      "explainer video",
+      "video templates",
+      "animation maker"
+    ],
+    "icon": "Film",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "kling-ai",
+    "name": "Kling AI",
+    "category": "video-generation",
+    "developer": "Kuaishou",
+    "officialUrl": "https://klingai.com",
+    "overview": "Kling AI is Kuaishou's text-to-video and image-to-video model that turns prompts or still images into short, high-motion video clips.",
+    "pricing": "Freemium",
+    "tags": [
+      "video generation",
+      "text-to-video",
+      "image-to-video",
+      "kuaishou"
+    ],
+    "icon": "Video",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "hailuo-ai",
+    "name": "Hailuo AI",
+    "category": "video-generation",
+    "developer": "MiniMax",
+    "officialUrl": "https://hailuoai.video",
+    "overview": "Hailuo AI is MiniMax's text-to-video generation model, producing short cinematic clips from text prompts with an emphasis on realistic motion and camera movement.",
+    "pricing": "Freemium",
+    "tags": [
+      "video generation",
+      "text-to-video",
+      "minimax"
+    ],
+    "icon": "Film",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "vidu",
+    "name": "Vidu",
+    "category": "video-generation",
+    "developer": "Vidu / ShengShu Technology",
+    "officialUrl": "https://vidu.studio",
+    "overview": "Vidu is a text-to-video generation model from Vidu / ShengShu Technology that converts written prompts into short video clips with consistent characters and scenes.",
+    "pricing": "Freemium",
+    "tags": [
+      "video generation",
+      "text-to-video",
+      "shengshu"
+    ],
+    "icon": "Camera",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "hedra",
+    "name": "Hedra",
+    "category": "video-generation",
+    "developer": "Hedra",
+    "officialUrl": "https://hedra.com",
+    "overview": "Hedra generates AI talking-head and character videos by animating a still image to lip-sync and perform a supplied audio track or script.",
+    "pricing": "Freemium",
+    "tags": [
+      "talking head",
+      "character video",
+      "lip sync",
+      "video generation"
+    ],
+    "icon": "Wand2",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "resemble-ai",
+    "name": "Resemble AI",
+    "category": "voice-ai",
+    "developer": "Resemble AI",
+    "officialUrl": "https://resemble.ai",
+    "docsUrl": "https://docs.resemble.ai",
+    "overview": "Resemble AI provides realistic AI voice cloning and text-to-speech built primarily for developers to integrate custom voices via API.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "tags": [
+      "voice cloning",
+      "text-to-speech",
+      "api",
+      "developer tools"
+    ],
+    "icon": "MicVocal",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "play-ht",
+    "name": "Play.ht",
+    "category": "voice-ai",
+    "developer": "Play.ht",
+    "officialUrl": "https://play.ht",
+    "docsUrl": "https://docs.play.ht",
+    "overview": "Play.ht is a text-to-speech and voice cloning platform offering a large library of AI voices for narration, content and app integrations.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "tags": [
+      "text-to-speech",
+      "voice cloning",
+      "api",
+      "narration"
+    ],
+    "icon": "Speech",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "wellsaid-labs",
+    "name": "WellSaid Labs",
+    "category": "voice-ai",
+    "developer": "WellSaid Labs",
+    "officialUrl": "https://wellsaidlabs.com",
+    "overview": "WellSaid Labs is an enterprise-focused AI voice generation platform aimed at corporate training, e-learning and narration voiceovers.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "tags": [
+      "text-to-speech",
+      "enterprise",
+      "corporate training",
+      "voiceover"
+    ],
+    "icon": "Mic",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "soundraw",
+    "name": "Soundraw",
+    "category": "music-generation",
+    "developer": "Soundraw",
+    "officialUrl": "https://soundraw.io",
+    "overview": "Soundraw generates royalty-free AI music tracks that users can customize by mood, genre, and length for use in videos and content.",
+    "pricing": "Freemium",
+    "tags": [
+      "music generation",
+      "royalty-free",
+      "background music"
+    ],
+    "icon": "Music2",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "aiva",
+    "name": "AIVA",
+    "category": "music-generation",
+    "developer": "AIVA Technologies",
+    "officialUrl": "https://aiva.ai",
+    "overview": "AIVA is an AI composer that creates original orchestral and soundtrack-style music, letting users generate and edit compositions for film, games and other media.",
+    "pricing": "Freemium",
+    "tags": [
+      "music composition",
+      "orchestral music",
+      "soundtrack"
+    ],
+    "icon": "Music2",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "podcastle",
+    "name": "Podcastle",
+    "category": "audio-generation",
+    "developer": "Podcastle",
+    "officialUrl": "https://podcastle.ai",
+    "overview": "Podcastle is an AI-powered platform for recording, editing and enhancing podcasts, including AI voice cleanup and transcription tools.",
+    "pricing": "Freemium",
+    "tags": [
+      "podcasting",
+      "audio editing",
+      "transcription"
+    ],
+    "icon": "Mic",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "krisp",
+    "name": "Krisp",
+    "category": "audio-generation",
+    "developer": "Krisp",
+    "officialUrl": "https://krisp.ai",
+    "overview": "Krisp is an AI noise-cancellation tool that removes background noise and echo from calls in real time, rather than generating or synthesizing audio.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Desktop"
+    ],
+    "tags": [
+      "noise cancellation",
+      "calls",
+      "audio enhancement"
+    ],
+    "icon": "ShieldCheck",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "rytr",
+    "name": "Rytr",
+    "category": "writing",
+    "developer": "Rytr",
+    "officialUrl": "https://rytr.me",
+    "overview": "Rytr is an AI writing assistant geared toward short-form content like ads, product descriptions and emails, built for quick drafts rather than long-form manuscripts.",
+    "pricing": "Freemium",
+    "tags": [
+      "writing",
+      "copywriting",
+      "short-form",
+      "ai assistant"
+    ],
+    "relatedTools": [
+      "word-counter",
+      "text-cleaner"
+    ],
+    "icon": "PenLine",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "quillbot",
+    "name": "QuillBot",
+    "category": "writing",
+    "developer": "QuillBot",
+    "officialUrl": "https://quillbot.com",
+    "overview": "QuillBot centers on paraphrasing, grammar correction and summarizing existing text, helping users rephrase and polish writing rather than generate it from a blank page.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "tags": [
+      "paraphrasing",
+      "grammar",
+      "summarizing",
+      "writing"
+    ],
+    "relatedTools": [
+      "word-counter",
+      "text-cleaner"
+    ],
+    "icon": "Type",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "sudowrite",
+    "name": "Sudowrite",
+    "category": "writing",
+    "developer": "Sudowrite",
+    "officialUrl": "https://sudowrite.com",
+    "overview": "Sudowrite is an AI writing assistant built specifically for fiction authors, offering brainstorming, description and scene-continuation tools tuned for storytelling rather than business copy.",
+    "pricing": "Freemium",
+    "tags": [
+      "fiction",
+      "creative writing",
+      "storytelling",
+      "ai assistant"
+    ],
+    "relatedTools": [
+      "word-counter"
+    ],
+    "icon": "Sparkles",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "wordtune",
+    "name": "Wordtune",
+    "category": "writing",
+    "developer": "AI21 Labs",
+    "officialUrl": "https://wordtune.com",
+    "overview": "Wordtune rewrites existing sentences to adjust tone, length and clarity, acting as a rewriting companion rather than a full content generator.",
+    "pricing": "Freemium",
+    "tags": [
+      "rewriting",
+      "tone",
+      "clarity",
+      "writing"
+    ],
+    "relatedTools": [
+      "word-counter",
+      "text-cleaner"
+    ],
+    "icon": "Type",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "neuronwriter",
+    "name": "NeuronWriter",
+    "category": "seo",
+    "developer": "NeuronWriter",
+    "officialUrl": "https://neuronwriter.com",
+    "overview": "NeuronWriter analyzes top-ranking competitor pages and SERP data to generate content optimization suggestions and topic coverage recommendations for a target keyword.",
+    "pricing": "Freemium",
+    "tags": [
+      "seo",
+      "content optimization",
+      "serp analysis",
+      "keyword research"
+    ],
+    "relatedTools": [
+      "keyword-density-checker",
+      "serp-preview"
+    ],
+    "icon": "Search",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "clearscope",
+    "name": "Clearscope",
+    "category": "seo",
+    "developer": "Clearscope",
+    "officialUrl": "https://clearscope.io",
+    "overview": "Clearscope grades content against keyword and topical relevance benchmarks derived from top search results, helping writers optimize articles for organic search performance.",
+    "pricing": "Paid",
+    "tags": [
+      "seo",
+      "content optimization",
+      "keyword research",
+      "content grading"
+    ],
+    "relatedTools": [
+      "keyword-density-checker",
+      "meta-tags-generator"
+    ],
+    "icon": "Search",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "marketmuse",
+    "name": "MarketMuse",
+    "category": "seo",
+    "developer": "MarketMuse",
+    "officialUrl": "https://marketmuse.com",
+    "overview": "MarketMuse applies AI content analysis to plan topic clusters and optimize existing pages at scale, aimed more at SEO teams and content strategy than individual writers.",
+    "pricing": "Enterprise",
+    "tags": [
+      "seo",
+      "content strategy",
+      "content planning",
+      "topic clusters"
+    ],
+    "relatedTools": [
+      "keyword-density-checker"
+    ],
+    "icon": "Search",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "slidesgo-ai",
+    "name": "Slidesgo AI",
+    "category": "presentation",
+    "developer": "Slidesgo/Freepik",
+    "officialUrl": "https://slidesgo.com",
+    "overview": "Slidesgo's AI presentation tool generates a full slide deck design, layout and imagery from a short text prompt, building on Slidesgo's existing template library.",
+    "pricing": "Freemium",
+    "tags": [
+      "presentation",
+      "slide deck",
+      "ai design",
+      "templates"
+    ],
+    "icon": "Presentation",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "decktopus",
+    "name": "Decktopus",
+    "category": "presentation",
+    "developer": "Decktopus",
+    "officialUrl": "https://decktopus.com",
+    "overview": "Decktopus is an AI-assisted presentation builder that suggests slide structure, layouts and design choices as you type content, aiming to speed up deck creation.",
+    "pricing": "Freemium",
+    "tags": [
+      "presentation",
+      "slide deck",
+      "ai design",
+      "productivity"
+    ],
+    "icon": "Presentation",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "motion",
+    "name": "Motion",
+    "category": "productivity",
+    "developer": "Motion",
+    "officialUrl": "https://usemotion.com",
+    "overview": "Motion uses AI to automatically build and continuously re-plan your daily calendar and task list around deadlines and priorities, rather than just tracking tasks manually.",
+    "pricing": "Paid",
+    "platforms": [
+      "Web",
+      "Mobile"
+    ],
+    "tags": [
+      "scheduling",
+      "calendar",
+      "task management",
+      "ai planning"
+    ],
+    "icon": "CalendarClock",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "reclaim-ai",
+    "name": "Reclaim AI",
+    "category": "productivity",
+    "developer": "Reclaim.ai",
+    "officialUrl": "https://reclaim.ai",
+    "overview": "Reclaim AI works inside your existing calendar to automatically defend focus time, habits and buffer time, adapting the schedule as new meetings appear rather than replacing your task manager.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Web",
+      "Mobile"
+    ],
+    "tags": [
+      "scheduling",
+      "calendar",
+      "focus time",
+      "ai planning"
+    ],
+    "icon": "CalendarClock",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "mem",
+    "name": "Mem",
+    "category": "productivity",
+    "developer": "Mem Labs",
+    "officialUrl": "https://mem.ai",
+    "overview": "Mem is an AI-organized note-taking app that automatically connects and surfaces related notes, aiming to cut down on manual folder and tag management for personal knowledge.",
+    "pricing": "Freemium",
+    "tags": [
+      "notes",
+      "knowledge management",
+      "productivity",
+      "ai organization"
+    ],
+    "icon": "StickyNote",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "taskade",
+    "name": "Taskade",
+    "category": "productivity",
+    "developer": "Taskade",
+    "officialUrl": "https://taskade.com",
+    "overview": "Taskade combines AI-assisted task lists, docs and team workspaces in one tool, generating project outlines and action items from a prompt for collaborative planning.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Web",
+      "Mobile",
+      "Desktop"
+    ],
+    "tags": [
+      "task management",
+      "collaboration",
+      "docs",
+      "productivity"
+    ],
+    "icon": "ClipboardList",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "lavender",
+    "name": "Lavender",
+    "category": "email",
+    "developer": "Lavender",
+    "officialUrl": "https://lavender.ai",
+    "overview": "Lavender scores and coaches sales emails before you send them, flagging tone, length and readability issues to improve reply rates rather than writing full emails outright.",
+    "pricing": "Freemium",
+    "tags": [
+      "email",
+      "sales",
+      "email coaching",
+      "ai scoring"
+    ],
+    "relatedTools": [
+      "word-counter"
+    ],
+    "icon": "Mail",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "flowrite",
+    "name": "Flowrite",
+    "category": "email",
+    "developer": "Flowrite",
+    "officialUrl": "https://flowrite.com",
+    "overview": "Flowrite turns a short bullet-point prompt into a fully written email, aiming to cut down the time spent drafting routine business correspondence.",
+    "pricing": "Freemium",
+    "tags": [
+      "email",
+      "writing",
+      "ai drafting",
+      "productivity"
+    ],
+    "relatedTools": [
+      "word-counter"
+    ],
+    "icon": "Mail",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "anyword",
+    "name": "Anyword",
+    "category": "marketing",
+    "developer": "Anyword",
+    "officialUrl": "https://anyword.com",
+    "overview": "Anyword generates marketing copy variants and predicts their likely performance using historical data, aimed at data-driven ad and landing page copywriting.",
+    "pricing": "Freemium",
+    "tags": [
+      "marketing",
+      "copywriting",
+      "ad copy",
+      "performance prediction"
+    ],
+    "relatedTools": [
+      "word-counter"
+    ],
+    "icon": "Megaphone",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "ocoya",
+    "name": "Ocoya",
+    "category": "marketing",
+    "developer": "Ocoya",
+    "officialUrl": "https://ocoya.com",
+    "overview": "Ocoya generates social media captions and graphics and includes built-in scheduling and publishing, combining content creation with a posting calendar in one workspace.",
+    "pricing": "Freemium",
+    "tags": [
+      "social media",
+      "content generation",
+      "scheduling",
+      "marketing"
+    ],
+    "icon": "Megaphone",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "vidyard-ai",
+    "name": "Vidyard AI",
+    "category": "marketing",
+    "developer": "Vidyard",
+    "officialUrl": "https://vidyard.com",
+    "overview": "Vidyard's AI features help script, create and personalize short sales and marketing videos, layered on top of Vidyard's existing video hosting and analytics platform.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "tags": [
+      "video",
+      "sales enablement",
+      "marketing",
+      "personalization"
+    ],
+    "icon": "Megaphone",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "donotpay",
+    "name": "DoNotPay",
+    "category": "legal",
+    "developer": "DoNotPay",
+    "officialUrl": "https://donotpay.com",
+    "overview": "An AI-powered consumer-rights assistant that helps people contest parking tickets, cancel unwanted subscriptions, and draft everyday legal paperwork.",
+    "pricing": "Paid",
+    "tags": [
+      "legal",
+      "consumer-rights",
+      "ai-assistant",
+      "automation"
+    ],
+    "icon": "Scale",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "spellbook",
+    "name": "Spellbook",
+    "category": "legal",
+    "developer": "Spellbook",
+    "officialUrl": "https://spellbook.legal",
+    "overview": "An AI contract drafting and review assistant that works directly inside Microsoft Word, flagging risky clauses and suggesting redlines for lawyers.",
+    "pricing": "Paid",
+    "tags": [
+      "legal",
+      "contracts",
+      "ai-review",
+      "word-addin"
+    ],
+    "icon": "Scale",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "ironclad-ai",
+    "name": "Ironclad AI",
+    "category": "legal",
+    "developer": "Ironclad",
+    "officialUrl": "https://ironcladapp.com",
+    "overview": "AI features built into Ironclad's contract lifecycle management platform, helping legal teams review, negotiate, and manage contracts at scale.",
+    "pricing": "Enterprise",
+    "tags": [
+      "legal",
+      "contract-lifecycle",
+      "contracts",
+      "enterprise"
+    ],
+    "icon": "Handshake",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "copilot-money",
+    "name": "Copilot Money",
+    "category": "finance",
+    "developer": "Copilot Money",
+    "officialUrl": "https://copilot.money",
+    "overview": "An AI-assisted personal finance app that automatically categorizes transactions and tracks net worth across linked accounts.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Mobile"
+    ],
+    "tags": [
+      "finance",
+      "budgeting",
+      "net-worth",
+      "personal-finance"
+    ],
+    "icon": "Wallet",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "rocket-money",
+    "name": "Rocket Money",
+    "category": "finance",
+    "developer": "Rocket Money",
+    "officialUrl": "https://rocketmoney.com",
+    "overview": "An AI-assisted app that tracks recurring subscriptions, negotiates bills on a user's behalf, and helps build a monthly budget.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Mobile"
+    ],
+    "tags": [
+      "finance",
+      "subscriptions",
+      "budgeting",
+      "bill-negotiation"
+    ],
+    "icon": "ReceiptText",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "origin",
+    "name": "Origin",
+    "category": "finance",
+    "developer": "Origin",
+    "officialUrl": "https://meetorigin.com",
+    "overview": "An AI-assisted personal finance and financial planning platform, often offered to employees as a workplace benefit.",
+    "pricing": "Freemium",
+    "tags": [
+      "finance",
+      "financial-planning",
+      "benefits",
+      "retirement"
+    ],
+    "icon": "Coins",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "ambience-healthcare",
+    "name": "Ambience Healthcare",
+    "category": "healthcare",
+    "developer": "Ambience Healthcare",
+    "officialUrl": "https://ambiencehealthcare.com",
+    "overview": "An AI ambient clinical documentation assistant that listens during patient visits and helps clinicians draft notes, reducing time spent on paperwork. It is a documentation aid, not a diagnostic or clinical decision-making tool.",
+    "pricing": "Enterprise",
+    "tags": [
+      "healthcare",
+      "clinical-documentation",
+      "ambient-ai",
+      "scribe"
+    ],
+    "icon": "Stethoscope",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "suki-ai",
+    "name": "Suki AI",
+    "category": "healthcare",
+    "developer": "Suki",
+    "officialUrl": "https://suki.ai",
+    "overview": "An AI voice assistant for clinicians that generates clinical documentation from patient conversations, aimed at reducing administrative burden. It supports note-taking and is not a substitute for clinical judgment.",
+    "pricing": "Enterprise",
+    "tags": [
+      "healthcare",
+      "voice-ai",
+      "clinical-documentation",
+      "scribe"
+    ],
+    "icon": "Stethoscope",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "novoresume",
+    "name": "Novoresume",
+    "category": "resume",
+    "developer": "Novoresume",
+    "officialUrl": "https://novoresume.com",
+    "overview": "An AI-assisted resume and cover letter builder offering ATS-friendly templates and content suggestions for job seekers.",
+    "pricing": "Freemium",
+    "tags": [
+      "resume",
+      "cover-letter",
+      "templates",
+      "job-search"
+    ],
+    "relatedTools": [
+      "resume-builder"
+    ],
+    "icon": "FileUser",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "enhancv",
+    "name": "Enhancv",
+    "category": "resume",
+    "developer": "Enhancv",
+    "officialUrl": "https://enhancv.com",
+    "overview": "An AI resume builder that tailors resume content and formatting to match specific job listings and industries.",
+    "pricing": "Freemium",
+    "tags": [
+      "resume",
+      "job-search",
+      "ats",
+      "career"
+    ],
+    "relatedTools": [
+      "resume-builder"
+    ],
+    "icon": "FileUser",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "vista-social",
+    "name": "Vista Social",
+    "category": "social-media",
+    "developer": "Vista Social",
+    "officialUrl": "https://vistasocial.com",
+    "overview": "A social media scheduling and management platform with AI-assisted caption writing across multiple networks.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "social-media",
+      "scheduling",
+      "captions",
+      "marketing"
+    ],
+    "icon": "Share2",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "predis-ai",
+    "name": "Predis.ai",
+    "category": "social-media",
+    "developer": "Predis.ai",
+    "officialUrl": "https://predis.ai",
+    "overview": "An AI tool that generates social media posts, captions, and short-form video or carousel content from a simple prompt.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Web"
+    ],
+    "tags": [
+      "social-media",
+      "content-generation",
+      "video",
+      "captions"
+    ],
+    "icon": "Share2",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "simplified",
+    "name": "Simplified",
+    "category": "social-media",
+    "developer": "Simplified",
+    "officialUrl": "https://simplified.com",
+    "overview": "An all-in-one AI content and design tool that helps marketing teams create social posts, graphics, and copy in one workspace.",
+    "pricing": "Freemium",
+    "tags": [
+      "social-media",
+      "design",
+      "content-creation",
+      "marketing"
+    ],
+    "icon": "Share2",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "rossum",
+    "name": "Rossum",
+    "category": "ocr",
+    "developer": "Rossum",
+    "officialUrl": "https://rossum.ai",
+    "overview": "An AI-powered document data extraction platform that specializes in reading and structuring data from invoices and other business documents.",
+    "pricing": "Enterprise",
+    "apiAvailable": true,
+    "tags": [
+      "ocr",
+      "document-extraction",
+      "invoices",
+      "automation"
+    ],
+    "relatedTools": [
+      "invoice-maker"
+    ],
+    "icon": "Eye",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "docsumo",
+    "name": "Docsumo",
+    "category": "ocr",
+    "developer": "Docsumo",
+    "officialUrl": "https://docsumo.com",
+    "overview": "An AI document processing platform that extracts structured data from business documents such as invoices, receipts, and bank statements.",
+    "pricing": "Enterprise",
+    "apiAvailable": true,
+    "tags": [
+      "ocr",
+      "document-processing",
+      "data-extraction",
+      "automation"
+    ],
+    "relatedTools": [
+      "invoice-maker"
+    ],
+    "icon": "Eye",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "humata",
+    "name": "Humata",
+    "category": "pdf-ai",
+    "developer": "Humata",
+    "officialUrl": "https://humata.ai",
+    "overview": "An AI tool that lets users ask questions and get answers across the contents of one or many uploaded PDFs at once.",
+    "pricing": "Freemium",
+    "tags": [
+      "pdf-ai",
+      "document-qa",
+      "research",
+      "chat"
+    ],
+    "relatedTools": [
+      "pdf-studio"
+    ],
+    "icon": "FileText",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "askyourpdf",
+    "name": "AskYourPDF",
+    "category": "pdf-ai",
+    "developer": "AskYourPDF",
+    "officialUrl": "https://askyourpdf.com",
+    "overview": "An AI chat tool that lets users upload a PDF and ask questions about its contents in plain language.",
+    "pricing": "Freemium",
+    "tags": [
+      "pdf-ai",
+      "document-qa",
+      "chat",
+      "productivity"
+    ],
+    "relatedTools": [
+      "pdf-studio"
+    ],
+    "icon": "FileText",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "sider",
+    "name": "Sider",
+    "category": "pdf-ai",
+    "developer": "Sider",
+    "officialUrl": "https://sider.ai",
+    "overview": "An AI sidebar assistant that includes PDF summarization and document chat features alongside general AI chat capabilities.",
+    "pricing": "Freemium",
+    "tags": [
+      "pdf-ai",
+      "summarization",
+      "chat",
+      "productivity"
+    ],
+    "relatedTools": [
+      "pdf-studio"
+    ],
+    "icon": "FileText",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "forethought",
+    "name": "Forethought",
+    "category": "customer-support",
+    "developer": "Forethought",
+    "officialUrl": "https://forethought.ai",
+    "overview": "An AI platform that automates customer support workflows, triaging tickets and suggesting resolutions for support teams.",
+    "pricing": "Enterprise",
+    "tags": [
+      "customer-support",
+      "automation",
+      "ticket-triage",
+      "enterprise"
+    ],
+    "icon": "MessagesSquare",
+    "addedOn": "2026-08-01"
+  },
+  {
+    "slug": "decagon",
+    "name": "Decagon",
+    "category": "customer-support",
+    "developer": "Decagon",
+    "officialUrl": "https://decagon.ai",
+    "overview": "An AI customer support agent platform that enterprises use to automate conversational support across chat and other channels.",
+    "pricing": "Enterprise",
+    "tags": [
+      "customer-support",
+      "ai-agent",
+      "enterprise",
+      "automation"
+    ],
+    "icon": "MessagesSquare",
+    "addedOn": "2026-08-01"
   }
 ];
 
