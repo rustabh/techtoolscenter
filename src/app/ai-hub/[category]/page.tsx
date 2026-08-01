@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { AiToolCard } from "@/components/aihub/ai-tool-card";
+import { AiToolFilteredGrid } from "@/components/aihub/ai-tool-filtered-grid";
 import { aiCategories, getAiCategory } from "@/lib/aihub/categories";
 import { toolsByCategory } from "@/lib/aihub/tools";
 import { siteConfig } from "@/lib/site";
@@ -53,14 +53,15 @@ export default async function AiHubCategoryPage({ params }: { params: Promise<{ 
         <h1 className="text-4xl font-bold tracking-tight">{cat.name} AI Tools</h1>
         <p className="mt-3 max-w-xl text-muted-foreground">{cat.description}</p>
       </header>
-      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((t) => <AiToolCard key={t.slug} tool={t} />)}
+      <div className="mt-10">
+        {items.length > 0 ? (
+          <AiToolFilteredGrid tools={items} />
+        ) : (
+          <p className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+            No tools listed here yet.
+          </p>
+        )}
       </div>
-      {items.length === 0 && (
-        <p className="mt-10 rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-          No tools listed here yet.
-        </p>
-      )}
     </div>
   );
 }

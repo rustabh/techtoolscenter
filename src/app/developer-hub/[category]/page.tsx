@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
-import { ResourceCard } from "@/components/devhub/resource-card";
+import { DevResourceFilteredGrid } from "@/components/devhub/dev-resource-filtered-grid";
 import { devCategories, getDevCategory } from "@/lib/devhub/categories";
 import { resourcesByCategory } from "@/lib/devhub/resources";
 import { siteConfig } from "@/lib/site";
@@ -37,14 +37,15 @@ export default async function DevHubCategoryPage({ params }: { params: Promise<{
         <h1 className="text-4xl font-bold tracking-tight">{cat.name}</h1>
         <p className="mt-3 max-w-xl text-muted-foreground">{cat.description}</p>
       </header>
-      <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((r) => <ResourceCard key={r.slug} resource={r} />)}
+      <div className="mt-10">
+        {items.length > 0 ? (
+          <DevResourceFilteredGrid resources={items} />
+        ) : (
+          <p className="rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+            No resources listed here yet.
+          </p>
+        )}
       </div>
-      {items.length === 0 && (
-        <p className="mt-10 rounded-xl border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
-          No resources listed here yet.
-        </p>
-      )}
     </div>
   );
 }
