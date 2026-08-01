@@ -11,7 +11,6 @@ import { collectionsWithCounts } from "@/lib/collections";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { href: "/tools", label: "All Tools" },
   { href: "/ai-hub", label: "AI Hub" },
   { href: "/developer-hub", label: "Developer Hub" },
   { href: "/india-services", label: "India Services" },
