@@ -14,6 +14,7 @@ import { getTool } from "@/lib/tools";
 import { getLanding } from "@/lib/landing/landing";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
 import { defaultOgImage } from "@/lib/seo/metadata";
+import { relatedToolsFor } from "@/lib/seo/related";
 import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -55,7 +56,10 @@ export default async function HindiServicePage({ params }: { params: Promise<{ s
   if (!h || !en) notFound();
 
   const enHref = `/india-services/${en.category}/${en.slug}`;
-  const tools = (en.relatedTools ?? []).map(resolveTool).filter(Boolean).slice(0, 4) as { slug: string; name: string }[];
+  const tools = relatedToolsFor(en.relatedTools, { category: en.category, keywords: en.keywords })
+    .map((t) => resolveTool(t.slug))
+    .filter(Boolean)
+    .slice(0, 4) as { slug: string; name: string }[];
 
   const crumb = breadcrumbLd([
     { name: "होम", url: "/" },

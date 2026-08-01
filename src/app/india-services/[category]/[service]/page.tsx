@@ -17,6 +17,7 @@ import { getTool } from "@/lib/tools";
 import { getLanding } from "@/lib/landing/landing";
 import { getPost } from "@/lib/blog/posts";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
+import { relatedToolsFor } from "@/lib/seo/related";
 import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -59,7 +60,9 @@ export default async function IndiaServicePage({ params }: { params: Promise<{ c
   const cat = getIndiaCategory(svc.category);
   const related = relatedIndiaServices(svc);
   const popular = popularIndiaServices().filter((s) => s.slug !== svc.slug).slice(0, 5);
-  const tools = (svc.relatedTools ?? []).map(resolveTool).filter(Boolean);
+  const tools = relatedToolsFor(svc.relatedTools, { category: svc.category, keywords: svc.keywords })
+    .map((t) => resolveTool(t.slug))
+    .filter(Boolean);
   const blogs = (svc.relatedBlog ?? []).map(getPost).filter(Boolean);
 
   const url = `${siteConfig.url}/india-services/${svc.category}/${svc.slug}`;

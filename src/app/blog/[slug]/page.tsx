@@ -11,9 +11,9 @@ import { AuthorBox, BlogCard, TableOfContents } from "@/components/blog/blog-bit
 import { allPosts, getPost, relatedPosts, tableOfContents, estimateReadingMinutes } from "@/lib/blog/posts";
 import { getAuthor } from "@/lib/blog/authors";
 import { getBlogCategory } from "@/lib/blog/categories";
-import { getTool } from "@/lib/tools";
 import { articleLd, faqPageFromItemsLd, breadcrumbLd } from "@/lib/seo/schema";
 import { defaultOgImage } from "@/lib/seo/metadata";
+import { relatedToolsFor } from "@/lib/seo/related";
 import { siteConfig } from "@/lib/site";
 
 export function generateStaticParams() {
@@ -51,7 +51,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const author = getAuthor(post.author);
   const toc = tableOfContents(post);
   const related = relatedPosts(post);
-  const relatedTools = (post.relatedTools ?? []).map(getTool).filter(Boolean);
+  const relatedTools = relatedToolsFor(post.relatedTools, { category: post.category, tags: post.tags });
 
   const schemas = [
     articleLd({ slug: post.slug, title: post.title, description: post.excerpt, authorName: author?.name ?? siteConfig.name, publishedOn: post.publishedOn, updatedOn: post.updatedOn }),
