@@ -206,6 +206,7 @@ function SidebarContent({
 export function WorkspaceSidebar() {
   const { mounted, collapsed, setCollapsed, mobileOpen, setMobileOpen, openSections, toggleSection } = useSidebarState();
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [hovering, setHovering] = useState(false);
 
   if (!mounted) return null;
 
@@ -215,28 +216,34 @@ export function WorkspaceSidebar() {
     if (action === "shortcuts") setShortcutsOpen(true);
   }
 
+  // Pinned-open (collapsed=false) always shows the panel. Otherwise, hovering
+  // the rail "peeks" it open without changing the persisted pinned state.
+  const visualExpanded = !collapsed || hovering;
+
   return (
     <>
       <KeyboardShortcutsDialog open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
 
-      {/* Desktop: floating rail (collapsed) or panel (expanded) */}
+      {/* Desktop: full-height floating rail (collapsed) or panel (expanded/peeked) */}
       <div className="hidden md:block">
-        {collapsed ? (
+        {!visualExpanded ? (
           <motion.div
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
-            className="glass fixed left-4 top-1/2 z-40 flex -translate-y-1/2 flex-col items-center gap-1 rounded-2xl p-2 shadow-lg"
+            onMouseEnter={() => setHovering(true)}
+            onMouseLeave={() => setHovering(false)}
+            className="glass fixed left-4 top-20 bottom-4 z-40 flex w-14 flex-col items-center gap-1 overflow-y-auto rounded-2xl py-3 shadow-lg"
           >
             <button
               type="button"
               onClick={() => setCollapsed(false)}
-              aria-label="Expand Workspace sidebar"
-              title="Expand sidebar (Ctrl+B)"
-              className="grid size-9 place-items-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground"
+              aria-label="Pin Workspace sidebar open"
+              title="Pin sidebar open (Ctrl+B)"
+              className="grid size-9 shrink-0 place-items-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground"
             >
               <PanelLeftOpen className="size-4" />
             </button>
-            <div className="my-1 h-px w-6 bg-border/60" />
+            <div className="my-1 h-px w-6 shrink-0 bg-border/60" />
             {sidebarSections.map((section) => (
               <button
                 key={section.id}
@@ -246,7 +253,7 @@ export function WorkspaceSidebar() {
                   setCollapsed(false);
                   if (!openSections.includes(section.id)) toggleSection(section.id);
                 }}
-                className="grid size-9 place-items-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground"
+                className="grid size-9 shrink-0 place-items-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground"
               >
                 <Icon name={section.icon} className="size-4" />
               </button>
@@ -256,20 +263,29 @@ export function WorkspaceSidebar() {
           <motion.div
             initial={{ opacity: 0, x: -12, scale: 0.98 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
-            transition={{ type: "spring", damping: 26, stiffness: 300 }}
-            className="glass fixed left-4 top-1/2 z-40 flex max-h-[85vh] w-[300px] -translate-y-1/2 flex-col rounded-2xl shadow-xl"
+            transition={{ type: "spring", damping: 28, stiffness: 340 }}
+            onMouseLeave={() => collapsed && setHovering(false)}
+            className="glass fixed left-4 top-20 bottom-4 z-40 flex w-[300px] flex-col rounded-2xl shadow-2xl"
           >
             <div className="flex items-center justify-between border-b border-border/60 px-3 py-3">
               <p className="text-sm font-bold">Workspace</p>
-              <button
-                type="button"
-                onClick={() => setCollapsed(true)}
-                aria-label="Collapse Workspace sidebar"
-                title="Collapse sidebar (Ctrl+B)"
-                className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
-              >
-                <ChevronLeft className="size-4" />
-              </button>
+              <div className="flex items-center gap-1">
+                {collapsed && (
+                  <span className="rounded-full bg-secondary/70 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">Preview</span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCollapsed(true);
+                    setHovering(false);
+                  }}
+                  aria-label="Collapse Workspace sidebar"
+                  title={collapsed ? "Pin sidebar closed" : "Collapse sidebar (Ctrl+B)"}
+                  className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                >
+                  <ChevronLeft className="size-4" />
+                </button>
+              </div>
             </div>
             <SidebarContent openSections={openSections} toggleSection={toggleSection} onAction={handleAction} />
           </motion.div>
