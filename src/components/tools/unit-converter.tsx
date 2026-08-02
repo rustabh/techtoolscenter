@@ -1,11 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Copy, Check, ArrowLeftRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { showToast } from "@/components/ui/toaster";
 
 // factor = value in base unit
 type Units = Record<string, number>;
@@ -32,6 +34,7 @@ export default function UnitConverter() {
   const [from, setFrom] = useState(units[0]);
   const [to, setTo] = useState(units[2] ?? units[1]);
   const [val, setVal] = useState("1");
+  const [copied, setCopied] = useState(false);
 
   const changeCat = (c: string) => {
     setCat(c);
@@ -58,6 +61,18 @@ export default function UnitConverter() {
 
   const isTemp = cat === "Temperature";
   const tempUnits = ["°C", "°F", "K"];
+  const displayResult = isTemp ? tempResult : result;
+
+  const copyResult = async () => {
+    try {
+      await navigator.clipboard.writeText(displayResult);
+      setCopied(true);
+      showToast("Result copied");
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      showToast("Couldn't copy — try selecting the value manually", "error");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -73,25 +88,31 @@ export default function UnitConverter() {
         <CardHeader><CardTitle>{cat}</CardTitle></CardHeader>
         <CardContent className="grid gap-4 sm:grid-cols-[1fr_auto_1fr] sm:items-end">
           <div className="space-y-1.5">
-            <Label>From</Label>
-            <Input type="number" value={val} onChange={(e) => setVal(e.target.value)} />
-            <Select value={from} onChange={(e) => setFrom(e.target.value)}>
+            <Label htmlFor="uc-from-value">From</Label>
+            <Input id="uc-from-value" type="number" inputMode="decimal" aria-label="Value to convert" value={val} onChange={(e) => setVal(e.target.value)} />
+            <Select aria-label="Convert from unit" value={from} onChange={(e) => setFrom(e.target.value)}>
               {(isTemp ? tempUnits : units).map((u) => <option key={u}>{u}</option>)}
             </Select>
           </div>
-          <Button variant="outline" size="icon" className="mb-1 hidden sm:flex" aria-label="Swap"
-            onClick={() => { setFrom(to); setTo(from); }}>⇄</Button>
+          <Button variant="outline" size="icon" className="mb-1 justify-self-center sm:justify-self-auto" aria-label="Swap from and to units"
+            onClick={() => { setFrom(to); setTo(from); }}><ArrowLeftRight className="size-4" /></Button>
           <div className="space-y-1.5">
-            <Label>To</Label>
-            <Input readOnly value={isTemp ? tempResult : result} className="font-semibold" />
-            <Select value={to} onChange={(e) => setTo(e.target.value)}>
+            <Label htmlFor="uc-to-value">To</Label>
+            <div className="relative">
+              <Input id="uc-to-value" readOnly value={displayResult} aria-label="Converted result" className="pr-9 font-semibold" />
+              <button type="button" onClick={copyResult} aria-label="Copy result"
+                className="absolute right-1 top-1/2 -translate-y-1/2 rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
+                {copied ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
+              </button>
+            </div>
+            <Select aria-label="Convert to unit" value={to} onChange={(e) => setTo(e.target.value)}>
               {(isTemp ? tempUnits : units).map((u) => <option key={u}>{u}</option>)}
             </Select>
           </div>
         </CardContent>
       </Card>
       <p className="text-center text-sm text-muted-foreground">
-        {val || 0} {from} = <span className="font-semibold text-foreground">{isTemp ? tempResult : result} {to}</span>
+        {val || 0} {from} = <span className="font-semibold text-foreground">{displayResult} {to}</span>
       </p>
     </div>
   );
