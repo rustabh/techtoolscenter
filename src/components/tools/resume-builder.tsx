@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { showToast } from "@/components/ui/toaster";
 
 interface Entry { id: string; title: string; subtitle: string; date: string; detail: string; }
 interface ResumeState {
@@ -33,11 +35,25 @@ function initial(): ResumeState {
 
 export default function ResumeBuilder() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<ResumeState>("uh:resume", initial());
+  const [exporting, setExporting] = useState(false);
   const patch = (p: Partial<ResumeState>) => set({ ...value, ...p });
   const patchEntry = (key: "experience" | "education", id: string, p: Partial<Entry>) =>
     set({ ...value, [key]: value[key].map((e) => (e.id === id ? { ...e, ...p } : e)) });
 
   const downloadPdf = async () => {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      await generatePdf();
+      showToast("Resume PDF downloaded");
+    } catch {
+      showToast("Couldn't generate the PDF — try again", "error");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const generatePdf = async () => {
     const { jsPDF } = await import("jspdf");
     const doc = new jsPDF();
     let y = 20;
@@ -68,7 +84,7 @@ export default function ResumeBuilder() {
       doc.setTextColor(70); wrap(e.detail); y += 3;
     });
     y += 2; section("Skills"); wrap(value.skills);
-    doc.save(`${value.name.replace(/\s+/g, "-")}-resume.pdf`);
+    doc.save(`${(value.name || "resume").replace(/\s+/g, "-")}-resume.pdf`);
   };
 
   const EntryEditor = ({ title, field }: { title: string; field: "experience" | "education" }) => (
@@ -112,7 +128,7 @@ export default function ResumeBuilder() {
           <CardHeader><CardTitle>Skills</CardTitle></CardHeader>
           <CardContent><Textarea value={value.skills} onChange={(e) => patch({ skills: e.target.value })} placeholder="Comma-separated skills" /></CardContent>
         </Card>
-        <ActionBar onUndo={undo} onRedo={redo} onReset={() => reset()} onDownload={downloadPdf} downloadLabel="Download PDF" canUndo={canUndo} canRedo={canRedo} />
+        <ActionBar onUndo={undo} onRedo={redo} onReset={() => reset()} onDownload={downloadPdf} downloadLabel={exporting ? "Generating…" : "Download PDF"} canUndo={canUndo} canRedo={canRedo} />
       </div>
 
       <div className="lg:sticky lg:top-20 lg:h-fit">
