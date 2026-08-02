@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { showToast } from "@/components/ui/toaster";
 
 type Device = "iphone" | "samsung" | "pixel" | "nothing" | "oneplus" | "ipad" | "macbook" | "laptop" | "desktop" | "browser";
 const DEVICES: { id: Device; label: string; group: string }[] = [
@@ -51,7 +52,16 @@ export default function WebsiteMockupGenerator() {
     return () => window.removeEventListener("paste", onPaste);
   }, []);
 
-  const readFile = (file: File) => { const r = new FileReader(); r.onload = () => setImg(r.result as string); r.readAsDataURL(file); };
+  const readFile = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      showToast("That's not an image file — try a JPG, PNG, or WebP", "error");
+      return;
+    }
+    const r = new FileReader();
+    r.onload = () => setImg(r.result as string);
+    r.onerror = () => showToast("Couldn't read that file — try again", "error");
+    r.readAsDataURL(file);
+  };
 
   const fetchUrl = async () => {
     setLoading(true); setError("");
@@ -70,15 +80,22 @@ export default function WebsiteMockupGenerator() {
     try {
       const htmlToImage = await import("html-to-image");
       const opts = { pixelRatio: 2, cacheBust: true, backgroundColor: bgId === "transparent" ? undefined : undefined };
-      if (kind === "svg") { const svg = await htmlToImage.toSvg(stageRef.current, opts); downloadBlob(new Blob([decodeURIComponent(svg.split(",")[1])], { type: "image/svg+xml" }), "mockup.svg"); return; }
+      if (kind === "svg") {
+        const svg = await htmlToImage.toSvg(stageRef.current, opts);
+        downloadBlob(new Blob([decodeURIComponent(svg.split(",")[1])], { type: "image/svg+xml" }), "mockup.svg");
+        showToast("Downloaded mockup.svg");
+        return;
+      }
       const dataUrl = await htmlToImage.toPng(stageRef.current, opts);
       const blob = await (await fetch(dataUrl)).blob();
-      if (kind === "png") { downloadBlob(blob, "mockup.png"); return; }
+      if (kind === "png") { downloadBlob(blob, "mockup.png"); showToast("Downloaded mockup.png"); return; }
       if (kind === "pdf") {
         const { jsPDF } = await import("jspdf");
         const im = new Image(); im.src = dataUrl; await im.decode();
         const doc = new jsPDF({ orientation: im.width > im.height ? "landscape" : "portrait", unit: "px", format: [im.width, im.height] });
-        doc.addImage(dataUrl, "PNG", 0, 0, im.width, im.height); doc.save("mockup.pdf"); return;
+        doc.addImage(dataUrl, "PNG", 0, 0, im.width, im.height); doc.save("mockup.pdf");
+        showToast("Downloaded mockup.pdf");
+        return;
       }
       if (kind === "zip") {
         const JSZip = (await import("jszip")).default; const zip = new JSZip();
@@ -86,7 +103,10 @@ export default function WebsiteMockupGenerator() {
         const svg = await htmlToImage.toSvg(stageRef.current, opts);
         zip.file("mockup.svg", new Blob([decodeURIComponent(svg.split(",")[1])], { type: "image/svg+xml" }));
         downloadBlob(await zip.generateAsync({ type: "blob" }), "mockup.zip");
+        showToast("Downloaded mockup.zip");
       }
+    } catch {
+      showToast("Couldn't export the mockup — try again", "error");
     } finally { setBusy(false); }
   };
 
@@ -111,7 +131,10 @@ export default function WebsiteMockupGenerator() {
             <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && readFile(e.target.files[0])} />
             <div className="grid grid-cols-2 gap-2">
               <Button variant="outline" onClick={() => fileRef.current?.click()}><UploadCloud /> Upload</Button>
-              <Button variant="outline" onClick={() => navigator.clipboard?.read?.().then(async (items) => { for (const it of items) { const t = it.types.find((x) => x.startsWith("image")); if (t) { const b = await it.getType(t); readFile(new File([b], "p.png")); } } }).catch(() => {})}><Clipboard /> Paste</Button>
+              <Button variant="outline" onClick={() => navigator.clipboard?.read?.().then(async (items) => {
+                for (const it of items) { const t = it.types.find((x) => x.startsWith("image")); if (t) { const b = await it.getType(t); readFile(new File([b], "p.png")); return; } }
+                showToast("No image found on the clipboard", "error");
+              }).catch(() => showToast("Couldn't access the clipboard — try Ctrl/Cmd+V instead", "error"))}><Clipboard /> Paste</Button>
             </div>
             <div className="space-y-1.5">
               <Label>Website URL</Label>
