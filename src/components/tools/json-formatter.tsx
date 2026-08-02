@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,6 +16,11 @@ export default function JsonFormatter() {
   const { copied, copy } = useCopy();
 
   const run = (mode: "beautify" | "minify") => {
+    if (!value.trim()) {
+      setError("Paste some JSON first");
+      setOutput("");
+      return;
+    }
     try {
       const parsed = JSON.parse(value);
       setOutput(JSON.stringify(parsed, null, mode === "beautify" ? 2 : 0));
@@ -26,15 +31,29 @@ export default function JsonFormatter() {
     }
   };
 
+  // Ctrl/Cmd+Enter beautifies without leaving the textarea.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        e.preventDefault();
+        run("beautify");
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value]);
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
         <CardContent className="space-y-4 pt-6">
           <Textarea aria-label="JSON input" className="min-h-[320px] font-mono text-xs" value={value} onChange={(e) => set(e.target.value)} placeholder="Paste JSON here…" />
-          <div className="flex flex-wrap gap-2">
-            <Button size="sm" onClick={() => run("beautify")}>Beautify</Button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Button size="sm" onClick={() => run("beautify")} title="Ctrl/Cmd+Enter">Beautify</Button>
             <Button size="sm" variant="outline" onClick={() => run("minify")}>Minify</Button>
             <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
+            <span className="ml-auto hidden text-xs text-muted-foreground sm:inline">Ctrl/Cmd+Enter to beautify</span>
           </div>
         </CardContent>
       </Card>
