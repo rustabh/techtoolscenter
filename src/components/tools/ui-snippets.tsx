@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Code2, Copy, Check } from "lucide-react";
+import { Code2, Copy, Check, Download } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { snippets } from "@/lib/ui-snippets-data";
 import { uiSnippetCategories } from "@/lib/ui-snippets";
+import { downloadBlob } from "@/lib/utils";
 
 function frame(css: string, html: string) {
   return `<!doctype html><html><head><style>
@@ -40,6 +41,10 @@ function SnippetCard({ name, html, css }: { name: string; html: string; css: str
             <Button type="button" size="sm" onClick={() => copy(combined)} aria-label="Copy code">
               {copied ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
             </Button>
+            <Button type="button" size="sm" variant="outline" aria-label="Download as HTML file"
+              onClick={() => downloadBlob(new Blob([frame(css, html)], { type: "text/html" }), `${name.toLowerCase().replace(/\s+/g, "-")}.html`)}>
+              <Download className="size-3.5" />
+            </Button>
           </div>
         </div>
         {open && (
@@ -66,7 +71,7 @@ export default function UiSnippets() {
           </p>
           <div className="flex flex-wrap gap-2">
             {uiSnippetCategories.map((c) => (
-              <Button key={c} type="button" size="sm" variant={cat === c ? "default" : "outline"} onClick={() => setCat(c)}>
+              <Button key={c} type="button" size="sm" variant={cat === c ? "default" : "outline"} aria-pressed={cat === c} onClick={() => setCat(c)}>
                 {c}
               </Button>
             ))}
@@ -74,11 +79,15 @@ export default function UiSnippets() {
         </CardContent>
       </Card>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((s) => (
-          <SnippetCard key={s.id} name={s.name} html={s.html} css={s.css} />
-        ))}
-      </div>
+      {filtered.length === 0 ? (
+        <p className="rounded-xl border border-dashed border-border py-12 text-center text-sm text-muted-foreground">No snippets in this category yet — try another one above.</p>
+      ) : (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((s) => (
+            <SnippetCard key={s.id} name={s.name} html={s.html} css={s.css} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }
