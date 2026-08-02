@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { showToast } from "@/components/ui/toaster";
 import { UploadCloud, Folder, Play, Pause, RotateCcw, X, Download, CheckCircle2, XCircle, Loader2, Clock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -88,7 +89,15 @@ export default function BulkImageProcessor() {
 
   const onFiles = (files: FileList | null) => {
     if (!files) return;
-    q.add(Array.from(files).filter((f) => f.type.startsWith("image/")));
+    const all = Array.from(files);
+    const images = all.filter((f) => f.type.startsWith("image/"));
+    const skipped = all.length - images.length;
+    if (skipped > 0) showToast(`Skipped ${skipped} non-image file${skipped > 1 ? "s" : ""}`, "info");
+    if (images.length === 0 && all.length > 0) {
+      showToast("No image files found in that selection", "error");
+      return;
+    }
+    q.add(images);
   };
 
   const start = async () => {
@@ -101,15 +110,24 @@ export default function BulkImageProcessor() {
     }
   };
 
+  const [zipping, setZipping] = useState(false);
   const downloadZip = async (onlyDone = true) => {
-    const JSZip = (await import("jszip")).default;
-    const zip = new JSZip();
-    q.items.filter((i) => i.status === "done" && i.outBlob).forEach((i) => {
-      const folder = i.path.includes("/") ? i.path.slice(0, i.path.lastIndexOf("/") + 1) : "";
-      zip.file(`${folder}${i.outName}`, i.outBlob!);
-    });
-    void onlyDone;
-    downloadBlob(await zip.generateAsync({ type: "blob" }), "bulk-images.zip");
+    setZipping(true);
+    try {
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+      q.items.filter((i) => i.status === "done" && i.outBlob).forEach((i) => {
+        const folder = i.path.includes("/") ? i.path.slice(0, i.path.lastIndexOf("/") + 1) : "";
+        zip.file(`${folder}${i.outName}`, i.outBlob!);
+      });
+      void onlyDone;
+      downloadBlob(await zip.generateAsync({ type: "blob" }), "bulk-images.zip");
+      showToast("Downloaded bulk-images.zip");
+    } catch {
+      showToast("Couldn't build the ZIP — try again with fewer files", "error");
+    } finally {
+      setZipping(false);
+    }
   };
 
   const done = q.items.filter((i) => i.status === "done");
@@ -216,7 +234,9 @@ export default function BulkImageProcessor() {
 
               {done.length > 0 && (
                 <div className="flex flex-wrap gap-2">
-                  <Button onClick={() => downloadZip()}><Download className="size-4" /> Download all as ZIP ({done.length})</Button>
+                  <Button onClick={() => downloadZip()} disabled={zipping}>
+                    {zipping ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />} {zipping ? "Building ZIP…" : `Download all as ZIP (${done.length})`}
+                  </Button>
                 </div>
               )}
             </CardContent>
