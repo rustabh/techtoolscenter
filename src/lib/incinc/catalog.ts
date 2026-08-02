@@ -119,24 +119,73 @@ export function getCatalog(): CatalogEntry[] {
   return cache;
 }
 
-function score(entry: CatalogEntry, terms: string[]): number {
+/**
+ * Document-frequency map: how many catalog entries contain each word, across
+ * every entry's title + keywords. Used to down-weight generic words ("card",
+ * "update", "reprint", "correction" — present in dozens of entries) relative
+ * to specific ones ("voter", "ayushman", "epic") so a single generic-word
+ * overlap can't outrank an entry that shares zero specific terms with the
+ * query. Without this, a query like "voter id reprint" could rank an
+ * unrelated "X Card ... Reprint" entry above every actual voter-ID page,
+ * since "reprint" alone was worth as much as any other matched word.
+ */
+let docFreqCache: Map<string, number> | null = null;
+function tokenize(text: string): string[] {
+  return text.toLowerCase().split(/[^a-z0-9]+/).filter(Boolean);
+}
+function getDocFreq(): Map<string, number> {
+  if (docFreqCache) return docFreqCache;
+  const df = new Map<string, number>();
+  for (const entry of getCatalog()) {
+    const seen = new Set(tokenize(`${entry.title} ${entry.keywords}`));
+    for (const t of seen) df.set(t, (df.get(t) ?? 0) + 1);
+  }
+  docFreqCache = df;
+  return df;
+}
+/** Inverse-document-frequency weight, clamped to a sane range so no term is ever worth zero or extreme. */
+function idfWeight(term: string, totalEntries: number): number {
+  const df = getDocFreq().get(term) ?? 1;
+  const raw = Math.log((totalEntries + 1) / (df + 1)) + 1;
+  return Math.min(3, Math.max(0.3, raw));
+}
+
+// Short terms (<=2 chars, e.g. "id", "rc", "pf") must match as a whole word —
+// plain substring matching would let "id" match inside "grid", "uuid",
+// "glide", "midjourney" etc., flooding results with noise. Longer terms keep
+// substring matching, since that's what makes "compress" find "Compressor".
+function isMatch(haystack: string, term: string): boolean {
+  if (term.length <= 2) return new RegExp(`(^|[^a-z0-9])${term}([^a-z0-9]|$)`).test(haystack);
+  return haystack.includes(term);
+}
+
+function score(entry: CatalogEntry, terms: string[], totalEntries: number): number {
   let s = 0;
   const title = entry.title.toLowerCase();
   for (const term of terms) {
     if (!term) continue;
-    if (title === term) s += 12;
-    else if (title.includes(term)) s += 6;
-    if (entry.keywords.includes(term)) s += 2;
+    const w = idfWeight(term, totalEntries);
+    if (title === term) s += 12 * w;
+    else if (isMatch(title, term)) s += 6 * w;
+    if (isMatch(entry.keywords, term)) s += 2 * w;
   }
   return s;
 }
 
 export function searchCatalog(query: string, limit = 8, sources?: CatalogSource[]): CatalogEntry[] {
-  const terms = query.toLowerCase().split(/\s+/).filter((t) => t.length > 2);
+  // Strip apostrophes before splitting — mobile autocorrect routinely mangles
+  // "voter id" into "voter i'd", and without this the term never matches "id"
+  // anywhere, silently dropping every voter-ID-related result. Allowing
+  // 2-letter terms (not just 3+) is what makes "id" usable at all, so a
+  // small stopword list keeps that from reintroducing noise from filler
+  // words like "of"/"is"/"an" that would otherwise pass the shorter length check.
+  const STOPWORDS = new Set(["the", "of", "in", "is", "an", "to", "and", "for", "on", "at", "by", "or", "as", "it", "be", "my", "do", "if"]);
+  const terms = query.toLowerCase().replace(/'/g, "").split(/\s+/).filter((t) => t.length > 1 && !STOPWORDS.has(t));
   if (!terms.length) return [];
+  const totalEntries = getCatalog().length;
   const pool = sources ? getCatalog().filter((e) => sources.includes(e.source)) : getCatalog();
   return pool
-    .map((entry) => ({ entry, s: score(entry, terms) }))
+    .map((entry) => ({ entry, s: score(entry, terms, totalEntries) }))
     .filter((r) => r.s > 0)
     .sort((a, b) => b.s - a.s)
     .slice(0, limit)
