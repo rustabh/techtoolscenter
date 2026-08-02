@@ -2,11 +2,12 @@
 
 import { useMemo } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ActionBar } from "@/components/tools/action-bar";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, downloadBlob } from "@/lib/utils";
 
 interface EmiState {
   principal: string;
@@ -17,11 +18,13 @@ const initial: EmiState = { principal: "500000", rate: "9.5", years: "5" };
 
 export default function EmiCalculator() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<EmiState>("uh:emi", initial);
+  const { copied, copy } = useCopy();
 
   const data = useMemo(() => {
     const P = parseFloat(value.principal) || 0;
     const annual = parseFloat(value.rate) || 0;
     const n = (parseFloat(value.years) || 0) * 12;
+    if (P <= 0 || n <= 0) return { emi: 0, total: 0, interest: 0, principal: P, schedule: [] as { year: number; principal: number; interest: number; balance: number }[] };
     const r = annual / 12 / 100;
     const emi = r === 0 ? P / n : (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     const total = emi * n;
@@ -47,6 +50,13 @@ export default function EmiCalculator() {
   }, [value]);
 
   const pct = data.total > 0 ? (data.principal / data.total) * 100 : 0;
+  const hasResult = data.total > 0;
+  const summary = `EMI: ${formatCurrency(data.emi)}/month on ${formatCurrency(data.principal)} at ${value.rate}% for ${value.years} years — Interest ${formatCurrency(data.interest)}, Total payable ${formatCurrency(data.total)}`;
+
+  const downloadCsv = () => {
+    const rows = ["Year,Principal,Interest,Balance", ...data.schedule.map((s) => `${s.year},${s.principal.toFixed(2)},${s.interest.toFixed(2)},${s.balance.toFixed(2)}`)];
+    downloadBlob(new Blob([rows.join("\n")], { type: "text/csv" }), "emi-amortization-schedule.csv");
+  };
 
   return (
     <div className="space-y-6">
@@ -77,18 +87,25 @@ export default function EmiCalculator() {
         <Card className="bg-gradient-to-br from-primary/5 to-transparent">
           <CardHeader><CardTitle>Summary</CardTitle></CardHeader>
           <CardContent className="space-y-5">
-            <div className="text-center">
-              <p className="text-sm text-muted-foreground">Monthly EMI</p>
-              <p className="text-4xl font-bold text-primary">{formatCurrency(data.emi)}</p>
-            </div>
-            <div className="h-3 overflow-hidden rounded-full bg-secondary">
-              <div className="h-full bg-primary" style={{ width: `${pct}%` }} />
-            </div>
-            <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
-              <Stat label="Principal" value={formatCurrency(data.principal)} />
-              <Stat label="Interest" value={formatCurrency(data.interest)} />
-              <Stat label="Total payable" value={formatCurrency(data.total)} />
-            </div>
+            {!hasResult ? (
+              <p className="rounded-xl border border-dashed border-border py-8 text-center text-sm text-muted-foreground">Enter a loan amount and tenure to see your EMI.</p>
+            ) : (
+              <>
+                <div className="text-center">
+                  <p className="text-sm text-muted-foreground">Monthly EMI</p>
+                  <p className="text-4xl font-bold text-primary">{formatCurrency(data.emi)}</p>
+                </div>
+                <div className="h-3 overflow-hidden rounded-full bg-secondary">
+                  <div className="h-full bg-primary" style={{ width: `${pct}%` }} />
+                </div>
+                <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
+                  <Stat label="Principal" value={formatCurrency(data.principal)} />
+                  <Stat label="Interest" value={formatCurrency(data.interest)} />
+                  <Stat label="Total payable" value={formatCurrency(data.total)} />
+                </div>
+                <ActionBar onCopy={() => copy(summary)} copied={copied} onDownload={downloadCsv} downloadLabel="Download schedule .csv" />
+              </>
+            )}
           </CardContent>
         </Card>
       </div>
