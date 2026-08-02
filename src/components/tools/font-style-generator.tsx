@@ -136,6 +136,11 @@ export default function FontStyleGenerator() {
         </CardContent>
       </Card>
       <p className="text-sm text-muted-foreground">{results.length} styles</p>
+      {results.length === 0 && (
+        <p className="rounded-xl border border-dashed border-border py-10 text-center text-sm text-muted-foreground">
+          No styles match &ldquo;{q}&rdquo; in this category — try a different search or pick &ldquo;All&rdquo;.
+        </p>
+      )}
       <div className="grid gap-3 sm:grid-cols-2">
         {results.map((r) => (
           <button key={r.name} onClick={() => { copy(r.text); setLast(r.name); }}
