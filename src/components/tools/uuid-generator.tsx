@@ -1,11 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { RefreshCw } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { showToast } from "@/components/ui/toaster";
+import { downloadBlob } from "@/lib/utils";
 
 function uuid() {
   if (typeof crypto.randomUUID === "function") return crypto.randomUUID();
@@ -27,6 +30,24 @@ export default function UuidGenerator() {
 
   useEffect(() => generate(), [generate]);
 
+  // "R" or Ctrl/Cmd+Enter regenerates without needing to reach for the mouse.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if (e.key.toLowerCase() === "r" || ((e.ctrlKey || e.metaKey) && e.key === "Enter")) {
+        e.preventDefault();
+        generate();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [generate]);
+
+  const copyOne = async (id: string) => {
+    if (await copy(id)) showToast("UUID copied");
+  };
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
@@ -36,19 +57,32 @@ export default function UuidGenerator() {
             <Label htmlFor="count">How many: {count}</Label>
             <input id="count" type="range" min={1} max={50} value={count} onChange={(e) => setCount(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
           </div>
-          <ActionBar onDownload={generate} downloadLabel="Generate" onCopy={() => copy(list.join("\n"))} copied={copied} />
+          <Button size="sm" variant="outline" onClick={generate} title="Press R to regenerate">
+            <RefreshCw className="size-4" /> Generate new
+          </Button>
+          <ActionBar
+            onCopy={() => copy(list.join("\n"))}
+            copied={copied}
+            onDownload={() => downloadBlob(new Blob([list.join("\n")], { type: "text/plain" }), "uuids.txt")}
+            downloadLabel="Download .txt"
+          />
         </CardContent>
       </Card>
       <Card>
         <CardHeader><CardTitle>Generated UUIDs</CardTitle></CardHeader>
         <CardContent>
-          <div className="max-h-72 space-y-2 overflow-auto">
-            {list.map((id, i) => (
-              <button key={i} onClick={() => copy(id)} className="block w-full truncate rounded-lg bg-secondary/50 px-3 py-2 text-left font-mono text-xs hover:bg-secondary" title="Click to copy">
-                {id}
-              </button>
-            ))}
-          </div>
+          {list.length === 0 ? (
+            <p className="py-6 text-center text-sm text-muted-foreground">No UUIDs yet — press "Generate new" above.</p>
+          ) : (
+            <div className="max-h-72 space-y-2 overflow-auto">
+              {list.map((id, i) => (
+                <button key={i} onClick={() => copyOne(id)} aria-label={`Copy UUID ${id}`}
+                  className="block w-full truncate rounded-lg bg-secondary/50 px-3 py-2 text-left font-mono text-xs transition-colors hover:bg-secondary" title="Click to copy">
+                  {id}
+                </button>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
