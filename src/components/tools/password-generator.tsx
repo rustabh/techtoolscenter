@@ -47,6 +47,20 @@ export default function PasswordGenerator() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [length, opts]);
 
+  // "R" or Ctrl/Cmd+Enter regenerates without reaching for the mouse.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if (e.key.toLowerCase() === "r" || ((e.ctrlKey || e.metaKey) && e.key === "Enter")) {
+        e.preventDefault();
+        generate();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [generate]);
+
   const activeSets = (Object.keys(opts) as SetKey[]).filter((k) => opts[k]).length;
   const strength = Math.min(100, Math.round((length / 24) * 60 + activeSets * 10));
   const strengthLabel = strength > 80 ? "Very strong" : strength > 60 ? "Strong" : strength > 40 ? "Fair" : "Weak";
@@ -91,9 +105,9 @@ export default function PasswordGenerator() {
       <Card className="bg-gradient-to-br from-primary/5 to-transparent">
         <CardHeader><CardTitle>Your password</CardTitle></CardHeader>
         <CardContent className="space-y-5">
-          <div className="flex items-center gap-2 rounded-xl border border-border bg-background p-3">
+          <div className="flex items-center gap-2 rounded-xl border border-border bg-background p-3" aria-live="polite">
             <code className="flex-1 break-all font-mono text-sm">{password || "Select at least one option"}</code>
-            <Button variant="ghost" size="icon" aria-label="Regenerate" onClick={generate}>
+            <Button variant="ghost" size="icon" aria-label="Regenerate password" title="Press R to regenerate" onClick={generate}>
               <RefreshCw className="size-4" />
             </Button>
           </div>
@@ -102,11 +116,11 @@ export default function PasswordGenerator() {
               <span className="text-muted-foreground">Strength</span>
               <span className="font-medium">{strengthLabel}</span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-secondary">
+            <div className="h-2 overflow-hidden rounded-full bg-secondary" role="progressbar" aria-valuenow={strength} aria-valuemin={0} aria-valuemax={100} aria-label="Password strength">
               <div className={`h-full transition-all ${strengthColor}`} style={{ width: `${strength}%` }} />
             </div>
           </div>
-          <ActionBar onCopy={() => copy(password)} copied={copied} downloadLabel="Regenerate" onDownload={generate} />
+          <ActionBar onCopy={() => copy(password)} copied={copied} />
         </CardContent>
       </Card>
     </div>
