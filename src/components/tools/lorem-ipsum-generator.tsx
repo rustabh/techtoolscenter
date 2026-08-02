@@ -1,11 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { RefreshCw } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { downloadBlob } from "@/lib/utils";
 
 const WORDS = "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat duis aute irure in reprehenderit voluptate velit esse cillum fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt culpa qui officia deserunt mollit anim id est laborum".split(" ");
 
@@ -44,6 +46,22 @@ export default function LoremIpsumGenerator() {
     return out;
   }, [count, unit, startClassic, seed]);
 
+  const regenerate = useCallback(() => setSeed((s) => s + 1), []);
+
+  // "R" or Ctrl/Cmd+Enter regenerates without reaching for the mouse.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
+      if (e.key.toLowerCase() === "r" || ((e.ctrlKey || e.metaKey) && e.key === "Enter")) {
+        e.preventDefault();
+        regenerate();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [regenerate]);
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
@@ -62,12 +80,20 @@ export default function LoremIpsumGenerator() {
             <input type="checkbox" checked={startClassic} onChange={(e) => setStartClassic(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" />
             Start with “Lorem ipsum dolor sit amet”
           </label>
-          <ActionBar onDownload={() => setSeed((s) => s + 1)} downloadLabel="Regenerate" onCopy={() => copy(text)} copied={copied} />
+          <Button variant="outline" size="sm" onClick={regenerate} title="Press R to regenerate">
+            <RefreshCw className="size-4" /> Regenerate
+          </Button>
+          <ActionBar
+            onCopy={() => copy(text)}
+            copied={copied}
+            onDownload={() => downloadBlob(new Blob([text], { type: "text/plain" }), "lorem-ipsum.txt")}
+            downloadLabel="Download .txt"
+          />
         </CardContent>
       </Card>
       <Card className="bg-gradient-to-br from-primary/5 to-transparent">
         <CardContent className="pt-6">
-          <div className="max-h-96 space-y-3 overflow-auto whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{text}</div>
+          <div aria-live="polite" className="max-h-96 space-y-3 overflow-auto whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{text}</div>
         </CardContent>
       </Card>
     </div>
