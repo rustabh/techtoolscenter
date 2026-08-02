@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { showToast } from "@/components/ui/toaster";
 import PdfCompress from "./pdf-compress";
 
 type Tab = "merge" | "split" | "compress" | "rotate" | "organize" | "watermark" | "numbers" | "headerfooter" | "sign" | "img2pdf" | "batch" | "advanced";
@@ -139,6 +140,7 @@ function SingleFileTab({ title, action, fields, name, showSize }: {
       const bytes = await action(file, opts);
       setOutSize(bytes.length);
       downloadBlob(new Blob([bytes], { type: "application/pdf" }), name);
+      showToast(`Downloaded ${name}`);
     } catch (e) { setErr((e as Error).message || "Failed to process PDF."); }
     finally { setBusy(false); }
   };
@@ -177,6 +179,9 @@ function MergeTab() {
       const { PDFDocument } = await import("pdf-lib"); const out = await PDFDocument.create();
       for (const f of files) { const doc = await PDFDocument.load(await f.arrayBuffer()); (await out.copyPages(doc, doc.getPageIndices())).forEach((p) => out.addPage(p)); }
       downloadBlob(new Blob([await out.save()], { type: "application/pdf" }), "merged.pdf");
+      showToast("Downloaded merged.pdf");
+    } catch {
+      showToast("Couldn't merge these PDFs — one may be corrupted or password-protected", "error");
     } finally { setBusy(false); }
   };
   return (
@@ -215,6 +220,9 @@ function SignTab() {
       const { width } = p.getSize(); const w = 120, h = (png.height / png.width) * w;
       p.drawImage(png, { x: width - w - 40, y: 40, width: w, height: h });
       downloadBlob(new Blob([await doc.save()], { type: "application/pdf" }), "signed.pdf");
+      showToast("Downloaded signed.pdf");
+    } catch {
+      showToast("Couldn't sign this PDF — check the file and signature image, then try again", "error");
     } finally { setBusy(false); }
   };
   return (
@@ -247,6 +255,9 @@ function ImagesToPdfTab() {
         page.drawImage(img, { x: 0, y: 0, width: img.width, height: img.height });
       }
       downloadBlob(new Blob([await doc.save()], { type: "application/pdf" }), "images.pdf");
+      showToast("Downloaded images.pdf");
+    } catch {
+      showToast("Couldn't build the PDF — make sure every file is a JPG or PNG", "error");
     } finally { setBusy(false); }
   };
   return (
@@ -270,6 +281,9 @@ function BatchTab() {
         zip.file(`compressed-${f.name}`, await out.save({ useObjectStreams: true }));
       }
       downloadBlob(await zip.generateAsync({ type: "blob" }), "batch-pdfs.zip");
+      showToast("Downloaded batch-pdfs.zip");
+    } catch {
+      showToast("Couldn't process this batch — one PDF may be corrupted or password-protected", "error");
     } finally { setBusy(false); }
   };
   return (
