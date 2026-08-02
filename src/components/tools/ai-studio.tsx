@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import * as Icons from "lucide-react";
-import { Loader2, Wand2, Copy, Check } from "lucide-react";
+import { Loader2, Wand2, Copy, Check, Download } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,8 @@ import { useCopy } from "@/hooks/use-copy";
 import { GENERATORS, defaultInputs } from "@/lib/ai/generators";
 import { PROVIDERS, getProvider } from "@/lib/ai/providers";
 import type { Inputs } from "@/lib/ai/types";
+import { showToast } from "@/components/ui/toaster";
+import { downloadBlob, slugify } from "@/lib/utils";
 
 function Icon({ name, className }: { name: string; className?: string }) {
   const Cmp = (Icons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[name] ?? Icons.Sparkles;
@@ -41,6 +43,8 @@ export default function AIStudio() {
       const provider = getProvider(providerId);
       const result = await provider.run(active, inputs);
       setOutput(result);
+    } catch {
+      showToast("Couldn't generate this — try again", "error");
     } finally {
       setRunning(false);
     }
@@ -113,9 +117,18 @@ export default function AIStudio() {
                 Fill the fields and hit <span className="mx-1 font-medium">Generate</span>
               </div>
             )}
-            <Button variant="outline" onClick={() => copy(output)} disabled={!output}>
-              {copied ? <><Check className="size-4" /> Copied</> : <><Copy className="size-4" /> Copy</>}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" onClick={() => copy(output)} disabled={!output}>
+                {copied ? <><Check className="size-4" /> Copied</> : <><Copy className="size-4" /> Copy</>}
+              </Button>
+              <Button
+                variant="outline"
+                disabled={!output}
+                onClick={() => downloadBlob(new Blob([output], { type: "text/plain" }), `${slugify(active.name)}.txt`)}
+              >
+                <Download className="size-4" /> Download
+              </Button>
+            </div>
           </CardContent>
         </Card>
       </div>
