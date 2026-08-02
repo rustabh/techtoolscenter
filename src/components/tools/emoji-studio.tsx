@@ -65,7 +65,7 @@ export default function EmojiStudio() {
           <button onClick={() => pick(c)} className="grid aspect-square w-full place-items-center rounded-xl border border-border bg-card text-2xl transition-colors hover:border-primary/40 hover:bg-secondary">
             {copied && last === c ? <Check className="size-4 text-emerald-500" /> : c}
           </button>
-          <button onClick={() => toggleFav(c)} aria-label="Favorite" className="absolute -right-1 -top-1 rounded-full bg-background p-0.5 opacity-0 shadow group-hover:opacity-100">
+          <button onClick={() => toggleFav(c)} aria-label={fav.includes(c) ? `Remove ${c} from favorites` : `Add ${c} to favorites`} className="absolute -right-1 -top-1 rounded-full bg-background p-0.5 opacity-0 shadow group-hover:opacity-100">
             <Star className={cn("size-3", fav.includes(c) && "fill-amber-400 text-amber-400")} />
           </button>
         </div>
@@ -98,7 +98,11 @@ export default function EmojiStudio() {
           </Card>
           {fav.length > 0 && !q && cat === "All" && (<div><p className="mb-2 flex items-center gap-1.5 text-sm font-semibold"><Star className="size-4 fill-amber-400 text-amber-400" /> Favorites</p><Grid items={fav} /></div>)}
           {recent.length > 0 && !q && cat === "All" && (<div><p className="mb-2 text-sm font-semibold">Recently used</p><Grid items={recent} /></div>)}
-          <Grid items={filtered.map((e) => e.c)} />
+          {filtered.length === 0 ? (
+            <p className="rounded-xl border border-dashed border-border py-10 text-center text-sm text-muted-foreground">No emoji match &ldquo;{q}&rdquo; — try a different search or category.</p>
+          ) : (
+            <Grid items={filtered.map((e) => e.c)} />
+          )}
         </>
       )}
 
