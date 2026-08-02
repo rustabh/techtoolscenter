@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ const initial: CtcState = { ctc: "1200000", bonus: "0", pfEmployee: "12", profes
 
 export default function CtcCalculator() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<CtcState>("uh:ctc", initial);
+  const { copied, copy } = useCopy();
 
   const result = useMemo(() => {
     const ctc = parseFloat(value.ctc) || 0;
@@ -57,6 +59,8 @@ export default function CtcCalculator() {
       ctcMonthly: ctc / 12,
     };
   }, [value]);
+
+  const summary = `CTC ${formatCurrency(result.ctc)}/year → Basic ${formatCurrency(result.basic)}, HRA ${formatCurrency(result.hra)}, Employee PF ${formatCurrency(result.employeePf)}, Professional tax ${formatCurrency(result.ptAnnual)} → Net take-home ${formatCurrency(result.netMonthly)}/month (${formatCurrency(result.netAnnual)}/year)`;
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -152,6 +156,7 @@ export default function CtcCalculator() {
               state. Check your official offer letter/payslip for exact figures.
             </p>
           </div>
+          <ActionBar onCopy={() => copy(summary)} copied={copied} />
         </CardContent>
       </Card>
     </div>
