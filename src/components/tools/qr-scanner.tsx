@@ -84,13 +84,18 @@ export default function QrScanner() {
   const onFile = (file: File) => {
     setResult("");
     setCameraError("");
+    if (!file.type.startsWith("image/")) {
+      setCameraError("That's not an image file — try a JPG, PNG, or WebP.");
+      return;
+    }
     const img = new Image();
+    const url = URL.createObjectURL(file);
     img.onload = () => {
       const canvas = document.createElement("canvas");
       canvas.width = img.naturalWidth;
       canvas.height = img.naturalHeight;
       const ctx = canvas.getContext("2d");
-      if (!ctx) return;
+      if (!ctx) { URL.revokeObjectURL(url); return; }
       ctx.drawImage(img, 0, 0);
       const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const code = jsQR(frame.data, frame.width, frame.height);
@@ -100,9 +105,13 @@ export default function QrScanner() {
       } else {
         setCameraError("No QR code found in that image. Try a clearer, well-lit photo of the code.");
       }
-      URL.revokeObjectURL(img.src);
+      URL.revokeObjectURL(url);
     };
-    img.src = URL.createObjectURL(file);
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      setCameraError("Couldn't read that image — the file may be corrupted.");
+    };
+    img.src = url;
   };
 
   return (
@@ -150,7 +159,7 @@ export default function QrScanner() {
         <CardHeader>
           <CardTitle>Result</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4" aria-live="polite">
           {result ? (
             <>
               <p className="break-all rounded-xl border border-border bg-card p-4 text-sm">{result}</p>
