@@ -15,6 +15,7 @@ import { Analytics } from "@/components/analytics";
 import { ConsentBanner } from "@/components/consent-banner";
 import { IncincLauncher } from "@/components/incinc/incinc-launcher";
 import { WorkspaceSidebar } from "@/components/sidebar/workspace-sidebar";
+import { ChromeGate } from "@/components/chrome-gate";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
@@ -76,17 +77,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning className={inter.variable}>
       <body className="min-h-dvh font-sans">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-          <div className="glow pointer-events-none fixed inset-x-0 top-0 h-[400px]" aria-hidden />
-          <Navbar />
-          <CommandPalette />
+          <ChromeGate>
+            <div className="glow pointer-events-none fixed inset-x-0 top-0 h-[400px]" aria-hidden />
+            <Navbar />
+            <CommandPalette />
+          </ChromeGate>
           <main id="main" className="relative">{children}</main>
-          <Footer />
-          <PwaProvider />
-          <FileDropProvider />
-          <ConsentBanner />
+          <ChromeGate>
+            <Footer />
+            <PwaProvider />
+            <FileDropProvider />
+            <ConsentBanner />
+            <WorkspaceSidebar />
+            <IncincLauncher />
+          </ChromeGate>
           <Toaster />
-          <WorkspaceSidebar />
-          <IncincLauncher />
         </ThemeProvider>
         <Script id="ld-org" type="application/ld+json" strategy="afterInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }} />

@@ -1,0 +1,158 @@
+{
+  "generatedAt": "2026-08-02T05:08:42.796Z",
+  "git": {
+    "commit": "dd15956",
+    "commitFull": "dd15956ae35a6827b365222d8bdbd4184c09064c",
+    "commitDate": "2026-08-01T20:21:19+00:00",
+    "commitMessage": "feat: add automated QA audit system (npm run qa)",
+    "branch": "claude/utilityhub-saas-app-ce46e6"
+  },
+  "build": {
+    "sharedFirstLoadKb": 104,
+    "largestRoutes": [
+      {
+        "route": "/india-services/finder",
+        "sizeKb": 4.19,
+        "firstLoadKb": 209
+      },
+      {
+        "route": "/tools",
+        "sizeKb": 8.62,
+        "firstLoadKb": 202
+      },
+      {
+        "route": "/category/[category]",
+        "sizeKb": 5.76,
+        "firstLoadKb": 200
+      },
+      {
+        "route": "/collections/[slug]",
+        "sizeKb": 6.54,
+        "firstLoadKb": 200
+      },
+      {
+        "route": "/updates/[slug]",
+        "sizeKb": 1.32,
+        "firstLoadKb": 178
+      },
+      {
+        "route": "/blog",
+        "sizeKb": 5.06,
+        "firstLoadKb": 176
+      },
+      {
+        "route": "/tools/[slug]",
+        "sizeKb": 8.46,
+        "firstLoadKb": 165
+      },
+      {
+        "route": "/ai-hub",
+        "sizeKb": 0.794921875,
+        "firstLoadKb": 162
+      }
+    ],
+    "totalStaticPages": 541
+  },
+  "seo": {
+    "pagesScanned": 541,
+    "missingTitle": 0,
+    "missingMetaDescription": 0,
+    "missingOgImage": 0,
+    "missingCanonical": 0,
+    "missingSchema": 1,
+    "duplicateTitleGroups": [
+      {
+        "title": "Announcements — Updates | TechToolsCenter",
+        "routes": [
+          "/updates/announcements",
+          "/updates/category/announcements"
+        ]
+      },
+      {
+        "title": "Google Updates — Updates | TechToolsCenter",
+        "routes": [
+          "/updates/category/google",
+          "/updates/google"
+        ]
+      },
+      {
+        "title": "Government Notifications — Updates | TechToolsCenter",
+        "routes": [
+          "/updates/category/government",
+          "/updates/government"
+        ]
+      },
+      {
+        "title": "Maintenance — Updates | TechToolsCenter",
+        "routes": [
+          "/updates/category/maintenance",
+          "/updates/maintenance"
+        ]
+      },
+      {
+        "title": "New Features — Updates | TechToolsCenter",
+        "routes": [
+          "/updates/category/new-features",
+          "/updates/new-features"
+        ]
+      },
+      {
+        "title": "TechToolsCenter Updates — Updates | TechToolsCenter",
+        "routes": [
+          "/updates/category/platform",
+          "/updates/platform"
+        ]
+      },
+      {
+        "title": "Security Updates — Updates | TechToolsCenter",
+        "routes": [
+          "/updates/category/security",
+          "/updates/security"
+        ]
+      },
+      {
+        "title": "Tool Improvements — Updates | TechToolsCenter",
+        "routes": [
+          "/updates/category/tool-improvements",
+          "/updates/tool-improvements"
+        ]
+      }
+    ],
+    "pagesMissingMetaDescriptionList": [],
+    "pagesMissingOgImageList": [],
+    "pagesMissingCanonicalList": [],
+    "pagesMissingSchemaList": [
+      "/offline"
+    ]
+  },
+  "errors": {
+    "brokenRoutes": [],
+    "missingAssets": []
+  },
+  "consoleSample": [
+    {
+      "route": "/",
+      "errors": []
+    },
+    {
+      "route": "/tools/image-studio",
+      "errors": []
+    },
+    {
+      "route": "/blog",
+      "errors": []
+    },
+    {
+      "route": "/india-services",
+      "errors": []
+    },
+    {
+      "route": "/ai-hub",
+      "errors": []
+    },
+    {
+      "route": "/developer-hub",
+      "errors": []
+    }
+  ]
+}

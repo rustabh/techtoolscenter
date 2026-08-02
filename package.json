@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "qa": "tsx scripts/qa-audit.ts"
+    "qa": "tsx scripts/qa-audit.ts",
+    "health-check": "next build > .next-build.log 2>&1 && tsx scripts/health-check.ts"
   },
   "dependencies": {
     "class-variance-authority": "0.7.1",

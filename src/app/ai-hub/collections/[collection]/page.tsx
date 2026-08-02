@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { AiToolCard } from "@/components/aihub/ai-tool-card";
 import { aiCollections, getAiCollection } from "@/lib/aihub/collections";
 import { getAiTool } from "@/lib/aihub/tools";
-import { siteConfig } from "@/lib/site";
+import { defaultOgImage, socialTitle } from "@/lib/seo/metadata";
 
 function collectionItemListLd(name: string, items: { name: string; officialUrl: string }[]) {
   return {
@@ -28,12 +28,13 @@ export async function generateMetadata({ params }: { params: Promise<{ collectio
   const { collection } = await params;
   const col = getAiCollection(collection);
   if (!col) return {};
-  const title = `${col.name} (2026) | ${siteConfig.name}`;
+  const title = `${col.name} (2026)`;
   return {
     title,
     description: `${col.description} A hand-picked list, with official sites and free/paid pricing for each.`,
     alternates: { canonical: `/ai-hub/collections/${col.slug}` },
-    openGraph: { title, description: col.description },
+    openGraph: { title: socialTitle(title), description: col.description, images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title: socialTitle(title), description: col.description, images: [defaultOgImage()] },
   };
 }
 

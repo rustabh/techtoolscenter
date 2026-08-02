@@ -8,7 +8,7 @@ import { PremiumAd } from "@/components/ads/premium-ad";
 import { indiaStates, getIndiaState, STATE_SERVICE_SLUGS } from "@/lib/india/states";
 import { getIndiaService } from "@/lib/india/services";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
-import { siteConfig } from "@/lib/site";
+import { defaultOgImage, socialTitle } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
   return indiaStates.map((s) => ({ state: s.slug }));
@@ -18,13 +18,14 @@ export async function generateMetadata({ params }: { params: Promise<{ state: st
   const { state } = await params;
   const st = getIndiaState(state);
   if (!st) return {};
-  const title = `${st.name} Government Services — Certificates & ${st.portalName} | ${siteConfig.name}`;
+  const title = `${st.name} Government Services — Certificates & ${st.portalName}`;
   const description = `How to apply for income, caste, domicile, EWS, birth, death, marriage certificates, ration card and more in ${st.name} through ${st.portalName}. Documents, steps, fees and the official portal link.`;
   return {
     title,
     description,
     alternates: { canonical: `/india-services/state/${st.slug}` },
-    openGraph: { title, description, url: `/india-services/state/${st.slug}` },
+    openGraph: { title: socialTitle(title), description, url: `/india-services/state/${st.slug}`, images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title: socialTitle(title), description, images: [defaultOgImage()] },
   };
 }
 

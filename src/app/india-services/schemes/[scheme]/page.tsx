@@ -9,7 +9,7 @@ import { PremiumAd } from "@/components/ads/premium-ad";
 import { schemes, getScheme, relatedSchemesOf, getSchemeAudience } from "@/lib/india/schemes";
 import { getIndiaService } from "@/lib/india/services";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
-import { siteConfig } from "@/lib/site";
+import { defaultOgImage, socialTitle } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
   return schemes.map((s) => ({ scheme: s.slug }));
@@ -19,13 +19,14 @@ export async function generateMetadata({ params }: { params: Promise<{ scheme: s
   const { scheme } = await params;
   const s = getScheme(scheme);
   if (!s) return {};
-  const title = `${s.name} — Benefits, Eligibility & How to Apply | ${siteConfig.name}`;
+  const title = `${s.name} — Benefits, Eligibility & How to Apply`;
   const description = `${s.tagline} ${s.overview.slice(0, 110)}`.slice(0, 155);
   return {
     title,
     description,
     alternates: { canonical: `/india-services/schemes/${s.slug}` },
-    openGraph: { title, description, url: `/india-services/schemes/${s.slug}` },
+    openGraph: { title: socialTitle(title), description, url: `/india-services/schemes/${s.slug}`, images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title: socialTitle(title), description, images: [defaultOgImage()] },
   };
 }
 

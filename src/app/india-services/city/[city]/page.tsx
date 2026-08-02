@@ -9,7 +9,7 @@ import { indiaCities, getIndiaCity, CITY_SERVICE_SLUGS } from "@/lib/india/citie
 import { getIndiaState } from "@/lib/india/states";
 import { getIndiaService } from "@/lib/india/services";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
-import { siteConfig } from "@/lib/site";
+import { defaultOgImage, socialTitle } from "@/lib/seo/metadata";
 
 export function generateStaticParams() {
   return indiaCities.map((c) => ({ city: c.slug }));
@@ -19,13 +19,14 @@ export async function generateMetadata({ params }: { params: Promise<{ city: str
   const { city } = await params;
   const c = getIndiaCity(city);
   if (!c) return {};
-  const title = `${c.name} Government Services — Passport, RTO, Certificates | ${siteConfig.name}`;
+  const title = `${c.name} Government Services — Passport, RTO, Certificates`;
   const description = `How to apply for a passport, driving licence, RC, birth, death & marriage certificates, ration card and more in ${c.name}, ${c.stateName}. Documents, steps and official links.`;
   return {
     title,
     description,
     alternates: { canonical: `/india-services/city/${c.slug}` },
-    openGraph: { title, description, url: `/india-services/city/${c.slug}` },
+    openGraph: { title: socialTitle(title), description, url: `/india-services/city/${c.slug}`, images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title: socialTitle(title), description, images: [defaultOgImage()] },
   };
 }
 

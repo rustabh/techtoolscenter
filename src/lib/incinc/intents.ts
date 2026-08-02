@@ -579,6 +579,11 @@ function fallbackSearch(q: string): AssistantResponse {
   });
 }
 
+/** Number of deterministic fast-path intents registered — used by the internal dashboard as an intent-coverage signal. */
+export function fastPathCount(): number {
+  return fastPaths.length;
+}
+
 // ---------------------------------------------------------------------------
 // Classification entry point — Knowledge is checked first so the assistant
 // never defaults to tool-spam for a question that just wants an answer.
