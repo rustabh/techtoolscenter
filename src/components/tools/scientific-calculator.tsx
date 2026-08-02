@@ -1,9 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Copy, Check } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useCopy } from "@/hooks/use-copy";
+
+const KEY_LABELS: Record<string, string> = {
+  "sin(": "sine", "cos(": "cosine", "tan(": "tangent", "√(": "square root", "^": "power",
+  "log(": "log base 10", "ln(": "natural log", "(": "open bracket", ")": "close bracket", "π": "pi",
+  "÷": "divide", "×": "multiply", "-": "minus", "+": "plus", "%": "percent",
+  "C": "clear", "⌫": "backspace", "=": "equals", "e": "Euler's number",
+};
 
 function evaluate(expr: string): string {
   try {
@@ -37,6 +46,7 @@ const KEYS = [
 export default function ScientificCalculator() {
   const [expr, setExpr] = useState("");
   const [result, setResult] = useState("0");
+  const { copied, copy } = useCopy();
 
   const press = (k: string) => {
     if (k === "C") { setExpr(""); setResult("0"); return; }
@@ -47,6 +57,8 @@ export default function ScientificCalculator() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      const tag = (e.target as HTMLElement)?.tagName;
+      if (tag === "INPUT" || tag === "TEXTAREA") return;
       if (/[0-9.+\-*/()^%]/.test(e.key)) { setExpr((v) => v + e.key.replace("*", "×").replace("/", "÷")); }
       else if (e.key === "Enter") { e.preventDefault(); setResult(evaluate(expr)); }
       else if (e.key === "Backspace") setExpr((v) => v.slice(0, -1));
@@ -59,9 +71,14 @@ export default function ScientificCalculator() {
   return (
     <Card className="mx-auto max-w-md">
       <CardContent className="space-y-4 pt-6">
-        <div className="rounded-2xl bg-secondary/60 p-4 text-right">
+        <div className="rounded-2xl bg-secondary/60 p-4 text-right" aria-live="polite">
           <p className="min-h-5 break-all text-sm text-muted-foreground">{expr || "0"}</p>
-          <p className="mt-1 break-all text-3xl font-bold">{result}</p>
+          <div className="mt-1 flex items-center justify-end gap-2">
+            <p className="break-all text-3xl font-bold">{result}</p>
+            <button type="button" onClick={() => copy(result)} aria-label="Copy result" className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground">
+              {copied ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
+            </button>
+          </div>
         </div>
         <div className="grid grid-cols-5 gap-2">
           {KEYS.flat().map((k) => (
@@ -70,6 +87,7 @@ export default function ScientificCalculator() {
               variant={k === "=" ? "default" : /[0-9.]/.test(k) ? "secondary" : "outline"}
               className={cn("h-12 text-sm", k === "=" && "row-span-1")}
               onClick={() => press(k)}
+              aria-label={KEY_LABELS[k]}
             >
               {k}
             </Button>
