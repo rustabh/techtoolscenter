@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { showToast } from "@/components/ui/toaster";
 
 interface Meta {
   host: string;
@@ -151,8 +152,13 @@ export default function BrandKitGenerator() {
 
   const onLogo = (file?: File) => {
     if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      showToast("That's not an image file — try a JPG, PNG, or SVG", "error");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => setUploadedLogo(reader.result as string);
+    reader.onerror = () => showToast("Couldn't read that file — try again", "error");
     reader.readAsDataURL(file);
   };
 
@@ -268,6 +274,9 @@ th{color:${base};font-size:12px;text-transform:uppercase;letter-spacing:.05em}.t
     try {
       const pdf = await buildBrandBook();
       pdf.save(`${brandName.replace(/\W+/g, "-").toLowerCase()}-brand-book.pdf`);
+      showToast("Downloaded brand book PDF");
+    } catch {
+      showToast("Couldn't generate the brand book — try again", "error");
     } finally {
       setBusy("");
     }
@@ -357,6 +366,9 @@ th{color:${base};font-size:12px;text-transform:uppercase;letter-spacing:.05em}.t
       zip.file("brand-book.pdf", pdf.output("blob"));
 
       downloadBlob(await zip.generateAsync({ type: "blob" }), `${(meta?.host || brandName).replace(/\W+/g, "-").toLowerCase()}-brand-studio.zip`);
+      showToast("Downloaded full brand kit");
+    } catch {
+      showToast("Couldn't build the brand kit — try again", "error");
     } finally {
       setBusy("");
     }
