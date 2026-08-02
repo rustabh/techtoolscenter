@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -104,6 +105,7 @@ export default function IncomeTaxCalculator() {
     "uh:income-tax",
     initial
   );
+  const { copied, copy } = useCopy();
 
   const result = useMemo(() => {
     const income = parseFloat(value.income) || 0;
@@ -114,6 +116,8 @@ export default function IncomeTaxCalculator() {
     const savings = Math.abs(newRegime.totalTax - oldRegime.totalTax);
     return { income, newRegime, oldRegime, selected, betterRegime, savings };
   }, [value]);
+
+  const summary = `Income Tax (${value.regime} regime, FY 2025-26): Gross ${formatCurrency(result.selected.gross)}, Net taxable ${formatCurrency(result.selected.netTaxable)}, Tax ${formatCurrency(result.selected.totalTax)} (incl. 4% cess), Take-home ${formatCurrency(result.selected.takeHome)}/year`;
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -216,6 +220,7 @@ export default function IncomeTaxCalculator() {
             Estimates only, based on FY 2025-26 (AY 2026-27) slabs. Tax rules can change in each Union Budget — always
             confirm current rates on the official Income Tax e-filing portal (incometax.gov.in) before filing.
           </div>
+          <ActionBar onCopy={() => copy(summary)} copied={copied} />
         </CardContent>
       </Card>
     </div>
