@@ -2303,6 +2303,51 @@ export const posts: BlogPost[] = [
       { question: "Does hashtag count affect reach on Instagram?", answer: "Instagram allows up to 30 hashtags per post, but using a smaller number of genuinely relevant hashtags generally outperforms maxing out the count." },
     ],
   },
+  {
+    slug: "ayushman-bharat-card-apply-download-correction",
+    title: "Ayushman Bharat Card: How to Apply, Download, and Correct It",
+    excerpt:
+      "Who's actually eligible for PM-JAY, how to check your status and download the e-card for free, and what to do if your name or details on the card are wrong.",
+    category: "guides",
+    author: "editorial",
+    template: "guide",
+    publishedOn: "2026-08-02",
+    tags: ["ayushman bharat", "pmjay", "health card", "india"],
+    relatedTools: ["pdf-compress", "image-compressor"],
+    content: [
+      { type: "p", text: "Ayushman Bharat PM-JAY (Pradhan Mantri Jan Arogya Yojana) gives eligible families cashless health cover of up to ₹5 lakh per year at government and empanelled private hospitals. A lot of confusion around it comes from one thing: it isn't open enrolment. You can't simply \"apply\" and get a card — eligibility is checked against an official database, and the process for getting your card depends on whether you're already in it." },
+      { type: "h2", text: "Who is actually eligible?" },
+      { type: "ul", items: [
+        "Rural and urban families identified as eligible under the SECC 2011 socio-economic survey.",
+        "Households already covered under RSBY (Rashtriya Swasthya Bima Yojana) in states where that scheme merged into PM-JAY.",
+        "Since 2024: every senior citizen aged 70 and above qualifies regardless of income, under a separate Ayushman Vay Vandana Card.",
+        "Some states have expanded their own version of the scheme with wider eligibility — check your state's health department page if you're unsure.",
+      ] },
+      { type: "h2", text: "How to check eligibility and download your card" },
+      { type: "ol", items: [
+        "Go to the official beneficiary portal, mera.pmjay.gov.in, or the PM-JAY mobile app.",
+        "Use \"Am I Eligible\" and enter your mobile number, state, and either your ration card, RSBY URN, or Aadhaar.",
+        "If you're found eligible, complete e-KYC — Aadhaar OTP works from home; fingerprint verification needs a visit to a CSC (Common Service Centre).",
+        "Download your e-card straight from the portal once verified, or collect a printed card at a CSC or an empanelled hospital's Ayushman Mitra desk.",
+      ] },
+      { type: "callout", text: "Checking eligibility and downloading the e-card is completely free. Never pay anyone who claims they can \"guarantee\" or fast-track a card outside the official portal or a CSC." },
+      { type: "h2", text: "Using the card at a hospital" },
+      { type: "p", text: "At any empanelled hospital, show your Ayushman card along with Aadhaar. The hospital's Ayushman Mitra desk verifies your eligibility and processes cashless admission directly — there's no separate premium, claim form, or reimbursement process for the patient to handle." },
+      { type: "h2", text: "My card has wrong details — what now?" },
+      { type: "p", text: "If your name, date of birth, gender, or a family member's details on the card don't match your Aadhaar, you don't need to reapply from scratch. Log in to mera.pmjay.gov.in with your registered mobile and OTP (or visit a CSC), open your beneficiary profile, and use the correction option — the corrected value should match your Aadhaar exactly, since Aadhaar is used as the reference document for verification." },
+      { type: "ul", items: [
+        "Lost your card? Just log back in and download the e-card again — it's free, no fresh documents needed.",
+        "Adding a new family member is handled through the same portal or CSC, cross-checked against your ration card or family ID.",
+        "Keep the acknowledgement/reference number from any correction request in case you need to check its status later.",
+      ] },
+    ],
+    faq: [
+      { question: "Can anyone apply for an Ayushman Bharat card?", answer: "No — eligibility is based on the SECC 2011 database, prior RSBY coverage, or (since 2024) being 70+ years old. It's not open enrolment; check eligibility first via mera.pmjay.gov.in." },
+      { question: "Is there a fee to get the Ayushman card?", answer: "Checking eligibility and downloading the digital e-card is free. A CSC may charge a small, government-notified fee only for printing a physical copy." },
+      { question: "How do I fix a spelling mistake on my Ayushman card?", answer: "Log in to mera.pmjay.gov.in or visit a CSC, open your beneficiary profile, and submit a correction using your Aadhaar as the reference — no need to reapply for the scheme." },
+      { question: "I'm 70+ but wasn't in the SECC database before — am I still eligible?", answer: "Yes. Since 2024, all citizens aged 70 and above qualify for the Ayushman Vay Vandana Card regardless of income or the SECC database." },
+    ],
+  },
 ];
 
 /* ---------------- helpers ---------------- */
