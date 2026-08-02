@@ -6,6 +6,8 @@ import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { ActionBar } from "@/components/tools/action-bar";
+import { downloadBlob } from "@/lib/utils";
 
 const ALGOS = ["SHA-1", "SHA-256", "SHA-384", "SHA-512"] as const;
 type Algo = (typeof ALGOS)[number];
@@ -17,14 +19,21 @@ async function hash(algo: Algo, text: string) {
 }
 
 export default function HashGenerator() {
-  const { value, set } = useLocalStorage<string>("uh:hash", "TechToolsCenter");
+  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<string>("uh:hash", "TechToolsCenter");
   const [algo, setAlgo] = useState<Algo>("SHA-256");
   const [digest, setDigest] = useState("");
+  const [error, setError] = useState("");
   const { copied, copy } = useCopy();
 
   useEffect(() => {
+    if (!crypto.subtle) {
+      setError("Hashing needs a secure context (HTTPS) — this browser can't run it here.");
+      return;
+    }
     let active = true;
-    hash(algo, value).then((h) => active && setDigest(h));
+    hash(algo, value)
+      .then((h) => { if (active) { setDigest(h); setError(""); } })
+      .catch(() => { if (active) setError("Couldn't compute the hash — try again."); });
     return () => { active = false; };
   }, [value, algo]);
 
@@ -38,13 +47,23 @@ export default function HashGenerator() {
               <Button key={a} size="sm" variant={algo === a ? "default" : "outline"} onClick={() => setAlgo(a)}>{a}</Button>
             ))}
           </div>
+          <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
         </CardContent>
       </Card>
       <Card className="bg-gradient-to-br from-primary/5 to-transparent">
         <CardContent className="space-y-4 pt-6">
           <p className="text-xs font-medium text-muted-foreground">{algo} digest</p>
-          <pre className="min-h-[200px] overflow-auto whitespace-pre-wrap break-all rounded-xl bg-secondary/50 p-4 font-mono text-xs">{digest}</pre>
-          <Button size="sm" variant="outline" onClick={() => copy(digest)}>{copied ? "Copied" : "Copy hash"}</Button>
+          {error ? (
+            <p className="min-h-[200px] rounded-xl bg-destructive/10 p-4 text-sm text-destructive">{error}</p>
+          ) : (
+            <pre className="min-h-[200px] overflow-auto whitespace-pre-wrap break-all rounded-xl bg-secondary/50 p-4 font-mono text-xs">{digest}</pre>
+          )}
+          <ActionBar
+            onCopy={() => copy(digest)}
+            copied={copied}
+            onDownload={digest ? () => downloadBlob(new Blob([digest], { type: "text/plain" }), `${algo.toLowerCase()}.txt`) : undefined}
+            downloadLabel="Download .txt"
+          />
         </CardContent>
       </Card>
     </div>
