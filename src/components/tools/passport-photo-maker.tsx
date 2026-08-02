@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
+import { showToast } from "@/components/ui/toaster";
 
 // Standard passport / ID photo specifications (mm). Not all square, unlike a generic resize.
 const SIZE_PRESETS: { label: string; wMm: number; hMm: number }[] = [
@@ -46,7 +47,12 @@ export default function PassportPhotoMaker() {
   const targetRatio = preset.wMm / preset.hMm;
 
   const onFile = (f: File) => {
+    if (!f.type.startsWith("image/")) {
+      showToast("That's not an image file — try a JPG, PNG, or WebP", "error");
+      return;
+    }
     setName(f.name.replace(/\.\w+$/, ""));
+    const url = URL.createObjectURL(f);
     const image = new Image();
     image.onload = () => {
       setImg(image);
@@ -54,7 +60,11 @@ export default function PassportPhotoMaker() {
       setPanX(0.5);
       setPanY(0.5);
     };
-    image.src = URL.createObjectURL(f);
+    image.onerror = () => {
+      URL.revokeObjectURL(url);
+      showToast("Couldn't read that image — the file may be corrupted", "error");
+    };
+    image.src = url;
   };
 
   const applyPreset = (index: number) => {
@@ -105,51 +115,61 @@ export default function PassportPhotoMaker() {
   const downloadSingle = async () => {
     if (!img) return;
     setBusy(true);
-    const canvas = renderSinglePhotoCanvas(img);
-    const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/png"));
-    if (blob) {
+    try {
+      const canvas = renderSinglePhotoCanvas(img);
+      const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/png"));
+      if (!blob) throw new Error("empty blob");
       downloadBlob(blob, `passport-photo-${preset.wMm}x${preset.hMm}mm.png`);
       track(["imagesOptimized", "filesProcessed"]);
+      showToast("Downloaded passport photo");
+    } catch {
+      showToast("Couldn't generate the photo — try again", "error");
+    } finally {
+      setBusy(false);
     }
-    setBusy(false);
   };
 
   const downloadSheet = async () => {
     if (!img) return;
     setBusy(true);
-    const sheetWPx = mmToPx((SHEET_W_IN * 25.4));
-    const sheetHPx = mmToPx((SHEET_H_IN * 25.4));
+    try {
+      const sheetWPx = mmToPx((SHEET_W_IN * 25.4));
+      const sheetHPx = mmToPx((SHEET_H_IN * 25.4));
 
-    const cols = Math.max(1, Math.floor((sheetWPx - SHEET_MARGIN_PX) / (targetWPx + SHEET_GAP_PX)));
-    const rows = Math.max(1, Math.floor((sheetHPx - SHEET_MARGIN_PX) / (targetHPx + SHEET_GAP_PX)));
-    const maxFit = Math.min(cols * rows, MAX_SHEET_COPIES);
-    const totalCopies = Math.min(copies, maxFit);
-    setSheetInfo({ cols, rows, max: maxFit });
+      const cols = Math.max(1, Math.floor((sheetWPx - SHEET_MARGIN_PX) / (targetWPx + SHEET_GAP_PX)));
+      const rows = Math.max(1, Math.floor((sheetHPx - SHEET_MARGIN_PX) / (targetHPx + SHEET_GAP_PX)));
+      const maxFit = Math.min(cols * rows, MAX_SHEET_COPIES);
+      const totalCopies = Math.min(copies, maxFit);
+      setSheetInfo({ cols, rows, max: maxFit });
 
-    const sheet = document.createElement("canvas");
-    sheet.width = sheetWPx;
-    sheet.height = sheetHPx;
-    const ctx = sheet.getContext("2d")!;
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, sheet.width, sheet.height);
+      const sheet = document.createElement("canvas");
+      sheet.width = sheetWPx;
+      sheet.height = sheetHPx;
+      const ctx = sheet.getContext("2d")!;
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, sheet.width, sheet.height);
 
-    let placed = 0;
-    outer: for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        if (placed >= totalCopies) break outer;
-        const x = SHEET_MARGIN_PX / 2 + c * (targetWPx + SHEET_GAP_PX);
-        const y = SHEET_MARGIN_PX / 2 + r * (targetHPx + SHEET_GAP_PX);
-        drawCroppedPhoto(ctx, img, x, y, targetWPx, targetHPx);
-        placed++;
+      let placed = 0;
+      outer: for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (placed >= totalCopies) break outer;
+          const x = SHEET_MARGIN_PX / 2 + c * (targetWPx + SHEET_GAP_PX);
+          const y = SHEET_MARGIN_PX / 2 + r * (targetHPx + SHEET_GAP_PX);
+          drawCroppedPhoto(ctx, img, x, y, targetWPx, targetHPx);
+          placed++;
+        }
       }
-    }
 
-    const blob = await new Promise<Blob | null>((res) => sheet.toBlob(res, "image/png"));
-    if (blob) {
+      const blob = await new Promise<Blob | null>((res) => sheet.toBlob(res, "image/png"));
+      if (!blob) throw new Error("empty blob");
       downloadBlob(blob, `passport-photo-sheet-4x6in.png`);
       track(["imagesOptimized", "filesProcessed"]);
+      showToast(`Downloaded ${totalCopies}-photo print sheet`);
+    } catch {
+      showToast("Couldn't generate the print sheet — try again", "error");
+    } finally {
+      setBusy(false);
     }
-    setBusy(false);
   };
 
   return (
