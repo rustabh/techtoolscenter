@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -19,6 +20,7 @@ const initial: GstState = { amount: "1000", rate: "18", mode: "exclusive" };
 
 export default function GstCalculator() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<GstState>("uh:gst", initial);
+  const { copied, copy } = useCopy();
 
   const result = useMemo(() => {
     const amount = parseFloat(value.amount) || 0;
@@ -35,6 +37,8 @@ export default function GstCalculator() {
     }
     return { net, tax, gross, half: tax / 2 };
   }, [value]);
+
+  const summary = `GST (${value.rate}%, ${value.mode}): Net ${formatCurrency(result.net)} + GST ${formatCurrency(result.tax)} (CGST ${formatCurrency(result.half)} + SGST ${formatCurrency(result.half)}) = Total ${formatCurrency(result.gross)}`;
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -102,6 +106,7 @@ export default function GstCalculator() {
             <span className="text-lg font-semibold">Gross total</span>
             <span className="text-2xl font-bold text-primary">{formatCurrency(result.gross)}</span>
           </div>
+          <ActionBar onCopy={() => copy(summary)} copied={copied} />
         </CardContent>
       </Card>
     </div>
