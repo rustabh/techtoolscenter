@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { downloadBlob, formatBytes } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
+import { showToast } from "@/components/ui/toaster";
 
 type Fmt = "png" | "jpeg" | "webp";
 const FORMATS: { id: Fmt; label: string; mime: string; ext: string; lossy: boolean }[] = [
@@ -25,9 +26,22 @@ export default function ImageConverter({ preset }: { preset?: Record<string, unk
   const [error, setError] = useState("");
 
   const onFile = (f: File) => {
+    if (!f.type.startsWith("image/")) {
+      showToast("That's not an image file — try a JPG, PNG, or WebP", "error");
+      return;
+    }
     setError("");
     setResult(null);
     setSrc({ url: URL.createObjectURL(f), size: f.size, name: f.name });
+  };
+
+  const trySample = async () => {
+    try {
+      const { sampleImageFile } = await import("@/lib/samples");
+      onFile(await sampleImageFile());
+    } catch {
+      showToast("Couldn't load the sample image — try uploading your own", "error");
+    }
   };
 
   const convert = async () => {
@@ -75,7 +89,7 @@ export default function ImageConverter({ preset }: { preset?: Record<string, unk
             <span className="text-sm text-muted-foreground">PNG, JPG, WEBP or AVIF · converted privately in your browser</span>
           </button>
           <div className="mt-3 text-center">
-            <button onClick={async () => onFile(await (await import("@/lib/samples")).sampleImageFile())}
+            <button onClick={trySample}
               className="text-sm font-medium text-primary hover:underline">✨ Try a sample image</button>
           </div>
         </CardContent>
@@ -103,7 +117,7 @@ export default function ImageConverter({ preset }: { preset?: Record<string, unk
               </Button>
               {error && <p className="text-sm text-destructive">{error}</p>}
               {result && (
-                <Button variant="outline" className="w-full" onClick={() => downloadBlob(result.blob, `${src.name.replace(/\.\w+$/, "")}.${fmt.ext}`)}>
+                <Button variant="outline" className="w-full" onClick={() => { downloadBlob(result.blob, `${src.name.replace(/\.\w+$/, "")}.${fmt.ext}`); showToast(`Downloaded as ${fmt.label}`); }}>
                   Download {fmt.label}
                 </Button>
               )}
