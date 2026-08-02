@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { showToast } from "@/components/ui/toaster";
 
 export function useCopy(timeout = 2000) {
   const [copied, setCopied] = useState(false);
@@ -13,6 +14,7 @@ export function useCopy(timeout = 2000) {
         setTimeout(() => setCopied(false), timeout);
         return true;
       } catch {
+        showToast("Couldn't copy — your browser blocked clipboard access", "error");
         return false;
       }
     },
