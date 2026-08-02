@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { downloadBlob } from "@/lib/utils";
 
 export default function PromptGenerator() {
   const [role, setRole] = useState("an expert copywriter");
@@ -60,7 +61,10 @@ export default function PromptGenerator() {
         <CardHeader><CardTitle>Generated prompt</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <pre className="min-h-[280px] whitespace-pre-wrap rounded-xl bg-secondary/50 p-4 text-sm leading-relaxed">{prompt}</pre>
-          <Button onClick={() => copy(prompt)}>{copied ? "Copied!" : "Copy prompt"}</Button>
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={() => copy(prompt)}>{copied ? "Copied!" : "Copy prompt"}</Button>
+            <Button variant="outline" onClick={() => downloadBlob(new Blob([prompt], { type: "text/plain" }), "prompt.txt")}>Download .txt</Button>
+          </div>
         </CardContent>
       </Card>
     </div>
