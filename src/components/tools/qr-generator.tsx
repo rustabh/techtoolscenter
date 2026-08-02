@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type QRCodeStyling from "qr-code-styling";
 import { Upload, Download, Copy, Share2, Check, Star } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
+import { showToast } from "@/components/ui/toaster";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -156,20 +157,29 @@ export default function QrGenerator({ preset }: { preset?: Record<string, unknow
   const countQr = () => { import("@/lib/stats/stats").then((m) => m.track("qrCodes")).catch(() => {}); };
   const download = async (ext: "png" | "svg") => {
     countQr();
-    const blob = await getBlob(ext);
-    if (blob) downloadBlob(blob, `qr-code.${ext}`);
+    try {
+      const blob = await getBlob(ext);
+      if (!blob) { showToast("QR code isn't ready yet — try again in a moment", "error"); return; }
+      downloadBlob(blob, `qr-code.${ext}`);
+      showToast(`Downloaded qr-code.${ext}`);
+    } catch {
+      showToast("Couldn't generate the download — try again", "error");
+    }
   };
   const downloadPdf = async () => {
     setBusy(true);
     try {
       const blob = await getBlob("png");
-      if (!blob) return;
+      if (!blob) { showToast("QR code isn't ready yet — try again in a moment", "error"); return; }
       const dataUrl = await new Promise<string>((res) => { const r = new FileReader(); r.onload = () => res(r.result as string); r.readAsDataURL(blob); });
       const { jsPDF } = await import("jspdf");
       const doc = new jsPDF();
       doc.addImage(dataUrl, "PNG", 65, 40, 80, 80);
       if (caption) { doc.setFontSize(14); doc.text(caption, 105, 130, { align: "center" }); }
       doc.save("qr-code.pdf");
+      showToast("Downloaded qr-code.pdf");
+    } catch {
+      showToast("Couldn't generate the PDF — try again", "error");
     } finally { setBusy(false); }
   };
   const downloadZip = async () => {
@@ -182,25 +192,33 @@ export default function QrGenerator({ preset }: { preset?: Record<string, unknow
       if (svg) zip.file("qr-code.svg", svg);
       zip.file("data.txt", value);
       downloadBlob(await zip.generateAsync({ type: "blob" }), "qr-code.zip");
+      showToast("Downloaded qr-code.zip");
+    } catch {
+      showToast("Couldn't build the ZIP — try again", "error");
     } finally { setBusy(false); }
   };
   const copyImage = async () => {
-    const blob = await getBlob("png");
-    if (!blob) return;
     try {
+      const blob = await getBlob("png");
+      if (!blob) { showToast("QR code isn't ready yet — try again in a moment", "error"); return; }
       await navigator.clipboard.write([new (window as any).ClipboardItem({ "image/png": blob })]);
-    } catch { /* unsupported */ }
+      showToast("QR code copied to clipboard");
+    } catch {
+      showToast("Copying an image isn't supported in this browser — try downloading instead", "error");
+    }
   };
   const share = async () => {
-    const blob = await getBlob("png");
-    if (!blob) return;
     try {
+      const blob = await getBlob("png");
+      if (!blob) { showToast("QR code isn't ready yet — try again in a moment", "error"); return; }
       const file = new File([blob], "qr-code.png", { type: "image/png" });
       if ((navigator as any).canShare?.({ files: [file] })) {
         await (navigator as any).share({ files: [file], title: "QR Code" });
         setShared(true); setTimeout(() => setShared(false), 2000);
+      } else {
+        showToast("Sharing isn't supported on this device — try downloading instead", "error");
       }
-    } catch { /* cancelled */ }
+    } catch { /* user cancelled the native share sheet — not an error */ }
   };
   const saveToHistory = async () => {
     if (value && !history.includes(value)) setHistory([value, ...history].slice(0, 12));
@@ -312,6 +330,11 @@ export default function QrGenerator({ preset }: { preset?: Record<string, unknow
         <Card>
           <CardHeader><CardTitle>Live preview</CardTitle></CardHeader>
           <CardContent className="flex flex-col items-center gap-4">
+            {!value.trim() && (
+              <p className="w-full rounded-lg bg-amber-500/10 px-3 py-2 text-center text-xs font-medium text-amber-600 dark:text-amber-400">
+                Fill in the content above — this QR code is a placeholder until then.
+              </p>
+            )}
             <div className="rounded-2xl border border-border p-3" style={{ background: transparent ? "repeating-conic-gradient(#e5e7eb 0% 25%, #fff 0% 50%) 50%/16px 16px" : "#fff" }}>
               <div ref={holderRef} aria-label="Generated QR code" />
               {caption && <p className="mt-1 text-center text-sm font-medium text-slate-700">{caption}</p>}
