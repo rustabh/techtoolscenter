@@ -51,6 +51,15 @@ export default function TailwindPlayground() {
     return () => window.removeEventListener("message", onMessage);
   }, []);
 
+  // A hanging (not just refused) connection never fires the script's load or
+  // error event, so the check script never runs and "loading" would persist
+  // forever — fall back to "failed" after a few seconds either way.
+  useEffect(() => {
+    if (cdnStatus !== "loading") return;
+    const t = setTimeout(() => setCdnStatus((s) => (s === "loading" ? "failed" : s)), 6000);
+    return () => clearTimeout(t);
+  }, [cdnStatus, srcDoc]);
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
@@ -76,7 +85,7 @@ export default function TailwindPlayground() {
         <CardContent className="space-y-4 pt-6">
           {cdnStatus === "failed" && (
             <p role="alert" className="rounded-lg bg-destructive/10 px-3 py-2 text-xs font-medium text-destructive">
-              Couldn&apos;t load the Tailwind CDN — check your internet connection. This tool needs network access; classes won&apos;t render until it reconnects.
+              Couldn&apos;t load the Tailwind CDN (or it&apos;s taking too long) — check your internet connection. This tool needs network access; classes won&apos;t render until it reconnects.
             </p>
           )}
           {cdnStatus === "loading" && (
