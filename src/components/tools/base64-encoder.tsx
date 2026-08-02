@@ -7,9 +7,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { downloadBlob } from "@/lib/utils";
 
 function encode(s: string) {
-  return btoa(unescape(encodeURIComponent(s)));
+  try {
+    return btoa(unescape(encodeURIComponent(s)));
+  } catch {
+    return "⚠ Couldn't encode this text (it may contain an invalid character)";
+  }
 }
 function decode(s: string) {
   try {
@@ -43,7 +48,12 @@ export default function Base64Encoder() {
         <Card className="bg-gradient-to-br from-primary/5 to-transparent">
           <CardContent className="space-y-4 pt-6">
             <pre className="min-h-[220px] overflow-auto whitespace-pre-wrap break-all rounded-xl bg-secondary/50 p-4 font-mono text-sm">{output}</pre>
-            <ActionBar onCopy={() => copy(output)} copied={copied} />
+            <ActionBar
+              onCopy={() => copy(output)}
+              copied={copied}
+              onDownload={() => downloadBlob(new Blob([output], { type: "text/plain" }), mode === "encode" ? "encoded.txt" : "decoded.txt")}
+              downloadLabel="Download .txt"
+            />
           </CardContent>
         </Card>
       </div>
