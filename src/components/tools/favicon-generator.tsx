@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { showToast } from "@/components/ui/toaster";
 
 type Mode = "text" | "emoji" | "image";
 type Shape = "rounded" | "circle" | "square";
@@ -128,12 +129,18 @@ export default function FaviconGenerator() {
 
   const onImage = (file?: File) => {
     if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      showToast("That's not an image file — try a JPG, PNG, or SVG", "error");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       const image = new Image();
       image.onload = () => { setImg(image); setMode("image"); };
+      image.onerror = () => showToast("Couldn't read that image — the file may be corrupted", "error");
       image.src = reader.result as string;
     };
+    reader.onerror = () => showToast("Couldn't read that file — try again", "error");
     reader.readAsDataURL(file);
   };
 
@@ -157,14 +164,22 @@ export default function FaviconGenerator() {
       zip.file("favicon-snippet.html", HTML_SNIPPET);
       const out = await zip.generateAsync({ type: "blob" });
       downloadBlob(out, "favicons.zip");
+      showToast("Downloaded favicons.zip");
+    } catch {
+      showToast("Couldn't build the ZIP — try again", "error");
     } finally {
       setBusy(false);
     }
   };
 
   const downloadPng = async (size: number) => {
-    const blob = await canvasToBlob(drawIcon(size, opts));
-    downloadBlob(blob, `favicon-${size}x${size}.png`);
+    try {
+      const blob = await canvasToBlob(drawIcon(size, opts));
+      downloadBlob(blob, `favicon-${size}x${size}.png`);
+      showToast(`Downloaded favicon-${size}x${size}.png`);
+    } catch {
+      showToast("Couldn't generate that PNG — try again", "error");
+    }
   };
 
   return (
