@@ -15,6 +15,7 @@ import { landingPages } from "../landing/landing";
 import { collections } from "../collections";
 import { fastPathCount } from "../incinc/intents";
 import { getKnowledgeBase } from "../incinc/knowledge";
+import { blogWordCount } from "../qa/checks";
 import healthSnapshot from "./health-snapshot.json";
 
 /**
@@ -83,8 +84,15 @@ export function getDashboardData() {
   };
 
   // --- Content ---------------------------------------------------------------
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const blogsToday = blogPosts.filter((p) => p.publishedOn === todayStr);
   const blogsThisWeek = blogPosts.filter((p) => new Date(p.publishedOn).getTime() >= weekAgo);
   const blogsThisMonth = blogPosts.filter((p) => new Date(p.publishedOn).getTime() >= monthAgo);
+  const totalWords = blogPosts.reduce((sum, p) => sum + blogWordCount(p), 0);
+  const averageWordCount = blogPosts.length ? Math.round(totalWords / blogPosts.length) : 0;
+  // Honest proxy for "human review pending": posts still running on both generated
+  // defaults (no seoTitle AND no seoDescription override) haven't had an SEO pass yet.
+  const notSeoReviewed = blogPosts.filter((p) => !p.seoTitle && !p.seoDescription).length;
   const recentlyUpdatedItems: { title: string; slug: string; updatedOn: string; type: "blog" | "india-service" }[] = [
     ...blogPosts.map((p) => ({ title: p.title, slug: p.slug, updatedOn: p.updatedOn ?? p.publishedOn, type: "blog" as const })),
     ...indiaServices.filter((s) => s.updatedOn).map((s) => ({ title: s.name, slug: s.slug, updatedOn: s.updatedOn!, type: "india-service" as const })),
@@ -100,8 +108,11 @@ export function getDashboardData() {
     .map((p) => ({ slug: p.slug, title: p.title, daysSinceUpdate: daysAgo(p.updatedOn ?? p.publishedOn) }));
 
   const content = {
+    blogsToday: blogsToday.length,
     blogsThisWeek: blogsThisWeek.length,
     blogsThisMonth: blogsThisMonth.length,
+    averageWordCount,
+    humanReviewPending: notSeoReviewed,
     programmaticPagesTotal: landingPages.length,
     recentlyUpdated,
     needsRefresh,

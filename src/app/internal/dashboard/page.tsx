@@ -5,12 +5,15 @@ import { Badge } from "@/components/ui/badge";
 import { Icon } from "@/components/icon";
 import { MetricCard, toneForIssueCount } from "@/components/dashboard/metric-card";
 import { BarList } from "@/components/dashboard/bar-list";
+import { IntegrationCard } from "@/components/dashboard/integration-card";
 import { getDashboardData } from "@/lib/dashboard/data";
+import { getGrowthPlan } from "@/lib/dashboard/growth-planner";
+import { searchConsoleStatus, ga4Status, adsenseStatus, keywordResearchStatus } from "@/lib/dashboard/integrations";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Project Health Dashboard",
+  title: "Project Health & Growth Dashboard",
   robots: { index: false, follow: false, nocache: true },
 };
 
@@ -61,6 +64,11 @@ export default async function ProjectHealthDashboard({
   const seoIssueTotal =
     d.seo.missingTitle + d.seo.missingMetaDescription + d.seo.missingOgImage + d.seo.missingCanonical + d.seo.missingSchema + d.seo.duplicateTitleGroups.length;
   const errorTotal = d.errors.brokenRoutes.length + d.errors.missingAssets.length;
+  const growthPlan = getGrowthPlan();
+  const searchConsole = searchConsoleStatus();
+  const ga4 = ga4Status();
+  const adsense = adsenseStatus();
+  const keywordResearch = keywordResearchStatus();
 
   return (
     <div className="min-h-screen bg-background py-10">
@@ -70,11 +78,11 @@ export default async function ProjectHealthDashboard({
           <div>
             <div className="flex items-center gap-2">
               <span className="grid size-9 place-items-center rounded-xl bg-primary/10 text-primary"><Icon name="Gauge" className="size-5" /></span>
-              <h1 className="text-2xl font-bold tracking-tight">Project Health Dashboard</h1>
+              <h1 className="text-2xl font-bold tracking-tight">Project Health & Growth Dashboard</h1>
               <Badge variant="secondary">Internal only</Badge>
             </div>
             <p className="mt-1 text-sm text-muted-foreground">
-              TechToolsCenter — a 30-second read on platform health, SEO, performance, and content.
+              TechToolsCenter — a 30-second read on platform health, SEO, performance, content, and what to do next.
             </p>
           </div>
           <div className="rounded-xl border border-border bg-card px-4 py-2.5 text-right text-xs text-muted-foreground">
@@ -102,6 +110,41 @@ export default async function ProjectHealthDashboard({
               <MetricCard label="Last deployment" value={fmtDate(d.overview.git?.commitDate).split(",")[0]} icon="Rocket" />
               <MetricCard label="Build status" value="Passing" icon="ShieldCheck" tone="good" hint="as of last health-check run" />
             </div>
+          </section>
+
+          {/* AI Growth Planner — every task below comes from a real, computed
+              signal (stale content, missing FAQ, broken links, thin categories).
+              Nothing about keyword volume or trends is guessed — see the
+              "not connected" note for what that would need. */}
+          <section>
+            <div className="mb-3 flex items-center justify-between">
+              <h2 className="flex items-center gap-2 text-lg font-semibold"><Icon name="Sparkles" className="size-4 text-primary" /> Today&apos;s Best Growth Tasks</h2>
+              <Badge variant={growthPlan.tasks.length === 0 ? "success" : "warning"}>
+                {growthPlan.tasks.length === 0 ? "Nothing urgent" : `${growthPlan.tasks.length} task group${growthPlan.tasks.length === 1 ? "" : "s"}`}
+              </Badge>
+            </div>
+            <Card>
+              <CardContent className="space-y-4 pt-6">
+                {growthPlan.tasks.length === 0 && <p className="text-sm text-muted-foreground">No open broken links, missing FAQs, stale content, or thin categories right now — genuinely nothing urgent.</p>}
+                {growthPlan.tasks.map((task, i) => (
+                  <div key={task.title} className="flex gap-3">
+                    <span className={`grid size-6 shrink-0 place-items-center rounded-full text-xs font-bold ${task.priority === "high" ? "bg-red-500/10 text-red-600 dark:text-red-400" : "bg-amber-500/10 text-amber-600 dark:text-amber-400"}`}>
+                      {i + 1}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold">{task.title} <span className="font-normal text-muted-foreground">({task.items.length})</span></p>
+                      <ul className="mt-1 space-y-0.5 text-sm text-muted-foreground">
+                        {task.items.slice(0, 6).map((item, j) => <li key={j} className="truncate">· {item}</li>)}
+                        {task.items.length > 6 && <li>· and {task.items.length - 6} more — see the sections above</li>}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+                <div className="rounded-xl border border-dashed border-border p-3 text-sm text-muted-foreground">
+                  <span className="font-medium text-foreground">Not connected yet:</span> trending keywords and search-volume-backed article/comparison/programmatic-page suggestions — these need Search Console + a keyword-research API. See the Content Opportunities section below for exact setup steps.
+                </div>
+              </CardContent>
+            </Card>
           </section>
 
           {/* 2. SEO Health */}
@@ -163,13 +206,21 @@ export default async function ProjectHealthDashboard({
           <section>
             <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><Icon name="BookOpen" className="size-4 text-primary" /> Content</h2>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <MetricCard label="Blogs today" value={d.content.blogsToday} icon="FileText" />
               <MetricCard label="Blogs this week" value={d.content.blogsThisWeek} icon="FileText" />
               <MetricCard label="Blogs this month" value={d.content.blogsThisMonth} icon="FileText" />
+              <MetricCard label="Average word count" value={d.content.averageWordCount} icon="AlignLeft" />
               <MetricCard label="Programmatic pages" value={d.content.programmaticPagesTotal} icon="LayoutTemplate" />
               <MetricCard
                 label={`Needs refresh (>${d.content.staleThresholdDays}d)`}
                 value={d.content.needsRefresh.length}
                 tone={toneForIssueCount(d.content.needsRefresh.length, 1, 15)}
+              />
+              <MetricCard
+                label="Human review pending"
+                value={d.content.humanReviewPending}
+                hint="posts with no seoTitle/seoDescription override yet"
+                tone={toneForIssueCount(d.content.humanReviewPending, 1, 20)}
               />
             </div>
             <div className="mt-4 grid gap-4 lg:grid-cols-2">
@@ -265,6 +316,30 @@ export default async function ProjectHealthDashboard({
             <div className="mt-3">
               <NotAvailable reason="Incinc AI is stateless with no request logging or database — total queries, top questions, and unknown questions genuinely cannot be measured today. Adding real usage analytics would need server-side logging on /api/incinc, which is a deliberate backend decision, not a default to add silently." />
             </div>
+          </section>
+
+          {/* Growth: SEO rankings — needs Search Console */}
+          <section>
+            <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><Icon name="Rocket" className="size-4 text-primary" /> SEO Rankings & Keywords</h2>
+            <IntegrationCard status={searchConsole} whatItUnlocks="Top 20 ranking pages, top 20 losing pages, new opportunities, and keywords you're missing — all come from Search Console's real click/impression/position data." />
+          </section>
+
+          {/* Growth: Users — needs GA4 */}
+          <section>
+            <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><Icon name="Users" className="size-4 text-primary" /> Users</h2>
+            <IntegrationCard status={ga4} whatItUnlocks="Top countries, top devices, top browsers, returning users, average session length, and bounce rate — all real GA4 dimensions, not guessable from this codebase." />
+          </section>
+
+          {/* Growth: Revenue — needs AdSense + affiliate networks */}
+          <section>
+            <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><Icon name="Coins" className="size-4 text-primary" /> Revenue</h2>
+            <IntegrationCard status={adsense} whatItUnlocks="AdSense revenue, RPM, and CTR. Affiliate and sponsored-listing revenue have no public API to pull from — those would need to come from wherever you already track them today." />
+          </section>
+
+          {/* Growth: Content Opportunities (AI-powered suggestions) — needs a keyword-research API */}
+          <section>
+            <h2 className="mb-3 flex items-center gap-2 text-lg font-semibold"><Icon name="Lightbulb" className="size-4 text-primary" /> Content Opportunities</h2>
+            <IntegrationCard status={keywordResearch} whatItUnlocks={'High-search-volume/low-competition suggestions like "Compress PDF for GST Portal — 8,100 searches/mo, Low competition" — real numbers like that only exist behind a paid keyword-research API or the Google Ads API\'s Keyword Planner endpoint. Nothing here is invented in the meantime.'} />
           </section>
 
           {/* 9. Errors */}

@@ -21,7 +21,7 @@ import {
   Mic, MicVocal, Users, Building2, HeartPulse, Box, FileSearch, Stethoscope,
   PenLine, MessagesSquare, Chrome, Monitor, Laptop, Handshake, ShoppingBag,
   Sparkle, Music2, Speech, CircleUserRound, UserRound, ClipboardList,
-  ExternalLink,
+  ExternalLink, Lightbulb,
   type LucideProps,
 } from "lucide-react";
 
@@ -48,7 +48,7 @@ const map = {
   Mic, MicVocal, Users, Building2, HeartPulse, Box, FileSearch, Stethoscope,
   PenLine, MessagesSquare, Chrome, Monitor, Laptop, Handshake, ShoppingBag,
   Sparkle, Music2, Speech, CircleUserRound, UserRound, ClipboardList,
-  ExternalLink,
+  ExternalLink, Lightbulb,
 } as const;
 
 export type IconName = keyof typeof map;
