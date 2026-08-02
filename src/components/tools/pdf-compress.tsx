@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { downloadBlob, formatBytes } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
+import { showToast } from "@/components/ui/toaster";
 
 /** Compression levels — each maps to a render resolution + JPEG quality.
  *  Lower scale + lower quality = much smaller file. */
@@ -127,6 +128,8 @@ export default function PdfCompress({ preset }: { preset?: Record<string, unknow
         if (best) setResult({ size: best.size, blob: best });
       }
       track(["pdfsConverted", "filesProcessed"], performance.now() - t0);
+    } catch {
+      showToast("Couldn't compress this PDF — it may be corrupted or password-protected", "error");
     } finally {
       setBusy(false);
       setProgress("");
@@ -149,8 +152,10 @@ export default function PdfCompress({ preset }: { preset?: Record<string, unknow
             <span className="text-sm text-muted-foreground">Compressed privately in your browser — nothing is uploaded</span>
           </button>
           <div className="mt-3 text-center">
-            <button onClick={async () => onFile(await (await import("@/lib/samples")).samplePdfFile())}
-              className="text-sm font-medium text-primary hover:underline">✨ Try a sample PDF</button>
+            <button onClick={async () => {
+              try { onFile(await (await import("@/lib/samples")).samplePdfFile()); }
+              catch { showToast("Couldn't load the sample PDF — try uploading your own", "error"); }
+            }} className="text-sm font-medium text-primary hover:underline">✨ Try a sample PDF</button>
           </div>
         </CardContent>
       </Card>
@@ -225,7 +230,7 @@ export default function PdfCompress({ preset }: { preset?: Record<string, unknow
                 ) : (
                   <p className="rounded-xl bg-secondary/60 p-3 text-center text-sm text-muted-foreground">Try a stronger level for a smaller file.</p>
                 )}
-                <Button variant="outline" className="w-full" onClick={() => downloadBlob(result.blob, `compressed-${file.name}`)}>
+                <Button variant="outline" className="w-full" onClick={() => { downloadBlob(result.blob, `compressed-${file.name}`); showToast("Downloaded compressed PDF"); }}>
                   Download compressed PDF
                 </Button>
                 <p className="text-center text-xs text-muted-foreground">Tip: strong/extreme levels rasterise pages (text becomes an image) for maximum size reduction — ideal for uploads.</p>

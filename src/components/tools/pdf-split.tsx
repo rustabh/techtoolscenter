@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { showToast } from "@/components/ui/toaster";
 
 function parseRange(input: string, max: number): number[] {
   const set = new Set<number>();
@@ -33,25 +34,35 @@ export default function PdfSplit() {
   const [busy, setBusy] = useState(false);
 
   const onFile = async (f: File) => {
-    setFile(f);
-    const doc = await PDFDocument.load(await f.arrayBuffer());
-    const count = doc.getPageCount();
-    setPageCount(count);
-    setRange(`1-${count}`);
+    try {
+      const doc = await PDFDocument.load(await f.arrayBuffer());
+      const count = doc.getPageCount();
+      setFile(f);
+      setPageCount(count);
+      setRange(`1-${count}`);
+    } catch {
+      showToast("Couldn't open this PDF — it may be corrupted or password-protected", "error");
+    }
   };
 
   const split = async () => {
     if (!file) return;
+    const pages = parseRange(range, pageCount);
+    if (pages.length === 0) {
+      showToast("No valid pages in that range — check the page numbers", "error");
+      return;
+    }
     setBusy(true);
     try {
       const src = await PDFDocument.load(await file.arrayBuffer());
-      const pages = parseRange(range, pageCount);
-      if (pages.length === 0) return;
       const out = await PDFDocument.create();
       const copied = await out.copyPages(src, pages.map((p) => p - 1));
       copied.forEach((p) => out.addPage(p));
       const bytes = await out.save();
       downloadBlob(new Blob([bytes], { type: "application/pdf" }), "split.pdf");
+      showToast("Downloaded split.pdf");
+    } catch {
+      showToast("Couldn't split this PDF — try again", "error");
     } finally {
       setBusy(false);
     }

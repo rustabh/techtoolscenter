@@ -5,6 +5,7 @@ import { FileImage, Loader2, Download } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { showToast } from "@/components/ui/toaster";
 
 type PageImage = { blob: Blob; url: string };
 
@@ -60,7 +61,12 @@ export default function PdfToJpg() {
       setPages(results);
       if (results.length === 1) {
         downloadBlob(results[0].blob, `${baseName(file.name)}.jpg`);
+        showToast("Downloaded JPG");
+      } else {
+        showToast(`Converted ${results.length} pages`);
       }
+    } catch {
+      showToast("Couldn't convert this PDF — it may be corrupted or password-protected", "error");
     } finally {
       setBusy(false);
       setProgress("");
@@ -69,13 +75,18 @@ export default function PdfToJpg() {
 
   const downloadAllZip = async () => {
     if (pages.length === 0) return;
-    const JSZip = (await import("jszip")).default;
-    const zip = new JSZip();
-    pages.forEach((p, i) => {
-      zip.file(`${baseName(file?.name ?? "page")}-page-${i + 1}.jpg`, p.blob);
-    });
-    const out = await zip.generateAsync({ type: "blob" });
-    downloadBlob(out, `${baseName(file?.name ?? "pages")}.zip`);
+    try {
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+      pages.forEach((p, i) => {
+        zip.file(`${baseName(file?.name ?? "page")}-page-${i + 1}.jpg`, p.blob);
+      });
+      const out = await zip.generateAsync({ type: "blob" });
+      downloadBlob(out, `${baseName(file?.name ?? "pages")}.zip`);
+      showToast("Downloaded ZIP");
+    } catch {
+      showToast("Couldn't build the ZIP — try again", "error");
+    }
   };
 
   return (

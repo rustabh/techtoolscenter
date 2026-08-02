@@ -6,6 +6,7 @@ import { FilePlus2, ArrowUp, ArrowDown, X } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { showToast } from "@/components/ui/toaster";
 
 export default function PdfMerge() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -14,7 +15,10 @@ export default function PdfMerge() {
 
   const add = (list: FileList | null) => {
     if (!list) return;
-    setFiles((f) => [...f, ...Array.from(list).filter((x) => x.type === "application/pdf")]);
+    const incoming = Array.from(list);
+    const valid = incoming.filter((x) => x.type === "application/pdf");
+    if (valid.length < incoming.length) showToast("Only PDF files are supported — other files were skipped", "info");
+    setFiles((f) => [...f, ...valid]);
   };
 
   const move = (i: number, dir: -1 | 1) => {
@@ -40,6 +44,9 @@ export default function PdfMerge() {
       }
       const bytes = await out.save();
       downloadBlob(new Blob([bytes], { type: "application/pdf" }), "merged.pdf");
+      showToast("Downloaded merged.pdf");
+    } catch {
+      showToast("Couldn't merge these PDFs — one may be corrupted or password-protected", "error");
     } finally {
       setBusy(false);
     }

@@ -6,6 +6,7 @@ import { ImagePlus, ArrowUp, ArrowDown, X, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { showToast } from "@/components/ui/toaster";
 
 const ACCEPTED_TYPES = ["image/jpeg", "image/png"];
 
@@ -60,6 +61,9 @@ export default function ImageToPdf() {
       }
       const bytes = await pdfDoc.save();
       downloadBlob(new Blob([bytes], { type: "application/pdf" }), "images.pdf");
+      showToast("Downloaded images.pdf");
+    } catch {
+      showToast("Couldn't build the PDF — make sure every file is a valid JPG or PNG", "error");
     } finally {
       setBusy(false);
     }
