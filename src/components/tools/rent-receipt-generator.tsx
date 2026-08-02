@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { ActionBar } from "@/components/tools/action-bar";
 import { formatCurrency, slugify } from "@/lib/utils";
+import { showToast } from "@/components/ui/toaster";
 
 type PaymentMode = "Cash" | "Cheque" | "Bank Transfer" | "UPI";
 
@@ -113,10 +114,24 @@ export default function RentReceiptGenerator() {
   );
 
   const patch = (p: Partial<RentReceiptState>) => set({ ...value, ...p });
+  const [exporting, setExporting] = useState(false);
 
   const words = useMemo(() => amountInWords(value.rentAmount), [value.rentAmount]);
 
   const downloadPdf = async () => {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      await generatePdf();
+      showToast("Downloaded rent receipt PDF");
+    } catch {
+      showToast("Couldn't generate the PDF — try again", "error");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const generatePdf = async () => {
     const { jsPDF } = await import("jspdf");
     const doc = new jsPDF();
     const margin = 14;
@@ -306,7 +321,7 @@ export default function RentReceiptGenerator() {
           onRedo={redo}
           onReset={() => reset()}
           onDownload={downloadPdf}
-          downloadLabel="Download PDF"
+          downloadLabel={exporting ? "Generating…" : "Download PDF"}
           canUndo={canUndo}
           canRedo={canRedo}
         />
