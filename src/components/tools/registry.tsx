@@ -116,6 +116,9 @@ const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> 
   "svg-blob-generator": dynamic(() => import("./svg-blob-generator"), { loading: ToolSkeleton, ssr: false }),
   "svg-optimizer": dynamic(() => import("./svg-optimizer"), { loading: ToolSkeleton, ssr: false }),
   "ui-snippets": dynamic(() => import("./ui-snippets"), { loading: ToolSkeleton, ssr: false }),
+  "youtube-thumbnail-downloader": dynamic(() => import("./youtube-thumbnail-downloader"), { loading: ToolSkeleton, ssr: false }),
+  "cgpa-calculator": dynamic(() => import("./cgpa-calculator"), { loading: ToolSkeleton, ssr: false }),
+  "text-to-speech": dynamic(() => import("./text-to-speech"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug, preset }: { slug: string; preset?: Record<string, unknown> }) {

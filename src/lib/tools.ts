@@ -1658,6 +1658,56 @@ export const tools: Tool[] = [
       { question: "Do these snippets need JavaScript?", answer: "No — every snippet is pure HTML and CSS, including the toggle switches (checkbox + label CSS trick) and animated loaders (CSS keyframes)." },
     ],
   },
+  {
+    slug: "youtube-thumbnail-downloader",
+    name: "YouTube Thumbnail Downloader",
+    description: "Download any YouTube video's thumbnail in every available resolution.",
+    longDescription:
+      "Paste any YouTube video, Shorts or embed link and get every thumbnail size YouTube generates — from the 120×90 default up to the full 1280×720 HD version — with one-click downloads. Nothing is uploaded; thumbnails are fetched straight from YouTube's own image servers.",
+    category: "Everyday",
+    icon: "Youtube",
+    keywords: ["youtube thumbnail downloader", "download youtube thumbnail", "youtube thumbnail grabber", "hd youtube thumbnail", "youtube preview image download"],
+    addedOn: "2026-08-02",
+    popular: true,
+    faq: [
+      { question: "Which YouTube links work?", answer: "Standard watch links (youtube.com/watch?v=...), short links (youtu.be/...), Shorts, and embed/live links — just paste the URL or the 11-character video ID." },
+      { question: "Why is the max-resolution thumbnail sometimes missing?", answer: "YouTube only generates a 1280×720 (maxresdefault) thumbnail for videos uploaded in HD. Older or lower-resolution videos may only have the smaller sizes available, and this tool automatically hides sizes that don't exist for a given video." },
+      { question: "Is this legal to use?", answer: "You're downloading a publicly served preview image directly from YouTube's own CDN — the same image already visible on the video page. Respect the original creator's rights when reusing it." },
+    ],
+  },
+  {
+    slug: "cgpa-calculator",
+    name: "CGPA to Percentage Calculator",
+    description: "Convert CGPA to percentage (or back), plus calculate SGPA/CGPA from subject grades.",
+    longDescription:
+      "Convert your CGPA to a percentage using the CBSE (×9.5), VTU ((CGPA−0.75)×10), or a custom multiplier formula — or go the other way, from percentage back to CGPA. Also includes a credit-weighted SGPA/CGPA calculator: add each subject's credits and grade point and get your semester or cumulative GPA instantly.",
+    category: "Calculators",
+    icon: "GraduationCap",
+    keywords: ["cgpa to percentage calculator", "cgpa calculator", "percentage to cgpa", "sgpa calculator", "cgpa converter", "gpa calculator india"],
+    addedOn: "2026-08-02",
+    popular: true,
+    faq: [
+      { question: "What formula converts CGPA to percentage?", answer: "CBSE uses Percentage = CGPA × 9.5. Many state and technical universities (like VTU) use Percentage = (CGPA − 0.75) × 10. Check your institution's official conversion formula if it differs, and use the custom multiplier option here to match it." },
+      { question: "How is SGPA/CGPA calculated from subject grades?", answer: "It's the credit-weighted average of grade points: multiply each subject's credits by its grade point, add them up, then divide by the total credits." },
+      { question: "Is this an official conversion?", answer: "No — universities set their own official conversion formula. Use this for a quick estimate and always confirm with your institution's marksheet or examination cell for anything official (admissions, job applications, etc.)." },
+    ],
+  },
+  {
+    slug: "text-to-speech",
+    name: "Text to Speech",
+    description: "Convert text to natural-sounding speech, free, right in your browser.",
+    longDescription:
+      "Type or paste any text and have it read aloud in your browser's own voices — pick from every voice your device offers, and adjust speed, pitch and volume. Nothing is uploaded or sent to a server; conversion runs entirely on-device using your browser's built-in speech engine.",
+    category: "Everyday",
+    icon: "Speech",
+    keywords: ["text to speech", "tts online free", "text to voice", "read aloud tool", "text to speech converter"],
+    addedOn: "2026-08-02",
+    faq: [
+      { question: "Which voices are available?", answer: "Whatever voices your browser and operating system provide — this varies by device, but most systems include several English voices and often other languages too." },
+      { question: "Can I download the audio?", answer: "Not yet — this tool plays speech live in your browser using the Web Speech API, which doesn't expose an audio file to save. Use your OS's screen/audio recorder if you need a file." },
+      { question: "Does this work on all browsers?", answer: "It works in Chrome, Edge, and Safari. Some browsers or older devices may have limited or no voices installed." },
+    ],
+  },
 ];
 
 // Tools added on or after this date show a "New" badge. Fixed for deterministic SSR.
