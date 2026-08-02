@@ -72,7 +72,7 @@ export default function UuidGenerator() {
         <CardHeader><CardTitle>Generated UUIDs</CardTitle></CardHeader>
         <CardContent>
           {list.length === 0 ? (
-            <p className="py-6 text-center text-sm text-muted-foreground">No UUIDs yet — press "Generate new" above.</p>
+            <p className="py-6 text-center text-sm text-muted-foreground">No UUIDs yet — press &ldquo;Generate new&rdquo; above.</p>
           ) : (
             <div className="max-h-72 space-y-2 overflow-auto">
               {list.map((id, i) => (
