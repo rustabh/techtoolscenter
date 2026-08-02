@@ -7,6 +7,14 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { downloadBlob } from "@/lib/utils";
+
+// Guards against a title/description containing a quote or angle bracket
+// breaking out of the attribute (e.g. He said "hi" would otherwise produce
+// content="He said "hi""), which would emit invalid, unparsable HTML.
+function escapeAttr(s: string) {
+  return s.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
 
 export default function MetaTagsGenerator() {
   const [title, setTitle] = useState("TechToolsCenter — Free Online Tools");
@@ -16,24 +24,27 @@ export default function MetaTagsGenerator() {
   const [type, setType] = useState("website");
   const { copied, copy } = useCopy();
 
-  const tags = useMemo(() => [
-    `<title>${title}</title>`,
-    `<meta name="description" content="${desc}">`,
-    `<link rel="canonical" href="${url}">`,
-    ``,
-    `<!-- OpenGraph -->`,
-    `<meta property="og:type" content="${type}">`,
-    `<meta property="og:title" content="${title}">`,
-    `<meta property="og:description" content="${desc}">`,
-    `<meta property="og:url" content="${url}">`,
-    `<meta property="og:image" content="${image}">`,
-    ``,
-    `<!-- Twitter -->`,
-    `<meta name="twitter:card" content="summary_large_image">`,
-    `<meta name="twitter:title" content="${title}">`,
-    `<meta name="twitter:description" content="${desc}">`,
-    `<meta name="twitter:image" content="${image}">`,
-  ].join("\n"), [title, desc, url, image, type]);
+  const tags = useMemo(() => {
+    const t = escapeAttr(title), d = escapeAttr(desc), u = escapeAttr(url), img = escapeAttr(image), ty = escapeAttr(type);
+    return [
+      `<title>${t}</title>`,
+      `<meta name="description" content="${d}">`,
+      `<link rel="canonical" href="${u}">`,
+      ``,
+      `<!-- OpenGraph -->`,
+      `<meta property="og:type" content="${ty}">`,
+      `<meta property="og:title" content="${t}">`,
+      `<meta property="og:description" content="${d}">`,
+      `<meta property="og:url" content="${u}">`,
+      `<meta property="og:image" content="${img}">`,
+      ``,
+      `<!-- Twitter -->`,
+      `<meta name="twitter:card" content="summary_large_image">`,
+      `<meta name="twitter:title" content="${t}">`,
+      `<meta name="twitter:description" content="${d}">`,
+      `<meta name="twitter:image" content="${img}">`,
+    ].join("\n");
+  }, [title, desc, url, image, type]);
 
   const count = (v: string, max: number) => (
     <span className={v.length > max ? "text-destructive" : "text-muted-foreground"}>{v.length}/{max}</span>
@@ -55,7 +66,10 @@ export default function MetaTagsGenerator() {
         <CardHeader><CardTitle>HTML tags</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <pre className="max-h-[420px] overflow-auto whitespace-pre-wrap rounded-xl bg-secondary/50 p-4 text-xs leading-relaxed">{tags}</pre>
-          <Button onClick={() => copy(tags)}>{copied ? "Copied!" : "Copy all tags"}</Button>
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={() => copy(tags)}>{copied ? "Copied!" : "Copy all tags"}</Button>
+            <Button variant="outline" onClick={() => downloadBlob(new Blob([tags], { type: "text/html" }), "meta-tags.html")}>Download .html</Button>
+          </div>
         </CardContent>
       </Card>
     </div>
