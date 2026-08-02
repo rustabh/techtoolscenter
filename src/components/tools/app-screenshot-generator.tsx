@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { showToast } from "@/components/ui/toaster";
 
 /* ------------------------------------------------------------------ *
  * Exact, store-accepted export dimensions.
@@ -251,12 +252,18 @@ export default function AppScreenshotGenerator() {
 
   const onShot = (file?: File) => {
     if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      showToast("That's not an image file — try a JPG, PNG, or WebP", "error");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       const image = new Image();
       image.onload = () => setImg(image);
+      image.onerror = () => showToast("Couldn't read that image — the file may be corrupted", "error");
       image.src = reader.result as string;
     };
+    reader.onerror = () => showToast("Couldn't read that file — try again", "error");
     reader.readAsDataURL(file);
   };
 
@@ -276,8 +283,13 @@ export default function AppScreenshotGenerator() {
   );
 
   const downloadPng = async () => {
-    const blob = await exportOne(spec);
-    downloadBlob(blob, `${spec.platform}-${spec.id}-${spec.w}x${spec.h}.png`);
+    try {
+      const blob = await exportOne(spec);
+      downloadBlob(blob, `${spec.platform}-${spec.id}-${spec.w}x${spec.h}.png`);
+      showToast("Downloaded screenshot");
+    } catch {
+      showToast("Couldn't export this screenshot — try again", "error");
+    }
   };
 
   const downloadZip = async () => {
@@ -292,6 +304,9 @@ export default function AppScreenshotGenerator() {
       }
       const out = await zip.generateAsync({ type: "blob" });
       downloadBlob(out, `${platform}-store-screenshots.zip`);
+      showToast(`Downloaded ${specs.length} screenshots`);
+    } catch {
+      showToast("Couldn't build the ZIP — try again", "error");
     } finally {
       setBusy(false);
     }
