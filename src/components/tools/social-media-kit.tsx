@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
+import { showToast } from "@/components/ui/toaster";
 
 interface Preset { id: string; label: string; w: number; h: number; }
 const PRESETS: Preset[] = [
@@ -47,21 +48,35 @@ export default function SocialMediaKit() {
   const [align, setAlign] = useState<"left" | "center">("center");
   const [logo, setLogo] = useState<string | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const [exporting, setExporting] = useState(false);
 
   const scale = useMemo(() => Math.min(1, 520 / preset.w, 420 / preset.h), [preset]);
 
   const onLogo = (file?: File) => {
     if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      showToast("That's not an image file — try a JPG or PNG", "error");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => setLogo(reader.result as string);
+    reader.onerror = () => showToast("Couldn't read that file — try again", "error");
     reader.readAsDataURL(file);
   };
 
   const download = async () => {
-    if (!stageRef.current) return;
-    const { toPng } = await import("html-to-image");
-    const dataUrl = await toPng(stageRef.current, { width: preset.w, height: preset.h, cacheBust: true });
-    downloadBlob(await (await fetch(dataUrl)).blob(), `${preset.id}-${preset.w}x${preset.h}.png`);
+    if (!stageRef.current || exporting) return;
+    setExporting(true);
+    try {
+      const { toPng } = await import("html-to-image");
+      const dataUrl = await toPng(stageRef.current, { width: preset.w, height: preset.h, cacheBust: true });
+      downloadBlob(await (await fetch(dataUrl)).blob(), `${preset.id}-${preset.w}x${preset.h}.png`);
+      showToast("Downloaded image");
+    } catch {
+      showToast("Couldn't generate the image — try a smaller format or a different logo", "error");
+    } finally {
+      setExporting(false);
+    }
   };
 
   return (
@@ -106,7 +121,7 @@ export default function SocialMediaKit() {
               </div>
             </div>
             <LogoUpload onFile={onLogo} has={!!logo} />
-            <Button className="w-full" onClick={download}><Download /> Download PNG ({preset.w}×{preset.h})</Button>
+            <Button className="w-full" onClick={download} disabled={exporting}><Download /> {exporting ? "Generating…" : `Download PNG (${preset.w}×${preset.h})`}</Button>
           </CardContent>
         </Card>
       </div>
