@@ -3,6 +3,7 @@
 import { useMemo, type ComponentType } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { cn } from "@/lib/utils";
+import { Select } from "@/components/ui/select";
 
 import ScientificCalculator from "./scientific-calculator";
 import PercentageCalculator from "./percentage-calculator";
@@ -59,7 +60,20 @@ export default function CalculatorHub() {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
-      <aside className="lg:sticky lg:top-20 lg:h-fit">
+      {/* Compact dropdown on mobile — 22 calculators as a scrolling button list ate the whole first screen before. */}
+      <div className="lg:hidden">
+        <Select aria-label="Choose a calculator" value={active} onChange={(e) => setActive(e.target.value)}>
+          {GROUPS.map((g) => (
+            <optgroup key={g} label={g}>
+              {MODES.filter((m) => m.group === g).map((m) => (
+                <option key={m.id} value={m.id}>{m.label}</option>
+              ))}
+            </optgroup>
+          ))}
+        </Select>
+      </div>
+
+      <aside className="hidden lg:sticky lg:top-20 lg:block lg:h-fit">
         <nav className="space-y-4 rounded-2xl border border-border bg-card p-3" aria-label="Calculators">
           {GROUPS.map((g) => (
             <div key={g}>
@@ -69,6 +83,7 @@ export default function CalculatorHub() {
                   <button
                     key={m.id}
                     onClick={() => setActive(m.id)}
+                    aria-current={active === m.id ? "page" : undefined}
                     className={cn(
                       "w-full rounded-lg px-3 py-2 text-left text-sm transition-colors",
                       active === m.id ? "bg-primary text-primary-foreground font-medium" : "hover:bg-secondary"
