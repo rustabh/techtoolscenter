@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Plus, Trash2, Upload, Printer, FileDown, ImageDown, Sparkles, Wand2 } from "lucide-react";
+import { Plus, Trash2, Upload, Printer, FileDown, ImageDown, Sparkles, Wand2, Loader2 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { showToast } from "@/components/ui/toaster";
 import { formatCurrency } from "@/lib/utils";
 import { saveItem } from "@/lib/saved";
 import { newItem, subtotal, type LineItem, type Party } from "./doc-types";
@@ -167,6 +168,7 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
   const printRef = useRef<HTMLDivElement>(null);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [barUrl, setBarUrl] = useState<string | null>(null);
+  const [exporting, setExporting] = useState<"pdf" | "png" | null>(null);
 
   const kind = DOC_TYPES.find((d) => d.id === value.kind) ?? DOC_TYPES[0];
   const template = TEMPLATES.find((t) => t.id === value.templateId) ?? TEMPLATES[0];
@@ -258,6 +260,19 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
 
   /* ---------------- PDF export ---------------- */
   const downloadPdf = async () => {
+    if (exporting) return;
+    setExporting("pdf");
+    try {
+      await generatePdf();
+      showToast(`${kind.label} PDF downloaded`);
+    } catch {
+      showToast("Couldn't generate the PDF — try again", "error");
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  const generatePdf = async () => {
     const { jsPDF } = await import("jspdf");
     const autoTable = (await import("jspdf-autotable")).default;
     const doc = new jsPDF();
@@ -337,14 +352,35 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
 
   /* ---------------- PNG export ---------------- */
   const downloadPng = async () => {
-    if (!printRef.current) return;
-    const { toPng } = await import("html-to-image");
-    const url = await toPng(printRef.current, { pixelRatio: 2.5, cacheBust: true, backgroundColor: "#ffffff" });
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${value.number}.png`;
-    a.click();
+    if (!printRef.current || exporting) return;
+    setExporting("png");
+    try {
+      const { toPng } = await import("html-to-image");
+      const url = await toPng(printRef.current, { pixelRatio: 2.5, cacheBust: true, backgroundColor: "#ffffff" });
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${value.number}.png`;
+      a.click();
+      showToast(`${kind.label} PNG downloaded`);
+    } catch {
+      showToast("Couldn't generate the PNG — try again", "error");
+    } finally {
+      setExporting(null);
+    }
   };
+
+  // Ctrl/Cmd+S saves the PDF instead of triggering the browser's save dialog.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s") {
+        e.preventDefault();
+        downloadPdf();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, exporting]);
 
   const layout = template.layout;
   // Minimal is deliberately monochrome; every other layout uses the accent.
@@ -415,12 +451,15 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
             <Card>
               <CardHeader><CardTitle>Items</CardTitle></CardHeader>
               <CardContent className="space-y-3">
+                {value.items.length === 0 && (
+                  <p className="rounded-lg border border-dashed border-border py-4 text-center text-sm text-muted-foreground">No items yet — add your first line item below.</p>
+                )}
                 {value.items.map((it) => (
-                  <div key={it.id} className="grid grid-cols-12 items-center gap-2">
-                    <Input className="col-span-5" placeholder="Description" value={it.description} onChange={(e) => patchItem(it.id, { description: e.target.value })} />
-                    <Input className="col-span-2" type="number" placeholder="Qty" value={it.qty} onChange={(e) => patchItem(it.id, { qty: Number(e.target.value) })} />
-                    {kind.priced && <Input className="col-span-3" type="number" placeholder="Rate" value={it.rate} onChange={(e) => patchItem(it.id, { rate: Number(e.target.value) })} />}
-                    <Button variant="ghost" size="icon" className={kind.priced ? "col-span-2" : "col-span-5"} aria-label="Remove item" onClick={() => patch({ items: value.items.filter((x) => x.id !== it.id) })}><Trash2 className="size-4" /></Button>
+                  <div key={it.id} className="grid grid-cols-2 items-center gap-2 sm:grid-cols-12">
+                    <Input className="col-span-2 sm:col-span-5" placeholder="Description" aria-label="Item description" value={it.description} onChange={(e) => patchItem(it.id, { description: e.target.value })} />
+                    <Input className="sm:col-span-2" type="number" placeholder="Qty" aria-label="Quantity" value={it.qty} onChange={(e) => patchItem(it.id, { qty: Number(e.target.value) })} />
+                    {kind.priced && <Input className="sm:col-span-3" type="number" placeholder="Rate" aria-label="Rate" value={it.rate} onChange={(e) => patchItem(it.id, { rate: Number(e.target.value) })} />}
+                    <Button variant="ghost" size="icon" className={kind.priced ? "sm:col-span-2" : "sm:col-span-5"} aria-label={`Remove ${it.description || "item"}`} onClick={() => patch({ items: value.items.filter((x) => x.id !== it.id) })}><Trash2 className="size-4" /></Button>
                   </div>
                 ))}
                 <Button variant="outline" size="sm" onClick={() => patch({ items: [...value.items, newItem()] })}><Plus /> Add item</Button>
@@ -462,11 +501,15 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
           </CardContent>
         </Card>
 
-        <ActionBar onUndo={undo} onRedo={redo} onReset={() => reset()} onDuplicate={duplicate} onDownload={downloadPdf} downloadLabel="Download PDF" canUndo={canUndo} canRedo={canRedo} />
+        <ActionBar onUndo={undo} onRedo={redo} onReset={() => reset()} onDuplicate={duplicate} onDownload={downloadPdf} downloadLabel={exporting === "pdf" ? "Generating…" : "Download PDF"} canUndo={canUndo} canRedo={canRedo} />
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" size="sm" onClick={downloadPng}><ImageDown className="size-4" /> PNG</Button>
-          <Button variant="outline" size="sm" onClick={downloadPdf}><FileDown className="size-4" /> PDF</Button>
-          <Button variant="outline" size="sm" onClick={() => window.print()}><Printer className="size-4" /> Print</Button>
+          <Button variant="outline" size="sm" onClick={downloadPng} disabled={!!exporting} aria-label="Download as PNG image">
+            {exporting === "png" ? <Loader2 className="size-4 animate-spin" /> : <ImageDown className="size-4" />} {exporting === "png" ? "Generating…" : "PNG"}
+          </Button>
+          <Button variant="outline" size="sm" onClick={downloadPdf} disabled={!!exporting} aria-label="Download as PDF">
+            {exporting === "pdf" ? <Loader2 className="size-4 animate-spin" /> : <FileDown className="size-4" />} {exporting === "pdf" ? "Generating…" : "PDF"}
+          </Button>
+          <Button variant="outline" size="sm" onClick={() => window.print()} aria-label="Print document"><Printer className="size-4" /> Print</Button>
           <Button variant="outline" size="sm" onClick={() => saveItem({ type: "project", title: `${kind.label} ${value.number}`, subtitle: value.customer.name || value.company.name, href: `/tools/${KIND_SLUG[value.kind]}` })}>Save project</Button>
           <Button variant="outline" size="sm" onClick={() => saveItem({ type: "template", title: `${kind.label} · ${template.name}`, subtitle: "Template", href: `/tools/${KIND_SLUG[value.kind]}` })}>Save template</Button>
         </div>
@@ -512,6 +555,9 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
                   )}
                 </thead>
                 <tbody>
+                  {value.items.length === 0 && (
+                    <tr><td colSpan={kind.priced ? 4 : 2} className="py-4 text-center text-slate-400">No items added yet</td></tr>
+                  )}
                   {value.items.map((it, i) => (
                     <tr key={it.id} className={layout === "minimal" ? "border-b border-slate-100" : i % 2 ? "bg-slate-50" : ""}>
                       <td className={layout === "minimal" ? "py-2 pr-2" : "p-2"}>{it.description || "—"}</td>
