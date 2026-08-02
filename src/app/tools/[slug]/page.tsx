@@ -20,7 +20,7 @@ import { getLanding, landingPages } from "@/lib/landing/landing";
 import { siteConfig } from "@/lib/site";
 
 // Tools that need the network at runtime (so no offline badge).
-const NETWORK_TOOLS = new Set(["website-mockup-generator", "brand-kit-generator", "app-screenshot-generator"]);
+const NETWORK_TOOLS = new Set(["website-mockup-generator", "brand-kit-generator", "app-screenshot-generator", "tailwind-playground"]);
 
 export function generateStaticParams() {
   const toolSlugs = new Set(tools.map((t) => t.slug));
