@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { cn, downloadBlob } from "@/lib/utils";
+import { showToast } from "@/components/ui/toaster";
 import ImageCompressor from "./image-compressor";
 
 type Tab = "edit" | "crop" | "compress" | "palette" | "picker" | "info" | "background" | "batch";
@@ -23,12 +24,18 @@ function useImage() {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
   const [meta, setMeta] = useState<{ name: string; size: number; type: string } | null>(null);
   const load = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      showToast("That's not an image file — try a JPG, PNG, or WebP", "error");
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => {
       const image = new Image();
       image.onload = () => { setImg(image); setMeta({ name: file.name, size: file.size, type: file.type }); };
+      image.onerror = () => showToast("Couldn't read that image — the file may be corrupted", "error");
       image.src = reader.result as string;
     };
+    reader.onerror = () => showToast("Couldn't read that file — try again", "error");
     reader.readAsDataURL(file);
   };
   const reset = () => { setImg(null); setMeta(null); };
@@ -141,9 +148,10 @@ function EditTab({ img, meta }: { img: HTMLImageElement; meta: { size: number } 
 
   const save = () => {
     canvasRef.current?.toBlob((b) => {
-      if (!b) return;
+      if (!b) { showToast("Couldn't export this image — try a different format", "error"); return; }
       setOutSize(b.size);
       downloadBlob(b, `edited.${format === "image/png" ? "png" : format === "image/webp" ? "webp" : "jpg"}`);
+      showToast("Downloaded edited image");
     }, format, quality);
   };
 
@@ -290,7 +298,11 @@ function CropTab({ img }: { img: HTMLImageElement }) {
     c.width = Math.max(1, Math.round(sel.w * scaleX));
     c.height = Math.max(1, Math.round(sel.h * scaleY));
     c.getContext("2d")!.drawImage(img, sel.x * scaleX, sel.y * scaleY, sel.w * scaleX, sel.h * scaleY, 0, 0, c.width, c.height);
-    c.toBlob((b) => b && downloadBlob(b, "cropped.png"), "image/png");
+    c.toBlob((b) => {
+      if (!b) { showToast("Couldn't export the crop — try again", "error"); return; }
+      downloadBlob(b, "cropped.png");
+      showToast("Downloaded cropped.png");
+    }, "image/png");
   };
 
   return (
@@ -445,7 +457,11 @@ function BackgroundTab({ img }: { img: HTMLImageElement }) {
     ctx.putImageData(d, 0, 0);
   }, [img, key, tol]);
   useEffect(() => { render(); }, [render]);
-  const save = () => ref.current?.toBlob((b) => b && downloadBlob(b, "no-background.png"), "image/png");
+  const save = () => ref.current?.toBlob((b) => {
+    if (!b) { showToast("Couldn't export this image — try again", "error"); return; }
+    downloadBlob(b, "no-background.png");
+    showToast("Downloaded no-background.png");
+  }, "image/png");
   return (
     <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
       <Card><CardHeader><CardTitle>Remove background</CardTitle></CardHeader><CardContent className="space-y-4">
@@ -478,23 +494,34 @@ function BatchTab() {
       const zip = new JSZip();
       for (const file of files) {
         const url = URL.createObjectURL(file);
-        const im = new Image(); im.src = url; await im.decode();
-        const scale = Math.min(1, width / im.width);
-        const c = document.createElement("canvas");
-        c.width = Math.round(im.width * scale); c.height = Math.round(im.height * scale);
-        c.getContext("2d")!.drawImage(im, 0, 0, c.width, c.height);
-        const blob: Blob = await new Promise((res) => c.toBlob((b) => res(b!), format, quality));
-        const ext = format === "image/png" ? "png" : format === "image/webp" ? "webp" : "jpg";
-        zip.file(`${file.name.replace(/\.\w+$/, "")}.${ext}`, blob);
-        URL.revokeObjectURL(url);
+        try {
+          const im = new Image(); im.src = url; await im.decode();
+          const scale = Math.min(1, width / im.width);
+          const c = document.createElement("canvas");
+          c.width = Math.round(im.width * scale); c.height = Math.round(im.height * scale);
+          c.getContext("2d")!.drawImage(im, 0, 0, c.width, c.height);
+          const blob: Blob = await new Promise((res) => c.toBlob((b) => res(b!), format, quality));
+          const ext = format === "image/png" ? "png" : format === "image/webp" ? "webp" : "jpg";
+          zip.file(`${file.name.replace(/\.\w+$/, "")}.${ext}`, blob);
+        } finally {
+          URL.revokeObjectURL(url);
+        }
       }
       downloadBlob(await zip.generateAsync({ type: "blob" }), "batch-images.zip");
+      showToast("Downloaded batch-images.zip");
+    } catch {
+      showToast("Couldn't process this batch — make sure every file is a valid image", "error");
     } finally { setBusy(false); }
   };
 
   return (
     <Card><CardHeader><CardTitle>Batch processing</CardTitle></CardHeader><CardContent className="space-y-4">
-      <input ref={ref} type="file" accept="image/*" multiple className="hidden" onChange={(e) => setFiles(Array.from(e.target.files || []))} />
+      <input ref={ref} type="file" accept="image/*" multiple className="hidden" onChange={(e) => {
+        const all = Array.from(e.target.files || []);
+        const images = all.filter((f) => f.type.startsWith("image/"));
+        if (all.length - images.length > 0) showToast(`Skipped ${all.length - images.length} non-image file(s)`, "info");
+        setFiles(images);
+      }} />
       <Button variant="outline" onClick={() => ref.current?.click()}><UploadCloud /> Select images</Button>
       {files.length > 0 && <p className="text-sm text-muted-foreground">{files.length} image(s) selected</p>}
       <div className="grid grid-cols-3 gap-3">
