@@ -6,6 +6,7 @@ import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { ActionBar } from "@/components/tools/action-bar";
+import { downloadBlob } from "@/lib/utils";
 
 export default function WordCounter() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<string>("uh:wordcount", "");
@@ -56,6 +57,8 @@ export default function WordCounter() {
             onReset={reset}
             onCopy={() => copy(value)}
             copied={copied}
+            onDownload={value.trim() ? () => downloadBlob(new Blob([value], { type: "text/plain" }), "text.txt") : undefined}
+            downloadLabel="Download .txt"
             canUndo={canUndo}
             canRedo={canRedo}
           />
