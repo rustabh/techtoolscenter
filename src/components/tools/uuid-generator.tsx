@@ -3,10 +3,12 @@
 import { useCallback, useEffect, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
+import { useGenerationHistory } from "@/hooks/use-generation-history";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { GenerationHistoryPanel } from "@/components/tools/generation-history-panel";
 import { showToast } from "@/components/ui/toaster";
 import { downloadBlob } from "@/lib/utils";
 
@@ -23,12 +25,23 @@ export default function UuidGenerator() {
   const [count, setCount] = useState(5);
   const [list, setList] = useState<string[]>([]);
   const { copied, copy } = useCopy();
+  const { history, add, remove, clear } = useGenerationHistory("uh:history:uuid-generator");
 
-  const generate = useCallback(() => {
-    setList(Array.from({ length: count }, () => uuid()));
+  const generateSilently = useCallback(() => {
+    const out = Array.from({ length: count }, () => uuid());
+    setList(out);
+    return out;
   }, [count]);
 
-  useEffect(() => generate(), [generate]);
+  // Only an explicit regenerate (button/keyboard shortcut) is worth a history
+  // entry — the automatic batch on page load isn't something the user asked
+  // to save.
+  const generate = useCallback(() => {
+    const out = generateSilently();
+    add(out.join("\n"), `${out.length} UUID${out.length === 1 ? "" : "s"}`);
+  }, [generateSilently, add]);
+
+  useEffect(() => { generateSilently(); }, [generateSilently]);
 
   // "R" or Ctrl/Cmd+Enter regenerates without needing to reach for the mouse.
   useEffect(() => {
@@ -47,6 +60,8 @@ export default function UuidGenerator() {
   const copyOne = async (id: string) => {
     if (await copy(id)) showToast("UUID copied");
   };
+
+  const restore = (value: string) => setList(value.split("\n").filter(Boolean));
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -83,6 +98,12 @@ export default function UuidGenerator() {
               ))}
             </div>
           )}
+        </CardContent>
+      </Card>
+      <Card className="lg:col-span-2">
+        <CardHeader><CardTitle>History</CardTitle></CardHeader>
+        <CardContent>
+          <GenerationHistoryPanel history={history} onRemove={remove} onClear={clear} onRestore={restore} emptyLabel="No past batches yet — generate a batch to start building history." />
         </CardContent>
       </Card>
     </div>
