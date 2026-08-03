@@ -1,13 +1,16 @@
 "use client";
 
 import { useMemo } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Check, Copy, Plus, Trash2 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { useCopy } from "@/hooks/use-copy";
+
+const REFERENCE_CGPAS = [6, 6.5, 7, 7.5, 8, 8.5, 9, 9.5, 10];
 
 type Mode = "cgpaToPercent" | "percentToCgpa" | "sgpa";
 type Formula = "cbse" | "vtu" | "custom";
@@ -59,6 +62,7 @@ function formulaLabel(f: Formula) {
 
 export default function CgpaCalculator() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<State>("uh:cgpa", initial);
+  const { copied, copy } = useCopy();
 
   const multiplier = value.formula === "custom" ? parseFloat(value.multiplier) || 9.5 : 9.5;
 
@@ -148,6 +152,9 @@ export default function CgpaCalculator() {
             <CardContent className="text-center">
               <p className="text-5xl font-bold text-primary">{Math.min(100, Math.max(0, cgpaResult)).toFixed(2)}%</p>
               <p className="mt-2 text-xs text-muted-foreground">Based on the {formulaLabel(value.formula)} formula.</p>
+              <Button variant="ghost" size="sm" className="mt-3" onClick={() => copy(Math.min(100, Math.max(0, cgpaResult)).toFixed(2))}>
+                {copied ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />} Copy result
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -170,6 +177,9 @@ export default function CgpaCalculator() {
             <CardContent className="text-center">
               <p className="text-5xl font-bold text-primary">{Math.min(10, Math.max(0, percentResult)).toFixed(2)}</p>
               <p className="mt-2 text-xs text-muted-foreground">Out of 10, using the {formulaLabel(value.formula)} formula.</p>
+              <Button variant="ghost" size="sm" className="mt-3" onClick={() => copy(Math.min(10, Math.max(0, percentResult)).toFixed(2))}>
+                {copied ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />} Copy result
+              </Button>
             </CardContent>
           </Card>
         </div>
@@ -201,9 +211,41 @@ export default function CgpaCalculator() {
             <CardContent className="text-center">
               <p className="text-5xl font-bold text-primary">{sgpaResult.toFixed(2)}</p>
               <p className="mt-2 text-xs text-muted-foreground">Credit-weighted average across {value.subjects.length} subjects.</p>
+              <Button variant="ghost" size="sm" className="mt-3" onClick={() => copy(sgpaResult.toFixed(2))}>
+                {copied ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />} Copy result
+              </Button>
             </CardContent>
           </Card>
         </div>
+      )}
+
+      {value.mode !== "sgpa" && (
+        <Card>
+          <CardHeader><CardTitle>Quick reference: CGPA to percentage</CardTitle></CardHeader>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border text-left text-muted-foreground">
+                    <th className="py-2 pr-4 font-medium">CGPA</th>
+                    <th className="py-2 pr-4 font-medium">CBSE (×9.5)</th>
+                    <th className="py-2 font-medium">VTU ((CGPA−0.75)×10)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {REFERENCE_CGPAS.map((c) => (
+                    <tr key={c} className="border-b border-border/50 last:border-0">
+                      <td className="py-2 pr-4 font-medium">{c.toFixed(1)}</td>
+                      <td className="py-2 pr-4 text-muted-foreground">{(c * 9.5).toFixed(2)}%</td>
+                      <td className="py-2 text-muted-foreground">{((c - 0.75) * 10).toFixed(2)}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="mt-3 text-xs text-muted-foreground">A quick lookup for common CGPA values — enter your exact CGPA above for a precise conversion.</p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

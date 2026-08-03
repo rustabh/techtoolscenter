@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Play, Pause, Square, Volume2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Eraser, Play, Pause, Square, Volume2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,6 +9,29 @@ import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
 const SAMPLE = "Welcome to TechToolsCenter's free Text to Speech tool. Type or paste anything here, pick a voice, and press play to hear it read aloud — right in your browser, with nothing uploaded.";
+
+// Chrome and Safari can silently cut off very long single utterances, so
+// long text is split into sentence-sized chunks and queued — the browser's
+// speechSynthesis engine plays queued utterances back to back automatically.
+function splitIntoChunks(text: string, maxLen = 200): string[] {
+  const sentences = text.split(/(?<=[.!?])\s+/).filter(Boolean);
+  const chunks: string[] = [];
+  let current = "";
+  const flush = () => { if (current.trim()) chunks.push(current.trim()); current = ""; };
+  for (const sentence of sentences) {
+    if (sentence.length > maxLen) {
+      for (const word of sentence.split(/\s+/)) {
+        if ((current + " " + word).trim().length > maxLen) { flush(); current = word; }
+        else current = (current + " " + word).trim();
+      }
+      continue;
+    }
+    if ((current + " " + sentence).trim().length > maxLen) { flush(); current = sentence; }
+    else current = (current + " " + sentence).trim();
+  }
+  flush();
+  return chunks;
+}
 
 export default function TextToSpeech() {
   const [supported, setSupported] = useState(true);
@@ -20,7 +43,6 @@ export default function TextToSpeech() {
   const [volume, setVolume] = useState(1);
   const [speaking, setSpeaking] = useState(false);
   const [paused, setPaused] = useState(false);
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) {
@@ -45,17 +67,31 @@ export default function TextToSpeech() {
   const speak = () => {
     if (!supported || !text.trim()) return;
     window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
+    const chunks = splitIntoChunks(text);
     const voice = voices.find((v) => v.voiceURI === voiceURI);
-    if (voice) utterance.voice = voice;
-    utterance.rate = rate;
-    utterance.pitch = pitch;
-    utterance.volume = volume;
-    utterance.onstart = () => { setSpeaking(true); setPaused(false); };
-    utterance.onend = () => { setSpeaking(false); setPaused(false); };
-    utterance.onerror = () => { setSpeaking(false); setPaused(false); };
-    utteranceRef.current = utterance;
-    window.speechSynthesis.speak(utterance);
+    chunks.forEach((chunk, i) => {
+      const utterance = new SpeechSynthesisUtterance(chunk);
+      if (voice) utterance.voice = voice;
+      utterance.rate = rate;
+      utterance.pitch = pitch;
+      utterance.volume = volume;
+      if (i === 0) utterance.onstart = () => { setSpeaking(true); setPaused(false); };
+      if (i === chunks.length - 1) {
+        utterance.onend = () => { setSpeaking(false); setPaused(false); };
+        utterance.onerror = () => { setSpeaking(false); setPaused(false); };
+      }
+      window.speechSynthesis.speak(utterance);
+    });
+  };
+
+  const clearText = () => {
+    stop();
+    setText("");
+  };
+
+  const loadSample = () => {
+    stop();
+    setText(SAMPLE);
   };
 
   const togglePause = () => {
@@ -92,7 +128,15 @@ export default function TextToSpeech() {
         <CardHeader><CardTitle>Text</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <Textarea value={text} onChange={(e) => setText(e.target.value)} rows={10} placeholder="Type or paste text to read aloud…" />
-          <p className="text-xs text-muted-foreground">{text.length} characters · runs entirely in your browser, nothing is uploaded.</p>
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs text-muted-foreground">{text.length} characters · runs entirely in your browser, nothing is uploaded.</p>
+            <div className="flex shrink-0 gap-2">
+              <Button variant="outline" size="sm" onClick={loadSample}>Load sample</Button>
+              <Button variant="outline" size="sm" onClick={clearText} disabled={!text}>
+                <Eraser className="size-4" /> Clear
+              </Button>
+            </div>
+          </div>
         </CardContent>
       </Card>
 

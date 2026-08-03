@@ -1,13 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Download, Youtube } from "lucide-react";
+import { Check, Clipboard, Copy, Download, Youtube } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
+import { useCopy } from "@/hooks/use-copy";
 
 const QUALITIES = [
   { key: "maxresdefault", label: "Max resolution", size: "1280×720" },
@@ -40,6 +41,9 @@ function extractVideoId(input: string): string | null {
 export default function YoutubeThumbnailDownloader() {
   const [input, setInput] = useState("");
   const [unavailable, setUnavailable] = useState<Record<string, boolean>>({});
+  const [loaded, setLoaded] = useState<Record<string, boolean>>({});
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const { copy } = useCopy();
 
   const videoId = useMemo(() => extractVideoId(input), [input]);
 
@@ -62,6 +66,30 @@ export default function YoutubeThumbnailDownloader() {
     }
   };
 
+  const copyImageUrl = async (key: string) => {
+    if (!videoId) return;
+    const ok = await copy(`https://img.youtube.com/vi/${videoId}/${key}.jpg`);
+    if (ok) {
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey((prev) => (prev === key ? null : prev)), 2000);
+    }
+  };
+
+  const pasteFromClipboard = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text.trim()) {
+        setInput(text.trim());
+        setUnavailable({});
+        setLoaded({});
+      } else {
+        showToast("Clipboard is empty", "error");
+      }
+    } catch {
+      showToast("Couldn't read clipboard — paste the link manually", "error");
+    }
+  };
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
@@ -69,11 +97,16 @@ export default function YoutubeThumbnailDownloader() {
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
             <Label>YouTube URL or video ID</Label>
-            <Input
-              value={input}
-              onChange={(e) => { setInput(e.target.value); setUnavailable({}); }}
-              placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-            />
+            <div className="flex gap-2">
+              <Input
+                value={input}
+                onChange={(e) => { setInput(e.target.value); setUnavailable({}); setLoaded({}); }}
+                placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+              />
+              <Button type="button" variant="outline" size="icon" onClick={pasteFromClipboard} aria-label="Paste from clipboard" title="Paste from clipboard">
+                <Clipboard className="size-4" />
+              </Button>
+            </div>
           </div>
           {input.trim() && !videoId && (
             <p className="text-sm text-destructive">Couldn&apos;t find a video ID in that — paste a full YouTube link (watch, youtu.be, Shorts) or an 11-character video ID.</p>
@@ -96,25 +129,34 @@ export default function YoutubeThumbnailDownloader() {
             <div className="grid gap-3 sm:grid-cols-2">
               {QUALITIES.filter((q) => !unavailable[q.key]).map((q) => (
                 <div key={q.key} className="space-y-2 rounded-xl border border-border p-3">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`https://img.youtube.com/vi/${videoId}/${q.key}.jpg`}
-                    alt={`${q.label} thumbnail`}
-                    className="aspect-video w-full rounded-lg border border-border object-cover"
-                    onLoad={(e) => {
-                      const img = e.currentTarget;
-                      if (q.key !== "default" && img.naturalWidth <= 120) markUnavailable(q.key);
-                    }}
-                    onError={() => markUnavailable(q.key)}
-                  />
+                  <div className="relative aspect-video overflow-hidden rounded-lg border border-border">
+                    {!loaded[q.key] && <div className="absolute inset-0 skeleton" />}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`https://img.youtube.com/vi/${videoId}/${q.key}.jpg`}
+                      alt={`${q.label} thumbnail`}
+                      className="size-full object-cover"
+                      onLoad={(e) => {
+                        const img = e.currentTarget;
+                        if (q.key !== "default" && img.naturalWidth <= 120) { markUnavailable(q.key); return; }
+                        setLoaded((prev) => ({ ...prev, [q.key]: true }));
+                      }}
+                      onError={() => markUnavailable(q.key)}
+                    />
+                  </div>
                   <div className="flex items-center justify-between gap-2">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{q.label}</p>
                       <p className="text-xs text-muted-foreground">{q.size}</p>
                     </div>
-                    <Button size="sm" variant="outline" onClick={() => download(q.key)}>
-                      <Download className="size-4" />
-                    </Button>
+                    <div className="flex gap-1.5">
+                      <Button size="sm" variant="ghost" onClick={() => copyImageUrl(q.key)} aria-label="Copy image URL" title="Copy image URL">
+                        {copiedKey === q.key ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />}
+                      </Button>
+                      <Button size="sm" variant="outline" onClick={() => download(q.key)} aria-label={`Download ${q.label}`}>
+                        <Download className="size-4" />
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
