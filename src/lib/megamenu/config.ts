@@ -263,7 +263,7 @@ export const indiaHubMenu: MegaMenuConfig = {
         { label: "Property", comingSoon: true },
         { label: "Utility Services", href: "/india-services/utilities" },
         { label: "Government Updates", href: "/updates/category/government" },
-        { label: "Official Websites", comingSoon: true },
+        { label: "Official Websites", href: "/india-services/official-websites" },
         { label: "Latest Schemes", href: "/india-services/schemes" },
       ] }],
     },

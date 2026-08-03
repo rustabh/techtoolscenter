@@ -87,7 +87,7 @@ export const sidebarSections: SidebarSection[] = [
       { label: "India Hub", href: "/india-services" },
       { label: "Government Guides", href: "/india-services/finder" },
       { label: "Government Updates", href: "/updates/category/government" },
-      { label: "Official Websites", comingSoon: true },
+      { label: "Official Websites", href: "/india-services/official-websites" },
     ],
   },
   {
