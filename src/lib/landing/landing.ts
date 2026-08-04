@@ -430,6 +430,90 @@ const resizerLandings: LandingPage[] = resizeVariants.map((v) => ({
   tags: ["image resizer", v.label.toLowerCase(), `${v.w}x${v.h}`],
 }));
 
+/* ================================================================== *
+ * RESUME BUILDER landing pages (core: resume-builder)                *
+ * ================================================================== */
+const resumeVariants: { slug: string; label: string; use: string; skillsNote: string; example: string }[] = [
+  { slug: "resume-builder-for-freshers", label: "Freshers", use: "lead with your projects, internships and academic achievements when you don't have work experience yet", skillsNote: "List technical skills, tools and certifications prominently since you may not have a long work history to lean on", example: "A final-year CS student with 2 internships and 3 college projects" },
+  { slug: "resume-builder-for-software-engineers", label: "Software Engineers", use: "showcase your tech stack, shipped projects and measurable impact the way recruiters actually scan for", skillsNote: "Group languages, frameworks and tools clearly, and quantify impact wherever you can (latency reduced, users served, bugs cut)", example: "A backend engineer highlighting a migration that cut API response time by 40%" },
+  { slug: "resume-builder-for-mba-graduates", label: "MBA Graduates", use: "lead with leadership roles, case competitions and quantifiable business outcomes", skillsNote: "Emphasise strategic and analytical skills — market sizing, financial modelling, stakeholder management", example: "An MBA grad listing a consulting project that identified a 15% cost-saving opportunity" },
+  { slug: "resume-builder-for-teachers", label: "Teachers", use: "highlight your certifications, subjects taught and measurable classroom outcomes", skillsNote: "List teaching certifications, grade levels, subjects and any curriculum or extracurricular programs you led", example: "A teacher noting a reading program that raised average test scores by 12%" },
+  { slug: "resume-builder-for-nurses", label: "Nurses", use: "highlight your clinical certifications, specialisations and patient-care experience", skillsNote: "List licences (RN, BLS, ACLS), specialisations and patient-load or unit details employers screen for first", example: "An ICU nurse listing ACLS certification and a 1:2 patient-care ratio" },
+  { slug: "resume-builder-for-sales", label: "Sales Professionals", use: "lead with quota attainment, revenue numbers and client wins", skillsNote: "Quantify everything — quota percentage, deal size, pipeline generated, retention rate", example: "An account executive noting 128% of annual quota and a $500K deal closed" },
+];
+const resumeRelated = ["resume-builder", "word-counter", "pdf-compress"];
+
+const resumeLandings: LandingPage[] = resumeVariants.map((v) => ({
+  slug: v.slug,
+  core: "resume-builder",
+  h1: `Resume Builder for ${v.label}`,
+  title: `Resume Builder for ${v.label} — Free ATS-Friendly Template`,
+  description: `Build a free, ATS-friendly resume for ${v.label}. ${v.use[0].toUpperCase() + v.use.slice(1)}. No sign-up, export to PDF instantly.`,
+  intro: `Generic resume advice doesn't account for what ${v.label} actually need to highlight. This resume builder gives you a clean, single-column, ATS-safe layout, so you can focus on the part that matters: content. ${v.use[0].toUpperCase() + v.use.slice(1)}.`,
+  benefits: [
+    `Single-column, ATS-safe layout — no tables or graphics that confuse parsers`,
+    v.skillsNote,
+    "Undo/redo and autosave — nothing is lost while you edit",
+    "Export straight to PDF, free and unlimited",
+  ],
+  howTo: [
+    "Open the resume builder — it starts with an editable example already filled in.",
+    "Replace the summary, experience and education sections with your own details.",
+    `List your skills — ${v.skillsNote.charAt(0).toLowerCase() + v.skillsNote.slice(1)}.`,
+    "Export to PDF and check it renders cleanly before you send it.",
+  ],
+  examples: [{ title: `Resume for ${v.label}`, input: v.example, output: "A clean, single-page, ATS-friendly PDF resume" }],
+  faq: [
+    { question: `What should a ${v.label.toLowerCase()} resume focus on?`, answer: `${v.use[0].toUpperCase() + v.use.slice(1)}. ${v.skillsNote}.` },
+    { question: "Will this resume pass an ATS (Applicant Tracking System)?", answer: "Yes — it uses a single-column, text-based layout with standard section headings, which is what most ATS software parses correctly. Avoid switching to a multi-column design if you need ATS compatibility." },
+    ...commonFaq("resume builder"),
+  ],
+  relatedTools: resumeRelated,
+  relatedBlog: ["how-to-build-ats-friendly-resume-free"],
+  tags: ["resume builder", v.label.toLowerCase(), "resume template", "ats resume"],
+}));
+
+/* ================================================================== *
+ * INVOICE MAKER landing pages (core: invoice-maker)                  *
+ * ================================================================== */
+const invoiceVariants: { slug: string; label: string; use: string; note: string; example: string }[] = [
+  { slug: "invoice-template-for-freelancers", label: "Freelancers", use: "bill clients professionally with your logo, payment terms and a clean itemised breakdown", note: "add your payment terms (e.g. due in 15 days) and accepted payment methods clearly at the bottom", example: "A freelance designer billing for a 3-week landing page project" },
+  { slug: "invoice-template-for-consultants", label: "Consultants", use: "bill for hourly or project-based work with a clear scope and payment terms", note: "itemise by deliverable or by hour so the client can see exactly what they're paying for", example: "A marketing consultant invoicing for 20 hours of strategy work" },
+  { slug: "invoice-template-for-contractors", label: "Contractors", use: "itemise labour, materials and taxes for construction and trade work", note: "separate labour and materials into distinct line items — clients and accountants both expect this breakdown", example: "An electrician invoicing for a rewiring job with separate labour and parts costs" },
+  { slug: "invoice-template-for-photographers", label: "Photographers", use: "bill for shoots, packages and licensing with a polished, branded invoice", note: "list the package or shoot type as one line item and any add-ons (extra edits, prints, usage rights) as separate ones", example: "A wedding photographer invoicing a full-day package plus an album add-on" },
+];
+const invoiceRelated = ["invoice-maker", "quotation-generator", "gst-calculator"];
+
+const invoiceLandings: LandingPage[] = invoiceVariants.map((v) => ({
+  slug: v.slug,
+  core: "invoice-maker",
+  h1: `Invoice Template for ${v.label}`,
+  title: `Invoice Template for ${v.label} — Free Online Invoice Maker`,
+  description: `Create a free invoice for ${v.label.toLowerCase()}. ${v.use[0].toUpperCase() + v.use.slice(1)}. GST breakdown, logo, signature, export to PDF.`,
+  intro: `${v.label} need an invoice that looks professional and gets paid faster. This invoice maker opens ready to ${v.use}, with your logo, signature, and a proper GST/tax breakdown if you need one — no accounting software required.`,
+  benefits: [
+    `Built to ${v.use}`,
+    (v.note.charAt(0).toUpperCase() + v.note.slice(1)),
+    "Add your logo, signature and a payment QR code",
+    "Export to PDF, PNG or print directly — free and unlimited",
+  ],
+  howTo: [
+    "Open the invoice maker — a sample invoice loads so you can see the layout.",
+    "Add your business details, logo and the client's details.",
+    `List your line items — ${v.note}.`,
+    "Add GST/tax if applicable, then export to PDF or print.",
+  ],
+  examples: [{ title: `Invoice for ${v.label.toLowerCase()}`, input: v.example, output: "A polished, itemised PDF invoice ready to send" }],
+  faq: [
+    { question: `What should a ${v.label.toLowerCase()} invoice include?`, answer: `Your business details, the client's details, itemised charges, and payment terms. ${(v.note.charAt(0).toUpperCase() + v.note.slice(1))}.` },
+    { question: "Can I add GST or tax to the invoice?", answer: "Yes — the invoice maker supports GST/CGST/SGST/IGST breakdowns for Indian businesses, or you can leave tax fields blank if they don't apply." },
+    ...commonFaq("invoice maker"),
+  ],
+  relatedTools: invoiceRelated,
+  relatedBlog: ["how-to-create-gst-invoice-online-free"],
+  tags: ["invoice template", v.label.toLowerCase(), "invoice maker", "billing"],
+}));
+
 /* ================================================================== */
 export const landingPages: LandingPage[] = [
   ...imageLandings,
@@ -439,6 +523,8 @@ export const landingPages: LandingPage[] = [
   ...faviconLandings,
   ...converterLandings,
   ...resizerLandings,
+  ...resumeLandings,
+  ...invoiceLandings,
 ];
 
 export function getLanding(slug: string): LandingPage | undefined {
