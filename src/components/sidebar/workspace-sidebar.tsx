@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  ChevronDown, ChevronRight, ChevronLeft, PanelLeftOpen, Star, Clock, Flame,
+  ChevronDown, ChevronRight, ChevronLeft, PanelLeftOpen, PanelLeftClose, Star, Clock, Flame,
   Menu, X, ExternalLink, Sun, Moon,
 } from "lucide-react";
 import { Icon } from "@/components/icon";
@@ -204,9 +204,16 @@ function SidebarContent({
 }
 
 export function WorkspaceSidebar() {
-  const { mounted, collapsed, setCollapsed, mobileOpen, setMobileOpen, openSections, toggleSection } = useSidebarState();
+  const { mounted, collapsed, setCollapsed, hidden, setHidden, mobileOpen, setMobileOpen, openSections, toggleSection } = useSidebarState();
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [hovering, setHovering] = useState(false);
+
+  // The rail unmounts the instant it's hidden, so its onMouseLeave never
+  // fires — without this, `hovering` can get stuck true and the panel (not
+  // the compact rail) would wrongly reappear the next time it's un-hidden.
+  useEffect(() => {
+    if (hidden) setHovering(false);
+  }, [hidden]);
 
   if (!mounted) return null;
 
@@ -224,9 +231,20 @@ export function WorkspaceSidebar() {
     <>
       <KeyboardShortcutsDialog open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
 
-      {/* Desktop: full-height floating rail (collapsed) or panel (expanded/peeked) */}
+      {/* Desktop: full-height floating rail (collapsed), panel (expanded/peeked),
+          or — if fully hidden — a slim edge tab that's the only way back besides Ctrl+B. */}
       <div className="hidden md:block">
-        {!visualExpanded ? (
+        {hidden ? (
+          <button
+            type="button"
+            onClick={() => setHidden(false)}
+            aria-label="Show Workspace sidebar"
+            title="Show Workspace sidebar (Ctrl+B)"
+            className="group fixed left-0 top-1/2 z-40 flex h-16 w-2.5 -translate-y-1/2 items-center justify-center rounded-r-lg bg-border/60 opacity-40 transition-all hover:w-5 hover:bg-secondary hover:opacity-100"
+          >
+            <ChevronRight className="size-3 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+          </button>
+        ) : !visualExpanded ? (
           <motion.div
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
@@ -258,6 +276,16 @@ export function WorkspaceSidebar() {
                 <Icon name={section.icon} className="size-4" />
               </button>
             ))}
+            <div className="my-1 h-px w-6 shrink-0 bg-border/60" />
+            <button
+              type="button"
+              onClick={() => setHidden(true)}
+              aria-label="Hide Workspace sidebar completely"
+              title="Hide sidebar completely (Ctrl+B to bring back)"
+              className="grid size-9 shrink-0 place-items-center rounded-xl text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
+              <PanelLeftClose className="size-4" />
+            </button>
           </motion.div>
         ) : (
           <motion.div
@@ -284,6 +312,15 @@ export function WorkspaceSidebar() {
                   className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
                 >
                   <ChevronLeft className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHidden(true)}
+                  aria-label="Hide Workspace sidebar completely"
+                  title="Hide sidebar completely (Ctrl+B to bring back)"
+                  className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                >
+                  <X className="size-4" />
                 </button>
               </div>
             </div>

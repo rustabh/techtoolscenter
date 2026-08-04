@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 
 const SHORTCUTS = [
-  { keys: ["Ctrl", "B"], description: "Toggle the Workspace sidebar" },
+  { keys: ["Ctrl", "B"], description: "Toggle (or bring back a hidden) Workspace sidebar" },
   { keys: ["Ctrl", "K"], description: "Open quick search / command palette" },
 ];
 
