@@ -1,11 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { History } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
+import { useGenerationHistory } from "@/hooks/use-generation-history";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { GenerationHistoryPanel } from "@/components/tools/generation-history-panel";
 
 export default function GradientGenerator() {
   const [c1, setC1] = useState("#6366f1");
@@ -13,6 +16,7 @@ export default function GradientGenerator() {
   const [angle, setAngle] = useState(135);
   const [type, setType] = useState<"linear" | "radial">("linear");
   const { copied, copy } = useCopy();
+  const { history, add, remove, clear } = useGenerationHistory("uh:history:gradient-generator");
 
   const css = useMemo(() =>
     type === "linear"
@@ -50,6 +54,15 @@ export default function GradientGenerator() {
           <code className="flex-1 break-all font-mono text-xs">{full}</code>
           <Button size="sm" onClick={() => copy(full)}>{copied ? "Copied" : "Copy"}</Button>
         </div>
+        <Button variant="outline" size="sm" onClick={() => add(full, type)}>
+          <History className="size-4" /> Save to history
+        </Button>
+        <Card>
+          <CardHeader><CardTitle>History</CardTitle></CardHeader>
+          <CardContent>
+            <GenerationHistoryPanel history={history} onRemove={remove} onClear={clear} emptyLabel="No saved gradients yet — click “Save to history” to keep one." />
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

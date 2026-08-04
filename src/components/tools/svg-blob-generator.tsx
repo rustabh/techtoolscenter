@@ -1,14 +1,16 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
+import { useGenerationHistory } from "@/hooks/use-generation-history";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { GenerationHistoryPanel } from "@/components/tools/generation-history-panel";
 import { downloadBlob } from "@/lib/utils";
 
 interface Point {
@@ -54,16 +56,25 @@ export default function SvgBlobGenerator() {
   const [color, setColor] = useState("#6366f1");
   const [seeds, setSeeds] = useState<number[]>([]);
   const { copied, copy } = useCopy();
+  const { history, add, remove, clear } = useGenerationHistory("uh:history:svg-blob-generator");
+  const explicitRef = useRef(false);
 
-  const regenerate = useCallback(() => {
+  const regenerateSilently = useCallback(() => {
     setSeeds(generateSeeds(numPoints));
   }, [numPoints]);
 
   // Regenerate seed offsets whenever the point count changes (and once on mount).
   useEffect(() => {
-    regenerate();
+    regenerateSilently();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [numPoints]);
+
+  // Only the explicit "Generate new blob" click is worth a history entry —
+  // not the automatic reshuffle that happens when the Points slider moves.
+  const regenerate = useCallback(() => {
+    explicitRef.current = true;
+    regenerateSilently();
+  }, [regenerateSilently]);
 
   const pathD = useMemo(() => {
     if (seeds.length !== numPoints) return "";
@@ -84,6 +95,13 @@ export default function SvgBlobGenerator() {
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}"><path fill="${color}" d="${pathD}" /></svg>`,
     [size, color, pathD]
   );
+
+  useEffect(() => {
+    if (!explicitRef.current) return;
+    explicitRef.current = false;
+    if (svgMarkup) add(svgMarkup, `${numPoints} pts · ${complexity}%`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seeds]);
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -171,6 +189,12 @@ export default function SvgBlobGenerator() {
               onDownload={() => downloadBlob(new Blob([svgMarkup], { type: "image/svg+xml" }), "blob.svg")}
               downloadLabel="Download SVG"
             />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader><CardTitle>History</CardTitle></CardHeader>
+          <CardContent>
+            <GenerationHistoryPanel history={history} onRemove={remove} onClear={clear} />
           </CardContent>
         </Card>
       </div>

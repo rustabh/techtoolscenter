@@ -1,12 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, Copy } from "lucide-react";
+import { Check, Copy, History } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
+import { useGenerationHistory } from "@/hooks/use-generation-history";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { GenerationHistoryPanel } from "@/components/tools/generation-history-panel";
 
 function hexToHsl(hex: string) {
   const m = hex.replace("#", "").padEnd(6, "0").slice(0, 6);
@@ -37,6 +39,7 @@ export default function ColorPaletteGenerator() {
   const [scheme, setScheme] = useState<Scheme>("analogous");
   const { copied, copy } = useCopy();
   const [last, setLast] = useState("");
+  const { history, add, remove, clear } = useGenerationHistory("uh:history:color-palette-generator");
 
   const palette = useMemo(() => {
     const { h, s, l } = hexToHsl(base);
@@ -76,7 +79,18 @@ export default function ColorPaletteGenerator() {
           </button>
         ))}
       </div>
-      <Button variant="outline" onClick={() => copy(cssText)}>{copied && last === "" ? "Copied!" : "Copy CSS variables"}</Button>
+      <div className="flex flex-wrap gap-2">
+        <Button variant="outline" onClick={() => copy(cssText)}>{copied && last === "" ? "Copied!" : "Copy CSS variables"}</Button>
+        <Button variant="outline" onClick={() => add(cssText, scheme)}>
+          <History className="size-4" /> Save to history
+        </Button>
+      </div>
+      <Card>
+        <CardHeader><CardTitle>History</CardTitle></CardHeader>
+        <CardContent>
+          <GenerationHistoryPanel history={history} onRemove={remove} onClear={clear} emptyLabel="No saved palettes yet — click “Save to history” to keep one." />
+        </CardContent>
+      </Card>
     </div>
   );
 }

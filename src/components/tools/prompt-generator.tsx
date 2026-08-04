@@ -1,13 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { History } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
+import { useGenerationHistory } from "@/hooks/use-generation-history";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { GenerationHistoryPanel } from "@/components/tools/generation-history-panel";
 import { downloadBlob } from "@/lib/utils";
 
 export default function PromptGenerator() {
@@ -18,6 +21,7 @@ export default function PromptGenerator() {
   const [audience, setAudience] = useState("startup founders");
   const [constraints, setConstraints] = useState("Keep it under 200 words. Avoid jargon.");
   const { copied, copy } = useCopy();
+  const { history, add, remove, clear } = useGenerationHistory("uh:history:prompt-generator");
 
   const prompt = useMemo(() => {
     return [
@@ -64,7 +68,16 @@ export default function PromptGenerator() {
           <div className="flex flex-wrap gap-2">
             <Button onClick={() => copy(prompt)}>{copied ? "Copied!" : "Copy prompt"}</Button>
             <Button variant="outline" onClick={() => downloadBlob(new Blob([prompt], { type: "text/plain" }), "prompt.txt")}>Download .txt</Button>
+            <Button variant="outline" onClick={() => add(prompt, role)}>
+              <History className="size-4" /> Save to history
+            </Button>
           </div>
+        </CardContent>
+      </Card>
+      <Card className="lg:col-span-2">
+        <CardHeader><CardTitle>History</CardTitle></CardHeader>
+        <CardContent>
+          <GenerationHistoryPanel history={history} onRemove={remove} onClear={clear} emptyLabel="No saved prompts yet — click “Save to history” to keep one." />
         </CardContent>
       </Card>
     </div>

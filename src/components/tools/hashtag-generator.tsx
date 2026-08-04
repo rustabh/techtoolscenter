@@ -1,11 +1,14 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { History } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
+import { useGenerationHistory } from "@/hooks/use-generation-history";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { GenerationHistoryPanel } from "@/components/tools/generation-history-panel";
 
 const MODIFIERS = ["", "tips", "life", "daily", "community", "love", "ideas", "trends", "2026", "official", "world", "pro", "inspo", "goals"];
 const PREFIX = ["", "best", "my", "the", "insta", "top"];
@@ -17,6 +20,7 @@ function toTag(s: string) {
 export default function HashtagGenerator() {
   const [topic, setTopic] = useState("digital marketing");
   const { copied, copy } = useCopy();
+  const { history, add, remove, clear } = useGenerationHistory("uh:history:hashtag-generator");
 
   const tags = useMemo(() => {
     const words = topic.split(/[,\s]+/).map((w) => w.trim()).filter(Boolean);
@@ -48,7 +52,18 @@ export default function HashtagGenerator() {
               <button key={t} onClick={() => copy(t)} className="rounded-full bg-secondary px-3 py-1 text-sm hover:bg-primary hover:text-primary-foreground">{t}</button>
             ))}
           </div>
-          <Button onClick={() => copy(tags.join(" "))}>{copied ? "Copied!" : "Copy all"}</Button>
+          <div className="flex flex-wrap gap-2">
+            <Button onClick={() => copy(tags.join(" "))}>{copied ? "Copied!" : "Copy all"}</Button>
+            <Button variant="outline" onClick={() => add(tags.join(" "), topic)}>
+              <History className="size-4" /> Save to history
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader><CardTitle>History</CardTitle></CardHeader>
+        <CardContent>
+          <GenerationHistoryPanel history={history} onRemove={remove} onClear={clear} emptyLabel="No saved hashtag sets yet — click “Save to history” to keep one." />
         </CardContent>
       </Card>
     </div>

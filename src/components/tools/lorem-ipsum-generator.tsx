@@ -1,12 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
+import { useGenerationHistory } from "@/hooks/use-generation-history";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { GenerationHistoryPanel } from "@/components/tools/generation-history-panel";
 import { downloadBlob } from "@/lib/utils";
 
 const WORDS = "lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua enim ad minim veniam quis nostrud exercitation ullamco laboris nisi aliquip ex ea commodo consequat duis aute irure in reprehenderit voluptate velit esse cillum fugiat nulla pariatur excepteur sint occaecat cupidatat non proident sunt culpa qui officia deserunt mollit anim id est laborum".split(" ");
@@ -32,6 +34,7 @@ export default function LoremIpsumGenerator() {
   const [startClassic, setStartClassic] = useState(true);
   const [seed, setSeed] = useState(0);
   const { copied, copy } = useCopy();
+  const { history, add, remove, clear } = useGenerationHistory("uh:history:lorem-ipsum-generator");
 
   const text = useMemo(() => {
     void seed;
@@ -47,6 +50,17 @@ export default function LoremIpsumGenerator() {
   }, [count, unit, startClassic, seed]);
 
   const regenerate = useCallback(() => setSeed((s) => s + 1), []);
+
+  // Only an explicit regenerate is worth a history entry — the text that's
+  // already on screen from adjusting count/unit isn't something the user
+  // asked to save, so this only fires on a real `seed` bump, and skips the
+  // very first mount (seed start at 0, no regenerate happened yet).
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) { mounted.current = true; return; }
+    add(text, `${count} ${unit}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [seed]);
 
   // "R" or Ctrl/Cmd+Enter regenerates without reaching for the mouse.
   useEffect(() => {
@@ -91,11 +105,19 @@ export default function LoremIpsumGenerator() {
           />
         </CardContent>
       </Card>
-      <Card className="bg-gradient-to-br from-primary/5 to-transparent">
-        <CardContent className="pt-6">
-          <div aria-live="polite" className="max-h-96 space-y-3 overflow-auto whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{text}</div>
-        </CardContent>
-      </Card>
+      <div className="space-y-6">
+        <Card className="bg-gradient-to-br from-primary/5 to-transparent">
+          <CardContent className="pt-6">
+            <div aria-live="polite" className="max-h-96 space-y-3 overflow-auto whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">{text}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader><CardTitle>History</CardTitle></CardHeader>
+          <CardContent>
+            <GenerationHistoryPanel history={history} onRemove={remove} onClear={clear} />
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

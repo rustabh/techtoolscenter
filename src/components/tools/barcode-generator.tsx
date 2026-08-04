@@ -2,12 +2,16 @@
 
 import { useEffect, useRef, useState } from "react";
 import JsBarcode from "jsbarcode";
+import { History } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useGenerationHistory } from "@/hooks/use-generation-history";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { GenerationHistoryPanel } from "@/components/tools/generation-history-panel";
 import { downloadBlob } from "@/lib/utils";
 
 interface BarState {
@@ -23,6 +27,7 @@ export default function BarcodeGenerator() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<BarState>("uh:barcode", initial);
   const svgRef = useRef<SVGSVGElement>(null);
   const [error, setError] = useState("");
+  const { history, add, remove, clear } = useGenerationHistory("uh:history:barcode-generator");
 
   useEffect(() => {
     if (!svgRef.current) return;
@@ -102,10 +107,27 @@ export default function BarcodeGenerator() {
             <svg ref={svgRef} aria-label="Generated barcode" />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <button onClick={downloadPng} disabled={!!error}
-            className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
-            Download PNG
-          </button>
+          <div className="flex flex-wrap justify-center gap-2">
+            <button onClick={downloadPng} disabled={!!error}
+              className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
+              Download PNG
+            </button>
+            <Button variant="outline" size="sm" disabled={!!error} onClick={() => add(value.value, value.format)}>
+              <History className="size-4" /> Save to history
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+      <Card className="lg:col-span-2">
+        <CardHeader><CardTitle>History</CardTitle></CardHeader>
+        <CardContent>
+          <GenerationHistoryPanel
+            history={history}
+            onRemove={remove}
+            onClear={clear}
+            onRestore={(v) => set({ ...value, value: v })}
+            emptyLabel="No saved barcodes yet — click “Save to history” to keep one."
+          />
         </CardContent>
       </Card>
     </div>
