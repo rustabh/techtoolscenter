@@ -1,13 +1,14 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { UploadCloud, Loader2 } from "lucide-react";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { downloadBlob, formatBytes } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
 import { showToast } from "@/components/ui/toaster";
+import { FileDropzone } from "@/components/tools/file-dropzone";
 
 type Fmt = "png" | "jpeg" | "webp";
 const FORMATS: { id: Fmt; label: string; mime: string; ext: string; lossy: boolean }[] = [
@@ -17,7 +18,6 @@ const FORMATS: { id: Fmt; label: string; mime: string; ext: string; lossy: boole
 ];
 
 export default function ImageConverter({ preset }: { preset?: Record<string, unknown> }) {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [src, setSrc] = useState<{ url: string; size: number; name: string } | null>(null);
   const [to, setTo] = useState<Fmt>((preset?.to as Fmt) || "jpeg");
   const [quality, setQuality] = useState(0.9);
@@ -81,13 +81,12 @@ export default function ImageConverter({ preset }: { preset?: Record<string, unk
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
-          <button onClick={() => inputRef.current?.click()}
-            className="flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-10 text-center transition-colors hover:border-primary/50 hover:bg-secondary/40">
-            <UploadCloud className="size-8 text-primary" />
-            <span className="font-medium">{src ? src.name : "Upload an image to convert"}</span>
-            <span className="text-sm text-muted-foreground">PNG, JPG, WEBP or AVIF · converted privately in your browser</span>
-          </button>
+          <FileDropzone
+            title={src ? src.name : "Click or drop an image here to convert"}
+            subtitle="PNG, JPG, WEBP or AVIF · converted privately in your browser"
+            accept="image/*"
+            onFiles={(files) => files[0] && onFile(files[0])}
+          />
           <div className="mt-3 text-center">
             <button onClick={trySample}
               className="text-sm font-medium text-primary hover:underline">✨ Try a sample image</button>

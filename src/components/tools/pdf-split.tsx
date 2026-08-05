@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { PDFDocument } from "pdf-lib";
 import { Scissors } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
+import { FileDropzone } from "@/components/tools/file-dropzone";
 
 function parseRange(input: string, max: number): number[] {
   const set = new Set<number>();
@@ -27,7 +28,6 @@ function parseRange(input: string, max: number): number[] {
 }
 
 export default function PdfSplit() {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [pageCount, setPageCount] = useState(0);
   const [range, setRange] = useState("1-1");
@@ -72,16 +72,13 @@ export default function PdfSplit() {
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          <input ref={inputRef} type="file" accept="application/pdf" className="hidden"
-            onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
-          <button
-            onClick={() => inputRef.current?.click()}
-            className="flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-10 text-center transition-colors hover:border-primary/50 hover:bg-secondary/40"
-          >
-            <Scissors className="size-8 text-primary" />
-            <span className="font-medium">{file ? file.name : "Upload a PDF to split"}</span>
-            <span className="text-sm text-muted-foreground">{file ? `${pageCount} pages` : "Select a PDF file"}</span>
-          </button>
+          <FileDropzone
+            icon={Scissors}
+            title={file ? file.name : "Click or drop a PDF here to split"}
+            subtitle={file ? `${pageCount} pages` : "Select a PDF file"}
+            accept="application/pdf"
+            onFiles={(files) => files[0] && onFile(files[0])}
+          />
         </CardContent>
       </Card>
 

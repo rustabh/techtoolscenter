@@ -11,6 +11,7 @@ import { downloadBlob } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
 import { confetti } from "@/lib/confetti";
 import { useBulkQueue } from "@/lib/bulk/engine";
+import { FileDropzone } from "@/components/tools/file-dropzone";
 
 type Op = "compress" | "webp" | "resize" | "rotate";
 const OPS: { id: Op; label: string }[] = [
@@ -87,7 +88,7 @@ export default function BulkImageProcessor() {
     return { blob, name: makeName(file.name, ext, i) };
   });
 
-  const onFiles = (files: FileList | null) => {
+  const onFiles = (files: FileList | File[] | null) => {
     if (!files) return;
     const all = Array.from(files);
     const images = all.filter((f) => f.type.startsWith("image/"));
@@ -137,22 +138,20 @@ export default function BulkImageProcessor() {
       {/* Upload */}
       <Card>
         <CardContent className="pt-6">
-          <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
-          {/* @ts-expect-error non-standard directory attributes */}
-          <input ref={folderRef} type="file" webkitdirectory="" directory="" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
-          <div
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => { e.preventDefault(); onFiles(e.dataTransfer.files); }}
-            className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-10 text-center"
+          <FileDropzone
+            clickable={false}
+            title="Drag & drop images here"
+            subtitle="Processed privately in your browser — hundreds of files at once"
+            onFiles={onFiles}
           >
-            <UploadCloud className="size-8 text-primary" />
-            <span className="font-medium">Drag &amp; drop images here</span>
-            <span className="text-sm text-muted-foreground">Processed privately in your browser — hundreds of files at once</span>
+            <input ref={fileRef} type="file" accept="image/*" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
+            {/* @ts-expect-error non-standard directory attributes */}
+            <input ref={folderRef} type="file" webkitdirectory="" directory="" multiple className="hidden" onChange={(e) => onFiles(e.target.files)} />
             <div className="mt-2 flex gap-2">
               <Button variant="outline" size="sm" onClick={() => fileRef.current?.click()}><UploadCloud className="size-4" /> Select images</Button>
               <Button variant="outline" size="sm" onClick={() => folderRef.current?.click()}><Folder className="size-4" /> Upload folder</Button>
             </div>
-          </div>
+          </FileDropzone>
         </CardContent>
       </Card>
 

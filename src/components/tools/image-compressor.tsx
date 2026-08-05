@@ -1,13 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { UploadCloud } from "lucide-react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { downloadBlob, formatBytes } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
 import { CompareSlider } from "@/components/ui/compare-slider";
+import { FileDropzone } from "@/components/tools/file-dropzone";
 
 // Smart presets — one tap configures quality / width / target size.
 type ImgPreset = { id: string; label: string; mode: "quality" | "target"; quality: number; maxWidth: number; targetKB?: number };
@@ -36,7 +36,6 @@ function encode(img: HTMLImageElement, maxWidth: number, quality: number): Promi
 }
 
 export default function ImageCompressor({ preset }: { preset?: Record<string, unknown> }) {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [original, setOriginal] = useState<{ url: string; size: number; name: string } | null>(null);
   const [mode, setMode] = useState<"quality" | "target">(typeof preset?.targetKB === "number" ? "target" : "quality");
   const [quality, setQuality] = useState(typeof preset?.quality === "number" ? (preset.quality as number) : 0.7);
@@ -92,16 +91,12 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          <input ref={inputRef} type="file" accept="image/*" className="hidden"
-            onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
-          <button
-            onClick={() => inputRef.current?.click()}
-            className="flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-10 text-center transition-colors hover:border-primary/50 hover:bg-secondary/40"
-          >
-            <UploadCloud className="size-8 text-primary" />
-            <span className="font-medium">Click to upload an image</span>
-            <span className="text-sm text-muted-foreground">JPG, PNG or WebP · processed locally</span>
-          </button>
+          <FileDropzone
+            title="Click or drop an image here"
+            subtitle="JPG, PNG or WebP · processed locally"
+            accept="image/*"
+            onFiles={(files) => files[0] && onFile(files[0])}
+          />
           <div className="mt-3 text-center">
             <button onClick={async () => onFile(await (await import("@/lib/samples")).sampleImageFile())}
               className="text-sm font-medium text-primary hover:underline">

@@ -1,19 +1,19 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { PDFDocument } from "pdf-lib";
-import { FilePlus2, ArrowUp, ArrowDown, X } from "lucide-react";
+import { ArrowUp, ArrowDown, X, FilePlus2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
+import { FileDropzone } from "@/components/tools/file-dropzone";
 
 export default function PdfMerge() {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
 
-  const add = (list: FileList | null) => {
+  const add = (list: FileList | File[] | null) => {
     if (!list) return;
     const incoming = Array.from(list);
     const valid = incoming.filter((x) => x.type === "application/pdf");
@@ -56,16 +56,14 @@ export default function PdfMerge() {
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          <input ref={inputRef} type="file" accept="application/pdf" multiple className="hidden"
-            onChange={(e) => add(e.target.files)} />
-          <button
-            onClick={() => inputRef.current?.click()}
-            className="flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-10 text-center transition-colors hover:border-primary/50 hover:bg-secondary/40"
-          >
-            <FilePlus2 className="size-8 text-primary" />
-            <span className="font-medium">Add PDF files</span>
-            <span className="text-sm text-muted-foreground">Select two or more PDFs to combine</span>
-          </button>
+          <FileDropzone
+            icon={FilePlus2}
+            title="Click or drop PDF files here"
+            subtitle="Select two or more PDFs to combine"
+            accept="application/pdf"
+            multiple
+            onFiles={add}
+          />
         </CardContent>
       </Card>
 

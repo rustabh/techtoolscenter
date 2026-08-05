@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { UploadCloud, Lock, Unlock } from "lucide-react";
+import { useState } from "react";
+import { Lock, Unlock } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { downloadBlob, formatBytes } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
 import { showToast } from "@/components/ui/toaster";
+import { FileDropzone } from "@/components/tools/file-dropzone";
 
 // Common social/document presets.
 const PRESETS: { label: string; w: number; h: number }[] = [
@@ -23,7 +24,6 @@ const PRESETS: { label: string; w: number; h: number }[] = [
 ];
 
 export default function ImageResizer({ preset }: { preset?: Record<string, unknown> }) {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [img, setImg] = useState<HTMLImageElement | null>(null);
   const [name, setName] = useState("image");
   const [origSize, setOrigSize] = useState(0);
@@ -99,13 +99,12 @@ export default function ImageResizer({ preset }: { preset?: Record<string, unkno
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          <input ref={inputRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
-          <button onClick={() => inputRef.current?.click()}
-            className="flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-10 text-center transition-colors hover:border-primary/50 hover:bg-secondary/40">
-            <UploadCloud className="size-8 text-primary" />
-            <span className="font-medium">{img ? `${name} · ${img.naturalWidth}×${img.naturalHeight}` : "Upload an image to resize"}</span>
-            <span className="text-sm text-muted-foreground">Resized privately in your browser — nothing is uploaded</span>
-          </button>
+          <FileDropzone
+            title={img ? `${name} · ${img.naturalWidth}×${img.naturalHeight}` : "Click or drop an image here to resize"}
+            subtitle="Resized privately in your browser — nothing is uploaded"
+            accept="image/*"
+            onFiles={(files) => files[0] && onFile(files[0])}
+          />
           <div className="mt-3 text-center">
             <button onClick={trySample}
               className="text-sm font-medium text-primary hover:underline">✨ Try a sample image</button>
