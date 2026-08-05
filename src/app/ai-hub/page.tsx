@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight, GitCompareArrows } from "lucide-react";
 import { Icon } from "@/components/icon";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { AiToolCard } from "@/components/aihub/ai-tool-card";
@@ -81,6 +82,25 @@ export default function AiHubPage() {
             </Link>
           ))}
         </div>
+      </section>
+
+      {/* Compare CTA */}
+      <section className="mt-14 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 to-transparent p-6">
+        <div className="flex items-center gap-4">
+          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground">
+            <GitCompareArrows className="size-5" />
+          </span>
+          <div>
+            <h2 className="text-xl font-bold tracking-tight">Compare AI tools side by side</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Real pricing, API access and platforms — pick any two or three tools from 250+.</p>
+          </div>
+        </div>
+        <Link
+          href="/ai-hub/compare"
+          className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+        >
+          Compare tools <ArrowRight className="size-4" />
+        </Link>
       </section>
 
       {/* Collections */}

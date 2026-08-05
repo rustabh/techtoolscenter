@@ -1285,7 +1285,7 @@ export const posts: BlogPost[] = [
     },
     {
       "type": "callout",
-      "text": "There's no single \"best\" chatbot — the right one depends on the task in front of you. Browse [all AI chatbots on AI Hub](/ai-hub/chatbots) to compare pricing and official links side by side."
+      "text": "There's no single \"best\" chatbot — the right one depends on the task in front of you. Use the [AI comparison tool](/ai-hub/compare?a=chatgpt&b=claude&c=gemini) to see all three side by side (pricing, API access, platforms), or browse [all AI chatbots on AI Hub](/ai-hub/chatbots)."
     },
     {
       "type": "h2",
