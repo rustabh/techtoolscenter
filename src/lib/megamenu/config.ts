@@ -119,7 +119,7 @@ export const aiHubMenu: MegaMenuConfig = {
         { label: "Featured AI", href: "/ai-hub", description: "Hand-picked tools across every category." },
         { label: "AI Categories", href: "/ai-hub/chatbots", description: "Browse by category — starting with Chatbots." },
         { label: "AI Comparisons", href: "/ai-hub/compare" },
-        { label: "Prompt Library", comingSoon: true },
+        { label: "Prompt Library", href: "/ai-hub/prompts" },
       ] }],
     },
     {

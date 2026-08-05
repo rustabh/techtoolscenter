@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, GitCompareArrows } from "lucide-react";
+import { ArrowRight, GitCompareArrows, Sparkles } from "lucide-react";
 import { Icon } from "@/components/icon";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { AiToolCard } from "@/components/aihub/ai-tool-card";
 import { AiToolSearch } from "@/components/aihub/ai-tool-search";
 import { aiCategories } from "@/lib/aihub/categories";
 import { aiCollections } from "@/lib/aihub/collections";
+import { prompts } from "@/lib/aihub/prompts";
 import {
   aiTools,
   featuredAiTools,
@@ -40,6 +41,7 @@ function Section({ title, items }: { title: string; items: AiTool[] }) {
 }
 
 export default function AiHubPage() {
+  const promptCount = prompts.length;
   const featured = featuredAiTools(6);
   const trending = trendingAiTools(6);
   const recent = recentlyAddedAiTools(8);
@@ -100,6 +102,25 @@ export default function AiHubPage() {
           className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
         >
           Compare tools <ArrowRight className="size-4" />
+        </Link>
+      </section>
+
+      {/* Prompt Library CTA */}
+      <section className="mt-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border bg-card p-6 shadow-sm">
+        <div className="flex items-center gap-4">
+          <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-accent text-accent-foreground">
+            <Sparkles className="size-5" />
+          </span>
+          <div>
+            <h2 className="text-xl font-bold tracking-tight">Prompt Library</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{promptCount}+ ready-to-use prompts for writing, business, coding, marketing and more — copy and paste into any chatbot.</p>
+          </div>
+        </div>
+        <Link
+          href="/ai-hub/prompts"
+          className="inline-flex shrink-0 items-center gap-2 rounded-full border border-border px-5 py-2.5 text-sm font-semibold hover:bg-secondary"
+        >
+          Browse prompts <ArrowRight className="size-4" />
         </Link>
       </section>
 
