@@ -16,13 +16,29 @@ export function CompareSlider({ before, after, beforeLabel = "Original", afterLa
     setPos(Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100)));
   };
 
+  const onKeyDown = (e: React.KeyboardEvent) => {
+    const step = e.shiftKey ? 10 : 5;
+    if (e.key === "ArrowLeft" || e.key === "ArrowDown") { e.preventDefault(); setPos((p) => Math.max(0, p - step)); }
+    else if (e.key === "ArrowRight" || e.key === "ArrowUp") { e.preventDefault(); setPos((p) => Math.min(100, p + step)); }
+    else if (e.key === "Home") { e.preventDefault(); setPos(0); }
+    else if (e.key === "End") { e.preventDefault(); setPos(100); }
+  };
+
   return (
     <div
       ref={ref}
-      className="relative aspect-video w-full select-none overflow-hidden rounded-xl border border-border bg-secondary/40"
+      role="slider"
+      aria-label={`Comparison: drag to reveal more of ${beforeLabel} or ${afterLabel}`}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={Math.round(pos)}
+      aria-valuetext={`${Math.round(pos)}% ${beforeLabel}`}
+      tabIndex={0}
+      className="relative aspect-video w-full select-none overflow-hidden rounded-xl border border-border bg-secondary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       onMouseMove={(e) => e.buttons === 1 && move(e.clientX)}
       onTouchMove={(e) => move(e.touches[0].clientX)}
       onClick={(e) => move(e.clientX)}
+      onKeyDown={onKeyDown}
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={after} alt={afterLabel} className="absolute inset-0 size-full object-contain" draggable={false} />
