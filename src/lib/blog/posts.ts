@@ -3468,6 +3468,104 @@ export const posts: BlogPost[] = [
       { question: "How long does delivery take?", answer: "Typically around a couple of weeks after successful payment, dispatched by post to your Aadhaar-registered address — track it on the UIDAI portal using your Service Request Number." },
     ],
   },
+  {
+    slug: "how-to-get-fssai-license-food-business",
+    title: "How to Get an FSSAI License for Your Food Business",
+    excerpt:
+      "Selling food in India — from a home tiffin service to a full restaurant — legally requires FSSAI registration or a license. Here's which one you need and how to apply.",
+    category: "guides",
+    author: "techtoolscenter-team",
+    template: "guide",
+    publishedOn: "2026-08-06",
+    tags: ["fssai", "food license", "india", "small business"],
+    relatedTools: ["invoice-maker", "quotation-generator"],
+    seoTitle: "FSSAI License & Registration — Step-by-Step Guide",
+    seoDescription:
+      "How to get FSSAI registration or a license for your food business in India — which tier applies to you, required documents, fees and the online application process.",
+    content: [
+      { type: "p", text: "Any food business in India — manufacturing, storing, distributing, transporting or selling food — legally needs to be registered with FSSAI (the Food Safety and Standards Authority of India). This applies whether you're running a home-based tiffin service, a food truck, a small restaurant, or a full manufacturing unit. Which tier you need depends entirely on your business size." },
+      { type: "h2", text: "The three tiers" },
+      { type: "ul", items: [
+        "**Basic Registration** — for the smallest food businesses (annual turnover below a threshold set by FSSAI). Simplest paperwork, lowest fee.",
+        "**State License** — for mid-size businesses above the Basic Registration turnover threshold but below the Central License threshold.",
+        "**Central License** — for large manufacturers, importers, exporters, or businesses operating across multiple states.",
+      ] },
+      { type: "p", text: "Getting this wrong in either direction causes problems: operating under Basic Registration once you've outgrown it is a compliance risk, while over-applying for a Central License you don't need adds unnecessary paperwork and cost." },
+      { type: "h2", text: "Step-by-step: apply for FSSAI registration or a license" },
+      { type: "ol", items: [
+        "Determine your correct tier based on annual turnover and business type — check the current thresholds on the official FoSCoS portal since they're periodically revised.",
+        "Register on FoSCoS (foscos.fssai.gov.in), FSSAI's official licensing system.",
+        "Fill in Form A (registration) or Form B (license) with your business, product and premises details.",
+        "Upload the required documents — ID proof, address proof, and (for licenses) a food safety management plan.",
+        "Pay the applicable fee online.",
+        "Track your application status; once approved, download your certificate/license and display it at your premises.",
+      ] },
+      { type: "callout", text: "If your business grows past your current tier's turnover threshold, you need to upgrade — a food business operating with only Basic Registration once it has clearly outgrown that tier is not compliant, even if it registered correctly at the start." },
+      { type: "h2", text: "Common mistakes" },
+      { type: "ul", items: [
+        "Skipping FSSAI registration entirely for a small home-based business, assuming it doesn't apply — it almost always does, even at small scale, just at the lightest (Basic Registration) tier.",
+        "Letting the registration/license lapse without renewing before expiry, which means operating without valid registration.",
+        "Not displaying the certificate/license number at the premises and on packaging where required.",
+      ] },
+    ],
+    faq: [
+      { question: "Does a home-based food business need an FSSAI license?", answer: "Yes, typically Basic Registration — the lightest tier, for businesses below FSSAI's turnover threshold for that category. Very few food businesses are exempt entirely." },
+      { question: "How much does FSSAI registration cost?", answer: "Basic Registration is a low annual fee (roughly ₹100/year); State and Central Licenses cost more depending on category. Confirm the current fee for your specific tier on the official FoSCoS portal, as amounts can be revised." },
+      { question: "How long does it take to get an FSSAI license?", answer: "Basic Registration is often issued within about 7-10 days; State and Central Licenses can take 30-60 days depending on inspection requirements." },
+      { question: "What happens if I operate without an FSSAI license?", answer: "It's a compliance violation that can result in penalties. Since the process is straightforward and the Basic Registration tier is inexpensive, there's little reason to skip it." },
+    ],
+  },
+  {
+    slug: "how-to-apply-oci-card-guide",
+    title: "How to Apply for an OCI Card (Overseas Citizen of India)",
+    excerpt:
+      "For foreign citizens of Indian origin who want visa-free entry and the right to live, work or study in India — here's what OCI actually grants, and the real application process.",
+    category: "guides",
+    author: "techtoolscenter-team",
+    template: "guide",
+    publishedOn: "2026-08-06",
+    tags: ["oci", "overseas citizen of india", "india", "diaspora"],
+    relatedTools: ["pdf-compress", "image-compressor"],
+    seoTitle: "OCI Card Application — Eligibility & Step-by-Step Guide",
+    seoDescription:
+      "How to apply for an OCI (Overseas Citizen of India) card — who's eligible, what it actually grants, required documents, and the online application process.",
+    content: [
+      { type: "p", text: "An OCI (Overseas Citizen of India) card is for foreign citizens with Indian roots who want long-term visa-free access to India — it's not dual citizenship, since India doesn't allow that, but it does grant broad rights to live, work and study in India for life, applied for once through the official OCI portal." },
+      { type: "h2", text: "Who's eligible" },
+      { type: "ul", items: [
+        "Foreign citizens who were eligible to be Indian citizens on or after 26 January 1950, or were Indian citizens at that date.",
+        "Descendants of such persons, going back generations in many cases.",
+        "Certain exclusions apply, notably for anyone who was ever a citizen of Pakistan or Bangladesh.",
+      ] },
+      { type: "h2", text: "What OCI actually grants (and doesn't)" },
+      { type: "ul", items: [
+        "**Grants**: multiple-entry, lifelong visa-free travel to India; the right to live, work and study in India; parity with Non-Resident Indians in most economic, financial and educational matters.",
+        "**Doesn't grant**: voting rights, eligibility for public office, or an Indian passport — OCI is not citizenship.",
+      ] },
+      { type: "h2", text: "Step-by-step: apply for an OCI card" },
+      { type: "ol", items: [
+        "Register on the official OCI portal (ociservices.gov.in).",
+        "Complete the online application (Form XIX) with personal, family and travel document details.",
+        "Upload the required documents — your foreign passport, proof of Indian origin, and a renunciation certificate if you were previously an Indian citizen.",
+        "Pay the application fee online.",
+        "Book an appointment at your jurisdictional Indian Embassy/Consulate (or FRRO, if applying within India) for biometrics and physical document verification.",
+        "Track your status online; once approved, the card is issued through your submitting mission or office.",
+      ] },
+      { type: "callout", text: "Don't forget the mandatory re-issuance rule: your OCI card must be re-issued whenever you get a new passport before turning 20, and once again after turning 50 — missing this doesn't cancel your OCI status, but it can cause friction at immigration if your card and current passport don't match up." },
+      { type: "h2", text: "Common mistakes" },
+      { type: "ul", items: [
+        "Assuming OCI status means dual citizenship — it doesn't; India doesn't permit dual citizenship, and OCI cardholders can't vote, hold an Indian passport, or hold most public offices.",
+        "Submitting incomplete proof of Indian origin — this is the most common cause of delays, especially for applicants several generations removed from their Indian ancestor.",
+        "Forgetting to re-issue the card after a new passport before age 20 or after age 50.",
+      ] },
+    ],
+    faq: [
+      { question: "Is OCI the same as a visa?", answer: "No — it's a long-term registration that removes the need for a separate visa for most purposes, granting multiple-entry, lifelong visa-free travel and residency/work/study rights in India." },
+      { question: "Can I apply for OCI if my grandparent, not my parent, was Indian?", answer: "In many cases yes, as long as you can prove eligibility through descent under the OCI rules — this is one of the more common reasons applications get delayed if the documentation chain isn't clearly established." },
+      { question: "Do OCI cardholders need a separate visa to visit India?", answer: "No — that's the core benefit. OCI status itself grants multiple-entry, lifelong visa-free travel to India." },
+      { question: "Does OCI status expire?", answer: "The registration itself is lifelong, but the physical card must be re-issued when you get a new passport before age 20, and once after age 50." },
+    ],
+  },
 ];
 
 /* ---------------- helpers ---------------- */
