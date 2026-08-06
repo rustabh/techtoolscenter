@@ -75,6 +75,20 @@ function splitCsvRows(text: string): string[] {
   return rows;
 }
 
+// CSV has no data types — every field is text. To produce genuinely useful
+// JSON (numbers as numbers, not "30" as a string), infer a type using JSON's
+// own number grammar, which conveniently also protects values that only
+// look numeric — a leading zero (zip codes, some phone numbers like
+// "0712345678") never matches, so those correctly stay strings.
+const JSON_NUMBER = /^-?(0|[1-9]\d*)(\.\d+)?$/;
+function inferValue(raw: string): CsvValue {
+  if (raw === "") return "";
+  if (raw === "true") return true;
+  if (raw === "false") return false;
+  if (JSON_NUMBER.test(raw)) return Number(raw);
+  return raw;
+}
+
 function csvToJson(csv: string): string {
   const rows = splitCsvRows(csv.trim()).filter((r) => r.length > 0);
   if (rows.length === 0) {
@@ -87,7 +101,7 @@ function csvToJson(csv: string): string {
     const fields = parseCsvLine(rows[i]);
     const record: CsvRecord = {};
     headers.forEach((header, idx) => {
-      record[header] = fields[idx] ?? "";
+      record[header] = inferValue(fields[idx] ?? "");
     });
     records.push(record);
   }
