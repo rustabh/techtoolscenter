@@ -41,7 +41,6 @@ export const sidebarSections: SidebarSection[] = [
     icon: "Bot",
     items: [
       { label: "AI Hub", href: "/ai-hub" },
-      { label: "AI Prompt Hub", comingSoon: true },
       { label: "Prompt Library", href: "/ai-hub/prompts" },
       { label: "AI News", comingSoon: true },
       { label: "AI Comparisons", href: "/ai-hub/compare" },

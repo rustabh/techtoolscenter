@@ -314,9 +314,9 @@ export const blogMenu: MegaMenuConfig = {
       icon: "Tag",
       groups: [{ items: [
         { label: "Business Guides", href: "/blog/category/business" },
-        { label: "PDF Guides", comingSoon: true },
-        { label: "AI Guides", comingSoon: true },
-        { label: "Government Guides", comingSoon: true },
+        { label: "PDF Guides", href: "/blog/tag/pdf" },
+        { label: "AI Guides", href: "/blog/tag/ai" },
+        { label: "Government Guides", href: "/blog/tag/india" },
       ] }],
     },
   ],

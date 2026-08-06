@@ -3592,6 +3592,9 @@ export function getPost(slug: string): BlogPost | undefined {
 export function postsByCategory(category: string): BlogPost[] {
   return allPosts().filter((p) => p.category === category);
 }
+export function postsByTag(tag: string): BlogPost[] {
+  return allPosts().filter((p) => p.tags.includes(tag));
+}
 export function postsByAuthor(author: string): BlogPost[] {
   return allPosts().filter((p) => p.author === author);
 }
