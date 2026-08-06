@@ -5054,6 +5054,25 @@ export const aiTools: AiTool[] = [
     "addedOn": "2026-08-02"
   },
   {
+    "slug": "dax-copilot",
+    "name": "DAX Copilot",
+    "category": "healthcare",
+    "developer": "Microsoft (Nuance)",
+    "officialUrl": "https://www.nuance.com/healthcare/dragon-ax-copilot.html",
+    "overview": "An ambient clinical documentation assistant from Microsoft/Nuance that listens during patient visits and drafts the clinical note, integrated directly into major electronic health record systems used by large health systems.",
+    "pricing": "Enterprise",
+    "apiAvailable": false,
+    "tags": [
+      "healthcare",
+      "medical-scribe",
+      "clinical-notes",
+      "ambient-ai",
+      "ehr-integration"
+    ],
+    "icon": "Stethoscope",
+    "addedOn": "2026-08-06"
+  },
+  {
     "slug": "zety",
     "name": "Zety",
     "category": "resume",
