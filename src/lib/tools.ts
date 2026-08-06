@@ -1708,6 +1708,86 @@ export const tools: Tool[] = [
       { question: "Does this work on all browsers?", answer: "It works in Chrome, Edge, and Safari. Some browsers or older devices may have limited or no voices installed." },
     ],
   },
+  {
+    slug: "pdf-watermark",
+    name: "PDF Watermark",
+    description: "Add a text watermark to every page of a PDF, free, right in your browser.",
+    longDescription:
+      "Stamp any PDF with a custom text watermark — set the wording, color, opacity, size and rotation angle, then download the watermarked file instantly. Useful for marking drafts, confidential documents or proofs before sharing. Your file never leaves your device.",
+    category: "Documents",
+    icon: "Stamp",
+    keywords: ["pdf watermark", "add watermark to pdf", "watermark pdf online free", "stamp pdf", "confidential pdf watermark"],
+    addedOn: "2026-08-06",
+    faq: [
+      { question: "Is my PDF uploaded to a server?", answer: "No — the watermark is applied entirely in your browser using JavaScript. Your file is never uploaded anywhere." },
+      { question: "Can I remove the watermark later?", answer: "The watermark is drawn directly onto each page, so it becomes a permanent part of the PDF content, similar to printing on paper." },
+      { question: "Can I watermark a password-protected PDF?", answer: "Not directly — remove the password first (e.g. with a PDF unlock tool) before adding a watermark here." },
+    ],
+  },
+  {
+    slug: "pdf-page-rotator",
+    name: "PDF Page Rotator",
+    description: "Rotate all or specific pages of a PDF by 90°, 180° or 270°, free and instant.",
+    longDescription:
+      "Fix sideways or upside-down scans by rotating any PDF's pages — apply the rotation to the whole document or just a chosen range (e.g. 2-4, 7). Runs entirely in your browser, no upload required.",
+    category: "Documents",
+    icon: "RotateCw",
+    keywords: ["rotate pdf", "rotate pdf pages online", "fix sideways pdf", "rotate pdf 90 degrees", "pdf page rotator free"],
+    addedOn: "2026-08-06",
+    faq: [
+      { question: "Can I rotate just one page?", answer: "Yes — switch to \"Specific pages\" and enter the page number, or a range like 1-3, to rotate only those pages." },
+      { question: "Does rotating affect file quality?", answer: "No — rotation only changes the page's orientation metadata, so there's no quality loss or re-compression." },
+      { question: "Is my file uploaded anywhere?", answer: "No, everything happens locally in your browser using JavaScript — your PDF is never sent to a server." },
+    ],
+  },
+  {
+    slug: "pdf-page-numbers",
+    name: "PDF Page Numbers",
+    description: "Add page numbers to a PDF with your choice of position, format and starting number.",
+    longDescription:
+      "Insert page numbers into any PDF — pick the corner or center, choose a format like \"1 of 10\" or \"Page 1\", set a custom starting number, and download. Ideal for reports, ebooks and printed handouts. Processing happens entirely in your browser.",
+    category: "Documents",
+    icon: "ListOrdered",
+    keywords: ["add page numbers to pdf", "pdf page numbering", "number pdf pages online free", "insert page numbers pdf"],
+    addedOn: "2026-08-06",
+    faq: [
+      { question: "Can I start numbering from a page other than 1?", answer: "Yes — set \"Start at\" to any number, useful when a cover page shouldn't count as page 1." },
+      { question: "What formats are supported?", answer: "Plain numbers (1, 2, 3…), \"Page 1\" style, or \"1 of 10\" style showing the total page count." },
+      { question: "Will this work on scanned PDFs?", answer: "Yes — page numbers are added as a new text layer on top of each page, regardless of what's already on it." },
+    ],
+  },
+  {
+    slug: "meme-generator",
+    name: "Meme Generator",
+    description: "Add classic top and bottom Impact-style captions to any image, free and instant.",
+    longDescription:
+      "Upload any image and add bold, white-with-black-outline top and bottom text in the classic meme style. Adjust text size live, preview instantly, and download as a PNG — all rendered locally in your browser with nothing uploaded.",
+    category: "Creative",
+    icon: "Smile",
+    keywords: ["meme generator", "meme maker free", "make a meme online", "caption generator", "impact font meme maker"],
+    addedOn: "2026-08-06",
+    faq: [
+      { question: "Is my image uploaded to a server?", answer: "No — the meme is rendered entirely in your browser using the HTML canvas. Your image never leaves your device." },
+      { question: "What image formats can I use?", answer: "Any common image format your browser can display, including JPG, PNG and WebP." },
+      { question: "Can I use only top text or only bottom text?", answer: "Yes — leave either field blank and only the filled-in caption will be drawn." },
+    ],
+  },
+  {
+    slug: "random-team-generator",
+    name: "Random Team Generator",
+    description: "Split a list of names into balanced random teams, free and instant.",
+    longDescription:
+      "Paste a list of names — one per line — set how many teams you need, and get a fair, shuffled split instantly. Great for classrooms, office games, sports days or group projects. Reshuffle anytime, copy the results, or revisit past splits in history.",
+    category: "Everyday",
+    icon: "Shuffle",
+    keywords: ["random team generator", "split into teams", "random group generator", "team randomizer online free", "group generator from list"],
+    addedOn: "2026-08-06",
+    faq: [
+      { question: "How are teams balanced?", answer: "Names are shuffled randomly, then dealt out one by one across the teams round-robin style, so team sizes differ by at most one person." },
+      { question: "Is there a limit on how many names I can enter?", answer: "No hard limit — paste as many names as you need, one per line." },
+      { question: "Are my names saved anywhere?", answer: "Only in your own browser's local storage (for the history panel) — nothing is sent to a server." },
+    ],
+  },
 ];
 
 // Tools added on or after this date show a "New" badge. Fixed for deterministic SSR.

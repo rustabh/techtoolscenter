@@ -119,6 +119,11 @@ const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> 
   "youtube-thumbnail-downloader": dynamic(() => import("./youtube-thumbnail-downloader"), { loading: ToolSkeleton, ssr: false }),
   "cgpa-calculator": dynamic(() => import("./cgpa-calculator"), { loading: ToolSkeleton, ssr: false }),
   "text-to-speech": dynamic(() => import("./text-to-speech"), { loading: ToolSkeleton, ssr: false }),
+  "pdf-watermark": dynamic(() => import("./pdf-watermark"), { loading: ToolSkeleton, ssr: false }),
+  "pdf-page-rotator": dynamic(() => import("./pdf-page-rotator"), { loading: ToolSkeleton, ssr: false }),
+  "pdf-page-numbers": dynamic(() => import("./pdf-page-numbers"), { loading: ToolSkeleton, ssr: false }),
+  "meme-generator": dynamic(() => import("./meme-generator"), { loading: ToolSkeleton, ssr: false }),
+  "random-team-generator": dynamic(() => import("./random-team-generator"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug, preset }: { slug: string; preset?: Record<string, unknown> }) {
