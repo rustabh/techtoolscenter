@@ -142,8 +142,8 @@ export default function PdfPageNumbers() {
                 <Input id="start-at" type="number" min={0} value={startAt} onChange={(e) => setStartAt(parseInt(e.target.value) || 1)} />
               </div>
               <div className="space-y-1.5">
-                <Label>Font size: {size}px</Label>
-                <input type="range" min={8} max={24} value={size} onChange={(e) => setSize(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+                <Label htmlFor="pn-size">Font size: {size}px</Label>
+                <input id="pn-size" type="range" min={8} max={24} value={size} onChange={(e) => setSize(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
               </div>
             </div>
             <Button onClick={apply} disabled={busy}>{busy ? "Numbering…" : "Add page numbers & download"}</Button>

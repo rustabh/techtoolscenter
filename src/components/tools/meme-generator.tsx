@@ -137,8 +137,8 @@ export default function MemeGenerator() {
               <Input id="bottom-text" value={bottomText} onChange={(e) => setBottomText(e.target.value)} placeholder="BOTTOM TEXT" />
             </div>
             <div className="space-y-1.5">
-              <Label>Text size: {fontSize}%</Label>
-              <input type="range" min={20} max={100} value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+              <Label htmlFor="meme-font-size">Text size: {fontSize}%</Label>
+              <input id="meme-font-size" type="range" min={20} max={100} value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
             </div>
             <Button variant="outline" size="sm" onClick={randomize}><Shuffle className="size-4" /> Try a sample caption</Button>
           </CardContent>

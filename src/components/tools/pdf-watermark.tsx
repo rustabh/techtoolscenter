@@ -88,16 +88,16 @@ export default function PdfWatermark() {
             </div>
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
               <div className="space-y-1.5">
-                <Label>Opacity: {opacity}%</Label>
-                <input type="range" min={5} max={100} value={opacity} onChange={(e) => setOpacity(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+                <Label htmlFor="wm-opacity">Opacity: {opacity}%</Label>
+                <input id="wm-opacity" type="range" min={5} max={100} value={opacity} onChange={(e) => setOpacity(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
               </div>
               <div className="space-y-1.5">
-                <Label>Font size: {size}px</Label>
-                <input type="range" min={12} max={120} value={size} onChange={(e) => setSize(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+                <Label htmlFor="wm-size">Font size: {size}px</Label>
+                <input id="wm-size" type="range" min={12} max={120} value={size} onChange={(e) => setSize(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
               </div>
               <div className="space-y-1.5">
-                <Label>Rotation: {rotation}°</Label>
-                <input type="range" min={0} max={90} value={rotation} onChange={(e) => setRotation(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+                <Label htmlFor="wm-rotation">Rotation: {rotation}°</Label>
+                <input id="wm-rotation" type="range" min={0} max={90} value={rotation} onChange={(e) => setRotation(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
               </div>
               <div className="space-y-1.5">
                 <Label>Color</Label>
