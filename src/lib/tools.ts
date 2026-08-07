@@ -1788,6 +1788,166 @@ export const tools: Tool[] = [
       { question: "Are my names saved anywhere?", answer: "Only in your own browser's local storage (for the history panel) — nothing is sent to a server." },
     ],
   },
+  {
+    slug: "image-watermark",
+    name: "Image Watermark",
+    description: "Add a text watermark to any image — tiled, centered, or in a corner — free and instant.",
+    longDescription:
+      "Protect your photos and graphics with a custom text watermark. Choose the position (tiled, centered, or any corner), set opacity, size, rotation and color, then download instantly — all rendered in your browser.",
+    category: "Image",
+    icon: "Layers",
+    keywords: ["image watermark", "add watermark to photo", "watermark maker free", "protect photos online", "watermark image online"],
+    addedOn: "2026-08-07",
+    faq: [
+      { question: "Is my image uploaded anywhere?", answer: "No — the watermark is drawn entirely in your browser using the HTML canvas. Your image never leaves your device." },
+      { question: "Can I tile the watermark across the whole image?", answer: "Yes — choose \"Tiled\" as the position to repeat the watermark text across the entire image, which is harder to crop out than a single corner mark." },
+      { question: "Does the watermark reduce image quality?", answer: "No — the original image is drawn at full resolution; only the watermark text is added on top." },
+    ],
+  },
+  {
+    slug: "signature-maker",
+    name: "Signature Maker",
+    description: "Draw or type a signature and download it as a transparent PNG, free and instant.",
+    longDescription:
+      "Create a signature by drawing with your mouse or finger, or by typing your name in a cursive style. Download as a transparent PNG, ready to drop into a document, contract, or email signature.",
+    category: "Creative",
+    icon: "PenTool",
+    keywords: ["signature maker", "online signature generator", "draw signature free", "e-signature creator", "digital signature maker"],
+    addedOn: "2026-08-07",
+    faq: [
+      { question: "Is this a legally binding e-signature?", answer: "No — this creates a signature image you can place on documents yourself. For legally binding e-signatures with an audit trail, use a certified e-signature provider." },
+      { question: "Can I use this on a phone?", answer: "Yes — the drawing canvas supports touch, so you can sign with your finger on a phone or tablet." },
+      { question: "Does the download have a background?", answer: "No — it downloads as a transparent PNG so it drops cleanly onto any document without a white box around it." },
+    ],
+  },
+  {
+    slug: "speech-to-text",
+    name: "Speech to Text",
+    description: "Dictate and get a live text transcript, free, right in your browser.",
+    longDescription:
+      "Speak into your microphone and watch your words appear as text in real time. Supports English (India, US, UK) and Hindi. Copy the transcript or download it as a .txt file — nothing is uploaded to a server.",
+    category: "AI",
+    icon: "Mic",
+    keywords: ["speech to text", "voice to text online free", "dictation tool", "voice typing", "speech recognition online"],
+    addedOn: "2026-08-07",
+    faq: [
+      { question: "Which browsers support this?", answer: "Chrome and Edge on desktop and Android have the best support for the Web Speech API. Safari and Firefox have limited or no support." },
+      { question: "Is my voice uploaded anywhere?", answer: "Audio is processed by your browser's built-in speech engine — TechToolsCenter never receives or stores your audio." },
+      { question: "Can I edit the transcript after dictating?", answer: "Yes — the transcript box is a normal editable text area, so you can correct any misheard words directly." },
+    ],
+  },
+  {
+    slug: "voice-recorder",
+    name: "Voice Recorder",
+    description: "Record audio from your microphone and download it, free and instant.",
+    longDescription:
+      "Record a voice memo, quick note, or clip directly in your browser — no app or account needed. Play it back, then download the audio file. Recording happens entirely on your device.",
+    category: "Everyday",
+    icon: "MicVocal",
+    keywords: ["voice recorder online", "record audio free", "online audio recorder", "browser voice recorder", "microphone recorder"],
+    addedOn: "2026-08-07",
+    faq: [
+      { question: "Is my recording uploaded anywhere?", answer: "No — recording, playback and download all happen locally in your browser. Nothing is sent to a server." },
+      { question: "What file format does it download as?", answer: "Usually .webm (Chrome, Edge, Firefox) or .m4a (Safari), depending on what your browser's recorder supports." },
+      { question: "Is there a recording time limit?", answer: "No built-in limit — you can record for as long as you like, though very long recordings use more memory in your browser tab." },
+    ],
+  },
+  {
+    slug: "color-blindness-simulator",
+    name: "Color Blindness Simulator",
+    description: "See how an image looks with protanopia, deuteranopia, tritanopia or achromatopsia.",
+    longDescription:
+      "Upload an image and preview it as someone with a color vision deficiency might see it. Compare original vs. simulated side-by-side with a drag slider — useful for checking that your designs remain accessible.",
+    category: "Image",
+    icon: "Eye",
+    keywords: ["color blindness simulator", "color blind test image", "deuteranopia simulator", "accessibility color checker", "protanopia simulator"],
+    addedOn: "2026-08-07",
+    faq: [
+      { question: "How accurate is this simulation?", answer: "It uses well-established approximation matrices common to open-source color-blindness simulators — a useful design/accessibility check, but not a clinically precise model of any individual's vision." },
+      { question: "Is my image uploaded anywhere?", answer: "No — the simulation runs entirely in your browser using the HTML canvas." },
+      { question: "Which type of color blindness is most common?", answer: "Deuteranopia (reduced sensitivity to green) is the most common form, affecting roughly 6% of men." },
+    ],
+  },
+  {
+    slug: "typing-speed-test",
+    name: "Typing Speed Test",
+    description: "Test your typing speed in words per minute, free and instant.",
+    longDescription:
+      "Type a random passage as fast and accurately as you can. See your live words-per-minute (WPM), accuracy percentage, and time — with character-by-character highlighting as you type.",
+    category: "Everyday",
+    icon: "Keyboard",
+    keywords: ["typing speed test", "wpm test free", "typing test online", "words per minute test", "type speed checker"],
+    addedOn: "2026-08-07",
+    faq: [
+      { question: "How is WPM calculated?", answer: "Words per minute is calculated as (characters typed ÷ 5) ÷ minutes elapsed — the standard formula used by most typing tests, where 5 characters counts as one \"word\"." },
+      { question: "Does a typo end the test?", answer: "No — incorrect characters are highlighted but you can keep typing; your final accuracy reflects how many characters matched the passage." },
+      { question: "Can I get a new passage?", answer: "Yes — click \"New passage\" anytime to restart with a different one." },
+    ],
+  },
+  {
+    slug: "countdown-timer",
+    name: "Countdown Timer",
+    description: "Count down to any date and time — exams, events, launches — free and live.",
+    longDescription:
+      "Set a target date and time, name your event, and watch a live countdown in days, hours, minutes and seconds. Your countdown is saved in your browser, and you can copy a shareable link that pre-fills it for anyone you send it to.",
+    category: "Everyday",
+    icon: "Hourglass",
+    keywords: ["countdown timer online", "event countdown free", "exam countdown timer", "days until countdown", "online countdown clock"],
+    addedOn: "2026-08-07",
+    faq: [
+      { question: "Does the countdown keep running if I close the tab?", answer: "Your target date and event name are saved in your browser, so reopening the page picks up right where it should — the countdown itself just recalculates live from the current time." },
+      { question: "Can I share my countdown with someone else?", answer: "Yes — use \"Copy shareable link\" to get a URL that pre-fills your event name and target date/time for whoever opens it." },
+      { question: "What happens after the target time passes?", answer: "The timer switches to showing how much time has passed since that moment instead of counting down to it." },
+    ],
+  },
+  {
+    slug: "number-to-words",
+    name: "Number to Words",
+    description: "Convert a number into words using the Indian numbering system (Lakh, Crore) — great for cheques.",
+    longDescription:
+      "Convert any number into words — as Rupees and Paise for cheques and legal documents, or as a plain number in words. Uses the Indian numbering system (Thousand, Lakh, Crore) throughout.",
+    category: "Business",
+    icon: "Sigma",
+    keywords: ["number to words", "amount in words converter", "cheque amount in words", "rupees in words", "lakh crore converter"],
+    addedOn: "2026-08-07",
+    faq: [
+      { question: "Does this support decimals for Paise?", answer: "Yes — enter a number like 1234567.50 and it converts the decimal part to Paise automatically." },
+      { question: "What's the largest number it supports?", answer: "Numbers up to just under one lakh crore (10^12) — more than enough for cheques and most legal documents." },
+      { question: "Does it use the Indian or international numbering system?", answer: "Indian — Thousand, Lakh, Crore — which is what Indian cheques and legal documents expect." },
+    ],
+  },
+  {
+    slug: "image-to-ascii-art",
+    name: "Image to ASCII Art",
+    description: "Turn any image into text-character art, free and instant.",
+    longDescription:
+      "Upload an image and convert it into ASCII art — adjustable width, three character sets (detailed, simple, block), and an invert option for dark backgrounds. Copy the text or download it as a .txt file.",
+    category: "Creative",
+    icon: "Binary",
+    keywords: ["image to ascii art", "ascii art generator free", "photo to text art", "ascii converter online", "text art from image"],
+    addedOn: "2026-08-07",
+    faq: [
+      { question: "Is my image uploaded anywhere?", answer: "No — the conversion happens entirely in your browser using the HTML canvas." },
+      { question: "Why does my ASCII art look stretched?", answer: "Try adjusting the width — character cells in a monospace font are taller than they are wide, and the tool compensates for this automatically, but very small or very large widths can still look off." },
+      { question: "Can I use this in code comments or a README?", answer: "Yes — copy the text output and paste it anywhere plain text or monospace formatting is supported." },
+    ],
+  },
+  {
+    slug: "markdown-to-pdf",
+    name: "Markdown to PDF",
+    description: "Convert Markdown notes into a clean, paginated PDF, free and instant.",
+    longDescription:
+      "Paste or write Markdown — headings, lists, code blocks and horizontal rules — and get a clean, paginated A4 PDF back. Great for turning notes, READMEs or docs into something shareable and printable.",
+    category: "Documents",
+    icon: "FileText",
+    keywords: ["markdown to pdf", "convert markdown to pdf free", "md to pdf online", "markdown pdf converter", "notes to pdf"],
+    addedOn: "2026-08-07",
+    faq: [
+      { question: "Does it support inline bold and italic text?", answer: "Bold, italic and inline code markers are recognised and stripped to plain text rather than rendered as rich formatting — headings, lists, code blocks and horizontal rules render fully, but inline emphasis is simplified." },
+      { question: "Is my content uploaded anywhere?", answer: "No — the PDF is generated entirely in your browser using pdf-lib. Your Markdown never leaves your device." },
+      { question: "Does it handle long documents with multiple pages?", answer: "Yes — the PDF automatically paginates onto additional A4 pages as your content grows." },
+    ],
+  },
 ];
 
 // Tools added on or after this date show a "New" badge. Fixed for deterministic SSR.

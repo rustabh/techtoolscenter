@@ -124,6 +124,16 @@ const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> 
   "pdf-page-numbers": dynamic(() => import("./pdf-page-numbers"), { loading: ToolSkeleton, ssr: false }),
   "meme-generator": dynamic(() => import("./meme-generator"), { loading: ToolSkeleton, ssr: false }),
   "random-team-generator": dynamic(() => import("./random-team-generator"), { loading: ToolSkeleton, ssr: false }),
+  "image-watermark": dynamic(() => import("./image-watermark"), { loading: ToolSkeleton, ssr: false }),
+  "signature-maker": dynamic(() => import("./signature-maker"), { loading: ToolSkeleton, ssr: false }),
+  "speech-to-text": dynamic(() => import("./speech-to-text"), { loading: ToolSkeleton, ssr: false }),
+  "voice-recorder": dynamic(() => import("./voice-recorder"), { loading: ToolSkeleton, ssr: false }),
+  "color-blindness-simulator": dynamic(() => import("./color-blindness-simulator"), { loading: ToolSkeleton, ssr: false }),
+  "typing-speed-test": dynamic(() => import("./typing-speed-test"), { loading: ToolSkeleton, ssr: false }),
+  "countdown-timer": dynamic(() => import("./countdown-timer"), { loading: ToolSkeleton, ssr: false }),
+  "number-to-words": dynamic(() => import("./number-to-words"), { loading: ToolSkeleton, ssr: false }),
+  "image-to-ascii-art": dynamic(() => import("./image-to-ascii-art"), { loading: ToolSkeleton, ssr: false }),
+  "markdown-to-pdf": dynamic(() => import("./markdown-to-pdf"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug, preset }: { slug: string; preset?: Record<string, unknown> }) {

@@ -22,6 +22,7 @@ import {
   PenLine, MessagesSquare, Chrome, Monitor, Laptop, Handshake, ShoppingBag,
   Sparkle, Music2, Speech, CircleUserRound, UserRound, ClipboardList,
   ExternalLink, Lightbulb, Youtube, Stamp, RotateCw, ListOrdered, Smile, Shuffle,
+  Keyboard, Hourglass,
   type LucideProps,
 } from "lucide-react";
 
@@ -49,6 +50,7 @@ const map = {
   PenLine, MessagesSquare, Chrome, Monitor, Laptop, Handshake, ShoppingBag,
   Sparkle, Music2, Speech, CircleUserRound, UserRound, ClipboardList,
   ExternalLink, Lightbulb, Youtube, Stamp, RotateCw, ListOrdered, Smile, Shuffle,
+  Keyboard, Hourglass,
 } as const;
 
 export type IconName = keyof typeof map;
