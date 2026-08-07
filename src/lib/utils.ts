@@ -36,6 +36,17 @@ export function formatBytes(bytes: number) {
   return `${(bytes / 1048576).toFixed(2)} MB`;
 }
 
+/** The device's local calendar date as YYYY-MM-DD. Unlike `toISOString().slice(0, 10)`
+ *  (which is UTC-based), this matches the date shown on the user's own clock — important
+ *  for anyone in a positive UTC offset (e.g. IST, UTC+5:30), where the UTC date is still
+ *  "yesterday" for the first few hours of each local day. */
+export function localDateISO(date: Date = new Date()): string {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
 export function slugify(input: string) {
   return input
     .toLowerCase()

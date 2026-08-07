@@ -6,18 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { ActionBar } from "@/components/tools/action-bar";
+import { localDateISO } from "@/lib/utils";
 
 interface AgeState {
   from: string;
   to: string;
 }
 
-function todayISO() {
-  return new Date().toISOString().slice(0, 10);
-}
-
 export default function AgeCalculator() {
-  const initial: AgeState = { from: "2000-01-01", to: todayISO() };
+  const initial: AgeState = { from: "2000-01-01", to: localDateISO() };
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<AgeState>("uh:age", initial);
 
   const result = useMemo(() => {
