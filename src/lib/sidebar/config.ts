@@ -58,7 +58,7 @@ export const sidebarSections: SidebarSection[] = [
       { label: "Browser Utilities", href: "/developer-hub/browser-tools" },
       { label: "API Hub", href: "/developer-hub/api-tools" },
       { label: "Roadmaps", comingSoon: true },
-      { label: "Documentation", comingSoon: true },
+      { label: "Documentation", href: "/developer-hub/documentation" },
     ],
   },
   {

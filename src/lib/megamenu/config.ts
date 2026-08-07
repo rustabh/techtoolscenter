@@ -192,7 +192,7 @@ export const developerHubMenu: MegaMenuConfig = {
       groups: [{ items: [
         { label: "Playgrounds", href: "/developer-hub/playground" },
         { label: "Roadmaps", comingSoon: true },
-        { label: "Documentation", comingSoon: true },
+        { label: "Documentation", href: "/developer-hub/documentation" },
         { label: "Useful Developer Websites", href: "/developer-hub/learning" },
       ] }],
     },

@@ -102,7 +102,12 @@ export default function DeveloperHubPage() {
       {/* Official Documentation */}
       {documented.length > 0 && (
         <section className="mt-14">
-          <h2 className="mb-5 text-2xl font-bold tracking-tight">Official Documentation</h2>
+          <div className="mb-5 flex items-center justify-between">
+            <h2 className="text-2xl font-bold tracking-tight">Official Documentation</h2>
+            <Link href="/developer-hub/documentation" className="text-sm font-medium text-primary hover:underline">
+              View all →
+            </Link>
+          </div>
           <div className="flex flex-wrap gap-2">
             {documented.map((r) => (
               <a
