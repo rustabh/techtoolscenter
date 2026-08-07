@@ -10,24 +10,7 @@ import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
 import { FileDropzone } from "@/components/tools/file-dropzone";
-
-function parseRange(input: string, max: number): Set<number> {
-  const set = new Set<number>();
-  const trimmed = input.trim();
-  if (!trimmed) return set;
-  for (const part of trimmed.split(",")) {
-    const p = part.trim();
-    if (!p) continue;
-    if (p.includes("-")) {
-      const [a, b] = p.split("-").map((n) => parseInt(n, 10));
-      for (let i = a; i <= b; i++) if (i >= 1 && i <= max) set.add(i);
-    } else {
-      const n = parseInt(p, 10);
-      if (n >= 1 && n <= max) set.add(n);
-    }
-  }
-  return set;
-}
+import { parsePageRange } from "@/lib/pdf-page-range";
 
 export default function PdfPageRotator() {
   const [file, setFile] = useState<File | null>(null);
@@ -51,7 +34,7 @@ export default function PdfPageRotator() {
 
   const rotate = async () => {
     if (!file) return;
-    const targets = scope === "all" ? new Set(Array.from({ length: pageCount }, (_, i) => i + 1)) : parseRange(range, pageCount);
+    const targets = scope === "all" ? new Set(Array.from({ length: pageCount }, (_, i) => i + 1)) : new Set(parsePageRange(range, pageCount));
     if (targets.size === 0) {
       showToast("No valid pages selected — check the page numbers", "error");
       return;

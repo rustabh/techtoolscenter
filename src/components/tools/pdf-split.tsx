@@ -10,22 +10,7 @@ import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
 import { FileDropzone } from "@/components/tools/file-dropzone";
-
-function parseRange(input: string, max: number): number[] {
-  const set = new Set<number>();
-  for (const part of input.split(",")) {
-    const trimmed = part.trim();
-    if (!trimmed) continue;
-    if (trimmed.includes("-")) {
-      const [a, b] = trimmed.split("-").map((n) => parseInt(n, 10));
-      for (let i = a; i <= b; i++) if (i >= 1 && i <= max) set.add(i);
-    } else {
-      const n = parseInt(trimmed, 10);
-      if (n >= 1 && n <= max) set.add(n);
-    }
-  }
-  return [...set].sort((a, b) => a - b);
-}
+import { parsePageRange } from "@/lib/pdf-page-range";
 
 export default function PdfSplit() {
   const [file, setFile] = useState<File | null>(null);
@@ -47,7 +32,7 @@ export default function PdfSplit() {
 
   const split = async () => {
     if (!file) return;
-    const pages = parseRange(range, pageCount);
+    const pages = parsePageRange(range, pageCount);
     if (pages.length === 0) {
       showToast("No valid pages in that range — check the page numbers", "error");
       return;

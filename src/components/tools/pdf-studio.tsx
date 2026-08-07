@@ -9,6 +9,7 @@ import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
+import { parsePageRange } from "@/lib/pdf-page-range";
 import PdfCompress from "./pdf-compress";
 
 type Tab = "merge" | "split" | "compress" | "rotate" | "organize" | "watermark" | "numbers" | "headerfooter" | "sign" | "img2pdf" | "batch" | "advanced";
@@ -23,16 +24,6 @@ async function loadPdf(file: File) {
   const { PDFDocument } = await import("pdf-lib");
   return PDFDocument.load(await file.arrayBuffer());
 }
-function parseRange(input: string, max: number): number[] {
-  const set = new Set<number>();
-  for (const part of input.split(",")) {
-    const t = part.trim(); if (!t) continue;
-    if (t.includes("-")) { const [a, b] = t.split("-").map((n) => parseInt(n, 10)); for (let i = a; i <= b; i++) if (i >= 1 && i <= max) set.add(i); }
-    else { const n = parseInt(t, 10); if (n >= 1 && n <= max) set.add(n); }
-  }
-  return [...set].sort((a, b) => a - b);
-}
-
 export default function PdfStudio() {
   const [tab, setTab] = useState<Tab>("merge");
   return (
@@ -46,7 +37,7 @@ export default function PdfStudio() {
       {tab === "split" && <SingleFileTab title="Split — extract pages"
         action={async (file, opts) => {
           const src = await loadPdf(file); const { PDFDocument } = await import("pdf-lib");
-          const pages = parseRange(opts.range, src.getPageCount());
+          const pages = parsePageRange(opts.range, src.getPageCount());
           if (!pages.length) throw new Error("No valid pages selected.");
           const out = await PDFDocument.create();
           (await out.copyPages(src, pages.map((p) => p - 1))).forEach((p) => out.addPage(p));
@@ -61,7 +52,7 @@ export default function PdfStudio() {
       }} fields={[{ key: "deg", label: "Rotate by", def: "90", options: ["90", "180", "270"] }]} name="rotated.pdf" />}
       {tab === "organize" && <SingleFileTab title="Delete pages" action={async (file, opts) => {
         const src = await loadPdf(file); const { PDFDocument } = await import("pdf-lib");
-        const total = src.getPageCount(); const remove = new Set(parseRange(opts.range, total));
+        const total = src.getPageCount(); const remove = new Set(parsePageRange(opts.range, total));
         const keep = Array.from({ length: total }, (_, i) => i + 1).filter((p) => !remove.has(p));
         if (!keep.length) throw new Error("Cannot delete all pages.");
         const out = await PDFDocument.create();
