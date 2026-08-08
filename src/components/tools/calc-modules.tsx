@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, localDateISO } from "@/lib/utils";
 
 function Result({ label, value, big }: { label: string; value: string; big?: boolean }) {
   const { copied, copy } = useCopy();
@@ -181,7 +181,7 @@ export function BodyFatCalc() {
 
 /* ---------- Date Difference ---------- */
 export function DateDiffCalc() {
-  const [from, setFrom] = useState("2020-01-01"), [to, setTo] = useState(new Date().toISOString().slice(0, 10));
+  const [from, setFrom] = useState("2020-01-01"), [to, setTo] = useState(localDateISO());
   const d = useMemo(() => {
     const a = new Date(from), b = new Date(to);
     if (isNaN(a.getTime()) || isNaN(b.getTime())) return null;

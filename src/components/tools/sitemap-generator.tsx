@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { downloadBlob } from "@/lib/utils";
+import { downloadBlob, localDateISO } from "@/lib/utils";
 
 interface SitemapUrl {
   id: string;
@@ -35,7 +35,7 @@ function escapeXml(s: string) {
 
 export default function SitemapGenerator() {
   const { value, set } = useLocalStorage<SitemapUrl[]>("uh:sitemap-generator", initial());
-  const [today] = useState(() => new Date().toISOString().slice(0, 10));
+  const [today] = useState(() => localDateISO());
   const { copied, copy } = useCopy();
 
   const xml = useMemo(() => {

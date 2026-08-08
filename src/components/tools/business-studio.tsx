@@ -11,7 +11,7 @@ import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
 import { showToast } from "@/components/ui/toaster";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, localDateISO } from "@/lib/utils";
 import { saveItem } from "@/lib/saved";
 import { newItem, subtotal, type LineItem, type Party } from "./doc-types";
 
@@ -126,8 +126,8 @@ function initial(kind: DocKind = "invoice"): BizState {
     kind,
     templateId: "indigo-classic",
     number: autoNumber(prefix),
-    date: new Date().toISOString().slice(0, 10),
-    dueDate: new Date(Date.now() + 12096e5).toISOString().slice(0, 10),
+    date: localDateISO(),
+    dueDate: localDateISO(new Date(Date.now() + 12096e5)),
     currency: "INR",
     company: { ...emptyParty, name: "Your Company" },
     customer: { ...emptyParty },
@@ -256,7 +256,7 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
     });
   };
 
-  const duplicate = () => patch({ number: autoNumber(kind.prefix), date: new Date().toISOString().slice(0, 10) });
+  const duplicate = () => patch({ number: autoNumber(kind.prefix), date: localDateISO() });
 
   /* ---------------- PDF export ---------------- */
   const downloadPdf = async () => {

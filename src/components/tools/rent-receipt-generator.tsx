@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { ActionBar } from "@/components/tools/action-bar";
-import { formatCurrency, slugify } from "@/lib/utils";
+import { formatCurrency, slugify, localDateISO } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
 
 type PaymentMode = "Cash" | "Cheque" | "Bank Transfer" | "UPI";
@@ -30,17 +30,17 @@ interface RentReceiptState {
 const PAYMENT_MODES: PaymentMode[] = ["Cash", "Cheque", "Bank Transfer", "UPI"];
 
 function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
+  return localDateISO();
 }
 
 function monthStartIso(): string {
   const d = new Date();
-  return new Date(d.getFullYear(), d.getMonth(), 1).toISOString().slice(0, 10);
+  return localDateISO(new Date(d.getFullYear(), d.getMonth(), 1));
 }
 
 function monthEndIso(): string {
   const d = new Date();
-  return new Date(d.getFullYear(), d.getMonth() + 1, 0).toISOString().slice(0, 10);
+  return localDateISO(new Date(d.getFullYear(), d.getMonth() + 1, 0));
 }
 
 function initial(): RentReceiptState {
