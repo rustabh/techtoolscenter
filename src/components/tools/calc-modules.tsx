@@ -241,9 +241,14 @@ const ROMAN: [number, string][] = [[1000, "M"], [900, "CM"], [500, "D"], [400, "
 function toRoman(num: number) { let r = ""; for (const [v, s] of ROMAN) while (num >= v) { r += s; num -= v; } return r || "—"; }
 function fromRoman(s: string) {
   const map: Record<string, number> = { I: 1, V: 5, X: 10, L: 50, C: 100, D: 500, M: 1000 };
-  let n = 0; const t = s.toUpperCase();
-  for (let i = 0; i < t.length; i++) { const c = map[t[i]]; if (!c) return NaN; const nx = map[t[i + 1]]; n += nx > c ? -c : c; }
-  return n;
+  const t = s.toUpperCase();
+  if (!t || !/^[IVXLCDM]+$/.test(t)) return NaN;
+  let n = 0;
+  for (let i = 0; i < t.length; i++) { const c = map[t[i]]; const nx = map[t[i + 1]]; n += nx > c ? -c : c; }
+  // Decoding alone accepts malformed sequences (e.g. "IC" -> 99, which isn't valid
+  // notation at all — 99 is "XCIX"). A well-formed numeral round-trips exactly
+  // through re-encoding, so use that as the validity check.
+  return n >= 1 && n <= 3999 && toRoman(n) === t ? n : NaN;
 }
 export function RomanCalc() {
   const [num, setNum] = useState("2026"), [rom, setRom] = useState("");
@@ -256,7 +261,7 @@ export function RomanCalc() {
     </CardContent></Card>
     <Card><CardHeader><CardTitle>Roman → Number</CardTitle></CardHeader><CardContent className="space-y-4">
       <Field label="Roman numeral" value={rom} onChange={(v) => setRom(v)} type="text" />
-      <Result label="Number" value={isNaN(decoded) ? "—" : String(decoded)} big />
+      <Result label="Number" value={!rom ? "—" : isNaN(decoded) ? "Invalid Roman numeral" : String(decoded)} big />
     </CardContent></Card>
   </div>;
 }
