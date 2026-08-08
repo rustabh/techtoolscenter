@@ -8,7 +8,7 @@ import type { IndiaService } from "@/lib/india/types";
 import { lookupGlossaryTerm } from "./glossary";
 import { lookupKnowledge } from "./knowledge";
 import { searchCatalog } from "./catalog";
-import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow } from "./workflows";
+import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow, itrFilingWorkflow, loanPrepWorkflow } from "./workflows";
 
 function toolLink(slug: string): LinkItem | null {
   const t = getTool(slug);
@@ -642,6 +642,18 @@ const fastPaths: FastPath[] = [
         difficulty: "Beginner",
         actions: [{ label: "Open Random Team Generator", href: "/tools/random-team-generator", kind: "internal" }],
       }),
+  },
+  {
+    id: "itr-filing-workflow",
+    intent: "workflow",
+    test: (q) => /\bitr\b/.test(q) || (/income\s*tax/.test(q) && /(file|filing|return)/.test(q)),
+    build: () => withIntent("workflow", itrFilingWorkflow),
+  },
+  {
+    id: "loan-prep-workflow",
+    intent: "workflow",
+    test: (q) => /loan/.test(q) && !/(kisan|kcc|credit\s*card)/.test(q),
+    build: () => withIntent("workflow", loanPrepWorkflow),
   },
 ];
 

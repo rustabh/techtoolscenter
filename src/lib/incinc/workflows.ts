@@ -86,6 +86,67 @@ export const startBusinessWorkflow: AssistantResponse = {
   ],
 };
 
+export const itrFilingWorkflow: AssistantResponse = {
+  summary:
+    "Filing your Income Tax Return goes smoother in this order: confirm your PAN and Aadhaar are linked, decide your tax regime, estimate what you owe, then file — and know how to track your refund afterward.",
+  recommendedTools: [
+    { label: "Income Tax Calculator", href: "/tools/income-tax-calculator", kind: "internal", description: "Estimate your tax liability under both the old and new regime before you file." },
+    { label: "CTC to In-Hand Salary Calculator", href: "/tools/ctc-calculator", kind: "internal", description: "Work out your actual taxable income from your CTC if you're salaried." },
+    { label: "PDF Compress", href: "/tools/pdf-compress", kind: "internal", description: "Shrink Form 16, bank statements and other documents before uploading them." },
+  ],
+  workflow: [
+    { label: "Check PAN–Aadhaar link status", href: "/india-services/identity-documents/pan-aadhaar-link", kind: "internal", description: "Required before you can e-file" },
+    { label: "Old vs New Tax Regime", href: "/blog/old-vs-new-tax-regime-which-to-choose", kind: "internal", description: "Decide which regime is cheaper for you" },
+    { label: "Income Tax Calculator", href: "/tools/income-tax-calculator", kind: "internal", description: "Estimate your exact liability" },
+    { label: "India Hub: ITR Filing Guide", href: "/india-services/business-tax/itr-filing", kind: "internal", description: "Documents, deadlines and the official e-filing steps" },
+    { label: "Check ITR Refund Status", href: "/blog/how-to-check-income-tax-refund-status-online", kind: "internal", description: "Once filed, track your refund here" },
+  ],
+  relatedBlogs: [
+    { label: "Old vs New Tax Regime: Which to Choose", href: "/blog/old-vs-new-tax-regime-which-to-choose", kind: "internal" },
+    { label: "How to Check Income Tax Refund Status Online", href: "/blog/how-to-check-income-tax-refund-status-online", kind: "internal" },
+  ],
+  officialResources: [
+    { label: "Income Tax e-Filing Portal (official)", href: "https://www.incometax.gov.in", kind: "external" },
+  ],
+  estimatedTime: "30-60 minutes if your documents are ready",
+  difficulty: "Intermediate",
+  nextStep: "Start by confirming your PAN and Aadhaar are linked — e-filing is blocked without it.",
+  actions: [
+    { label: "Open Income Tax Calculator", href: "/tools/income-tax-calculator", kind: "internal" },
+    { label: "Read ITR Filing Guide", href: "/india-services/business-tax/itr-filing", kind: "internal" },
+  ],
+};
+
+export const loanPrepWorkflow: AssistantResponse = {
+  summary:
+    "Before you apply for a home or personal loan, checking these numbers yourself avoids surprises — your credit score, what the EMI actually costs you, and what you can realistically afford from your take-home pay.",
+  recommendedTools: [
+    { label: "EMI Calculator", href: "/tools/emi-calculator", kind: "internal", description: "See the monthly EMI, total interest and full amortization schedule for any loan amount, rate and tenure." },
+    { label: "CTC to In-Hand Salary Calculator", href: "/tools/ctc-calculator", kind: "internal", description: "Know your real monthly take-home before committing to an EMI." },
+    { label: "Number to Words", href: "/tools/number-to-words", kind: "internal", description: "Get the loan amount correctly written out in words for the agreement paperwork." },
+    { label: "PDF Compress", href: "/tools/pdf-compress", kind: "internal", description: "Shrink salary slips, bank statements and ID proofs before uploading." },
+  ],
+  workflow: [
+    { label: "Check your credit score", href: "/india-services/banking/cibil-score", kind: "internal", description: "Most lenders check this first — know it before they do" },
+    { label: "EMI Calculator", href: "/tools/emi-calculator", kind: "internal", description: "Compare EMI across different amounts, rates and tenures" },
+    { label: "CTC to In-Hand Salary Calculator", href: "/tools/ctc-calculator", kind: "internal", description: "Confirm the EMI fits comfortably in your actual take-home pay" },
+    { label: "Prepare documents", href: "/tools/pdf-compress", kind: "internal", description: "Compress salary slips, bank statements and ID proofs" },
+    { label: "Number to Words", href: "/tools/number-to-words", kind: "internal", description: "Cross-check the amount in words on the loan agreement" },
+  ],
+  relatedBlogs: [
+    { label: "How to Check Your CIBIL Credit Score for Free", href: "/blog/how-to-check-cibil-credit-score-free", kind: "internal" },
+    { label: "How to Calculate Your In-Hand Salary From CTC", href: "/blog/how-to-calculate-in-hand-salary-from-ctc", kind: "internal" },
+  ],
+  officialResources: [],
+  estimatedTime: "15-20 minutes to run the numbers before you apply",
+  difficulty: "Beginner",
+  nextStep: "Start with your credit score — a low score changes the interest rate you'll actually be offered, which changes every other number.",
+  actions: [
+    { label: "Open EMI Calculator", href: "/tools/emi-calculator", kind: "internal" },
+    { label: "Read CIBIL Score Guide", href: "/india-services/banking/cibil-score", kind: "internal" },
+  ],
+};
+
 export const saasStackWorkflow: AssistantResponse = {
   summary:
     "For a modern SaaS built fast by a small team, this stack covers the frontend, database/auth, hosting, payments and an AI coding workflow.",
