@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/hooks/use-copy";
+import { localDatetimeISO } from "@/lib/utils";
 import { Copy, Check } from "lucide-react";
 
 interface CountdownState {
@@ -17,7 +18,7 @@ interface CountdownState {
 function defaultTarget() {
   const d = new Date();
   d.setDate(d.getDate() + 7);
-  return d.toISOString().slice(0, 16);
+  return localDatetimeISO(d).slice(0, 16);
 }
 
 function diff(target: Date, now: Date) {

@@ -5,11 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { localDatetimeISO } from "@/lib/utils";
 
 export default function TimestampConverter() {
   const [now, setNow] = useState(Math.floor(Date.now() / 1000));
   const [ts, setTs] = useState(String(Math.floor(Date.now() / 1000)));
-  const [dt, setDt] = useState(new Date().toISOString().slice(0, 19));
+  const [dt, setDt] = useState(() => localDatetimeISO());
 
   useEffect(() => {
     const id = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);

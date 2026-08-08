@@ -47,6 +47,16 @@ export function localDateISO(date: Date = new Date()): string {
   return `${y}-${m}-${d}`;
 }
 
+/** The device's local date and time formatted for an `<input type="datetime-local">`
+ *  (YYYY-MM-DDTHH:mm:ss). Unlike `toISOString().slice(0, 19)` (which is UTC-based),
+ *  this matches what the user's own clock shows — a datetime-local input's value is
+ *  defined to be local time with no timezone offset, so formatting it from UTC is
+ *  wrong by the full UTC offset (e.g. 5:30 hours for IST) at every hour of the day. */
+export function localDatetimeISO(date: Date = new Date()): string {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${localDateISO(date)}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+}
+
 export function slugify(input: string) {
   return input
     .toLowerCase()
