@@ -109,7 +109,7 @@ export const sidebarSections: SidebarSection[] = [
     icon: "BookOpen",
     items: [
       { label: "Blog", href: "/blog" },
-      { label: "Learning Center", comingSoon: true },
+      { label: "Learning Center", href: "/learning-center" },
       { label: "Tutorials", href: "/developer-hub/learning" },
       { label: "Tech News", href: "/updates" },
     ],
