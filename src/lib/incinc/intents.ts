@@ -417,6 +417,232 @@ const fastPaths: FastPath[] = [
         actions: [{ label: "Open Barcode Generator", href: "/tools/barcode-generator", kind: "internal" }],
       }),
   },
+  {
+    id: "watermark-pdf",
+    intent: "tool",
+    test: (q) => /pdf/.test(q) && /watermark/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Stamp a text watermark — tiled, centered or in a corner — across every page of a PDF, with control over opacity, rotation and color.",
+        recommendedTools: compact([toolLink("pdf-watermark")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open PDF Watermark", href: "/tools/pdf-watermark", kind: "internal" }],
+      }),
+  },
+  {
+    id: "rotate-pdf",
+    intent: "tool",
+    test: (q) => /pdf/.test(q) && /rotat/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Fix a sideways or upside-down PDF — rotate all pages or just a specific range by 90°, 180° or 270°.",
+        recommendedTools: compact([toolLink("pdf-page-rotator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "30 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open PDF Page Rotator", href: "/tools/pdf-page-rotator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "pdf-page-numbers",
+    intent: "tool",
+    test: (q) => /pdf/.test(q) && /page\s*number/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Add page numbers to a PDF — pick the position, format (like \"1 of 10\"), and a custom starting number.",
+        recommendedTools: compact([toolLink("pdf-page-numbers")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open PDF Page Numbers", href: "/tools/pdf-page-numbers", kind: "internal" }],
+      }),
+  },
+  {
+    id: "markdown-to-pdf",
+    intent: "tool",
+    test: (q) => /markdown/.test(q) && /pdf/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Convert Markdown — headings, lists, code blocks — into a clean, paginated A4 PDF.",
+        recommendedTools: compact([toolLink("markdown-to-pdf"), toolLink("markdown-converter")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "30 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Markdown to PDF", href: "/tools/markdown-to-pdf", kind: "internal" }],
+      }),
+  },
+  {
+    id: "watermark-image",
+    intent: "tool",
+    test: (q) => /watermark/.test(q) && !/pdf/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Add a tiled or positioned text watermark to a photo — set opacity, rotation and color, then download.",
+        recommendedTools: compact([toolLink("image-watermark")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Image Watermark", href: "/tools/image-watermark", kind: "internal" }],
+      }),
+  },
+  {
+    id: "meme-generator",
+    intent: "tool",
+    test: (q) => /meme/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Upload any image and add classic top/bottom Impact-style captions — download as a PNG, no watermark.",
+        recommendedTools: compact([toolLink("meme-generator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Meme Generator", href: "/tools/meme-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "speech-to-text",
+    intent: "tool",
+    test: (q) => /dictat/.test(q) || (/(speech|voice|talk)/.test(q) && /(text|transcri)/.test(q)),
+    build: () =>
+      withIntent("tool", {
+        summary: "Dictate into your microphone and get a live text transcript — supports English (India/US/UK) and Hindi.",
+        recommendedTools: compact([toolLink("speech-to-text")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Speech to Text", href: "/tools/speech-to-text", kind: "internal" }],
+      }),
+  },
+  {
+    id: "voice-recorder",
+    intent: "tool",
+    test: (q) => /record/.test(q) && /(voice|audio|myself|mic)/.test(q) && !/(text|transcri)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Record a quick voice memo or clip from your microphone, play it back, then download — no app needed.",
+        recommendedTools: compact([toolLink("voice-recorder")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Voice Recorder", href: "/tools/voice-recorder", kind: "internal" }],
+      }),
+  },
+  {
+    id: "signature-maker",
+    intent: "tool",
+    test: (q) => /signature/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Draw a signature with your mouse or finger, or type your name in a cursive style — download as a transparent PNG.",
+        recommendedTools: compact([toolLink("signature-maker")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "30 seconds",
+        difficulty: "Beginner",
+        nextStep: "This makes a signature image for informal use — for legally binding e-signatures, use a certified provider.",
+        actions: [{ label: "Open Signature Maker", href: "/tools/signature-maker", kind: "internal" }],
+      }),
+  },
+  {
+    id: "typing-speed-test",
+    intent: "tool",
+    test: (q) => (/typing/.test(q) && /(speed|test)/.test(q)) || /\bwpm\b/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Type a passage and see your live words-per-minute (WPM) and accuracy, with character-by-character highlighting.",
+        recommendedTools: compact([toolLink("typing-speed-test")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Typing Speed Test", href: "/tools/typing-speed-test", kind: "internal" }],
+      }),
+  },
+  {
+    id: "countdown-timer",
+    intent: "tool",
+    test: (q) => /countdown/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Set a live countdown to any date and time — an exam, launch or festival — with a shareable link.",
+        recommendedTools: compact([toolLink("countdown-timer")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "30 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Countdown Timer", href: "/tools/countdown-timer", kind: "internal" }],
+      }),
+  },
+  {
+    id: "number-to-words",
+    intent: "tool",
+    test: (q) => /(number|amount|cheque|check).*words/.test(q) || /words.*(number|amount)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Convert a number into words using the Indian numbering system (Lakh, Crore) — with a Rupees & Paise mode built for cheques.",
+        recommendedTools: compact([toolLink("number-to-words")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "10 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Number to Words", href: "/tools/number-to-words", kind: "internal" }],
+      }),
+  },
+  {
+    id: "ascii-art",
+    intent: "tool",
+    test: (q) => /ascii/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Turn any image into text-character ASCII art — adjustable width, three character sets, and an invert option.",
+        recommendedTools: compact([toolLink("image-to-ascii-art")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "30 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Image to ASCII Art", href: "/tools/image-to-ascii-art", kind: "internal" }],
+      }),
+  },
+  {
+    id: "color-blindness-simulator",
+    intent: "tool",
+    test: (q) => /colou?r\s*blind/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Preview an image as someone with protanopia, deuteranopia, tritanopia or achromatopsia might see it — useful for checking your designs stay accessible.",
+        recommendedTools: compact([toolLink("color-blindness-simulator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Color Blindness Simulator", href: "/tools/color-blindness-simulator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "random-team-generator",
+    intent: "tool",
+    test: (q) => /(random|split|divide).*(team|group)/.test(q) || /(team|group).*(random|generator)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Paste a list of names and get a fair, shuffled split into any number of teams — great for classrooms, office games or sports days.",
+        recommendedTools: compact([toolLink("random-team-generator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "30 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Random Team Generator", href: "/tools/random-team-generator", kind: "internal" }],
+      }),
+  },
 ];
 
 // ---------------------------------------------------------------------------
