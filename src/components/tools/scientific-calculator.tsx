@@ -18,15 +18,19 @@ function evaluate(expr: string): string {
   try {
     const js = expr
       .replace(/π/g, "Math.PI").replace(/(?<![a-z])e(?![a-z])/g, "Math.E")
-      .replace(/sin\(/g, "Math.sin(rad").replace(/cos\(/g, "Math.cos(rad").replace(/tan\(/g, "Math.tan(rad")
-      .replace(/asin\(/g, "deg(Math.asin(").replace(/acos\(/g, "deg(Math.acos(").replace(/atan\(/g, "deg(Math.atan(")
+      .replace(/asin\(/g, "asinD(").replace(/acos\(/g, "acosD(").replace(/atan\(/g, "atanD(")
+      .replace(/sin\(/g, "sinD(").replace(/cos\(/g, "cosD(").replace(/tan\(/g, "tanD(")
       .replace(/√\(/g, "Math.sqrt(").replace(/log\(/g, "Math.log10(").replace(/ln\(/g, "Math.log(")
       .replace(/\^/g, "**").replace(/×/g, "*").replace(/÷/g, "/").replace(/%/g, "/100");
     // eslint-disable-next-line no-new-func
-    const fn = new Function("rad", "deg", `return ${js || 0}`);
-    const rad = (x: number) => (x * Math.PI) / 180;
-    const deg = (x: number) => (x * 180) / Math.PI;
-    const out = fn((x: number) => rad(x), deg);
+    const fn = new Function("sinD", "cosD", "tanD", "asinD", "acosD", "atanD", `return ${js || 0}`);
+    const sinD = (x: number) => Math.sin((x * Math.PI) / 180);
+    const cosD = (x: number) => Math.cos((x * Math.PI) / 180);
+    const tanD = (x: number) => Math.tan((x * Math.PI) / 180);
+    const asinD = (x: number) => (Math.asin(x) * 180) / Math.PI;
+    const acosD = (x: number) => (Math.acos(x) * 180) / Math.PI;
+    const atanD = (x: number) => (Math.atan(x) * 180) / Math.PI;
+    const out = fn(sinD, cosD, tanD, asinD, acosD, atanD);
     if (typeof out !== "number" || !isFinite(out)) return "Error";
     return String(Math.round(out * 1e10) / 1e10);
   } catch {
