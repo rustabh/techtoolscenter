@@ -61,10 +61,16 @@ export default function PasswordGenerator() {
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [generate]);
 
-  const activeSets = (Object.keys(opts) as SetKey[]).filter((k) => opts[k]).length;
-  const strength = Math.min(100, Math.round((length / 24) * 60 + activeSets * 10));
-  const strengthLabel = strength > 80 ? "Very strong" : strength > 60 ? "Strong" : strength > 40 ? "Fair" : "Weak";
-  const strengthColor = strength > 80 ? "bg-emerald-500" : strength > 60 ? "bg-lime-500" : strength > 40 ? "bg-amber-500" : "bg-red-500";
+  // Real password strength is about entropy (bits), not "how many character
+  // sets are ticked" — a short password with every set enabled is still
+  // brute-forceable in seconds, while a long password from one set alone can
+  // be genuinely strong. bits = length * log2(pool size) is the standard
+  // measure; thresholds below follow common entropy-based guidance.
+  const poolSize = (Object.keys(opts) as SetKey[]).filter((k) => opts[k]).reduce((sum, k) => sum + SETS[k].length, 0);
+  const entropyBits = poolSize > 0 ? Math.round(length * Math.log2(poolSize)) : 0;
+  const strength = Math.min(100, Math.round((entropyBits / 80) * 100));
+  const strengthLabel = entropyBits >= 80 ? "Very strong" : entropyBits >= 60 ? "Strong" : entropyBits >= 40 ? "Fair" : "Weak";
+  const strengthColor = entropyBits >= 80 ? "bg-emerald-500" : entropyBits >= 60 ? "bg-lime-500" : entropyBits >= 40 ? "bg-amber-500" : "bg-red-500";
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -114,7 +120,7 @@ export default function PasswordGenerator() {
           <div className="space-y-1.5">
             <div className="flex items-center justify-between text-xs">
               <span className="text-muted-foreground">Strength</span>
-              <span className="font-medium">{strengthLabel}</span>
+              <span className="font-medium">{strengthLabel} · {entropyBits} bits</span>
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-secondary" role="progressbar" aria-valuenow={strength} aria-valuemin={0} aria-valuemax={100} aria-label="Password strength">
               <div className={`h-full transition-all ${strengthColor}`} style={{ width: `${strength}%` }} />
