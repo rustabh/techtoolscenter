@@ -6,8 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 function lum(hex: string) {
-  const m = hex.replace("#", "").padEnd(6, "0").slice(0, 6);
-  const rgb = [0, 2, 4].map((i) => parseInt(m.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
+  let h = hex.replace("#", "");
+  // 3-digit shorthand (e.g. "fff") expands by doubling each digit ("ffffff"),
+  // not by padding — padding alone silently drops the blue channel entirely.
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  h = h.padEnd(6, "0").slice(0, 6);
+  const rgb = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((c) => (c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)));
   return 0.2126 * rgb[0] + 0.7152 * rgb[1] + 0.0722 * rgb[2];
 }
 
