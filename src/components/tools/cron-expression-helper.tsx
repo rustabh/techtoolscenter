@@ -19,21 +19,27 @@ const PRESETS: { label: string; expr: string }[] = [
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+function describeDow(dow: string): string {
+  const range = dow.match(/^(\d)-(\d)$/);
+  if (range) return `${DAYS[Number(range[1])]}–${DAYS[Number(range[2])]}`;
+  if (/^\d$/.test(dow)) return DAYS[Number(dow)];
+  if (/^\d(,\d)+$/.test(dow)) return dow.split(",").map((d) => DAYS[Number(d)]).join(", ");
+  return dow;
+}
+
 function describe(expr: string): string {
   const parts = expr.trim().split(/\s+/);
   if (parts.length !== 5) return "Enter a valid 5-field cron expression.";
   const [min, hour, dom, mon, dow] = parts;
   const bits: string[] = [];
-  if (min === "*") bits.push("every minute");
-  else if (min.startsWith("*/")) bits.push(`every ${min.slice(2)} minutes`);
-  else bits.push(`at minute ${min}`);
-  if (hour !== "*") bits.push(`hour ${hour}`);
-  if (dom !== "*") bits.push(`day-of-month ${dom}`);
-  if (mon !== "*") bits.push(`month ${mon}`);
-  if (dow !== "*") {
-    const d = /^\d$/.test(dow) ? DAYS[Number(dow)] : dow;
-    bits.push(`on ${d}`);
-  }
+  if (min === "*" && hour === "*") bits.push("every minute");
+  else if (min.startsWith("*/") && hour === "*") bits.push(`every ${min.slice(2)} minutes`);
+  else if (hour === "*") bits.push(`at minute ${min} of every hour`);
+  else if (min === "*") bits.push(`every minute during hour ${hour}`);
+  else bits.push(`at ${hour.padStart(2, "0")}:${min.padStart(2, "0")}`);
+  if (dom !== "*") bits.push(`on day-of-month ${dom}`);
+  if (mon !== "*") bits.push(`in month ${mon}`);
+  if (dow !== "*") bits.push(`on ${describeDow(dow)}`);
   return "Runs " + bits.join(", ") + ".";
 }
 
