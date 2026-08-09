@@ -30,7 +30,7 @@ const CATS: Record<string, { base: string; units: Units }> = {
 
 export default function UnitConverter() {
   const [cat, setCat] = useState("Length");
-  const units = Object.keys(CATS[cat].units);
+  const units = cat === "Temperature" ? [] : Object.keys(CATS[cat].units);
   const [from, setFrom] = useState(units[0]);
   const [to, setTo] = useState(units[2] ?? units[1]);
   const [val, setVal] = useState("1");
