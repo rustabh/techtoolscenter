@@ -260,7 +260,7 @@ export const indiaHubMenu: MegaMenuConfig = {
       title: "More",
       icon: "Landmark",
       groups: [{ items: [
-        { label: "Property", comingSoon: true },
+        { label: "Property Records", href: "/india-services/certificates/property-encumbrance-certificate" },
         { label: "Utility Services", href: "/india-services/utilities" },
         { label: "Government Updates", href: "/updates/category/government" },
         { label: "Official Websites", href: "/india-services/official-websites" },
