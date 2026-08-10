@@ -103,6 +103,7 @@ const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> 
   "passport-photo-maker": dynamic(() => import("./passport-photo-maker"), { loading: ToolSkeleton, ssr: false }),
   "image-to-pdf": dynamic(() => import("./image-to-pdf"), { loading: ToolSkeleton, ssr: false }),
   "pdf-to-jpg": dynamic(() => import("./pdf-to-jpg"), { loading: ToolSkeleton, ssr: false }),
+  "pdf-to-excel": dynamic(() => import("./pdf-to-excel"), { loading: ToolSkeleton, ssr: false }),
   "markdown-converter": dynamic(() => import("./markdown-converter"), { loading: ToolSkeleton, ssr: false }),
   "csv-json-converter": dynamic(() => import("./csv-json-converter"), { loading: ToolSkeleton, ssr: false }),
   "flexbox-generator": dynamic(() => import("./flexbox-generator"), { loading: ToolSkeleton, ssr: false }),
