@@ -59,7 +59,7 @@ export const toolsMenu: MegaMenuConfig = {
         { label: "Calculators", href: "/category/calculators" },
         { label: "Creative", href: "/category/creative" },
         { label: "Business", href: "/category/business" },
-        { label: "Security", comingSoon: true },
+        { label: "Security", href: "/collections/security-studio" },
         { label: "Developer", href: "/category/developer" },
         { label: "Utilities", href: "/category/everyday" },
       ] }],

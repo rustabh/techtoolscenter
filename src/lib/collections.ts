@@ -23,6 +23,7 @@ export const collections: Collection[] = [
   { id: "developer-studio", slug: "developer-studio", name: "Developer Studio", description: "Encoders, formatters, generators and everyday dev utilities.", icon: "Code2" },
   { id: "ai-studio", slug: "ai-studio", name: "AI Studio", description: "Smart generators for prompts, emails, content and more.", icon: "Bot" },
   { id: "seo-studio", slug: "seo-studio", name: "SEO Studio", description: "Meta tags, schema, SERP previews and on-page SEO helpers.", icon: "Rocket" },
+  { id: "security-studio", slug: "security-studio", name: "Security Studio", description: "Passwords, hashes, tokens and encoding — all processed privately in your browser.", icon: "ShieldCheck" },
 ];
 
 const CATEGORY_COLLECTION: Record<ToolCategory, string> = {
@@ -50,7 +51,11 @@ const OVERRIDES: Record<string, string> = {
   "unit-converter": "converter-hub",
   "color-converter": "converter-hub",
   "random-number-generator": "everyday-essentials",
-  "password-generator": "everyday-essentials",
+  "password-generator": "security-studio",
+  "hash-generator": "security-studio",
+  "jwt-decoder": "security-studio",
+  "base64-encoder": "security-studio",
+  "uuid-generator": "security-studio",
 };
 
 export function collectionOf(tool: Tool): string {
