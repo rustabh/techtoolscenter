@@ -1465,13 +1465,14 @@ export const tools: Tool[] = [
     name: "PDF to Excel Converter",
     description: "Convert a PDF's tables into a real, downloadable Excel (.xlsx) file.",
     longDescription:
-      "Reads the text layer of your PDF and detects table columns from spacing — great for bank statements, invoices and structured reports. Preview the detected rows per page, then download a real .xlsx workbook (one sheet per page) or a .csv for a single page. Scanned/image-only PDFs aren't supported (that needs OCR).",
+      "Reads the text layer of your PDF and detects table columns from spacing — great for bank statements, invoices and structured reports. If the PDF is password-protected (common for Indian bank statements), you'll be prompted to unlock it, checked entirely in your browser. Preview the detected rows per page, then download a real .xlsx workbook (one sheet per page) or a .csv for a single page. Scanned/image-only PDFs aren't supported (that needs OCR).",
     category: "Documents",
     icon: "FileSpreadsheet",
-    keywords: ["pdf to excel", "pdf to xlsx", "convert pdf to excel online", "bank statement pdf to excel", "pdf table to excel", "extract table from pdf"],
+    keywords: ["pdf to excel", "pdf to xlsx", "convert pdf to excel online", "bank statement pdf to excel", "password protected pdf to excel", "pdf table to excel", "extract table from pdf"],
     addedOn: "2026-08-10",
     faq: [
       { question: "Does this work on scanned PDFs or photos of documents?", answer: "No — it reads the PDF's real text layer, so it only works on text-based PDFs. Scanned or image-only PDFs need OCR, which isn't supported client-side yet." },
+      { question: "My bank statement PDF is password-protected — will this work?", answer: "Yes — if the PDF needs a password, you'll be prompted to enter it right in the tool. The password is checked entirely in your browser and is never uploaded anywhere." },
       { question: "Will my bank statement's columns line up correctly?", answer: "For most bank statements and invoices with clear column spacing, yes — always check the preview table before downloading, since very irregular layouts may not align perfectly." },
       { question: "Is my PDF uploaded anywhere?", answer: "No. It's read and converted entirely in your browser — nothing is ever uploaded to a server." },
       { question: "Can I get a plain CSV instead of .xlsx?", answer: "Yes — use \"Download this page as .csv\" for the currently previewed page." },

@@ -1,9 +1,10 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { FileSpreadsheet, Loader2, Download, Info } from "lucide-react";
+import { FileSpreadsheet, Loader2, Download, Info, Lock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
 import { buildXlsx } from "@/lib/xlsx-writer";
@@ -75,12 +76,30 @@ function alignColumns(lineCells: RawCell[][]): string[][] {
   });
 }
 
-async function extractTables(file: File, onProgress: (msg: string) => void): Promise<PageRows[]> {
+/** Thrown when a PDF needs a password — distinct from a generic read failure so the UI can prompt instead of just erroring out. */
+export class PdfPasswordError extends Error {
+  incorrect: boolean;
+  constructor(incorrect: boolean) {
+    super(incorrect ? "Incorrect password" : "Password required");
+    this.incorrect = incorrect;
+  }
+}
+
+async function extractTables(file: File, password: string | undefined, onProgress: (msg: string) => void): Promise<PageRows[]> {
   const pdfjs = await import("pdfjs-dist");
   pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
 
   const data = new Uint8Array(await file.arrayBuffer());
-  const doc = await pdfjs.getDocument({ data }).promise;
+  let doc;
+  try {
+    doc = await pdfjs.getDocument({ data, password }).promise;
+  } catch (e) {
+    if (e instanceof Error && e.name === "PasswordException") {
+      const code = (e as Error & { code?: number }).code;
+      throw new PdfPasswordError(code === 2); // pdfjs.PasswordResponses.INCORRECT_PASSWORD === 2
+    }
+    throw e;
+  }
   const pages: PageRows[] = [];
 
   for (let n = 1; n <= doc.numPages; n++) {
@@ -129,6 +148,9 @@ export default function PdfToExcel() {
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState("");
   const [notice, setNotice] = useState<string | null>(null);
+  const [needsPassword, setNeedsPassword] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const baseName = (name: string) => name.replace(/\.pdf$/i, "") || "document";
 
@@ -141,14 +163,20 @@ export default function PdfToExcel() {
     setFile(f);
     setPages([]);
     setActivePage(0);
+    setNeedsPassword(false);
+    setPassword("");
+    setPasswordError(null);
   };
 
-  const convert = async () => {
+  const runConvert = async (pw: string | undefined) => {
     if (!file) return;
     setBusy(true);
     setPages([]);
+    setNotice(null);
     try {
-      const result = await extractTables(file, setProgress);
+      const result = await extractTables(file, pw, setProgress);
+      setNeedsPassword(false);
+      setPasswordError(null);
       const nonEmpty = result.filter((p) => p.rows.length > 0);
       setPages(result);
       setActivePage(0);
@@ -157,13 +185,21 @@ export default function PdfToExcel() {
       } else {
         showToast(`Extracted ${nonEmpty.reduce((n, p) => n + p.rows.length, 0)} rows across ${nonEmpty.length} page(s)`);
       }
-    } catch {
-      showToast("Couldn't read this PDF — it may be corrupted or password-protected", "error");
+    } catch (e) {
+      if (e instanceof PdfPasswordError) {
+        setNeedsPassword(true);
+        setPasswordError(e.incorrect ? "Incorrect password — try again." : null);
+      } else {
+        showToast("Couldn't read this PDF — it may be corrupted", "error");
+      }
     } finally {
       setBusy(false);
       setProgress("");
     }
   };
+
+  const convert = () => runConvert(undefined);
+  const unlockAndConvert = () => runConvert(password);
 
   const downloadXlsx = async () => {
     if (!file || pages.length === 0) return;
@@ -223,9 +259,38 @@ export default function PdfToExcel() {
       {file && (
         <Card>
           <CardContent className="space-y-4 pt-6">
-            <Button onClick={convert} disabled={busy} className="w-full">
-              {busy ? <><Loader2 className="size-4 animate-spin" /> {progress || "Converting…"}</> : "Convert to Excel"}
-            </Button>
+            {needsPassword ? (
+              <div className="space-y-2 rounded-xl border border-border p-4">
+                <p className="flex items-center gap-2 text-sm font-medium">
+                  <Lock className="size-4 text-primary" /> This PDF is password-protected
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && !busy && password && unlockAndConvert()}
+                    placeholder="Enter the PDF's password"
+                    className="flex-1"
+                    aria-label="PDF password"
+                    autoFocus
+                  />
+                  <Button onClick={unlockAndConvert} disabled={busy || !password}>
+                    {busy ? <><Loader2 className="size-4 animate-spin" /> {progress || "Unlocking…"}</> : "Unlock & Convert"}
+                  </Button>
+                </div>
+                {passwordError && <p className="text-xs text-destructive">{passwordError}</p>}
+                <p className="text-xs text-muted-foreground">
+                  Checked entirely in your browser — the password and file are never sent anywhere. Bank statement
+                  PDFs are often password-protected with a PAN, account number or date of birth — check the email or
+                  message that sent you the file for the exact format.
+                </p>
+              </div>
+            ) : (
+              <Button onClick={convert} disabled={busy} className="w-full">
+                {busy ? <><Loader2 className="size-4 animate-spin" /> {progress || "Converting…"}</> : "Convert to Excel"}
+              </Button>
+            )}
 
             {pages.length > 0 && (
               <>
