@@ -111,8 +111,8 @@ export function PwaProvider() {
 
                 {mode === "ios" ? (
                   <ol className="mt-2 space-y-1.5 text-xs text-muted-foreground">
-                    <li className="flex items-center gap-1.5">1. Tap the <Share className="size-3.5 text-primary" /> Share button in Safari</li>
-                    <li className="flex items-center gap-1.5">2. Choose <PlusSquare className="size-3.5 text-primary" /> “Add to Home Screen”</li>
+                    <li className="flex flex-wrap items-center gap-1.5">1. Tap the <Share className="size-3.5 shrink-0 text-primary" /> Share button in Safari</li>
+                    <li className="flex flex-wrap items-center gap-1.5">2. Choose <PlusSquare className="size-3.5 shrink-0 text-primary" /> “Add to Home Screen”</li>
                     <li>3. Tap “Add” — done! 🎉</li>
                   </ol>
                 ) : mode === "manual" ? (

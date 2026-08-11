@@ -191,8 +191,8 @@ export default function ImageConverter({ preset }: { preset?: Record<string, unk
       </Card>
 
       {queue.length > 0 && (
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Card>
+        <div className="grid min-w-0 gap-6 lg:grid-cols-2">
+          <Card className="min-w-0">
             <CardHeader><CardTitle>Convert to</CardTitle></CardHeader>
             <CardContent className="space-y-5">
               <div className="grid grid-cols-3 gap-2">
@@ -238,10 +238,10 @@ export default function ImageConverter({ preset }: { preset?: Record<string, unk
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="min-w-0">
             <CardHeader><CardTitle>{queue.length === 1 ? "Preview" : "Queue"}</CardTitle></CardHeader>
             <CardContent>
-              <ul className="space-y-2">
+              <ul className="min-w-0 space-y-2">
                 {queue.map((item) => (
                   <li key={item.id} className="flex items-center gap-3 rounded-xl border border-border p-2.5">
                     {item.result?.url || item.previewUrl ? (
