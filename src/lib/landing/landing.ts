@@ -352,6 +352,8 @@ const convVariants: { slug: string; from: string; to: string; toFmt: string }[] 
   { slug: "png-to-webp", from: "PNG", to: "WEBP", toFmt: "webp" },
   { slug: "webp-to-png", from: "WEBP", to: "PNG", toFmt: "png" },
   { slug: "avif-to-png", from: "AVIF", to: "PNG", toFmt: "png" },
+  { slug: "heic-to-jpg", from: "HEIC", to: "JPG", toFmt: "jpeg" },
+  { slug: "heic-to-png", from: "HEIC", to: "PNG", toFmt: "png" },
 ];
 const convRelated = ["image-converter", "image-compressor", "image-resizer"];
 

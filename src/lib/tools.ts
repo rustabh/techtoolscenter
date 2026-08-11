@@ -470,17 +470,18 @@ export const tools: Tool[] = [
   {
     slug: "image-converter",
     name: "Image Converter",
-    description: "Convert images between PNG, JPG and WEBP online — free and private.",
+    description: "Convert images (including HEIC/HEIF from iPhone) to PNG, JPG or WEBP — single or bulk, free and private.",
     longDescription:
-      "Convert your images between PNG, JPG and WEBP right in your browser. Upload any PNG, JPG, WEBP or AVIF image, pick your output format and quality, and download instantly. Nothing is uploaded — the whole conversion happens on your device.",
+      "Convert your images between PNG, JPG and WEBP right in your browser — including HEIC/HEIF photos from an iPhone, decoded with a real in-browser decoder rather than being rejected. Upload one image or a whole batch, pick your output format and quality, and download individually or as a single .zip. Nothing is uploaded — the whole conversion happens on your device.",
     category: "Image",
     icon: "Replace",
-    keywords: ["image converter", "png to jpg", "jpg to png", "png to webp", "webp to png", "avif to png", "convert image"],
+    keywords: ["image converter", "heic to jpg", "heic to jpg converter", "convert heic to jpg", "png to jpg", "jpg to png", "png to webp", "webp to png", "avif to png", "bulk image converter", "convert image"],
     addedOn: "2026-07-18",
     popular: true,
     faq: [
-      { question: "Which image formats can I convert?", answer: "You can convert between PNG, JPG and WEBP, and convert AVIF images to any of those. HEIC isn't supported because browsers can't decode it." },
-      { question: "Is my image uploaded anywhere?", answer: "No. The conversion runs entirely in your browser using the canvas API — your image never leaves your device." },
+      { question: "Which image formats can I convert?", answer: "You can convert PNG, JPG, WEBP, AVIF and HEIC/HEIF (the format iPhones save photos in) to PNG, JPG or WEBP. HEIC is decoded with a real in-browser decoder, not just rejected." },
+      { question: "Can I convert multiple images at once?", answer: "Yes — drop in as many images as you like, they queue up, and one click converts all of them. Download each individually or grab everything at once as a .zip." },
+      { question: "Is my image uploaded anywhere?", answer: "No. The conversion — including HEIC decoding — runs entirely in your browser; your images never leave your device." },
     ],
   },
   {
