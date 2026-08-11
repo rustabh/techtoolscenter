@@ -6,11 +6,22 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatCurrency(amount: number, currency = "INR", locale = "en-IN") {
-  return new Intl.NumberFormat(locale, {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 2,
-  }).format(isFinite(amount) ? amount : 0);
+  const value = isFinite(amount) ? amount : 0;
+  try {
+    return new Intl.NumberFormat(locale, {
+      style: "currency",
+      currency,
+      maximumFractionDigits: 2,
+    }).format(value);
+  } catch {
+    // `currency` isn't a valid 3-letter ISO 4217 code — Intl.NumberFormat throws a
+    // RangeError rather than degrading gracefully. Callers with a free-text currency
+    // field (e.g. Business Studio) can otherwise crash their entire render just from
+    // a user typing "Rs", "₹", or clearing the field. Fall back to a plain formatted
+    // number prefixed with whatever they typed instead of throwing.
+    const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(value);
+    return currency ? `${currency} ${number}` : number;
+  }
 }
 
 export function downloadBlob(blob: Blob, filename: string) {
