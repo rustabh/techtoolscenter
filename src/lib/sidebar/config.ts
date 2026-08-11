@@ -30,7 +30,7 @@ export const sidebarSections: SidebarSection[] = [
     items: [
       { label: "Tool Collections", href: "/collections" },
       { label: "Quick Actions", action: "command-palette" },
-      { label: "Templates", comingSoon: true },
+      { label: "Templates", href: "/templates" },
       { label: "Workflow Hub", action: "incinc" },
     ],
   },
