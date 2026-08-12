@@ -178,12 +178,16 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
 
   const totals = useMemo(() => {
     const sub = subtotal(value.items);
-    const discountAmt = (sub * (value.discount || 0)) / 100;
+    // Clamp to 0 so a negative Discount/Shipping (invalid input) can't inflate
+    // the total or desync the preview's `> 0` line-item guard from the PDF's.
+    const discountPct = Math.max(0, value.discount || 0);
+    const shipping = Math.max(0, value.shipping || 0);
+    const discountAmt = (sub * discountPct) / 100;
     const taxable = sub - discountAmt;
     const rate = value.taxType === "none" ? 0 : value.taxRate || 0;
     const taxAmt = (taxable * rate) / 100;
-    const grand = taxable + taxAmt + (value.shipping || 0);
-    return { sub, discountAmt, taxable, taxAmt, grand, rate };
+    const grand = taxable + taxAmt + shipping;
+    return { sub, discountAmt, taxable, taxAmt, grand, rate, shipping };
   }, [value]);
 
   // Individual tax lines to render (label + amount) based on the chosen mode.
@@ -292,7 +296,12 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
     if (value.kind === "letterhead") {
       doc.setTextColor(40);
       doc.setFontSize(11);
-      doc.text(doc.splitTextToSize(value.bodyText, 180), 14, 70);
+      const bodyLines = doc.splitTextToSize(value.bodyText, 180);
+      doc.text(bodyLines, 14, 70);
+      const signY = 70 + bodyLines.length * 6 + 20;
+      if (value.stamp) { try { doc.addImage(value.stamp, "PNG", 14, signY, 26, 26); } catch {} }
+      if (qrUrl) { try { doc.addImage(qrUrl, "PNG", 60, signY + 2, 24, 24); } catch {} }
+      if (value.signature) { try { doc.addImage(value.signature, "PNG", 150, signY + 2, 40, 18); doc.text("Authorised signature", 150, signY + 26); } catch {} }
     } else {
       doc.setTextColor(20);
       doc.setFontSize(11);
@@ -325,9 +334,9 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
           y += bold ? 8 : 6;
         };
         put("Subtotal", money(totals.sub));
-        if (value.discount) put(`Discount (${value.discount}%)`, `- ${money(totals.discountAmt)}`);
+        if (totals.discountAmt > 0) put(`Discount (${value.discount}%)`, `- ${money(totals.discountAmt)}`);
         taxLines.forEach((t) => put(t.label, money(t.amt)));
-        if (value.shipping) put("Shipping", money(value.shipping));
+        if (totals.shipping > 0) put("Shipping", money(totals.shipping));
         put("Total", money(totals.grand), true);
       }
 
@@ -335,8 +344,8 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
       doc.setTextColor(80);
-      if (value.notes) { doc.text(`Notes: ${value.notes}`, 14, y); y += 6; }
-      if (value.terms) { doc.text(`Terms: ${value.terms}`, 14, y); y += 6; }
+      if (value.notes) { const lines = doc.splitTextToSize(`Notes: ${value.notes}`, 180); doc.text(lines, 14, y); y += lines.length * 5 + 1; }
+      if (value.terms) { const lines = doc.splitTextToSize(`Terms: ${value.terms}`, 180); doc.text(lines, 14, y); y += lines.length * 5 + 1; }
       if (value.signature) { try { doc.addImage(value.signature, "PNG", 150, y + 4, 40, 18); doc.text("Authorised signature", 150, y + 28); } catch {} }
       if (value.stamp) { try { doc.addImage(value.stamp, "PNG", 14, y + 2, 26, 26); } catch {} }
       if (qrUrl) { try { doc.addImage(qrUrl, "PNG", 60, y + 2, 24, 24); } catch {} }
@@ -470,8 +479,8 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
               <Card>
                 <CardHeader><CardTitle>Charges</CardTitle></CardHeader>
                 <CardContent className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5"><Label>Discount (%)</Label><Input type="number" value={value.discount} onChange={(e) => patch({ discount: Number(e.target.value) })} /></div>
-                  <div className="space-y-1.5"><Label>Shipping</Label><Input type="number" value={value.shipping} onChange={(e) => patch({ shipping: Number(e.target.value) })} /></div>
+                  <div className="space-y-1.5"><Label>Discount (%)</Label><Input type="number" min={0} value={value.discount} onChange={(e) => patch({ discount: Number(e.target.value) })} /></div>
+                  <div className="space-y-1.5"><Label>Shipping</Label><Input type="number" min={0} value={value.shipping} onChange={(e) => patch({ shipping: Number(e.target.value) })} /></div>
                   <div className="space-y-1.5"><Label>Tax type</Label>
                     <Select value={value.taxType} onChange={(e) => patch({ taxType: e.target.value as TaxMode })}>
                       {TAX_MODES.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
@@ -528,7 +537,28 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
           <DocHeader layout={layout} value={value} kind={kind} accent={accent} titleColor={titleColor} barUrl={barUrl} />
 
           {value.kind === "letterhead" ? (
-            <p className="mt-8 whitespace-pre-line text-sm leading-relaxed text-slate-700">{value.bodyText}</p>
+            <>
+              <p className="mt-8 whitespace-pre-line text-sm leading-relaxed text-slate-700">{value.bodyText}</p>
+              <div className="mt-8 flex items-end justify-between">
+                <div className="flex items-end gap-4">
+                  {value.stamp && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={value.stamp} alt="Stamp" className="h-20 w-20 object-contain opacity-90" />
+                  )}
+                  {qrUrl && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={qrUrl} alt="QR" className="h-20 w-20" />
+                  )}
+                </div>
+                {value.signature && (
+                  <div className="text-right">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={value.signature} alt="Signature" className="ml-auto h-12 w-auto object-contain" />
+                    <p className="mt-1 text-[11px] text-slate-500">Authorised signature</p>
+                  </div>
+                )}
+              </div>
+            </>
           ) : (
             <div className={layout === "sidebar" ? "pl-4" : ""}>
               <div className="mt-6 grid grid-cols-2 gap-4 text-xs">
@@ -572,9 +602,9 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
               {kind.priced && (
                 <div className={`mt-4 w-64 space-y-1 text-xs ${layout === "bold" ? "" : "ml-auto"}`}>
                   <Line label="Subtotal" value={money(totals.sub)} />
-                  {value.discount > 0 && <Line label={`Discount (${value.discount}%)`} value={`- ${money(totals.discountAmt)}`} />}
+                  {totals.discountAmt > 0 && <Line label={`Discount (${value.discount}%)`} value={`- ${money(totals.discountAmt)}`} />}
                   {taxLines.map((t) => <Line key={t.label} label={t.label} value={money(t.amt)} />)}
-                  {value.shipping > 0 && <Line label="Shipping" value={money(value.shipping)} />}
+                  {totals.shipping > 0 && <Line label="Shipping" value={money(totals.shipping)} />}
                   <div className={`flex justify-between border-t border-slate-200 pt-1.5 text-sm font-bold ${layout === "modern" || layout === "bold" ? "rounded-md px-2 py-1.5 text-white" : ""}`} style={layout === "modern" || layout === "bold" ? { background: accent } : undefined}>
                     <span>Total</span><span style={layout === "modern" || layout === "bold" ? undefined : { color: titleColor }}>{money(totals.grand)}</span>
                   </div>
