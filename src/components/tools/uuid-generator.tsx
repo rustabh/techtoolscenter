@@ -24,8 +24,22 @@ function uuid() {
 export default function UuidGenerator() {
   const [count, setCount] = useState(5);
   const [list, setList] = useState<string[]>([]);
+  const [uppercase, setUppercase] = useState(false);
+  const [hyphens, setHyphens] = useState(true);
   const { copied, copy } = useCopy();
   const { history, add, remove, clear } = useGenerationHistory("uh:history:uuid-generator");
+
+  // list always holds standard lowercase-with-hyphens v4 UUIDs; formatting
+  // (case, hyphens) is applied on display/copy/download so history entries
+  // stay in a single canonical form regardless of the current toggles.
+  const format = useCallback(
+    (id: string) => {
+      let out = hyphens ? id : id.replace(/-/g, "");
+      if (uppercase) out = out.toUpperCase();
+      return out;
+    },
+    [uppercase, hyphens]
+  );
 
   const generateSilently = useCallback(() => {
     const out = Array.from({ length: count }, () => uuid());
@@ -58,7 +72,7 @@ export default function UuidGenerator() {
   }, [generate]);
 
   const copyOne = async (id: string) => {
-    if (await copy(id)) showToast("UUID copied");
+    if (await copy(format(id))) showToast("UUID copied");
   };
 
   const restore = (value: string) => setList(value.split("\n").filter(Boolean));
@@ -75,10 +89,20 @@ export default function UuidGenerator() {
           <Button size="sm" variant="outline" onClick={generate} title="Press R to regenerate">
             <RefreshCw className="size-4" /> Generate new
           </Button>
+          <div className="flex flex-wrap gap-4">
+            <label className="flex cursor-pointer items-center gap-2 text-sm">
+              <input type="checkbox" checked={uppercase} onChange={(e) => setUppercase(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" />
+              Uppercase
+            </label>
+            <label className="flex cursor-pointer items-center gap-2 text-sm">
+              <input type="checkbox" checked={hyphens} onChange={(e) => setHyphens(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" />
+              Include hyphens
+            </label>
+          </div>
           <ActionBar
-            onCopy={() => copy(list.join("\n"))}
+            onCopy={() => copy(list.map(format).join("\n"))}
             copied={copied}
-            onDownload={() => downloadBlob(new Blob([list.join("\n")], { type: "text/plain" }), "uuids.txt")}
+            onDownload={() => downloadBlob(new Blob([list.map(format).join("\n")], { type: "text/plain" }), "uuids.txt")}
             downloadLabel="Download .txt"
           />
         </CardContent>
@@ -91,9 +115,9 @@ export default function UuidGenerator() {
           ) : (
             <div className="max-h-72 space-y-2 overflow-auto">
               {list.map((id, i) => (
-                <button key={i} onClick={() => copyOne(id)} aria-label={`Copy UUID ${id}`}
+                <button key={i} onClick={() => copyOne(id)} aria-label={`Copy UUID ${format(id)}`}
                   className="block w-full truncate rounded-lg bg-secondary/50 px-3 py-2 text-left font-mono text-xs transition-colors hover:bg-secondary" title="Click to copy">
-                  {id}
+                  {format(id)}
                 </button>
               ))}
             </div>
