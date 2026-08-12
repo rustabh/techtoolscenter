@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Check, Copy, History, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/hooks/use-copy";
@@ -29,6 +30,9 @@ export function GenerationHistoryPanel({
   emptyLabel?: string;
 }) {
   const { copied, copy } = useCopy();
+  // `copied` is a single shared flag from useCopy — track which row
+  // triggered it so the checkmark doesn't flash on every history row at once.
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   if (!history.length) {
     return (
@@ -58,8 +62,8 @@ export function GenerationHistoryPanel({
               {entry.value}
             </button>
             <span className="shrink-0 text-[10px] text-muted-foreground">{entry.meta ?? timeAgo(entry.createdAt)}</span>
-            <Button variant="ghost" size="icon" className="size-7 shrink-0" onClick={() => copy(entry.value)} aria-label="Copy">
-              {copied ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+            <Button variant="ghost" size="icon" className="size-7 shrink-0" onClick={() => { setCopiedId(entry.id); copy(entry.value); }} aria-label="Copy">
+              {copied && copiedId === entry.id ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
             </Button>
             <Button variant="ghost" size="icon" className="size-7 shrink-0" onClick={() => onRemove(entry.id)} aria-label="Remove from history">
               <Trash2 className="size-3.5" />
