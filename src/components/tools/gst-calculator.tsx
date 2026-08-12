@@ -14,12 +14,15 @@ interface GstState {
   amount: string;
   rate: string;
   mode: "exclusive" | "inclusive";
+  gstType: "split" | "igst";
 }
 
-const initial: GstState = { amount: "1000", rate: "18", mode: "exclusive" };
+const initial: GstState = { amount: "1000", rate: "18", mode: "exclusive", gstType: "split" };
 
 export default function GstCalculator() {
-  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<GstState>("uh:gst", initial);
+  const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<GstState>("uh:gst", initial);
+  // Calculations saved before the IGST option shipped won't have this field.
+  const value = useMemo(() => (stored.gstType ? stored : { ...stored, gstType: "split" as const }), [stored]);
   const { copied, copy } = useCopy();
 
   const result = useMemo(() => {
@@ -38,7 +41,9 @@ export default function GstCalculator() {
     return { net, tax, gross, half: tax / 2 };
   }, [value]);
 
-  const summary = `GST (${value.rate}%, ${value.mode}): Net ${formatCurrency(result.net)} + GST ${formatCurrency(result.tax)} (CGST ${formatCurrency(result.half)} + SGST ${formatCurrency(result.half)}) = Total ${formatCurrency(result.gross)}`;
+  const summary = value.gstType === "igst"
+    ? `GST (${value.rate}%, ${value.mode}): Net ${formatCurrency(result.net)} + IGST ${formatCurrency(result.tax)} = Total ${formatCurrency(result.gross)}`
+    : `GST (${value.rate}%, ${value.mode}): Net ${formatCurrency(result.net)} + GST ${formatCurrency(result.tax)} (CGST ${formatCurrency(result.half)} + SGST ${formatCurrency(result.half)}) = Total ${formatCurrency(result.gross)}`;
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -81,6 +86,27 @@ export default function GstCalculator() {
               ))}
             </div>
           </div>
+          <div className="space-y-1.5">
+            <Label>Transaction</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                onClick={() => set({ ...value, gstType: "split" })}
+                className={`rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors ${
+                  value.gstType === "split" ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-secondary"
+                }`}
+              >
+                Same state (CGST+SGST)
+              </button>
+              <button
+                onClick={() => set({ ...value, gstType: "igst" })}
+                className={`rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors ${
+                  value.gstType === "igst" ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-secondary"
+                }`}
+              >
+                Different state (IGST)
+              </button>
+            </div>
+          </div>
           <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
         </CardContent>
       </Card>
@@ -92,16 +118,23 @@ export default function GstCalculator() {
         <CardContent className="space-y-4">
           <Row label="Net amount" value={formatCurrency(result.net)} />
           <Row label={`Total GST (${value.rate}%)`} value={formatCurrency(result.tax)} />
-          <div className="grid grid-cols-2 gap-3 rounded-xl bg-secondary/60 p-3 text-sm">
-            <div>
-              <p className="text-muted-foreground">CGST</p>
-              <p className="font-semibold">{formatCurrency(result.half)}</p>
+          {value.gstType === "igst" ? (
+            <div className="rounded-xl bg-secondary/60 p-3 text-sm">
+              <p className="text-muted-foreground">IGST</p>
+              <p className="font-semibold">{formatCurrency(result.tax)}</p>
             </div>
-            <div>
-              <p className="text-muted-foreground">SGST</p>
-              <p className="font-semibold">{formatCurrency(result.half)}</p>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 rounded-xl bg-secondary/60 p-3 text-sm">
+              <div>
+                <p className="text-muted-foreground">CGST</p>
+                <p className="font-semibold">{formatCurrency(result.half)}</p>
+              </div>
+              <div>
+                <p className="text-muted-foreground">SGST</p>
+                <p className="font-semibold">{formatCurrency(result.half)}</p>
+              </div>
             </div>
-          </div>
+          )}
           <div className="flex items-center justify-between border-t border-border pt-4">
             <span className="text-lg font-semibold">Gross total</span>
             <span className="text-2xl font-bold text-primary">{formatCurrency(result.gross)}</span>
