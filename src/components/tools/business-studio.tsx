@@ -104,6 +104,7 @@ interface BizState {
   taxType: TaxMode;
   notes: string;
   terms: string;
+  bankDetails: string;
   bodyText: string; // letterhead
   logo: string | null;
   signature: string | null;
@@ -138,6 +139,7 @@ function initial(kind: DocKind = "invoice"): BizState {
     taxType: "gst-split",
     notes: "Thank you for your business!",
     terms: "Payment due within 14 days.",
+    bankDetails: "",
     bodyText: "Dear Sir/Madam,\n\nWrite your letter content here.\n\nWarm regards,",
     logo: null,
     signature: null,
@@ -346,6 +348,7 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
       doc.setTextColor(80);
       if (value.notes) { const lines = doc.splitTextToSize(`Notes: ${value.notes}`, 180); doc.text(lines, 14, y); y += lines.length * 5 + 1; }
       if (value.terms) { const lines = doc.splitTextToSize(`Terms: ${value.terms}`, 180); doc.text(lines, 14, y); y += lines.length * 5 + 1; }
+      if (value.bankDetails) { const lines = doc.splitTextToSize(`Bank details: ${value.bankDetails}`, 180); doc.text(lines, 14, y); y += lines.length * 5 + 1; }
       if (value.signature) { try { doc.addImage(value.signature, "PNG", 150, y + 4, 40, 18); doc.text("Authorised signature", 150, y + 28); } catch {} }
       if (value.stamp) { try { doc.addImage(value.stamp, "PNG", 14, y + 2, 26, 26); } catch {} }
       if (qrUrl) { try { doc.addImage(qrUrl, "PNG", 60, y + 2, 24, 24); } catch {} }
@@ -502,6 +505,12 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
                 <div className="space-y-1.5"><Label>Terms</Label><Textarea value={value.terms} onChange={(e) => patch({ terms: e.target.value })} /></div>
               </>
             )}
+            {kind.priced && (
+              <div className="space-y-1.5">
+                <Label>Bank / payment details (optional)</Label>
+                <Textarea placeholder="Account name, number, IFSC, UPI ID…" value={value.bankDetails} onChange={(e) => patch({ bankDetails: e.target.value })} />
+              </div>
+            )}
             <div className="space-y-1.5"><Label>Watermark text (optional)</Label><Input placeholder="e.g. PAID / DRAFT" value={value.watermark} onChange={(e) => patch({ watermark: e.target.value })} /></div>
             <div className="flex flex-wrap gap-4 pt-1">
               <label className="flex cursor-pointer items-center gap-2 text-sm"><input type="checkbox" checked={value.showQR} onChange={(e) => patch({ showQR: e.target.checked })} className="size-4 accent-[var(--primary)]" /> QR code</label>
@@ -611,10 +620,11 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
                 </div>
               )}
 
-              {(value.notes || value.terms) && (
+              {(value.notes || value.terms || value.bankDetails) && (
                 <div className="mt-6 space-y-1 text-[11px] text-slate-500">
                   {value.notes && <p><span className="font-semibold">Notes:</span> {value.notes}</p>}
                   {value.terms && <p><span className="font-semibold">Terms:</span> {value.terms}</p>}
+                  {value.bankDetails && <p><span className="font-semibold">Bank details:</span> {value.bankDetails}</p>}
                 </div>
               )}
 
