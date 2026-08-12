@@ -1,10 +1,13 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { ActionBar } from "@/components/tools/action-bar";
+import { downloadBlob } from "@/lib/utils";
 
 interface Pair { a: string; b: string; }
 const initial: Pair = {
@@ -12,17 +15,21 @@ const initial: Pair = {
   b: "TechToolsCenter\nfree premium tools\nversion 2\nnew line",
 };
 
-// Simple LCS-based line diff.
-function diffLines(a: string[], b: string[]) {
+// Simple LCS-based line diff. Comparison uses `normalize`d lines (so
+// whitespace/case can be ignored per the toggles below) but always displays
+// the original, unnormalized text — the user's actual content, not a
+// lowercased/trimmed version of it.
+function diffLines(a: string[], b: string[], normalize: (s: string) => string) {
+  const an = a.map(normalize), bn = b.map(normalize);
   const n = a.length, m = b.length;
   const dp = Array.from({ length: n + 1 }, () => new Array(m + 1).fill(0));
   for (let i = n - 1; i >= 0; i--)
     for (let j = m - 1; j >= 0; j--)
-      dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+      dp[i][j] = an[i] === bn[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
   const out: { type: "same" | "add" | "del"; text: string }[] = [];
   let i = 0, j = 0;
   while (i < n && j < m) {
-    if (a[i] === b[j]) { out.push({ type: "same", text: a[i] }); i++; j++; }
+    if (an[i] === bn[j]) { out.push({ type: "same", text: a[i] }); i++; j++; }
     else if (dp[i + 1][j] >= dp[i][j + 1]) { out.push({ type: "del", text: a[i] }); i++; }
     else { out.push({ type: "add", text: b[j] }); j++; }
   }
@@ -33,9 +40,23 @@ function diffLines(a: string[], b: string[]) {
 
 export default function DiffChecker() {
   const { value, set } = useLocalStorage<Pair>("uh:diff", initial);
-  const rows = useMemo(() => diffLines(value.a.split("\n"), value.b.split("\n")), [value]);
+  const [ignoreWhitespace, setIgnoreWhitespace] = useState(false);
+  const [ignoreCase, setIgnoreCase] = useState(false);
+  const { copied, copy } = useCopy();
+
+  const normalize = useMemo(() => {
+    return (s: string) => {
+      let out = s;
+      if (ignoreWhitespace) out = out.trim().replace(/\s+/g, " ");
+      if (ignoreCase) out = out.toLowerCase();
+      return out;
+    };
+  }, [ignoreWhitespace, ignoreCase]);
+
+  const rows = useMemo(() => diffLines(value.a.split("\n"), value.b.split("\n"), normalize), [value, normalize]);
   const added = rows.filter((r) => r.type === "add").length;
   const removed = rows.filter((r) => r.type === "del").length;
+  const diffText = rows.map((r) => `${r.type === "add" ? "+" : r.type === "del" ? "-" : " "} ${r.text}`).join("\n");
 
   return (
     <div className="space-y-6">
@@ -46,6 +67,16 @@ export default function DiffChecker() {
         <div className="space-y-1.5"><Label>Changed</Label>
           <Textarea className="min-h-[180px] font-mono text-sm" value={value.b} onChange={(e) => set({ ...value, b: e.target.value })} />
         </div>
+      </div>
+      <div className="flex flex-wrap gap-4">
+        <label className="flex cursor-pointer items-center gap-2 text-sm">
+          <input type="checkbox" checked={ignoreWhitespace} onChange={(e) => setIgnoreWhitespace(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" />
+          Ignore whitespace
+        </label>
+        <label className="flex cursor-pointer items-center gap-2 text-sm">
+          <input type="checkbox" checked={ignoreCase} onChange={(e) => setIgnoreCase(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" />
+          Ignore case
+        </label>
       </div>
       <Card>
         <CardContent className="pt-6">
@@ -64,6 +95,9 @@ export default function DiffChecker() {
                 <span className="whitespace-pre-wrap">{r.text || " "}</span>
               </div>
             ))}
+          </div>
+          <div className="mt-4">
+            <ActionBar onCopy={() => copy(diffText)} copied={copied} onDownload={() => downloadBlob(new Blob([diffText], { type: "text/plain" }), "diff.txt")} downloadLabel="Download diff .txt" />
           </div>
         </CardContent>
       </Card>
