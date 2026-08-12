@@ -25,23 +25,43 @@ const IMG_PRESETS: ImgPreset[] = [
   { id: "maxc", label: "Max compression", mode: "target", quality: 0.35, maxWidth: 800, targetKB: 50 },
 ];
 
-function encode(img: HTMLImageElement, maxWidth: number, quality: number): Promise<Blob> {
+type OutputFormat = "auto" | "jpeg" | "webp" | "png";
+// Extension must follow the actual encoded mime, not the UI's "auto" label —
+// auto resolves to either image/jpeg or image/png depending on the source.
+function extFromMime(mime: string): string {
+  if (mime === "image/png") return "png";
+  if (mime === "image/webp") return "webp";
+  return "jpg";
+}
+
+// "auto" keeps PNG/GIF sources as PNG so transparency survives compression —
+// re-encoding a transparent PNG straight to JPEG (the old hardcoded
+// behaviour) silently flattens the alpha channel onto black.
+function resolveMime(format: OutputFormat, sourceType: string): string {
+  if (format === "jpeg") return "image/jpeg";
+  if (format === "webp") return "image/webp";
+  if (format === "png") return "image/png";
+  return sourceType === "image/png" || sourceType === "image/gif" ? "image/png" : "image/jpeg";
+}
+
+function encode(img: HTMLImageElement, maxWidth: number, quality: number, mime: string): Promise<Blob> {
   const scale = Math.min(1, maxWidth / img.width);
   const canvas = document.createElement("canvas");
   canvas.width = Math.max(1, Math.round(img.width * scale));
   canvas.height = Math.max(1, Math.round(img.height * scale));
   const ctx = canvas.getContext("2d")!;
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-  return new Promise((res) => canvas.toBlob((b) => res(b as Blob), "image/jpeg", quality));
+  return new Promise((res) => canvas.toBlob((b) => res(b as Blob), mime, quality));
 }
 
 export default function ImageCompressor({ preset }: { preset?: Record<string, unknown> }) {
-  const [original, setOriginal] = useState<{ url: string; size: number; name: string } | null>(null);
+  const [original, setOriginal] = useState<{ url: string; size: number; name: string; type: string } | null>(null);
   const [mode, setMode] = useState<"quality" | "target">(typeof preset?.targetKB === "number" ? "target" : "quality");
   const [quality, setQuality] = useState(typeof preset?.quality === "number" ? (preset.quality as number) : 0.7);
   const [maxWidth, setMaxWidth] = useState(typeof preset?.maxWidth === "number" ? (preset.maxWidth as number) : 1600);
   const [targetKB, setTargetKB] = useState(typeof preset?.targetKB === "number" ? (preset.targetKB as number) : 100);
   const [presetId, setPresetId] = useState<string>("custom");
+  const [format, setFormat] = useState<OutputFormat>("auto");
   const [result, setResult] = useState<{ url: string; size: number; blob: Blob } | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -55,7 +75,7 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
 
   const onFile = (file: File) => {
     setResult(null);
-    setOriginal({ url: URL.createObjectURL(file), size: file.size, name: file.name });
+    setOriginal({ url: URL.createObjectURL(file), size: file.size, name: file.name, type: file.type });
   };
 
   const compress = async () => {
@@ -65,20 +85,24 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
     const img = new Image();
     img.src = original.url;
     await img.decode();
+    const mime = resolveMime(format, original.type);
     let blob: Blob;
     if (mode === "target") {
       // Step quality (then width) down until we fit under the target size.
+      // PNG is lossless — quality has no effect, so a single pass is enough.
       const target = targetKB * 1024;
-      blob = await encode(img, maxWidth, quality);
-      const widths = [maxWidth, 1280, 1024, 800, 640, 480];
-      outer: for (const w of widths) {
-        for (let q = 0.9; q >= 0.2; q -= 0.1) {
-          blob = await encode(img, w, q);
-          if (blob.size <= target) break outer;
+      blob = await encode(img, maxWidth, quality, mime);
+      if (mime !== "image/png") {
+        const widths = [maxWidth, 1280, 1024, 800, 640, 480];
+        outer: for (const w of widths) {
+          for (let q = 0.9; q >= 0.2; q -= 0.1) {
+            blob = await encode(img, w, q, mime);
+            if (blob.size <= target) break outer;
+          }
         }
       }
     } else {
-      blob = await encode(img, maxWidth, quality);
+      blob = await encode(img, maxWidth, quality, mime);
     }
     setResult({ url: URL.createObjectURL(blob), size: blob.size, blob });
     track(["imagesOptimized", "filesProcessed"], performance.now() - t0);
@@ -129,6 +153,25 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
                   className={`rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${mode === "target" ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}>By target size</button>
               </div>
 
+              <div className="space-y-1.5">
+                <Label>Output format</Label>
+                <div className="flex flex-wrap gap-1.5">
+                  {(["auto", "webp", "jpeg", "png"] as OutputFormat[]).map((f) => (
+                    <button key={f} onClick={() => setFormat(f)}
+                      className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${format === f ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"}`}>
+                      {f === "auto" ? "Auto" : f === "webp" ? "WebP (smallest)" : f === "jpeg" ? "JPEG" : "PNG (transparency)"}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {format === "auto"
+                    ? "Auto keeps PNGs transparent and uses JPEG for photos."
+                    : format === "png"
+                    ? "Lossless — quality slider won't change PNG output size."
+                    : "Applies to every image regardless of the original format."}
+                </p>
+              </div>
+
               {mode === "target" ? (
                 <div className="space-y-1.5">
                   <Label htmlFor="ic-target-kb">Target size (KB)</Label>
@@ -162,7 +205,7 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
               </Button>
               {result && (
                 <Button variant="outline" className="w-full"
-                  onClick={() => downloadBlob(result.blob, `compressed-${original.name.replace(/\.\w+$/, "")}.jpg`)}>
+                  onClick={() => downloadBlob(result.blob, `compressed-${original.name.replace(/\.\w+$/, "")}.${extFromMime(result.blob.type)}`)}>
                   Download compressed
                 </Button>
               )}
