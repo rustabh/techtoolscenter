@@ -22,7 +22,10 @@ function extractVideoId(input: string): string | null {
   const trimmed = input.trim();
   if (/^[\w-]{11}$/.test(trimmed)) return trimmed;
   try {
-    const url = new URL(trimmed);
+    // `new URL()` throws on scheme-less input (e.g. pasted from an address
+    // bar without "https://"), which is a very common way to paste a
+    // YouTube link — assume https when no scheme is present.
+    const url = new URL(/^[a-z][a-z0-9+.-]*:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`);
     if (url.hostname.includes("youtu.be")) {
       const id = url.pathname.slice(1, 12);
       return /^[\w-]{11}$/.test(id) ? id : null;
