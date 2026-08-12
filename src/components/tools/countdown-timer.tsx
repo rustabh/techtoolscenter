@@ -7,8 +7,28 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/hooks/use-copy";
-import { localDatetimeISO } from "@/lib/utils";
-import { Copy, Check } from "lucide-react";
+import { localDatetimeISO, downloadBlob } from "@/lib/utils";
+import { Copy, Check, CalendarPlus } from "lucide-react";
+
+function toICSDate(d: Date): string {
+  return d.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+}
+
+function downloadICS(label: string, target: Date) {
+  const ics = [
+    "BEGIN:VCALENDAR",
+    "VERSION:2.0",
+    "PRODID:-//TechToolsCenter//Countdown Timer//EN",
+    "BEGIN:VEVENT",
+    `UID:${Date.now()}@techtoolscenter.com`,
+    `DTSTAMP:${toICSDate(new Date())}`,
+    `DTSTART:${toICSDate(target)}`,
+    `SUMMARY:${(label || "Countdown").replace(/[\r\n]/g, " ")}`,
+    "END:VEVENT",
+    "END:VCALENDAR",
+  ].join("\r\n");
+  downloadBlob(new Blob([ics], { type: "text/calendar" }), `${(label || "countdown").replace(/[^a-z0-9]+/gi, "-").toLowerCase()}.ics`);
+}
 
 interface CountdownState {
   label: string;
@@ -93,9 +113,16 @@ export default function CountdownTimer() {
           ) : (
             <p className="text-center text-muted-foreground">Pick a valid date and time above.</p>
           )}
-          <Button variant="outline" size="sm" onClick={() => copy(shareUrl)} disabled={!shareUrl}>
-            {copied ? <Check className="text-emerald-500" /> : <Copy />} Copy shareable link
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button variant="outline" size="sm" onClick={() => copy(shareUrl)} disabled={!shareUrl}>
+              {copied ? <Check className="text-emerald-500" /> : <Copy />} Copy shareable link
+            </Button>
+            {valid && (
+              <Button variant="outline" size="sm" onClick={() => downloadICS(value.label, targetDate)}>
+                <CalendarPlus /> Add to calendar
+              </Button>
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>
