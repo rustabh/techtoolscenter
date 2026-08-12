@@ -148,10 +148,25 @@ export default function MarkdownToPdf() {
         }
         if (block.type === "code") {
           const size = 10;
-          ensureSpace(block.lines.length * size * 1.5 + 12);
-          const boxTop = y;
-          for (const raw of block.lines) drawLine(raw || " ", size, mono, 12, rgb(0.2, 0.2, 0.25));
-          page.drawRectangle({ x: margin - 8, y: y - 4, width: maxWidth + 16, height: boxTop - y + 12, color: rgb(0.95, 0.95, 0.96), opacity: 0.6, borderColor: rgb(0.85, 0.85, 0.87), borderWidth: 1 });
+          const lineHeight = size * 1.4;
+          // Draw per-page-fitting chunks so the background box (a) is drawn
+          // before the text, not on top of it, and (b) is sized against the
+          // lines that actually land on that page — a box spanning a
+          // mid-block page break would otherwise use a stale top/bottom pair
+          // from two different pages.
+          let i = 0;
+          while (i < block.lines.length) {
+            if (y - lineHeight < margin) { newPage(); continue; }
+            const fit = Math.min(Math.floor((y - margin) / lineHeight), block.lines.length - i);
+            const boxTop = y;
+            const boxBottom = y - fit * lineHeight;
+            page.drawRectangle({ x: margin - 8, y: boxBottom - 4, width: maxWidth + 16, height: boxTop - boxBottom + 12, color: rgb(0.95, 0.95, 0.96), opacity: 0.6, borderColor: rgb(0.85, 0.85, 0.87), borderWidth: 1 });
+            for (let j = 0; j < fit; j++) {
+              page.drawText(block.lines[i + j] || " ", { x: margin + 12, y, size, font: mono, color: rgb(0.2, 0.2, 0.25) });
+              y -= lineHeight;
+            }
+            i += fit;
+          }
           continue;
         }
         if (block.type === "ul") {
