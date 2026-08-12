@@ -13,6 +13,11 @@ interface AgeState {
   to: string;
 }
 
+const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+// Ages people commonly track for practical reasons (voting/driving age,
+// senior-citizen concessions, etc.) — shown only if still upcoming.
+const MILESTONE_AGES = [13, 16, 18, 21, 25, 30, 40, 50, 60, 65, 75, 100];
+
 export default function AgeCalculator() {
   const initial: AgeState = { from: "2000-01-01", to: localDateISO() };
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<AgeState>("uh:age", initial);
@@ -44,7 +49,18 @@ export default function AgeCalculator() {
     if (next < to) next.setFullYear(to.getFullYear() + 1);
     const daysToBirthday = Math.ceil((next.getTime() - to.getTime()) / 86400000);
 
-    return { years, months, days, totalDays, totalWeeks, totalMonths, totalHours, daysToBirthday };
+    const weekday = WEEKDAYS[from.getDay()];
+
+    const milestones = MILESTONE_AGES
+      .filter((age) => age > years)
+      .slice(0, 3)
+      .map((age) => {
+        const date = new Date(from.getFullYear() + age, from.getMonth(), from.getDate());
+        const daysAway = Math.ceil((date.getTime() - to.getTime()) / 86400000);
+        return { age, date, daysAway };
+      });
+
+    return { years, months, days, totalDays, totalWeeks, totalMonths, totalHours, daysToBirthday, weekday, milestones };
   }, [value]);
 
   return (
@@ -83,6 +99,20 @@ export default function AgeCalculator() {
               <div className="rounded-xl bg-primary/10 p-4 text-center text-sm font-medium text-primary">
                 🎂 {result.daysToBirthday} days until the next birthday
               </div>
+              <p className="text-center text-sm text-muted-foreground">Born on a <span className="font-medium text-foreground">{result.weekday}</span></p>
+              {result.milestones.length > 0 && (
+                <div className="space-y-1.5">
+                  <p className="text-xs font-medium text-muted-foreground">Upcoming milestone birthdays</p>
+                  <div className="space-y-1.5">
+                    {result.milestones.map((m) => (
+                      <div key={m.age} className="flex items-center justify-between rounded-lg bg-secondary/60 px-3 py-2 text-sm">
+                        <span>{m.age}th birthday</span>
+                        <span className="text-muted-foreground">{m.daysAway === 0 ? "Today!" : `in ${m.daysAway.toLocaleString()} days`}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <p className="text-muted-foreground">Please enter a valid date range.</p>
