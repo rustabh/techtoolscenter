@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
-type Op = "sum" | "average" | "count" | "if" | "sumif" | "countif" | "vlookup" | "concat" | "round" | "percent";
+type Op = "sum" | "average" | "count" | "if" | "sumif" | "countif" | "vlookup" | "xlookup" | "iferror" | "text" | "concat" | "round" | "percent";
 
 const build: Record<Op, (a: string, b: string, c: string) => { formula: string; explain: string }> = {
   sum: (a) => ({ formula: `=SUM(${a || "A1:A10"})`, explain: "Adds up all numbers in the range." }),
@@ -18,6 +18,9 @@ const build: Record<Op, (a: string, b: string, c: string) => { formula: string; 
   sumif: (a, b, c) => ({ formula: `=SUMIF(${a || "A1:A10"}, "${b || ">100"}", ${c || "B1:B10"})`, explain: "Adds cells that meet the given condition." }),
   countif: (a, b) => ({ formula: `=COUNTIF(${a || "A1:A10"}, "${b || ">100"}")`, explain: "Counts cells that meet the condition." }),
   vlookup: (a, b, c) => ({ formula: `=VLOOKUP(${a || "A2"}, ${b || "D:F"}, ${c || "3"}, FALSE)`, explain: "Looks up a value in the first column of a range and returns a value from another column." }),
+  xlookup: (a, b, c) => ({ formula: `=XLOOKUP(${a || "A2"}, ${b || "D:D"}, ${c || "F:F"})`, explain: "Modern replacement for VLOOKUP — looks up a value and returns a match from any column, left or right, without counting columns." }),
+  iferror: (a, b) => ({ formula: `=IFERROR(${a || "A1/B1"}, "${b || "Error"}")`, explain: "Runs the formula normally, but shows a fallback value instead of an error (like #DIV/0!) if it fails." }),
+  text: (a, b) => ({ formula: `=TEXT(${a || "A1"}, "${b || "dd-mmm-yyyy"}")`, explain: "Formats a number or date as text in the given format (e.g. dates, currency, percentages)." }),
   concat: (a, b) => ({ formula: `=CONCATENATE(${a || "A1"}, " ", ${b || "B1"})`, explain: "Joins text from multiple cells together." }),
   round: (a, b) => ({ formula: `=ROUND(${a || "A1"}, ${b || "2"})`, explain: "Rounds a number to the given number of decimal places." }),
   percent: (a, b) => ({ formula: `=(${a || "A1"}/${b || "B1"})*100`, explain: "Calculates what percentage A is of B." }),
@@ -29,6 +32,9 @@ const LABELS: Record<Op, [string, string, string]> = {
   sumif: ["Criteria range", "Condition", "Sum range"],
   countif: ["Range", "Condition", ""],
   vlookup: ["Lookup value", "Table range", "Column number"],
+  xlookup: ["Lookup value", "Lookup range", "Return range"],
+  iferror: ["Formula", "Fallback value", ""],
+  text: ["Cell", "Format code (e.g. dd-mmm-yyyy)", ""],
   concat: ["First cell", "Second cell", ""],
   round: ["Cell / number", "Decimals", ""],
   percent: ["Value", "Total", ""],
