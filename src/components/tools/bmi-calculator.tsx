@@ -37,6 +37,19 @@ export default function BmiCalculator() {
   const cat = category(bmi);
   const pct = Math.min(100, Math.max(0, ((bmi - 10) / 30) * 100));
 
+  // Healthy weight range for this height (BMI 18.5–24.9), inverting the same
+  // formula used above — the single most actionable number a BMI result can
+  // give, and something no BMI-only number tells you on its own.
+  const healthyRange = useMemo(() => {
+    const h = parseFloat(value.height) || 0;
+    const w = parseFloat(value.weight) || 0;
+    if (h <= 0) return null;
+    const min = value.unit === "metric" ? (18.5 * (h / 100) ** 2) : (18.5 * h * h) / 703;
+    const max = value.unit === "metric" ? (24.9 * (h / 100) ** 2) : (24.9 * h * h) / 703;
+    const delta = w > 0 ? (w < min ? min - w : w > max ? w - max : 0) : 0;
+    return { min, max, delta };
+  }, [value.height, value.weight, value.unit]);
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
@@ -73,6 +86,21 @@ export default function BmiCalculator() {
             <div className="h-full w-1 -translate-x-1/2 bg-foreground" style={{ marginLeft: `${pct}%` }} />
           </div>
           <p className="text-xs text-muted-foreground">A healthy BMI ranges from 18.5 to 24.9.</p>
+          {healthyRange && (
+            <div className="rounded-xl bg-secondary/60 p-3 text-sm">
+              <p>
+                Healthy weight for your height:{" "}
+                <span className="font-semibold">
+                  {Math.round(healthyRange.min * 10) / 10}–{Math.round(healthyRange.max * 10) / 10} {value.unit === "metric" ? "kg" : "lb"}
+                </span>
+              </p>
+              {healthyRange.delta > 0.05 && (
+                <p className="mt-1 text-xs text-muted-foreground">
+                  About {Math.round(healthyRange.delta * 10) / 10} {value.unit === "metric" ? "kg" : "lb"} {parseFloat(value.weight) < healthyRange.min ? "to gain" : "to lose"} to reach that range.
+                </p>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
