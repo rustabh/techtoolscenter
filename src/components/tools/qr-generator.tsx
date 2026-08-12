@@ -32,6 +32,11 @@ const TYPES: { id: QrType; label: string }[] = [
 ];
 
 type Fields = Record<string, any>;
+// WIFI (MECARD-style) and vCard both use unescaped `;`/`,`/`\` as field
+// delimiters — a raw `;` inside e.g. a password truncates the field for any
+// spec-compliant scanner, so free-text values must be escaped before joining.
+const escWifi = (s: string) => s.replace(/([\\;,:"])/g, "\\$1");
+const escVcard = (s: string) => s.replace(/([\\;,])/g, "\\$1");
 function buildValue(type: QrType, f: Fields): string {
   const g = (k: string) => (f[k] ?? "").toString().trim();
   switch (type) {
@@ -43,14 +48,14 @@ function buildValue(type: QrType, f: Fields): string {
     case "whatsapp": return `https://wa.me/${g("phone").replace(/[^0-9]/g, "")}?text=${encodeURIComponent(g("message"))}`;
     case "telegram": return `https://t.me/${g("handle").replace("@", "")}`;
     case "instagram": return `https://instagram.com/${g("handle").replace("@", "")}`;
-    case "wifi": return `WIFI:T:${g("encryption") || "WPA"};S:${g("ssid")};P:${g("password")};H:${f.hidden ? "true" : "false"};;`;
+    case "wifi": return `WIFI:T:${g("encryption") || "WPA"};S:${escWifi(g("ssid"))};P:${escWifi(g("password"))};H:${f.hidden ? "true" : "false"};;`;
     case "googlemaps": return `https://maps.google.com/?q=${encodeURIComponent(g("query"))}`;
     case "googlereview": return g("placeId") ? `https://search.google.com/local/writereview?placeid=${g("placeId")}` : g("url");
     case "upi": return `upi://pay?pa=${g("vpa")}&pn=${encodeURIComponent(g("name"))}${g("amount") ? `&am=${g("amount")}` : ""}&cu=INR`;
     case "vcard":
-      return ["BEGIN:VCARD", "VERSION:3.0", `N:${g("name")}`, `FN:${g("name")}`, g("org") && `ORG:${g("org")}`,
-        g("title") && `TITLE:${g("title")}`, g("phone") && `TEL:${g("phone")}`, g("email") && `EMAIL:${g("email")}`,
-        g("url") && `URL:${g("url")}`, "END:VCARD"].filter(Boolean).join("\n");
+      return ["BEGIN:VCARD", "VERSION:3.0", `N:${escVcard(g("name"))}`, `FN:${escVcard(g("name"))}`, g("org") && `ORG:${escVcard(g("org"))}`,
+        g("title") && `TITLE:${escVcard(g("title"))}`, g("phone") && `TEL:${escVcard(g("phone"))}`, g("email") && `EMAIL:${escVcard(g("email"))}`,
+        g("url") && `URL:${escVcard(g("url"))}`, "END:VCARD"].filter(Boolean).join("\n");
     case "event":
       return ["BEGIN:VEVENT", `SUMMARY:${g("title")}`, g("location") && `LOCATION:${g("location")}`,
         g("start") && `DTSTART:${g("start").replace(/[-:]/g, "")}00`, g("end") && `DTEND:${g("end").replace(/[-:]/g, "")}00`,
