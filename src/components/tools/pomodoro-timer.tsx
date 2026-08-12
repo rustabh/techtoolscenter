@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Play, Pause, RotateCcw } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -56,6 +56,15 @@ export default function PomodoroTimer() {
 
   const switchMode = (m: Mode) => { setMode(m); setLeft(DURATIONS[m]); setRunning(false); };
 
+  // Guards against re-triggering the completion beep/toast/session-count when
+  // Start is pressed again after a phase already finished at 0:00.
+  const toggleRunning = useCallback(() => {
+    setRunning((r) => {
+      if (!r && left <= 0) { setLeft(DURATIONS[mode]); return true; }
+      return !r;
+    });
+  }, [left, mode]);
+
   // Spacebar starts/pauses — the standard shortcut for timer apps.
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -63,12 +72,12 @@ export default function PomodoroTimer() {
       if (tag === "INPUT" || tag === "TEXTAREA" || tag === "BUTTON") return;
       if (e.code === "Space") {
         e.preventDefault();
-        setRunning((r) => !r);
+        toggleRunning();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, []);
+  }, [toggleRunning]);
   const mins = Math.floor(left / 60), secs = left % 60;
   const pct = 1 - left / DURATIONS[mode];
 
@@ -89,7 +98,7 @@ export default function PomodoroTimer() {
           <span className="font-mono text-5xl font-bold tabular-nums">{mins}:{String(secs).padStart(2, "0")}</span>
         </div>
         <div className="flex justify-center gap-2">
-          <Button size="lg" onClick={() => setRunning((r) => !r)} title="Press Space to start/pause">
+          <Button size="lg" onClick={toggleRunning} title="Press Space to start/pause">
             {running ? <><Pause /> Pause</> : <><Play /> Start</>}
           </Button>
           <Button size="lg" variant="outline" onClick={() => { setLeft(DURATIONS[mode]); setRunning(false); }} aria-label="Reset"><RotateCcw /></Button>
