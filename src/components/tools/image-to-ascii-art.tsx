@@ -66,7 +66,12 @@ export default function ImageToAsciiArt() {
       for (let x = 0; x < cols; x++) {
         const i = (y * cols + x) * 4;
         const lum = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-        const idx = Math.min(ramp2.length - 1, Math.floor((lum / 255) * ramp2.length));
+        // Ramp order is dense→sparse ('@' → ' '), and the live preview
+        // renders glyphs as light text on a black background — so bright
+        // source pixels need the dense glyph (more visible "ink" on black)
+        // and dark pixels need the sparse/blank glyph, or the rendered tone
+        // comes out inverted relative to the source image.
+        const idx = Math.min(ramp2.length - 1, Math.floor(((255 - lum) / 255) * ramp2.length));
         out += ramp2[idx];
       }
       out += "\n";
