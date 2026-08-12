@@ -63,22 +63,32 @@ export default function ResumeBuilder() {
     doc.text([value.email, value.phone, value.location, value.website].filter(Boolean).join("  ·  "), 14, y); y += 8;
     doc.setDrawColor(220); doc.line(14, y, 196, y); y += 8;
 
-    const section = (title: string) => { doc.setFontSize(12); doc.setTextColor(79, 70, 229); doc.text(title.toUpperCase(), 14, y); y += 6; doc.setTextColor(40); };
+    // A4 page is 297mm tall; keep an 18mm bottom margin and break to a new
+    // page instead of silently clipping content past the first page.
+    const PAGE_BOTTOM = 279;
+    const ensureSpace = (needed: number) => {
+      if (y + needed > PAGE_BOTTOM) { doc.addPage(); y = 20; }
+    };
+    const section = (title: string) => { ensureSpace(10); doc.setFontSize(12); doc.setTextColor(79, 70, 229); doc.text(title.toUpperCase(), 14, y); y += 6; doc.setTextColor(40); };
     const wrap = (text: string, size = 9) => {
       doc.setFontSize(size);
       const lines = doc.splitTextToSize(text, 182);
-      doc.text(lines, 14, y); y += lines.length * 5;
+      const needed = lines.length * 5;
+      ensureSpace(needed);
+      doc.text(lines, 14, y); y += needed;
     };
 
     section("Summary"); wrap(value.summary); y += 4;
     section("Experience");
     value.experience.forEach((e) => {
+      ensureSpace(5);
       doc.setFontSize(10); doc.setTextColor(20); doc.text(`${e.title} — ${e.subtitle}`, 14, y);
       doc.setTextColor(120); doc.text(e.date, 196, y, { align: "right" }); y += 5;
       doc.setTextColor(70); wrap(e.detail); y += 3;
     });
     y += 2; section("Education");
     value.education.forEach((e) => {
+      ensureSpace(5);
       doc.setFontSize(10); doc.setTextColor(20); doc.text(`${e.title} — ${e.subtitle}`, 14, y);
       doc.setTextColor(120); doc.text(e.date, 196, y, { align: "right" }); y += 5;
       doc.setTextColor(70); wrap(e.detail); y += 3;
