@@ -57,7 +57,7 @@ export default function TypingSpeedTest() {
   const stats = useMemo(() => {
     let correct = 0;
     for (let i = 0; i < input.length; i++) if (input[i] === passage[i]) correct++;
-    const wpm = startedAt ? Math.round((input.length / 5) / elapsedMin) : 0;
+    const wpm = startedAt ? Math.round((correct / 5) / elapsedMin) : 0;
     const accuracy = input.length > 0 ? Math.round((correct / input.length) * 100) : 100;
     return { wpm, accuracy, correct };
   }, [input, passage, startedAt, elapsedMin]);
