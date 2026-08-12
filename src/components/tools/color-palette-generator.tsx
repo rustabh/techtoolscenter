@@ -33,10 +33,25 @@ function hslToHex(h: number, s: number, l: number) {
 }
 
 type Scheme = "complementary" | "analogous" | "triadic" | "shades";
+type ExportFormat = "css" | "scss" | "tailwind" | "json";
+
+function formatPalette(palette: string[], format: ExportFormat): string {
+  switch (format) {
+    case "scss":
+      return palette.map((c, i) => `$color-${i + 1}: ${c};`).join("\n");
+    case "tailwind":
+      return "colors: {\n" + palette.map((c, i) => `  "palette-${i + 1}": "${c}",`).join("\n") + "\n}";
+    case "json":
+      return JSON.stringify(Object.fromEntries(palette.map((c, i) => [`color-${i + 1}`, c])), null, 2);
+    default:
+      return ":root {\n" + palette.map((c, i) => `  --color-${i + 1}: ${c};`).join("\n") + "\n}";
+  }
+}
 
 export default function ColorPaletteGenerator() {
   const [base, setBase] = useState("#4f46e5");
   const [scheme, setScheme] = useState<Scheme>("analogous");
+  const [format, setFormat] = useState<ExportFormat>("css");
   const { copied, copy } = useCopy();
   const [last, setLast] = useState("");
   const { history, add, remove, clear } = useGenerationHistory("uh:history:color-palette-generator");
@@ -51,7 +66,7 @@ export default function ColorPaletteGenerator() {
     }
   }, [base, scheme]);
 
-  const cssText = ":root {\n" + palette.map((c, i) => `  --color-${i + 1}: ${c};`).join("\n") + "\n}";
+  const cssText = formatPalette(palette, format);
 
   return (
     <div className="space-y-6">
@@ -79,9 +94,26 @@ export default function ColorPaletteGenerator() {
           </button>
         ))}
       </div>
+      <div className="space-y-1.5">
+        <Label>Export format</Label>
+        <div className="flex flex-wrap gap-1.5">
+          {([
+            { id: "css", label: "CSS variables" },
+            { id: "scss", label: "SCSS" },
+            { id: "tailwind", label: "Tailwind config" },
+            { id: "json", label: "JSON" },
+          ] as { id: ExportFormat; label: string }[]).map((f) => (
+            <button key={f.id} onClick={() => setFormat(f.id)}
+              className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${format === f.id ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"}`}>
+              {f.label}
+            </button>
+          ))}
+        </div>
+      </div>
+      <pre className="overflow-auto rounded-xl bg-secondary/50 p-4 font-mono text-xs">{cssText}</pre>
       <div className="flex flex-wrap gap-2">
-        <Button variant="outline" onClick={() => copy(cssText)}>{copied && last === "" ? "Copied!" : "Copy CSS variables"}</Button>
-        <Button variant="outline" onClick={() => add(cssText, scheme)}>
+        <Button variant="outline" onClick={() => copy(cssText)}>{copied && last === "" ? "Copied!" : "Copy"}</Button>
+        <Button variant="outline" onClick={() => add(cssText, `${scheme} · ${format}`)}>
           <History className="size-4" /> Save to history
         </Button>
       </div>
