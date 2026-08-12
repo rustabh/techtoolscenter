@@ -18,8 +18,8 @@ const DEFAULT_CSV = `name,age,city
 "Smith, John",30,"New York"
 Jane Doe,25,Boston`;
 
-/** Parses a single CSV line into fields, respecting double-quoted fields (which may contain commas, quotes, newlines). */
-function parseCsvLine(line: string): string[] {
+/** Parses a single CSV line into fields, respecting double-quoted fields (which may contain the delimiter, quotes, newlines). */
+function parseCsvLine(line: string, delimiter: string): string[] {
   const fields: string[] = [];
   let current = "";
   let inQuotes = false;
@@ -40,7 +40,7 @@ function parseCsvLine(line: string): string[] {
       }
     } else if (ch === '"') {
       inQuotes = true;
-    } else if (ch === ",") {
+    } else if (ch === delimiter) {
       fields.push(current);
       current = "";
     } else {
@@ -89,16 +89,16 @@ function inferValue(raw: string): CsvValue {
   return raw;
 }
 
-function csvToJson(csv: string): string {
+function csvToJson(csv: string, delimiter: string): string {
   const rows = splitCsvRows(csv.trim()).filter((r) => r.length > 0);
   if (rows.length === 0) {
     return "[]";
   }
-  const headers = parseCsvLine(rows[0]).map((h) => h.trim());
+  const headers = parseCsvLine(rows[0], delimiter).map((h) => h.trim());
   const records: CsvRecord[] = [];
 
   for (let i = 1; i < rows.length; i++) {
-    const fields = parseCsvLine(rows[i]);
+    const fields = parseCsvLine(rows[i], delimiter);
     const record: CsvRecord = {};
     headers.forEach((header, idx) => {
       record[header] = inferValue(fields[idx] ?? "");
@@ -109,15 +109,15 @@ function csvToJson(csv: string): string {
   return JSON.stringify(records, null, 2);
 }
 
-function csvEscapeField(value: CsvValue): string {
+function csvEscapeField(value: CsvValue, delimiter: string): string {
   const str = value === null || value === undefined ? "" : String(value);
-  if (/[",\n]/.test(str)) {
+  if (str.includes('"') || str.includes(delimiter) || str.includes("\n")) {
     return `"${str.replace(/"/g, '""')}"`;
   }
   return str;
 }
 
-function jsonToCsv(json: string): string {
+function jsonToCsv(json: string, delimiter: string): string {
   const parsed: unknown = JSON.parse(json);
 
   if (!Array.isArray(parsed)) {
@@ -148,24 +148,32 @@ function jsonToCsv(json: string): string {
   const headers = Array.from(headerSet);
 
   const lines: string[] = [];
-  lines.push(headers.map(csvEscapeField).join(","));
+  lines.push(headers.map((h) => csvEscapeField(h, delimiter)).join(delimiter));
   flatRecords.forEach((record) => {
-    lines.push(headers.map((header) => csvEscapeField(record[header] ?? "")).join(","));
+    lines.push(headers.map((header) => csvEscapeField(record[header] ?? "", delimiter)).join(delimiter));
   });
 
   return lines.join("\n");
 }
 
+const DELIMITERS = [
+  { id: "comma", label: "Comma (,)", char: "," },
+  { id: "semicolon", label: "Semicolon (;)", char: ";" },
+  { id: "tab", label: "Tab", char: "\t" },
+  { id: "pipe", label: "Pipe (|)", char: "|" },
+] as const;
+
 export default function CsvJsonConverter() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<string>("uh:csv-json-converter", DEFAULT_CSV);
   const [mode, setMode] = useState<Mode>("csv-to-json");
+  const [delimiter, setDelimiter] = useState<string>(",");
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
   const { copied, copy } = useCopy();
 
   const run = () => {
     try {
-      const result = mode === "csv-to-json" ? csvToJson(value) : jsonToCsv(value);
+      const result = mode === "csv-to-json" ? csvToJson(value, delimiter) : jsonToCsv(value, delimiter);
       setOutput(result);
       setError("");
     } catch (e) {
@@ -200,6 +208,23 @@ export default function CsvJsonConverter() {
                 {opt.label}
               </button>
             ))}
+          </div>
+          <div className="space-y-1.5">
+            <label className="text-xs font-medium text-muted-foreground">CSV delimiter</label>
+            <div className="flex flex-wrap gap-1.5">
+              {DELIMITERS.map((d) => (
+                <button
+                  key={d.id}
+                  type="button"
+                  onClick={() => setDelimiter(d.char)}
+                  className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${
+                    delimiter === d.char ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"
+                  }`}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
           </div>
           <Textarea
             aria-label={mode === "csv-to-json" ? "CSV input" : "JSON input"}
