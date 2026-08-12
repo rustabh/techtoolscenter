@@ -1,11 +1,36 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Check, Copy } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { localDatetimeISO } from "@/lib/utils";
+import { useCopy } from "@/hooks/use-copy";
+
+function relativeFromNow(ms: number): string {
+  const diff = ms - Date.now();
+  const abs = Math.abs(diff);
+  const mins = Math.round(abs / 60000);
+  const hours = Math.round(abs / 3600000);
+  const days = Math.round(abs / 86400000);
+  const unit = mins < 1 ? "just now" : mins < 60 ? `${mins}m` : hours < 48 ? `${hours}h` : `${days}d`;
+  if (unit === "just now") return unit;
+  return diff >= 0 ? `in ${unit}` : `${unit} ago`;
+}
+
+function CopyRow({ label, value, valueClassName }: { label?: string; value: string; valueClassName?: string }) {
+  const { copied, copy } = useCopy();
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <p className={valueClassName}>{label && <span className="text-muted-foreground">{label}: </span>}{value}</p>
+      <button type="button" aria-label={label ? `Copy ${label}` : "Copy"} onClick={() => copy(value)} className="shrink-0 rounded-md p-1 text-muted-foreground hover:bg-secondary hover:text-foreground">
+        {copied ? <Check className="size-3.5 text-emerald-500" /> : <Copy className="size-3.5" />}
+      </button>
+    </div>
+  );
+}
 
 export default function TimestampConverter() {
   const [now, setNow] = useState(Math.floor(Date.now() / 1000));
@@ -46,9 +71,10 @@ export default function TimestampConverter() {
             <Button size="sm" variant="outline" onClick={() => setTs(String(now))}>Use now</Button>
             {parsed && (
               <div className="space-y-2 rounded-xl bg-secondary/50 p-3 text-sm">
-                <p><span className="text-muted-foreground">Local: </span>{parsed.toLocaleString()}</p>
-                <p><span className="text-muted-foreground">UTC: </span>{parsed.toUTCString()}</p>
-                <p><span className="text-muted-foreground">ISO: </span>{parsed.toISOString()}</p>
+                <p className="font-medium text-primary">{relativeFromNow(parsed.getTime())}</p>
+                <CopyRow label="Local" value={parsed.toLocaleString()} />
+                <CopyRow label="UTC" value={parsed.toUTCString()} />
+                <CopyRow label="ISO" value={parsed.toISOString()} />
               </div>
             )}
           </CardContent>
@@ -60,7 +86,7 @@ export default function TimestampConverter() {
             {fromDate !== null && (
               <div className="rounded-xl bg-secondary/50 p-3 text-sm">
                 <p className="text-muted-foreground">Unix timestamp (seconds)</p>
-                <p className="font-mono text-lg font-semibold">{fromDate}</p>
+                <CopyRow value={String(fromDate)} valueClassName="font-mono text-lg font-semibold" />
               </div>
             )}
           </CardContent>
