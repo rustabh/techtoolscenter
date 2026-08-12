@@ -24,18 +24,21 @@ export default function PromptGenerator() {
   const { history, add, remove, clear } = useGenerationHistory("uh:history:prompt-generator");
 
   const prompt = useMemo(() => {
+    // `null` means "omit this line entirely"; `""` means "keep this blank
+    // line as a section separator" — they must stay distinguishable, unlike
+    // a plain `condition && line` which collapses both cases to "".
     return [
       `You are ${role}.`,
       ``,
       `Your task: ${task}.`,
-      audience && `Target audience: ${audience}.`,
+      audience ? `Target audience: ${audience}.` : null,
       `Tone: ${tone}.`,
       `Output format: ${format}.`,
-      constraints && ``,
-      constraints && `Constraints:\n${constraints.split("\n").map((c) => `- ${c}`).join("\n")}`,
+      constraints ? `` : null,
+      constraints ? `Constraints:\n${constraints.split("\n").map((c) => `- ${c}`).join("\n")}` : null,
       ``,
       `Think step by step, then produce only the final result.`,
-    ].filter((l): l is string => typeof l === "string" && l !== "").join("\n");
+    ].filter((l): l is string => l !== null).join("\n");
   }, [role, task, tone, format, audience, constraints]);
 
   return (
