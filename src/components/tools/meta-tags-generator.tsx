@@ -50,6 +50,10 @@ export default function MetaTagsGenerator() {
     <span className={v.length > max ? "text-destructive" : "text-muted-foreground"}>{v.length}/{max}</span>
   );
 
+  const domain = useMemo(() => {
+    try { return new URL(url).hostname; } catch { return url.replace(/^https?:\/\//, "").split("/")[0]; }
+  }, [url]);
+
   return (
     <div className="grid gap-6 lg:grid-cols-2">
       <Card>
@@ -62,16 +66,35 @@ export default function MetaTagsGenerator() {
           <div className="space-y-1.5"><Label>OG type</Label><Input value={type} onChange={(e) => setType(e.target.value)} /></div>
         </CardContent>
       </Card>
-      <Card className="bg-gradient-to-br from-primary/5 to-transparent">
-        <CardHeader><CardTitle>HTML tags</CardTitle></CardHeader>
-        <CardContent className="space-y-4">
-          <pre className="max-h-[420px] overflow-auto whitespace-pre-wrap rounded-xl bg-secondary/50 p-4 text-xs leading-relaxed">{tags}</pre>
-          <div className="flex flex-wrap gap-2">
-            <Button onClick={() => copy(tags)}>{copied ? "Copied!" : "Copy all tags"}</Button>
-            <Button variant="outline" onClick={() => downloadBlob(new Blob([tags], { type: "text/html" }), "meta-tags.html")}>Download .html</Button>
-          </div>
-        </CardContent>
-      </Card>
+      <div className="space-y-6">
+        <Card>
+          <CardHeader><CardTitle>Social share preview</CardTitle></CardHeader>
+          <CardContent>
+            <div className="overflow-hidden rounded-xl border border-border">
+              {image && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={image} alt="" className="aspect-[1.91/1] w-full bg-secondary object-cover" onError={(e) => { e.currentTarget.style.display = "none"; }} />
+              )}
+              <div className="space-y-1 bg-secondary/40 p-3">
+                <p className="truncate text-xs uppercase tracking-wide text-muted-foreground">{domain}</p>
+                <p className="truncate text-sm font-semibold">{title || "Page title"}</p>
+                <p className="line-clamp-2 text-xs text-muted-foreground">{desc || "Page description"}</p>
+              </div>
+            </div>
+            <p className="mt-2 text-xs text-muted-foreground">Approximates how Twitter/X, Facebook, LinkedIn and WhatsApp render a shared link.</p>
+          </CardContent>
+        </Card>
+        <Card className="bg-gradient-to-br from-primary/5 to-transparent">
+          <CardHeader><CardTitle>HTML tags</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            <pre className="max-h-[320px] overflow-auto whitespace-pre-wrap rounded-xl bg-secondary/50 p-4 text-xs leading-relaxed">{tags}</pre>
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={() => copy(tags)}>{copied ? "Copied!" : "Copy all tags"}</Button>
+              <Button variant="outline" onClick={() => downloadBlob(new Blob([tags], { type: "text/html" }), "meta-tags.html")}>Download .html</Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
