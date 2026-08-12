@@ -18,9 +18,20 @@ interface ResumeState {
   experience: Entry[];
   education: Entry[];
   skills: string;
+  accent: string;
 }
 
 const entry = (): Entry => ({ id: Math.random().toString(36).slice(2), title: "", subtitle: "", date: "", detail: "" });
+
+const ACCENTS = [
+  { id: "indigo", hex: "#4f46e5" }, { id: "emerald", hex: "#059669" }, { id: "rose", hex: "#e11d48" },
+  { id: "amber", hex: "#d97706" }, { id: "slate", hex: "#334155" }, { id: "sky", hex: "#0284c7" },
+];
+
+function hexToRgb(hex: string) {
+  const int = parseInt(hex.replace("#", ""), 16);
+  return { r: (int >> 16) & 255, g: (int >> 8) & 255, b: int & 255 };
+}
 
 function initial(): ResumeState {
   return {
@@ -30,11 +41,16 @@ function initial(): ResumeState {
     experience: [{ id: "1", title: "Senior Developer", subtitle: "Acme Inc.", date: "2021 — Present", detail: "Led the migration to Next.js, improving load times by 40%." }],
     education: [{ id: "2", title: "B.Sc. Computer Science", subtitle: "State University", date: "2015 — 2019", detail: "Graduated with honours." }],
     skills: "TypeScript, React, Next.js, Node.js, PostgreSQL, Tailwind CSS",
+    accent: ACCENTS[0].hex,
   };
 }
 
 export default function ResumeBuilder() {
-  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<ResumeState>("uh:resume", initial());
+  const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<ResumeState>("uh:resume", initial());
+  // Resumes saved before the accent-color feature shipped won't have this
+  // field — fall back to the default rather than passing undefined to
+  // hexToRgb() (crash) or a color style (silently renders black).
+  const value = stored.accent ? stored : { ...stored, accent: ACCENTS[0].hex };
   const [exporting, setExporting] = useState(false);
   const patch = (p: Partial<ResumeState>) => set({ ...value, ...p });
   const patchEntry = (key: "experience" | "education", id: string, p: Partial<Entry>) =>
@@ -56,9 +72,10 @@ export default function ResumeBuilder() {
   const generatePdf = async () => {
     const { jsPDF } = await import("jspdf");
     const doc = new jsPDF();
+    const { r, g, b } = hexToRgb(value.accent);
     let y = 20;
     doc.setFontSize(22); doc.setTextColor(20); doc.text(value.name, 14, y); y += 7;
-    doc.setFontSize(12); doc.setTextColor(79, 70, 229); doc.text(value.role, 14, y); y += 7;
+    doc.setFontSize(12); doc.setTextColor(r, g, b); doc.text(value.role, 14, y); y += 7;
     doc.setFontSize(9); doc.setTextColor(90);
     doc.text([value.email, value.phone, value.location, value.website].filter(Boolean).join("  ·  "), 14, y); y += 8;
     doc.setDrawColor(220); doc.line(14, y, 196, y); y += 8;
@@ -69,7 +86,7 @@ export default function ResumeBuilder() {
     const ensureSpace = (needed: number) => {
       if (y + needed > PAGE_BOTTOM) { doc.addPage(); y = 20; }
     };
-    const section = (title: string) => { ensureSpace(10); doc.setFontSize(12); doc.setTextColor(79, 70, 229); doc.text(title.toUpperCase(), 14, y); y += 6; doc.setTextColor(40); };
+    const section = (title: string) => { ensureSpace(10); doc.setFontSize(12); doc.setTextColor(r, g, b); doc.text(title.toUpperCase(), 14, y); y += 6; doc.setTextColor(40); };
     const wrap = (text: string, size = 9) => {
       doc.setFontSize(size);
       const lines = doc.splitTextToSize(text, 182);
@@ -130,6 +147,28 @@ export default function ResumeBuilder() {
             <Input placeholder="Location" value={value.location} onChange={(e) => patch({ location: e.target.value })} />
             <Input placeholder="Website" value={value.website} onChange={(e) => patch({ website: e.target.value })} />
             <Textarea className="col-span-2" placeholder="Summary" value={value.summary} onChange={(e) => patch({ summary: e.target.value })} />
+            <div className="col-span-2 space-y-1.5">
+              <Label>Accent color</Label>
+              <div className="flex flex-wrap gap-2">
+                {ACCENTS.map((a) => (
+                  <button
+                    key={a.id}
+                    type="button"
+                    aria-label={`Use ${a.id} accent`}
+                    onClick={() => patch({ accent: a.hex })}
+                    className={`size-7 rounded-full border-2 transition-transform ${value.accent === a.hex ? "scale-110 border-foreground" : "border-transparent"}`}
+                    style={{ background: a.hex }}
+                  />
+                ))}
+                <input
+                  type="color"
+                  aria-label="Custom accent color"
+                  value={value.accent}
+                  onChange={(e) => patch({ accent: e.target.value })}
+                  className="size-7 cursor-pointer rounded-full border border-border bg-transparent p-0"
+                />
+              </div>
+            </div>
           </CardContent>
         </Card>
         {EntryEditor({ title: "Experience", field: "experience" })}
@@ -144,20 +183,20 @@ export default function ResumeBuilder() {
       <div className="lg:sticky lg:top-20 lg:h-fit">
         <div className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
           <h2 className="text-2xl font-bold">{value.name}</h2>
-          <p className="font-medium text-indigo-600">{value.role}</p>
+          <p className="font-medium" style={{ color: value.accent }}>{value.role}</p>
           <p className="mt-1 text-xs text-slate-500">{[value.email, value.phone, value.location, value.website].filter(Boolean).join("  ·  ")}</p>
           <div className="my-4 h-px bg-slate-200" />
-          <Section title="Summary"><p className="text-xs leading-relaxed text-slate-600">{value.summary}</p></Section>
-          <Section title="Experience">
+          <Section title="Summary" accent={value.accent}><p className="text-xs leading-relaxed text-slate-600">{value.summary}</p></Section>
+          <Section title="Experience" accent={value.accent}>
             {value.experience.map((e) => <EntryView key={e.id} e={e} />)}
           </Section>
-          <Section title="Education">
+          <Section title="Education" accent={value.accent}>
             {value.education.map((e) => <EntryView key={e.id} e={e} />)}
           </Section>
-          <Section title="Skills">
+          <Section title="Skills" accent={value.accent}>
             <div className="flex flex-wrap gap-1.5">
               {value.skills.split(",").map((s) => s.trim()).filter(Boolean).map((s) => (
-                <span key={s} className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-[11px] font-medium text-indigo-700">{s}</span>
+                <span key={s} className="rounded-full px-2.5 py-0.5 text-[11px] font-medium" style={{ background: `${value.accent}1a`, color: value.accent }}>{s}</span>
               ))}
             </div>
           </Section>
@@ -167,10 +206,10 @@ export default function ResumeBuilder() {
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, accent, children }: { title: string; accent: string; children: React.ReactNode }) {
   return (
     <div className="mb-4">
-      <h3 className="mb-2 text-xs font-bold uppercase tracking-wider text-indigo-600">{title}</h3>
+      <h3 className="mb-2 text-xs font-bold uppercase tracking-wider" style={{ color: accent }}>{title}</h3>
       {children}
     </div>
   );
