@@ -131,9 +131,9 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
 
               {mode === "target" ? (
                 <div className="space-y-1.5">
-                  <Label>Target size (KB)</Label>
+                  <Label htmlFor="ic-target-kb">Target size (KB)</Label>
                   <div className="flex flex-wrap items-center gap-2">
-                    <input type="number" min={5} value={targetKB} onChange={(e) => setTargetKB(Math.max(5, Number(e.target.value)))}
+                    <input id="ic-target-kb" type="number" min={5} value={targetKB} onChange={(e) => setTargetKB(Math.max(5, Number(e.target.value)))}
                       className="w-24 rounded-lg border border-border bg-transparent px-3 py-1.5 text-sm" />
                     <div className="flex gap-1">
                       {[10, 20, 50, 100, 200].map((kb) => (
@@ -146,13 +146,13 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
               ) : (
                 <>
                   <div className="space-y-1.5">
-                    <Label>Quality: {Math.round(quality * 100)}%</Label>
-                    <input type="range" min={0.1} max={1} step={0.05} value={quality}
+                    <Label htmlFor="ic-quality">Quality: {Math.round(quality * 100)}%</Label>
+                    <input id="ic-quality" type="range" min={0.1} max={1} step={0.05} value={quality}
                       onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
                   </div>
                   <div className="space-y-1.5">
-                    <Label>Max width: {maxWidth}px</Label>
-                    <input type="range" min={400} max={4000} step={100} value={maxWidth}
+                    <Label htmlFor="ic-max-width">Max width: {maxWidth}px</Label>
+                    <input id="ic-max-width" type="range" min={400} max={4000} step={100} value={maxWidth}
                       onChange={(e) => setMaxWidth(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
                   </div>
                 </>

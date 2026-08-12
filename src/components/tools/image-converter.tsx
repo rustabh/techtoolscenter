@@ -203,8 +203,8 @@ export default function ImageConverter({ preset }: { preset?: Record<string, unk
               </div>
               {fmt.lossy && (
                 <div className="space-y-1.5">
-                  <Label>Quality: {Math.round(quality * 100)}%</Label>
-                  <input type="range" min={0.1} max={1} step={0.05} value={quality} onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+                  <Label htmlFor="conv-quality">Quality: {Math.round(quality * 100)}%</Label>
+                  <input id="conv-quality" type="range" min={0.1} max={1} step={0.05} value={quality} onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
                 </div>
               )}
               <Button onClick={convertAll} disabled={busy} className="w-full">

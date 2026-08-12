@@ -118,11 +118,11 @@ export default function ImageResizer({ preset }: { preset?: Record<string, unkno
             <CardHeader><CardTitle>Dimensions</CardTitle></CardHeader>
             <CardContent className="space-y-5">
               <div className="flex items-end gap-2">
-                <div className="flex-1 space-y-1.5"><Label>Width (px)</Label><Input type="number" min={1} value={width} onChange={(e) => changeW(Number(e.target.value))} /></div>
+                <div className="flex-1 space-y-1.5"><Label htmlFor="ir-width">Width (px)</Label><Input id="ir-width" type="number" min={1} value={width} onChange={(e) => changeW(Number(e.target.value))} /></div>
                 <button onClick={() => setLock(!lock)} title="Lock aspect ratio" aria-label={lock ? "Aspect ratio locked" : "Aspect ratio unlocked"} aria-pressed={lock} className="mb-1 rounded-lg border border-border p-2 hover:bg-secondary">
                   {lock ? <Lock className="size-4 text-primary" /> : <Unlock className="size-4 text-muted-foreground" />}
                 </button>
-                <div className="flex-1 space-y-1.5"><Label>Height (px)</Label><Input type="number" min={1} value={height} onChange={(e) => changeH(Number(e.target.value))} /></div>
+                <div className="flex-1 space-y-1.5"><Label htmlFor="ir-height">Height (px)</Label><Input id="ir-height" type="number" min={1} value={height} onChange={(e) => changeH(Number(e.target.value))} /></div>
               </div>
               <div className="space-y-1.5">
                 <Label>Presets</Label>
