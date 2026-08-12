@@ -15,9 +15,13 @@ export default function WordCounter() {
   const stats = useMemo(() => {
     const text = value;
     const words = text.trim() ? text.trim().split(/\s+/).length : 0;
-    const chars = text.length;
-    const charsNoSpace = text.replace(/\s/g, "").length;
-    const sentences = text.trim() ? (text.match(/[.!?]+(\s|$)/g) || []).length || (text.trim() ? 1 : 0) : 0;
+    // Array.from splits by Unicode code point, so a 😀-style astral-plane
+    // emoji (a UTF-16 surrogate pair) counts as one character, not two.
+    const chars = Array.from(text).length;
+    const charsNoSpace = Array.from(text.replace(/\s/g, "")).length;
+    const sentences = text.trim()
+      ? text.trim().split(/[.!?]+(?:\s+|$)/).map((s) => s.trim()).filter(Boolean).length
+      : 0;
     const paragraphs = text.trim() ? text.split(/\n+/).filter((p) => p.trim()).length : 0;
     const readingTime = Math.ceil(words / 200);
     return { words, chars, charsNoSpace, sentences, paragraphs, readingTime };
