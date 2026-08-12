@@ -26,6 +26,19 @@ function threeDigits(n: number): string {
   return parts.join(" ");
 }
 
+/** The crore group can itself run 0-99999 (up to just under 1 lakh crore),
+ *  so — unlike the lakh/thousand groups, which are always 0-99 by
+ *  construction — it needs its own thousand+hundred breakdown rather than
+ *  threeDigits(), which only handles 0-999 and silently produces
+ *  "undefined" (an out-of-range ONES[] lookup) above that. */
+function croreGroupToWords(n: number): string {
+  const thousands = Math.floor(n / 1000), rest = n % 1000;
+  const parts: string[] = [];
+  if (thousands) parts.push(twoDigits(thousands) + " Thousand");
+  if (rest) parts.push(threeDigits(rest));
+  return parts.join(" ");
+}
+
 /** Converts a non-negative integer to words using the Indian numbering system (Crore/Lakh/Thousand). */
 function integerToIndianWords(n: number): string {
   if (n === 0) return "Zero";
@@ -35,7 +48,7 @@ function integerToIndianWords(n: number): string {
   const hundred = n;
 
   const parts: string[] = [];
-  if (crore) parts.push(threeDigits(crore) + " Crore");
+  if (crore) parts.push(croreGroupToWords(crore) + " Crore");
   if (lakh) parts.push(twoDigits(lakh) + " Lakh");
   if (thousand) parts.push(twoDigits(thousand) + " Thousand");
   if (hundred) parts.push(threeDigits(hundred));
