@@ -201,7 +201,7 @@ export default function FaviconGenerator() {
             ) : (
               <div className="space-y-1.5">
                 <Label>{mode === "emoji" ? "Emoji" : "Text (1–2 characters)"}</Label>
-                <Input value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === "emoji" ? "⭐" : "T"} maxLength={mode === "emoji" ? 4 : 3} />
+                <Input value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === "emoji" ? "⭐" : "T"} maxLength={mode === "emoji" ? 4 : 2} />
               </div>
             )}
           </CardContent>
