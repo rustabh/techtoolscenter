@@ -8,6 +8,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 export function useLocalStorage<T>(key: string, initialValue: T) {
   const [value, setValue] = useState<T>(initialValue);
   const [hydrated, setHydrated] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   const past = useRef<T[]>([]);
   const future = useRef<T[]>([]);
@@ -27,8 +28,9 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     if (!hydrated) return;
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
+      setSaveError(false);
     } catch {
-      /* storage full / unavailable */
+      setSaveError(true);
     }
   }, [key, value, hydrated]);
 
@@ -74,6 +76,7 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     redo,
     reset,
     hydrated,
+    saveError,
     canUndo: past.current.length > 0,
     canRedo: future.current.length > 0,
   };

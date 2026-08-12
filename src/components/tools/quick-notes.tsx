@@ -18,7 +18,7 @@ function seed(): State {
 }
 
 export default function QuickNotes() {
-  const { value, set } = useLocalStorage<State>("uh:notes", seed());
+  const { value, set, saveError } = useLocalStorage<State>("uh:notes", seed());
   const active = value.notes.find((n) => n.id === value.active) ?? value.notes[0];
 
   const stats = useMemo(() => {
@@ -57,7 +57,10 @@ export default function QuickNotes() {
         <CardContent className="space-y-3 pt-6">
           <Input value={active?.title ?? ""} onChange={(e) => update({ title: e.target.value })} placeholder="Note title" className="text-lg font-semibold" />
           <Textarea value={active?.body ?? ""} onChange={(e) => update({ body: e.target.value })} placeholder="Start writing…" className="min-h-[340px]" />
-          <p className="text-xs text-muted-foreground">{stats.words} words · {stats.chars} characters · saved locally</p>
+          <p className={cn("text-xs", saveError ? "font-medium text-destructive" : "text-muted-foreground")}>
+            {stats.words} words · {stats.chars} characters ·{" "}
+            {saveError ? "couldn't save — browser storage is full" : "saved locally"}
+          </p>
         </CardContent>
       </Card>
     </div>
