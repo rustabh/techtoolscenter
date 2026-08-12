@@ -27,6 +27,76 @@ function describeDow(dow: string): string {
   return dow;
 }
 
+function parseField(field: string, min: number, max: number): Set<number> {
+  const values = new Set<number>();
+  for (const part of field.split(",")) {
+    const stepMatch = part.match(/^(\*|\d+-\d+|\d+)\/(\d+)$/);
+    if (stepMatch) {
+      const [, range, stepStr] = stepMatch;
+      const step = Number(stepStr);
+      let start = min, end = max;
+      if (range !== "*") {
+        const rangeMatch = range.match(/^(\d+)-(\d+)$/);
+        if (rangeMatch) { start = Number(rangeMatch[1]); end = Number(rangeMatch[2]); }
+        else start = end = Number(range);
+      }
+      for (let v = start; v <= end; v += step) values.add(v);
+      continue;
+    }
+    const rangeMatch = part.match(/^(\d+)-(\d+)$/);
+    if (rangeMatch) {
+      for (let v = Number(rangeMatch[1]); v <= Number(rangeMatch[2]); v++) values.add(v);
+      continue;
+    }
+    if (part === "*") { for (let v = min; v <= max; v++) values.add(v); continue; }
+    if (/^\d+$/.test(part)) values.add(Number(part));
+  }
+  return values;
+}
+
+// Standard Vixie-cron semantics: when BOTH day-of-month and day-of-week are
+// restricted (neither is "*"), a date matches if EITHER field matches (OR),
+// not both (AND) — a common source of "why did my cron fire on the wrong
+// day" confusion, so getting this exactly right matters more than the rest.
+function nextRuns(expr: string, count: number, from = new Date()): Date[] {
+  const parts = expr.trim().split(/\s+/);
+  if (parts.length !== 5) return [];
+  const [minF, hourF, domF, monF, dowF] = parts;
+  let minutes: Set<number>, hours: Set<number>, doms: Set<number>, months: Set<number>, dows: Set<number>;
+  try {
+    minutes = parseField(minF, 0, 59);
+    hours = parseField(hourF, 0, 23);
+    doms = parseField(domF, 1, 31);
+    months = parseField(monF, 1, 12);
+    dows = parseField(dowF, 0, 6);
+  } catch {
+    return [];
+  }
+  if (![minutes, hours, doms, months, dows].every((s) => s.size > 0)) return [];
+  const domIsWild = domF === "*";
+  const dowIsWild = dowF === "*";
+
+  const results: Date[] = [];
+  const cursor = new Date(from);
+  cursor.setSeconds(0, 0);
+  cursor.setMinutes(cursor.getMinutes() + 1);
+  let guard = 0;
+  const maxIterations = 60 * 24 * 366 * 4; // ~4 years of minute-steps, worst case (e.g. Feb 29)
+  while (results.length < count && guard < maxIterations) {
+    guard++;
+    if (!months.has(cursor.getMonth() + 1)) { cursor.setMonth(cursor.getMonth() + 1, 1); cursor.setHours(0, 0, 0, 0); continue; }
+    const domMatch = doms.has(cursor.getDate());
+    const dowMatch = dows.has(cursor.getDay());
+    const dayMatches = domIsWild && dowIsWild ? true : domIsWild ? dowMatch : dowIsWild ? domMatch : domMatch || dowMatch;
+    if (!dayMatches) { cursor.setDate(cursor.getDate() + 1); cursor.setHours(0, 0, 0, 0); continue; }
+    if (!hours.has(cursor.getHours())) { cursor.setHours(cursor.getHours() + 1, 0, 0, 0); continue; }
+    if (!minutes.has(cursor.getMinutes())) { cursor.setMinutes(cursor.getMinutes() + 1); continue; }
+    results.push(new Date(cursor));
+    cursor.setMinutes(cursor.getMinutes() + 1);
+  }
+  return results;
+}
+
 function describe(expr: string): string {
   const parts = expr.trim().split(/\s+/);
   if (parts.length !== 5) return "Enter a valid 5-field cron expression.";
@@ -47,6 +117,9 @@ export default function CronExpressionHelper() {
   const [expr, setExpr] = useState("0 9 * * 1-5");
   const { copied, copy } = useCopy();
   const desc = useMemo(() => describe(expr), [expr]);
+  // Recomputed against "now" on every expr change — a static list would go
+  // stale the moment the page has been open a while.
+  const upcoming = useMemo(() => nextRuns(expr, 5), [expr]);
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -68,6 +141,18 @@ export default function CronExpressionHelper() {
           <Input value={expr} onChange={(e) => setExpr(e.target.value)} className="font-mono" />
           <p className="rounded-xl bg-secondary/50 p-4 text-sm">{desc}</p>
           <p className="text-xs text-muted-foreground">Fields: minute · hour · day-of-month · month · day-of-week</p>
+          {upcoming.length > 0 && (
+            <div className="space-y-1.5">
+              <p className="text-xs font-medium text-muted-foreground">Next {upcoming.length} runs (your local time)</p>
+              <ul className="space-y-1 rounded-xl border border-border p-3 text-sm">
+                {upcoming.map((d, i) => (
+                  <li key={i} className="flex items-center justify-between">
+                    <span>{d.toLocaleString(undefined, { weekday: "short", year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <Button onClick={() => copy(expr)}>{copied ? "Copied!" : "Copy expression"}</Button>
         </CardContent>
       </Card>
