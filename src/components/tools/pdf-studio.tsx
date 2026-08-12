@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
 import { parsePageRange } from "@/lib/pdf-page-range";
+import { FileDropzone } from "./file-dropzone";
 import PdfCompress from "./pdf-compress";
 
 type Tab = "merge" | "split" | "compress" | "rotate" | "organize" | "watermark" | "numbers" | "headerfooter" | "sign" | "img2pdf" | "batch" | "advanced";
@@ -103,15 +104,7 @@ export default function PdfStudio() {
 }
 
 function Dropzone({ onFiles, multiple, accept = "application/pdf", label }: { onFiles: (f: File[]) => void; multiple?: boolean; accept?: string; label: string }) {
-  const ref = useRef<HTMLInputElement>(null);
-  return (
-    <>
-      <input ref={ref} type="file" accept={accept} multiple={multiple} className="hidden" onChange={(e) => onFiles(Array.from(e.target.files || []))} />
-      <button onClick={() => ref.current?.click()} className="flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-8 text-center transition-colors hover:border-primary/50 hover:bg-secondary/40">
-        <UploadCloud className="size-7 text-primary" /><span className="font-medium">{label}</span>
-      </button>
-    </>
-  );
+  return <FileDropzone icon={UploadCloud} title={label} accept={accept} multiple={multiple} onFiles={onFiles} className="p-8" />;
 }
 
 interface Field { key: string; label: string; def: string; options?: string[] }

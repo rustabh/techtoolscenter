@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { FileSpreadsheet, Loader2, Download, Info, Lock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
 import { buildXlsx } from "@/lib/xlsx-writer";
+import { FileDropzone } from "@/components/tools/file-dropzone";
 
 type PageRows = { page: number; rows: string[][] };
 
@@ -141,7 +142,6 @@ function csvEscape(v: string): string {
 }
 
 export default function PdfToExcel() {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [pages, setPages] = useState<PageRows[]>([]);
   const [activePage, setActivePage] = useState(0);
@@ -224,21 +224,13 @@ export default function PdfToExcel() {
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          <input
-            ref={inputRef}
-            type="file"
+          <FileDropzone
+            icon={FileSpreadsheet}
+            title={file ? file.name : "Upload a PDF to convert to Excel"}
+            subtitle="Bank statements, invoices and simple tables work best"
             accept="application/pdf"
-            className="hidden"
-            onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])}
+            onFiles={(files) => files[0] && onFile(files[0])}
           />
-          <button
-            onClick={() => inputRef.current?.click()}
-            className="flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-10 text-center transition-colors hover:border-primary/50 hover:bg-secondary/40"
-          >
-            <FileSpreadsheet className="size-8 text-primary" />
-            <span className="font-medium">{file ? file.name : "Upload a PDF to convert to Excel"}</span>
-            <span className="text-sm text-muted-foreground">Bank statements, invoices and simple tables work best</span>
-          </button>
           <p className="mt-3 text-center text-xs text-muted-foreground">Processed entirely in your browser — files are never uploaded</p>
           {notice && <p className="mt-2 text-center text-xs text-destructive">{notice}</p>}
         </CardContent>

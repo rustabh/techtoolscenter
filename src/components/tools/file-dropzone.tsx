@@ -7,7 +7,7 @@ import type { LucideIcon } from "lucide-react";
 export interface FileDropzoneProps {
   icon?: LucideIcon;
   title: ReactNode;
-  subtitle: ReactNode;
+  subtitle?: ReactNode;
   accept?: string;
   multiple?: boolean;
   onFiles: (files: File[]) => void;
@@ -92,7 +92,7 @@ export function FileDropzone({
       )}
       <Icon aria-hidden className="size-8 text-primary" />
       <span className="font-medium">{title}</span>
-      <span className="text-sm text-muted-foreground">{subtitle}</span>
+      {subtitle && <span className="text-sm text-muted-foreground">{subtitle}</span>}
       {children}
     </div>
   );

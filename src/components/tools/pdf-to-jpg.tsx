@@ -1,16 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { FileImage, Loader2, Download } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
+import { FileDropzone } from "@/components/tools/file-dropzone";
 
 type PageImage = { blob: Blob; url: string };
 
 export default function PdfToJpg() {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [pages, setPages] = useState<PageImage[]>([]);
   const [busy, setBusy] = useState(false);
@@ -93,21 +93,13 @@ export default function PdfToJpg() {
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          <input
-            ref={inputRef}
-            type="file"
+          <FileDropzone
+            icon={FileImage}
+            title={file ? file.name : "Upload a PDF to convert"}
+            subtitle="Each page becomes a JPG image"
             accept="application/pdf"
-            className="hidden"
-            onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])}
+            onFiles={(files) => files[0] && onFile(files[0])}
           />
-          <button
-            onClick={() => inputRef.current?.click()}
-            className="flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-10 text-center transition-colors hover:border-primary/50 hover:bg-secondary/40"
-          >
-            <FileImage className="size-8 text-primary" />
-            <span className="font-medium">{file ? file.name : "Upload a PDF to convert"}</span>
-            <span className="text-sm text-muted-foreground">Each page becomes a JPG image</span>
-          </button>
           <p className="mt-3 text-center text-xs text-muted-foreground">Processed entirely in your browser — files are never uploaded</p>
           {notice && <p className="mt-2 text-center text-xs text-destructive">{notice}</p>}
         </CardContent>

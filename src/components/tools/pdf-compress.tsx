@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { FileArchive, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { downloadBlob, formatBytes } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
 import { showToast } from "@/components/ui/toaster";
+import { FileDropzone } from "@/components/tools/file-dropzone";
 
 /** Compression levels — each maps to a render resolution + JPEG quality.
  *  Lower scale + lower quality = much smaller file. */
@@ -50,7 +51,6 @@ function presetToState(preset?: Record<string, unknown>): { mode: "level" | "tar
 
 export default function PdfCompress({ preset }: { preset?: Record<string, unknown> }) {
   const init = presetToState(preset);
-  const inputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [mode, setMode] = useState<"level" | "target">(init.mode);
   const [level, setLevel] = useState<LevelId>(init.level);
@@ -143,14 +143,13 @@ export default function PdfCompress({ preset }: { preset?: Record<string, unknow
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          <input ref={inputRef} type="file" accept="application/pdf" className="hidden"
-            onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
-          <button onClick={() => inputRef.current?.click()}
-            className="flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-10 text-center transition-colors hover:border-primary/50 hover:bg-secondary/40">
-            <FileArchive className="size-8 text-primary" />
-            <span className="font-medium">{file ? file.name : "Upload a PDF to compress"}</span>
-            <span className="text-sm text-muted-foreground">Compressed privately in your browser — nothing is uploaded</span>
-          </button>
+          <FileDropzone
+            icon={FileArchive}
+            title={file ? file.name : "Upload a PDF to compress"}
+            subtitle="Compressed privately in your browser — nothing is uploaded"
+            accept="application/pdf"
+            onFiles={(files) => files[0] && onFile(files[0])}
+          />
           <div className="mt-3 text-center">
             <button onClick={async () => {
               try { onFile(await (await import("@/lib/samples")).samplePdfFile()); }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { UploadCloud } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { downloadBlob } from "@/lib/utils";
 import { track } from "@/lib/stats/stats";
 import { showToast } from "@/components/ui/toaster";
+import { FileDropzone } from "@/components/tools/file-dropzone";
 
 // Standard passport / ID photo specifications (mm). Not all square, unlike a generic resize.
 const SIZE_PRESETS: { label: string; wMm: number; hMm: number }[] = [
@@ -30,7 +31,6 @@ function mmToPx(mm: number): number {
 }
 
 export default function PassportPhotoMaker() {
-  const inputRef = useRef<HTMLInputElement>(null);
   const [img, setImg] = useState<HTMLImageElement | null>(null);
   const [name, setName] = useState("photo");
   const [presetIndex, setPresetIndex] = useState(0);
@@ -176,21 +176,13 @@ export default function PassportPhotoMaker() {
     <div className="space-y-6">
       <Card>
         <CardContent className="pt-6">
-          <input
-            ref={inputRef}
-            type="file"
+          <FileDropzone
+            icon={UploadCloud}
+            title={img ? `${name} · ${img.naturalWidth}×${img.naturalHeight}` : "Upload a photo for your passport/ID photo"}
+            subtitle="Processed privately in your browser — nothing is uploaded"
             accept="image/*"
-            className="hidden"
-            onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])}
+            onFiles={(files) => files[0] && onFile(files[0])}
           />
-          <button
-            onClick={() => inputRef.current?.click()}
-            className="flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-10 text-center transition-colors hover:border-primary/50 hover:bg-secondary/40"
-          >
-            <UploadCloud className="size-8 text-primary" />
-            <span className="font-medium">{img ? `${name} · ${img.naturalWidth}×${img.naturalHeight}` : "Upload a photo for your passport/ID photo"}</span>
-            <span className="text-sm text-muted-foreground">Processed privately in your browser — nothing is uploaded</span>
-          </button>
         </CardContent>
       </Card>
 

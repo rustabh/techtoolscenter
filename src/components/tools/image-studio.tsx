@@ -10,6 +10,7 @@ import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { cn, downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
+import { FileDropzone } from "./file-dropzone";
 import ImageCompressor from "./image-compressor";
 
 type Tab = "edit" | "crop" | "compress" | "palette" | "picker" | "info" | "background" | "batch";
@@ -43,32 +44,14 @@ function useImage() {
 }
 
 function Dropzone({ onFile, label }: { onFile: (f: File) => void; label: string }) {
-  const ref = useRef<HTMLInputElement>(null);
-  const [over, setOver] = useState(false);
   return (
-    <>
-      <input ref={ref} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
-      <button
-        type="button"
-        onClick={() => ref.current?.click()}
-        onDragOver={(e) => { e.preventDefault(); setOver(true); }}
-        onDragLeave={() => setOver(false)}
-        onDrop={(e) => {
-          e.preventDefault();
-          setOver(false);
-          const f = e.dataTransfer.files?.[0];
-          if (f) onFile(f);
-        }}
-        className={cn(
-          "flex w-full flex-col items-center gap-3 rounded-2xl border-2 border-dashed p-10 text-center transition-colors",
-          over ? "border-primary bg-secondary/60" : "border-border hover:border-primary/50 hover:bg-secondary/40",
-        )}
-      >
-        <UploadCloud className="size-8 text-primary" />
-        <span className="font-medium">{label}</span>
-        <span className="text-sm text-muted-foreground">JPG, PNG or WebP · drag & drop or click · processed locally</span>
-      </button>
-    </>
+    <FileDropzone
+      icon={UploadCloud}
+      title={label}
+      subtitle="JPG, PNG or WebP · drag & drop or click · processed locally"
+      accept="image/*"
+      onFiles={(files) => files[0] && onFile(files[0])}
+    />
   );
 }
 
