@@ -15,7 +15,8 @@ export default function RemoveDuplicateLines() {
   const { copied, copy } = useCopy();
 
   const { output, removed } = useMemo(() => {
-    let lines = value.split("\n").map((l) => l.replace(/\s+$/, ""));
+    const rawLines = value.split("\n").map((l) => l.replace(/\s+$/, ""));
+    let lines = rawLines;
     if (removeEmpty) lines = lines.filter((l) => l.trim() !== "");
     const seen = new Set<string>();
     const result: string[] = [];
@@ -27,7 +28,7 @@ export default function RemoveDuplicateLines() {
       }
     }
     if (sort) result.sort((a, b) => a.localeCompare(b));
-    return { output: result.join("\n"), removed: lines.length - result.length };
+    return { output: result.join("\n"), removed: rawLines.length - result.length };
   }, [value, caseSensitive, removeEmpty, sort]);
 
   const Toggle = ({ checked, onChange, label }: { checked: boolean; onChange: (v: boolean) => void; label: string }) => (
