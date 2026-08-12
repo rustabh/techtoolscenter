@@ -13,9 +13,10 @@ interface IncomeTaxState {
   income: string;
   regime: "new" | "old";
   age: "below60" | "60to80" | "above80";
+  deductions: string;
 }
 
-const initial: IncomeTaxState = { income: "1200000", regime: "new", age: "below60" };
+const initial: IncomeTaxState = { income: "1200000", regime: "new", age: "below60", deductions: "0" };
 
 const CESS_RATE = 0.04;
 
@@ -74,6 +75,7 @@ function slabTax(taxable: number, slabs: Slab[]): number {
 interface RegimeResult {
   gross: number;
   standardDeduction: number;
+  itemizedDeductions: number;
   netTaxable: number;
   taxBeforeCess: number;
   cess: number;
@@ -87,30 +89,39 @@ function computeNewRegime(income: number): RegimeResult {
   const taxBeforeCess = netTaxable <= NEW_REGIME_REBATE_LIMIT ? 0 : slabTax(netTaxable, NEW_REGIME_SLABS);
   const cess = taxBeforeCess * CESS_RATE;
   const totalTax = taxBeforeCess + cess;
-  return { gross: income, standardDeduction, netTaxable, taxBeforeCess, cess, totalTax, takeHome: income - totalTax };
+  return { gross: income, standardDeduction, itemizedDeductions: 0, netTaxable, taxBeforeCess, cess, totalTax, takeHome: income - totalTax };
 }
 
-function computeOldRegime(income: number, age: IncomeTaxState["age"]): RegimeResult {
+// Unlike the new regime, the old regime's main advantage is itemized
+// deductions (80C, 80D, HRA, home-loan interest, NPS 80CCD(1B), etc.) on top
+// of the standard deduction — omitting them makes "which regime saves more"
+// misleading for anyone who actually claims them. Section-wise caps (80C's
+// ₹1.5L limit, etc.) aren't individually enforced here — the field is a
+// single "how much will you actually claim in total" input.
+function computeOldRegime(income: number, age: IncomeTaxState["age"], itemizedDeductions: number): RegimeResult {
   const standardDeduction = OLD_REGIME_STANDARD_DEDUCTION;
-  const netTaxable = Math.max(income - standardDeduction, 0);
+  const netTaxable = Math.max(income - standardDeduction - Math.max(itemizedDeductions, 0), 0);
   const taxBeforeCess =
     netTaxable <= OLD_REGIME_REBATE_LIMIT ? 0 : slabTax(netTaxable, OLD_REGIME_SLABS[age]);
   const cess = taxBeforeCess * CESS_RATE;
   const totalTax = taxBeforeCess + cess;
-  return { gross: income, standardDeduction, netTaxable, taxBeforeCess, cess, totalTax, takeHome: income - totalTax };
+  return { gross: income, standardDeduction, itemizedDeductions: Math.max(itemizedDeductions, 0), netTaxable, taxBeforeCess, cess, totalTax, takeHome: income - totalTax };
 }
 
 export default function IncomeTaxCalculator() {
-  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<IncomeTaxState>(
+  const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<IncomeTaxState>(
     "uh:income-tax",
     initial
   );
+  // Calculations saved before the deductions field existed won't have it.
+  const value = useMemo(() => (stored.deductions !== undefined ? stored : { ...stored, deductions: "0" }), [stored]);
   const { copied, copy } = useCopy();
 
   const result = useMemo(() => {
     const income = parseFloat(value.income) || 0;
+    const deductions = parseFloat(value.deductions) || 0;
     const newRegime = computeNewRegime(income);
-    const oldRegime = computeOldRegime(income, value.age);
+    const oldRegime = computeOldRegime(income, value.age, deductions);
     const selected = value.regime === "new" ? newRegime : oldRegime;
     const betterRegime: "new" | "old" = newRegime.totalTax <= oldRegime.totalTax ? "new" : "old";
     const savings = Math.abs(newRegime.totalTax - oldRegime.totalTax);
@@ -180,6 +191,17 @@ export default function IncomeTaxCalculator() {
               ))}
             </div>
           </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="itc-deductions">Deductions under old regime (₹) — 80C, 80D, HRA, home loan interest, NPS, etc.</Label>
+            <Input
+              id="itc-deductions"
+              type="number"
+              inputMode="decimal"
+              value={value.deductions}
+              onChange={(e) => set({ ...value, deductions: e.target.value })}
+            />
+            <p className="text-xs text-muted-foreground">Only applies to the old regime — the new regime doesn&apos;t allow most of these deductions. Section-wise caps aren&apos;t checked; enter what you&apos;ll actually claim.</p>
+          </div>
           <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
         </CardContent>
       </Card>
@@ -196,6 +218,9 @@ export default function IncomeTaxCalculator() {
 
           <Row label="Gross annual income" value={formatCurrency(result.selected.gross)} />
           <Row label="Standard deduction" value={formatCurrency(result.selected.standardDeduction)} />
+          {result.selected.itemizedDeductions > 0 && (
+            <Row label="Other deductions (80C, 80D, HRA, etc.)" value={formatCurrency(result.selected.itemizedDeductions)} />
+          )}
           <Row label="Net taxable income" value={formatCurrency(result.selected.netTaxable)} />
           <Row label="Tax before cess" value={formatCurrency(result.selected.taxBeforeCess)} />
           <Row label="Health & education cess (4%)" value={formatCurrency(result.selected.cess)} />
