@@ -27,10 +27,11 @@ const CATS: Record<string, { base: string; units: Units }> = {
   Typography: { base: "px", units: { px: 1, pt: 1.3333, pc: 16, in: 96, cm: 37.7952, mm: 3.77952, em: 16, rem: 16 } },
   Cooking: { base: "ml", units: { ml: 1, tsp: 4.92892, tbsp: 14.7868, cup: 240, "fl oz": 29.5735, L: 1000 } },
 };
+const TEMP_UNITS = ["°C", "°F", "K"];
 
 export default function UnitConverter() {
   const [cat, setCat] = useState("Length");
-  const units = cat === "Temperature" ? [] : Object.keys(CATS[cat].units);
+  const units = useMemo(() => (cat === "Temperature" ? [] : Object.keys(CATS[cat].units)), [cat]);
   const [from, setFrom] = useState(units[0]);
   const [to, setTo] = useState(units[2] ?? units[1]);
   const [val, setVal] = useState("1");
@@ -60,8 +61,23 @@ export default function UnitConverter() {
   }, [from, to, val]);
 
   const isTemp = cat === "Temperature";
-  const tempUnits = ["°C", "°F", "K"];
   const displayResult = isTemp ? tempResult : result;
+
+  // "From" value converted into every unit in the category at once — the
+  // single from/to pair above answers one question; this answers "what is
+  // 5 km in every other length unit" without repeated dropdown changes.
+  const allConversions = useMemo(() => {
+    const v = parseFloat(val) || 0;
+    if (isTemp) {
+      const c = from === "°F" ? (v - 32) * 5 / 9 : from === "K" ? v - 273.15 : v;
+      return TEMP_UNITS.map((u) => ({
+        unit: u,
+        value: String(Math.round((u === "°F" ? c * 9 / 5 + 32 : u === "K" ? c + 273.15 : c) * 100) / 100),
+      }));
+    }
+    const f = CATS[cat].units[from];
+    return units.map((u) => ({ unit: u, value: String(Math.round((v * f / CATS[cat].units[u]) * 1e6) / 1e6) }));
+  }, [cat, from, val, isTemp, units]);
 
   const copyResult = async () => {
     try {
@@ -91,7 +107,7 @@ export default function UnitConverter() {
             <Label htmlFor="uc-from-value">From</Label>
             <Input id="uc-from-value" type="number" inputMode="decimal" aria-label="Value to convert" value={val} onChange={(e) => setVal(e.target.value)} />
             <Select aria-label="Convert from unit" value={from} onChange={(e) => setFrom(e.target.value)}>
-              {(isTemp ? tempUnits : units).map((u) => <option key={u}>{u}</option>)}
+              {(isTemp ? TEMP_UNITS : units).map((u) => <option key={u}>{u}</option>)}
             </Select>
           </div>
           <Button variant="outline" size="icon" className="mb-1 justify-self-center sm:justify-self-auto" aria-label="Swap from and to units"
@@ -106,7 +122,7 @@ export default function UnitConverter() {
               </button>
             </div>
             <Select aria-label="Convert to unit" value={to} onChange={(e) => setTo(e.target.value)}>
-              {(isTemp ? tempUnits : units).map((u) => <option key={u}>{u}</option>)}
+              {(isTemp ? TEMP_UNITS : units).map((u) => <option key={u}>{u}</option>)}
             </Select>
           </div>
         </CardContent>
@@ -114,6 +130,22 @@ export default function UnitConverter() {
       <p className="text-center text-sm text-muted-foreground">
         {val || 0} {from} = <span className="font-semibold text-foreground">{displayResult} {to}</span>
       </p>
+      <Card>
+        <CardHeader><CardTitle className="text-base">{val || 0} {from} in every {cat.toLowerCase()} unit</CardTitle></CardHeader>
+        <CardContent className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+          {allConversions.filter((c) => c.unit !== from).map((c) => (
+            <button
+              key={c.unit}
+              onClick={() => setTo(c.unit)}
+              className="rounded-xl border border-border bg-secondary/40 p-2.5 text-left text-sm transition-colors hover:border-primary/40 hover:bg-secondary"
+              title={`Set as "To" unit`}
+            >
+              <p className="font-semibold">{c.value}</p>
+              <p className="text-xs text-muted-foreground">{c.unit}</p>
+            </button>
+          ))}
+        </CardContent>
+      </Card>
     </div>
   );
 }
