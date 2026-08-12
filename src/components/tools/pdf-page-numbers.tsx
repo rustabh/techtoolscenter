@@ -139,7 +139,7 @@ export default function PdfPageNumbers() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <Label htmlFor="start-at">Start at</Label>
-                <Input id="start-at" type="number" min={0} value={startAt} onChange={(e) => setStartAt(parseInt(e.target.value) || 1)} />
+                <Input id="start-at" type="number" min={1} value={startAt} onChange={(e) => setStartAt(Math.max(1, parseInt(e.target.value) || 1))} />
               </div>
               <div className="space-y-1.5">
                 <Label htmlFor="pn-size">Font size: {size}px</Label>
