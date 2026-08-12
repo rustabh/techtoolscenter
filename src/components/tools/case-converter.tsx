@@ -10,7 +10,7 @@ import { ActionBar } from "@/components/tools/action-bar";
 
 type Mode =
   | "upper" | "lower" | "title" | "sentence"
-  | "camel" | "snake" | "kebab" | "inverse";
+  | "camel" | "pascal" | "snake" | "constant" | "kebab" | "inverse";
 
 const transforms: Record<Mode, (s: string) => string> = {
   upper: (s) => s.toUpperCase(),
@@ -22,7 +22,12 @@ const transforms: Record<Mode, (s: string) => string> = {
       .toLowerCase()
       .replace(/[^a-zA-Z0-9]+(.)/g, (_, c) => c.toUpperCase())
       .replace(/[^a-zA-Z0-9]/g, ""),
+  pascal: (s) => {
+    const camel = s.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (_, c) => c.toUpperCase()).replace(/[^a-zA-Z0-9]/g, "");
+    return camel.charAt(0).toUpperCase() + camel.slice(1);
+  },
   snake: (s) => s.trim().toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, ""),
+  constant: (s) => s.trim().toUpperCase().replace(/[^A-Z0-9]+/g, "_").replace(/^_|_$/g, ""),
   kebab: (s) => s.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
   inverse: (s) =>
     s.split("").map((c) => (c === c.toUpperCase() ? c.toLowerCase() : c.toUpperCase())).join(""),
@@ -34,7 +39,9 @@ const labels: { mode: Mode; label: string }[] = [
   { mode: "title", label: "Title Case" },
   { mode: "sentence", label: "Sentence case" },
   { mode: "camel", label: "camelCase" },
+  { mode: "pascal", label: "PascalCase" },
   { mode: "snake", label: "snake_case" },
+  { mode: "constant", label: "CONSTANT_CASE" },
   { mode: "kebab", label: "kebab-case" },
   { mode: "inverse", label: "iNVERSE cASE" },
 ];
