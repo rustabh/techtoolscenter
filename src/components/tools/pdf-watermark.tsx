@@ -42,11 +42,22 @@ export default function PdfWatermark() {
       const b = parseInt(color.slice(5, 7), 16) / 255;
       const textWidth = font.widthOfTextAtSize(text, size);
 
+      // pdf-lib rotates drawText around its (x, y) anchor — the baseline's
+      // left edge, not the text's visual center — so simply centering the
+      // unrotated box makes the watermark swing off-center once `rotate` is
+      // applied. Instead, work out the anchor that keeps the text's visual
+      // center fixed at the page center after rotation.
+      const rad = (rotation * Math.PI) / 180;
+      const dx = textWidth / 2;
+      const dy = size * 0.35; // approx baseline-to-visual-center offset
+      const rx = dx * Math.cos(rad) - dy * Math.sin(rad);
+      const ry = dx * Math.sin(rad) + dy * Math.cos(rad);
+
       for (const page of doc.getPages()) {
         const { width, height } = page.getSize();
         page.drawText(text, {
-          x: width / 2 - textWidth / 2,
-          y: height / 2,
+          x: width / 2 - rx,
+          y: height / 2 - ry,
           size,
           font,
           color: rgb(r, g, b),
