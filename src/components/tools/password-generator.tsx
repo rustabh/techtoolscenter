@@ -17,6 +17,11 @@ const SETS = {
 
 type SetKey = keyof typeof SETS;
 
+// Characters that are easy to misread or mistype when a password is written
+// down, read aloud, or typed on an unfamiliar keyboard (e.g. a Wi-Fi
+// password on a router label).
+const AMBIGUOUS = "0O1lI|";
+
 function secureRandom(max: number) {
   const arr = new Uint32Array(1);
   crypto.getRandomValues(arr);
@@ -28,11 +33,18 @@ export default function PasswordGenerator() {
   const [opts, setOpts] = useState<Record<SetKey, boolean>>({
     lower: true, upper: true, numbers: true, symbols: true,
   });
+  const [excludeAmbiguous, setExcludeAmbiguous] = useState(false);
   const [password, setPassword] = useState("");
   const { copied, copy } = useCopy();
 
+  const buildPool = useCallback(() => {
+    let pool = (Object.keys(opts) as SetKey[]).filter((k) => opts[k]).map((k) => SETS[k]).join("");
+    if (excludeAmbiguous) pool = pool.split("").filter((c) => !AMBIGUOUS.includes(c)).join("");
+    return pool;
+  }, [opts, excludeAmbiguous]);
+
   const generate = useCallback(() => {
-    const pool = (Object.keys(opts) as SetKey[]).filter((k) => opts[k]).map((k) => SETS[k]).join("");
+    const pool = buildPool();
     if (!pool) {
       setPassword("");
       return;
@@ -40,12 +52,12 @@ export default function PasswordGenerator() {
     let out = "";
     for (let i = 0; i < length; i++) out += pool[secureRandom(pool.length)];
     setPassword(out);
-  }, [length, opts]);
+  }, [length, buildPool]);
 
   useEffect(() => {
     generate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [length, opts]);
+  }, [length, opts, excludeAmbiguous]);
 
   // "R" or Ctrl/Cmd+Enter regenerates without reaching for the mouse.
   useEffect(() => {
@@ -66,7 +78,7 @@ export default function PasswordGenerator() {
   // brute-forceable in seconds, while a long password from one set alone can
   // be genuinely strong. bits = length * log2(pool size) is the standard
   // measure; thresholds below follow common entropy-based guidance.
-  const poolSize = (Object.keys(opts) as SetKey[]).filter((k) => opts[k]).reduce((sum, k) => sum + SETS[k].length, 0);
+  const poolSize = buildPool().length;
   const entropyBits = poolSize > 0 ? Math.round(length * Math.log2(poolSize)) : 0;
   const strength = Math.min(100, Math.round((entropyBits / 80) * 100));
   const strengthLabel = entropyBits >= 80 ? "Very strong" : entropyBits >= 60 ? "Strong" : entropyBits >= 40 ? "Fair" : "Weak";
@@ -104,6 +116,16 @@ export default function PasswordGenerator() {
                 />
               </label>
             ))}
+            <label className="flex cursor-pointer items-center justify-between rounded-xl border border-border p-3 text-sm">
+              Exclude ambiguous characters
+              <input
+                type="checkbox"
+                checked={excludeAmbiguous}
+                onChange={(e) => setExcludeAmbiguous(e.target.checked)}
+                className="size-4 accent-[hsl(var(--primary))]"
+              />
+            </label>
+            <p className="text-xs text-muted-foreground">Drops 0/O, 1/l/I and | — easy to misread when written down or read aloud.</p>
           </div>
         </CardContent>
       </Card>
