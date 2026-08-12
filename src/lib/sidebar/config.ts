@@ -44,7 +44,7 @@ export const sidebarSections: SidebarSection[] = [
       { label: "Prompt Library", href: "/ai-hub/prompts" },
       { label: "AI News", comingSoon: true },
       { label: "AI Comparisons", href: "/ai-hub/compare" },
-      { label: "AI Learning", comingSoon: true },
+      { label: "AI Learning", href: "/ai-hub/learning" },
     ],
   },
   {

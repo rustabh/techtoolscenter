@@ -126,7 +126,7 @@ export const aiHubMenu: MegaMenuConfig = {
       title: "Learn & Explore",
       icon: "BookOpen",
       groups: [{ items: [
-        { label: "AI Learning", comingSoon: true },
+        { label: "AI Learning", href: "/ai-hub/learning" },
         { label: "AI News", comingSoon: true },
         { label: "AI Workflows", action: "incinc", description: "Ask Incinc AI to build one." },
       ] }],
