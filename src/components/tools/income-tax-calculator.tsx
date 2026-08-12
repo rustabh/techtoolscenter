@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
+import { useSearchParams } from "next/navigation";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -109,13 +110,28 @@ function computeOldRegime(income: number, age: IncomeTaxState["age"], itemizedDe
 }
 
 export default function IncomeTaxCalculator() {
-  const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<IncomeTaxState>(
+  const { value: stored, set, undo, redo, reset, canUndo, canRedo, hydrated } = useLocalStorage<IncomeTaxState>(
     "uh:income-tax",
     initial
   );
   // Calculations saved before the deductions field existed won't have it.
   const value = useMemo(() => (stored.deductions !== undefined ? stored : { ...stored, deductions: "0" }), [stored]);
   const { copied, copy } = useCopy();
+
+  // Lets other tools (e.g. CTC Calculator's "gross income → tax" link) hand
+  // off a computed income directly instead of the user re-typing it. Waits
+  // for localStorage hydration to finish first — applying against the
+  // pre-hydration default would clobber a returning user's saved
+  // regime/age/deductions back to their initial values, not just set income.
+  const searchParams = useSearchParams();
+  const appliedParam = useRef(false);
+  useEffect(() => {
+    if (!hydrated || appliedParam.current) return;
+    appliedParam.current = true;
+    const income = searchParams.get("income");
+    if (income && /^\d+$/.test(income)) set({ ...value, income });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hydrated, searchParams]);
 
   const result = useMemo(() => {
     const income = parseFloat(value.income) || 0;

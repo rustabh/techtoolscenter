@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo } from "react";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -149,7 +151,10 @@ export default function CtcCalculator() {
 
           <div className="rounded-xl border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
             <p>
-              This doesn&apos;t include income tax — use our Income Tax Calculator for that.
+              This doesn&apos;t include income tax —{" "}
+              <Link href={`/tools/income-tax-calculator?income=${Math.max(0, Math.round(result.grossAnnual))}`} className="font-medium text-primary hover:underline">
+                calculate it on this gross income <ArrowRight className="inline size-3" />
+              </Link>
             </p>
             <p className="mt-1">
               A simplified estimate — actual salary structure, PF rules and professional tax vary by company and
