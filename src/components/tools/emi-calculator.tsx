@@ -13,22 +13,53 @@ interface EmiState {
   principal: string;
   rate: string;
   years: string;
+  extraMonthly: string;
 }
-const initial: EmiState = { principal: "500000", rate: "9.5", years: "5" };
+const initial: EmiState = { principal: "500000", rate: "9.5", years: "5", extraMonthly: "0" };
+
+interface PrepaymentResult {
+  monthsSaved: number;
+  interestSaved: number;
+  newTenureMonths: number;
+}
+
+// Simulates paying `extra` on top of the regular EMI every month — the loan
+// closes the moment the balance hits 0, which is usually months (sometimes
+// years) before the original tenure, and the interest never accrued on that
+// skipped balance is the actual saving.
+function simulatePrepayment(P: number, r: number, emi: number, n: number, extra: number): PrepaymentResult | null {
+  if (extra <= 0 || P <= 0) return null;
+  let balance = P;
+  let month = 0;
+  let interestPaid = 0;
+  const payment = emi + extra;
+  while (balance > 0 && month < n) {
+    const interestPart = balance * r;
+    const principalPart = Math.min(payment - interestPart, balance);
+    interestPaid += interestPart;
+    balance -= principalPart;
+    month++;
+  }
+  const originalInterest = emi * n - P;
+  return { monthsSaved: n - month, interestSaved: Math.max(originalInterest - interestPaid, 0), newTenureMonths: month };
+}
 
 export default function EmiCalculator() {
-  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<EmiState>("uh:emi", initial);
+  const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<EmiState>("uh:emi", initial);
+  // Calculations saved before the prepayment field existed won't have it.
+  const value = useMemo(() => (stored.extraMonthly !== undefined ? stored : { ...stored, extraMonthly: "0" }), [stored]);
   const { copied, copy } = useCopy();
 
   const data = useMemo(() => {
     const P = parseFloat(value.principal) || 0;
     const annual = parseFloat(value.rate) || 0;
     const n = (parseFloat(value.years) || 0) * 12;
-    if (P <= 0 || n <= 0) return { emi: 0, total: 0, interest: 0, principal: P, schedule: [] as { year: number; principal: number; interest: number; balance: number }[] };
+    if (P <= 0 || n <= 0) return { emi: 0, total: 0, interest: 0, principal: P, schedule: [] as { year: number; principal: number; interest: number; balance: number }[], prepayment: null as PrepaymentResult | null };
     const r = annual / 12 / 100;
     const emi = r === 0 ? P / n : (P * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
     const total = emi * n;
     const interest = total - P;
+    const prepayment = simulatePrepayment(P, r, emi, n, parseFloat(value.extraMonthly) || 0);
 
     // Yearly amortization
     let balance = P;
@@ -46,7 +77,7 @@ export default function EmiCalculator() {
       }
       schedule.push({ year: y, principal: yearPrincipal, interest: yearInterest, balance: Math.max(balance, 0) });
     }
-    return { emi, total, interest, principal: P, schedule };
+    return { emi, total, interest, principal: P, schedule, prepayment };
   }, [value]);
 
   const pct = data.total > 0 ? (data.principal / data.total) * 100 : 0;
@@ -80,6 +111,17 @@ export default function EmiCalculator() {
                 />
               </div>
             ))}
+            <div className="space-y-1.5">
+              <Label htmlFor="extraMonthly">Extra monthly payment (₹, optional)</Label>
+              <Input
+                id="extraMonthly"
+                type="number"
+                inputMode="decimal"
+                value={value.extraMonthly}
+                onChange={(e) => set({ ...value, extraMonthly: e.target.value })}
+              />
+              <p className="text-xs text-muted-foreground">Paying more than the EMI every month shortens the loan and cuts total interest — see the impact below.</p>
+            </div>
             <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
           </CardContent>
         </Card>
@@ -103,6 +145,12 @@ export default function EmiCalculator() {
                   <Stat label="Interest" value={formatCurrency(data.interest)} />
                   <Stat label="Total payable" value={formatCurrency(data.total)} />
                 </div>
+                {data.prepayment && (
+                  <div className="rounded-xl bg-emerald-500/10 p-3 text-sm text-emerald-700 dark:text-emerald-400">
+                    <p className="font-semibold">With this extra payment, you&apos;d be debt-free {Math.floor(data.prepayment.monthsSaved / 12)}y {data.prepayment.monthsSaved % 12}m sooner</p>
+                    <p className="mt-1">Saving {formatCurrency(data.prepayment.interestSaved)} in interest — new tenure ≈ {(data.prepayment.newTenureMonths / 12).toFixed(1)} years.</p>
+                  </div>
+                )}
                 <ActionBar onCopy={() => copy(summary)} copied={copied} onDownload={downloadCsv} downloadLabel="Download schedule .csv" />
               </>
             )}
