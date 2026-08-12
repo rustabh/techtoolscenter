@@ -24,9 +24,13 @@ const OPS: { id: Op; label: string }[] = [
 function loadImg(file: File): Promise<HTMLImageElement> {
   return new Promise((res, rej) => {
     const img = new Image();
-    img.onload = () => res(img);
-    img.onerror = rej;
-    img.src = URL.createObjectURL(file);
+    const url = URL.createObjectURL(file);
+    // Once loaded, the bitmap is decoded into the <img> element itself —
+    // the object URL can be revoked immediately instead of leaking for the
+    // life of the tab across a large batch.
+    img.onload = () => { URL.revokeObjectURL(url); res(img); };
+    img.onerror = (e) => { URL.revokeObjectURL(url); rej(e); };
+    img.src = url;
   });
 }
 
