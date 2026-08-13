@@ -74,7 +74,7 @@ export const sidebarSections: SidebarSection[] = [
       { label: "Gradients", href: "/tools/gradient-generator" },
       { label: "Illustrations", href: "/developer-hub/illustrations" },
       { label: "Mockups", href: "/tools/website-mockup-generator" },
-      { label: "Patterns", comingSoon: true },
+      { label: "Patterns", href: "/tools/ui-snippets" },
     ],
   },
   {
