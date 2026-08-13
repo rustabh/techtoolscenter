@@ -57,7 +57,7 @@ export default function SerpPreview() {
             </p>
           </div>
           {(titleTooLong || descTooLong) && (
-            <p className="mt-3 text-xs text-amber-600">⚠ {titleTooLong && "Title"} {titleTooLong && descTooLong && "and "} {descTooLong && "description"} may be truncated by Google.</p>
+            <p className="mt-3 text-xs text-amber-600 dark:text-amber-400">⚠ {titleTooLong && "Title"} {titleTooLong && descTooLong && "and "} {descTooLong && "description"} may be truncated by Google.</p>
           )}
         </CardContent>
       </Card>

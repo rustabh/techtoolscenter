@@ -3,10 +3,11 @@
 import { useMemo, useState } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useCopy } from "@/hooks/use-copy";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { Type } from "lucide-react";
 
 const UPSIDE: Record<string, string> = { a: "ɐ", b: "q", c: "ɔ", d: "p", e: "ǝ", f: "ɟ", g: "ƃ", h: "ɥ", i: "ᴉ", j: "ɾ", k: "ʞ", l: "l", m: "ɯ", n: "u", o: "o", p: "d", q: "b", r: "ɹ", s: "s", t: "ʇ", u: "n", v: "ʌ", w: "ʍ", x: "x", y: "ʎ", z: "z" };
 
@@ -38,8 +39,16 @@ export default function ReverseText() {
         </CardContent>
       </Card>
       <Card className="bg-gradient-to-br from-primary/5 to-transparent">
-        <CardContent className="space-y-4 pt-6">
-          <pre className="min-h-[200px] whitespace-pre-wrap break-words rounded-xl bg-secondary/50 p-4 text-sm">{out}</pre>
+        <CardHeader><CardTitle>Result</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          {out ? (
+            <pre className="min-h-[200px] whitespace-pre-wrap break-words rounded-xl bg-secondary/50 p-4 text-sm">{out}</pre>
+          ) : (
+            <div className="flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-xl bg-secondary/50 p-4 text-center text-sm text-muted-foreground">
+              <Type className="size-6 opacity-50" />
+              <p>Nothing to show — type something above</p>
+            </div>
+          )}
           <ActionBar onUndo={undo} onRedo={redo} onReset={reset} onCopy={() => copy(out)} copied={copied} canUndo={canUndo} canRedo={canRedo} />
         </CardContent>
       </Card>

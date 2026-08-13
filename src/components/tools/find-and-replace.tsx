@@ -3,11 +3,12 @@
 import { useMemo, useState } from "react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useCopy } from "@/hooks/use-copy";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ActionBar } from "@/components/tools/action-bar";
+import { Type } from "lucide-react";
 
 export default function FindAndReplace() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<string>("uh:findreplace", "The quick brown fox. The lazy dog.");
@@ -62,9 +63,16 @@ export default function FindAndReplace() {
           </CardContent>
         </Card>
         <Card className="bg-gradient-to-br from-primary/5 to-transparent">
-          <CardContent className="space-y-4 pt-6">
-            <Label>Result</Label>
-            <pre className="min-h-[200px] whitespace-pre-wrap rounded-xl bg-secondary/50 p-4 text-sm">{output}</pre>
+          <CardHeader><CardTitle>Result</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            {output ? (
+              <pre className="min-h-[200px] whitespace-pre-wrap rounded-xl bg-secondary/50 p-4 text-sm">{output}</pre>
+            ) : (
+              <div className="flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-xl bg-secondary/50 p-4 text-center text-sm text-muted-foreground">
+                <Type className="size-6 opacity-50" />
+                <p>Nothing to show — type something above</p>
+              </div>
+            )}
             <ActionBar onUndo={undo} onRedo={redo} onReset={reset} onCopy={() => copy(output)} copied={copied} canUndo={canUndo} canRedo={canRedo} />
           </CardContent>
         </Card>
