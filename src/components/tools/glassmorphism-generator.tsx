@@ -129,24 +129,27 @@ export default function GlassmorphismGenerator() {
           </Button>
         </CardContent>
       </Card>
-      <div className="space-y-4">
-        <div
-          className="flex h-56 items-center justify-center rounded-2xl"
-          style={{
-            background:
-              "linear-gradient(135deg, #6366f1 0%, #ec4899 35%, #22d3ee 70%, #f59e0b 100%)",
-          }}
-        >
-          <div className="h-40 w-64" style={glassStyle} />
-        </div>
-        <div className="flex items-start gap-2 rounded-xl bg-secondary/50 p-3">
-          <pre className="flex-1 whitespace-pre-wrap break-all font-mono text-xs">{full}</pre>
-          <Button type="button" size="sm" onClick={() => copy(full)}>{copied ? "Copied" : "Copy"}</Button>
-        </div>
-        <p className="text-xs text-muted-foreground">
-          The -webkit-backdrop-filter line is included for Safari support.
-        </p>
-      </div>
+      <Card>
+        <CardHeader><CardTitle>Live Preview</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <div
+            className="flex h-56 items-center justify-center rounded-xl"
+            style={{
+              background:
+                "linear-gradient(135deg, #6366f1 0%, #ec4899 35%, #22d3ee 70%, #f59e0b 100%)",
+            }}
+          >
+            <div className="h-40 w-64" style={glassStyle} />
+          </div>
+          <div className="flex items-start gap-2 rounded-xl bg-secondary/50 p-3">
+            <pre className="flex-1 whitespace-pre-wrap break-all font-mono text-xs">{full}</pre>
+            <Button type="button" size="sm" onClick={() => copy(full)}>{copied ? "Copied" : "Copy"}</Button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            The -webkit-backdrop-filter line is included for Safari support.
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }

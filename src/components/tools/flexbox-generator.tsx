@@ -146,27 +146,32 @@ export default function FlexboxGenerator() {
         </CardContent>
       </Card>
 
-      <div className="space-y-4">
-        <div className="rounded-2xl border border-border p-4 shadow-sm">
-          <div style={previewStyle} className="min-h-56 w-full">
-            {ITEMS.map((item) => (
-              <div
-                key={item}
-                className="flex items-center justify-center rounded-lg bg-primary/80 font-mono text-sm font-semibold text-primary-foreground"
-                style={{ padding: "1rem", minWidth: "2.5rem", minHeight: "2.5rem" }}
-              >
-                {item}
-              </div>
-            ))}
+      <Card>
+        <CardHeader>
+          <CardTitle>Live Preview</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="rounded-xl bg-secondary/30 p-4">
+            <div style={previewStyle} className="min-h-56 w-full">
+              {ITEMS.map((item) => (
+                <div
+                  key={item}
+                  className="flex items-center justify-center rounded-lg bg-primary/80 font-mono text-sm font-semibold text-primary-foreground"
+                  style={{ padding: "1rem", minWidth: "2.5rem", minHeight: "2.5rem" }}
+                >
+                  {item}
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-        <div className="flex items-start gap-2 rounded-xl bg-secondary/50 p-3">
-          <code className="flex-1 whitespace-pre-wrap break-all font-mono text-xs">{css}</code>
-          <Button type="button" size="sm" onClick={() => copy(css)}>
-            {copied ? "Copied" : "Copy"}
-          </Button>
-        </div>
-      </div>
+          <div className="flex items-start gap-2 rounded-xl bg-secondary/50 p-3">
+            <code className="flex-1 whitespace-pre-wrap break-all font-mono text-xs">{css}</code>
+            <Button type="button" size="sm" onClick={() => copy(css)}>
+              {copied ? "Copied" : "Copy"}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

@@ -179,18 +179,21 @@ export default function BoxShadowGenerator() {
           </Button>
         </CardContent>
       </Card>
-      <div className="space-y-4">
-        <div className="flex h-56 items-center justify-center">
-          <div
-            className="h-32 w-32 rounded-2xl bg-card"
-            style={{ boxShadow: boxShadowValue }}
-          />
-        </div>
-        <div className="flex items-center gap-2 rounded-xl bg-secondary/50 p-3">
-          <code className="flex-1 break-all font-mono text-xs">{full}</code>
-          <Button type="button" size="sm" onClick={() => copy(full)}>{copied ? "Copied" : "Copy"}</Button>
-        </div>
-      </div>
+      <Card>
+        <CardHeader><CardTitle>Live Preview</CardTitle></CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex h-56 items-center justify-center rounded-xl bg-[#f1f5f9] p-6">
+            <div
+              className="h-32 w-32 rounded-2xl bg-white"
+              style={{ boxShadow: boxShadowValue }}
+            />
+          </div>
+          <div className="flex items-center gap-2 rounded-xl bg-secondary/50 p-3">
+            <code className="flex-1 break-all font-mono text-xs">{full}</code>
+            <Button type="button" size="sm" onClick={() => copy(full)}>{copied ? "Copied" : "Copy"}</Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
