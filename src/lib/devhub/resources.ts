@@ -333,6 +333,60 @@ export const externalDevResources: DevResource[] = [
     "addedOn": "2026-07-31"
   },
   {
+    "slug": "biome",
+    "name": "Biome",
+    "category": "frontend",
+    "description": "A single fast, Rust-based toolchain that combines linting and formatting for JavaScript, TypeScript, JSX and JSON in one binary, aimed at replacing separate ESLint and Prettier setups.",
+    "officialUrl": "https://biomejs.dev",
+    "docsUrl": "https://biomejs.dev/guides/getting-started",
+    "tags": [
+      "linting",
+      "formatting",
+      "rust",
+      "toolchain"
+    ],
+    "pricing": "Free",
+    "openSource": true,
+    "badge": "Trending",
+    "icon": "Wind",
+    "addedOn": "2026-08-13"
+  },
+  {
+    "slug": "rollup",
+    "name": "Rollup",
+    "category": "frontend",
+    "description": "An ES-module-native bundler known for producing smaller, cleaner output than many alternatives — the bundler underneath several popular build tools, including Vite's production build.",
+    "officialUrl": "https://rollupjs.org",
+    "docsUrl": "https://rollupjs.org/introduction",
+    "tags": [
+      "bundler",
+      "esm",
+      "build-tool",
+      "tree-shaking"
+    ],
+    "pricing": "Free",
+    "openSource": true,
+    "icon": "Layers",
+    "addedOn": "2026-08-13"
+  },
+  {
+    "slug": "parcel",
+    "name": "Parcel",
+    "category": "frontend",
+    "description": "A zero-configuration web application bundler that auto-detects the right build pipeline for your project's file types with no config file required to get started.",
+    "officialUrl": "https://parceljs.org",
+    "docsUrl": "https://parceljs.org/getting-started/webapp",
+    "tags": [
+      "bundler",
+      "zero-config",
+      "build-tool"
+    ],
+    "pricing": "Free",
+    "openSource": true,
+    "icon": "PackageOpen",
+    "addedOn": "2026-08-13"
+  },
+  {
     "slug": "tailwind-css",
     "name": "Tailwind CSS",
     "category": "css-libraries",
@@ -2138,6 +2192,43 @@ export const externalDevResources: DevResource[] = [
     "openSource": true,
     "icon": "Cpu",
     "addedOn": "2026-07-31"
+  },
+  {
+    "slug": "sitespeed-io",
+    "name": "sitespeed.io",
+    "category": "performance",
+    "description": "An open-source command-line toolset that runs real browser-based performance tests and Core Web Vitals tracking, built for self-hosting instead of relying on a hosted dashboard.",
+    "officialUrl": "https://www.sitespeed.io",
+    "docsUrl": "https://www.sitespeed.io/documentation",
+    "tags": [
+      "performance",
+      "core-web-vitals",
+      "self-hosted",
+      "cli"
+    ],
+    "pricing": "Free",
+    "openSource": true,
+    "icon": "Timer",
+    "addedOn": "2026-08-13"
+  },
+  {
+    "slug": "unlighthouse",
+    "name": "Unlighthouse",
+    "category": "performance",
+    "description": "Crawls an entire site and runs a Lighthouse audit on every discovered page at once, instead of testing one URL at a time.",
+    "officialUrl": "https://unlighthouse.dev",
+    "docsUrl": "https://unlighthouse.dev/guide/getting-started",
+    "tags": [
+      "lighthouse",
+      "site-wide",
+      "auditing",
+      "cli"
+    ],
+    "pricing": "Free",
+    "openSource": true,
+    "badge": "New",
+    "icon": "Lightbulb",
+    "addedOn": "2026-08-13"
   },
   {
     "slug": "swagger-openapi",
