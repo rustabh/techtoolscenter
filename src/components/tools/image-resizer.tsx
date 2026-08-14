@@ -23,6 +23,8 @@ const PRESETS: { label: string; w: number; h: number }[] = [
   { label: "Passport (600×600)", w: 600, h: 600 },
 ];
 
+type FitMode = "cover" | "fit";
+
 export default function ImageResizer({ preset }: { preset?: Record<string, unknown> }) {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
   const [name, setName] = useState("image");
@@ -31,6 +33,13 @@ export default function ImageResizer({ preset }: { preset?: Record<string, unkno
   const [height, setHeight] = useState<number>(typeof preset?.height === "number" ? (preset.height as number) : 1080);
   const [lock, setLock] = useState(false);
   const [ratio, setRatio] = useState(1);
+  // "cover" fills the whole target and crops overflow (the old, only
+  // behavior) — great for social presets but destroys parts of the image
+  // whenever its aspect ratio doesn't match the target. "fit" instead scales
+  // the whole image to fit inside the target with padding, so nothing is
+  // ever cropped off.
+  const [fitMode, setFitMode] = useState<FitMode>("cover");
+  const [padColor, setPadColor] = useState("#ffffff");
   const [result, setResult] = useState<{ url: string; size: number; blob: Blob } | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -69,11 +78,22 @@ export default function ImageResizer({ preset }: { preset?: Record<string, unkno
       canvas.height = Math.max(1, height);
       const ctx = canvas.getContext("2d");
       if (!ctx) throw new Error("canvas unsupported");
-      // Cover-fit so the whole target is filled without distortion.
-      const scale = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
-      const dw = img.naturalWidth * scale;
-      const dh = img.naturalHeight * scale;
-      ctx.drawImage(img, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
+      if (fitMode === "fit") {
+        // Scale the whole image to fit inside the target without cropping,
+        // padding any leftover space with a solid color.
+        ctx.fillStyle = padColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const scale = Math.min(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+        const dw = img.naturalWidth * scale;
+        const dh = img.naturalHeight * scale;
+        ctx.drawImage(img, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
+      } else {
+        // Cover-fit so the whole target is filled without distortion (crops overflow).
+        const scale = Math.max(canvas.width / img.naturalWidth, canvas.height / img.naturalHeight);
+        const dw = img.naturalWidth * scale;
+        const dh = img.naturalHeight * scale;
+        ctx.drawImage(img, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
+      }
       const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/png"));
       if (!blob) throw new Error("empty blob");
       setResult({ url: URL.createObjectURL(blob), size: blob.size, blob });
@@ -123,6 +143,33 @@ export default function ImageResizer({ preset }: { preset?: Record<string, unkno
                   {lock ? <Lock className="size-4 text-primary" /> : <Unlock className="size-4 text-muted-foreground" />}
                 </button>
                 <div className="flex-1 space-y-1.5"><Label htmlFor="ir-height">Height (px)</Label><Input id="ir-height" type="number" min={1} value={height} onChange={(e) => changeH(Number(e.target.value))} /></div>
+              </div>
+              <div className="space-y-1.5">
+                <Label id="ir-fitmode-label">Resize mode</Label>
+                <div className="grid grid-cols-2 gap-1.5" aria-labelledby="ir-fitmode-label">
+                  <button
+                    type="button"
+                    onClick={() => { setFitMode("cover"); setResult(null); }}
+                    className={`rounded-lg border px-2 py-1.5 text-left text-xs transition-colors ${fitMode === "cover" ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}
+                  >
+                    <span className="block font-medium">Cover</span>
+                    <span className="block text-[10px] text-muted-foreground">Fills target, crops overflow</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setFitMode("fit"); setResult(null); }}
+                    className={`rounded-lg border px-2 py-1.5 text-left text-xs transition-colors ${fitMode === "fit" ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}
+                  >
+                    <span className="block font-medium">Fit</span>
+                    <span className="block text-[10px] text-muted-foreground">Shows whole image, adds padding</span>
+                  </button>
+                </div>
+                {fitMode === "fit" && (
+                  <div className="flex items-center gap-2 pt-1">
+                    <Label htmlFor="ir-pad-color" className="text-xs text-muted-foreground">Padding color</Label>
+                    <input id="ir-pad-color" type="color" value={padColor} onChange={(e) => setPadColor(e.target.value)} className="h-8 w-14 rounded-md border border-border p-1" />
+                  </div>
+                )}
               </div>
               <div className="space-y-1.5">
                 <Label>Presets</Label>
