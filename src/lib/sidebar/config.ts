@@ -126,7 +126,7 @@ export const sidebarSections: SidebarSection[] = [
       { label: "Free Icons", href: "/developer-hub/icons" },
       { label: "Free Images", href: "/developer-hub/illustrations" },
       { label: "Chrome Extensions", href: "/ai-hub/collections/best-ai-chrome-extensions" },
-      { label: "Useful Websites", comingSoon: true },
+      { label: "Useful Websites", href: "/useful-websites" },
     ],
   },
   {
