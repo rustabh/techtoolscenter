@@ -49,6 +49,7 @@ export default function SocialMediaKit() {
   const [logo, setLogo] = useState<string | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const [exporting, setExporting] = useState(false);
+  const [bulkProgress, setBulkProgress] = useState<{ done: number; total: number } | null>(null);
 
   const scale = useMemo(() => Math.min(1, 520 / preset.w, 420 / preset.h), [preset]);
 
@@ -76,6 +77,40 @@ export default function SocialMediaKit() {
       showToast("Couldn't generate the image — try a smaller format or a different logo", "error");
     } finally {
       setExporting(false);
+    }
+  };
+
+  // Exporting one size at a time meant re-picking the preset and clicking
+  // Download 15 times to cover every platform — genuinely tedious the moment
+  // you actually need more than one or two sizes for the same headline.
+  // Since each preset resizes the same live DOM stage rather than a
+  // canvas, generating every size means briefly switching to each preset,
+  // waiting for layout to settle, and capturing it before moving on.
+  const downloadAllSizes = async () => {
+    if (exporting || bulkProgress) return;
+    const originalPreset = preset;
+    setBulkProgress({ done: 0, total: PRESETS.length });
+    try {
+      const [{ toPng }, JSZip] = await Promise.all([import("html-to-image"), import("jszip").then((m) => m.default)]);
+      const zip = new JSZip();
+      for (let i = 0; i < PRESETS.length; i++) {
+        const p = PRESETS[i];
+        setPreset(p);
+        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        if (!stageRef.current) continue;
+        const dataUrl = await toPng(stageRef.current, { width: p.w, height: p.h, cacheBust: true });
+        const blob = await (await fetch(dataUrl)).blob();
+        zip.file(`${p.id}-${p.w}x${p.h}.png`, blob);
+        setBulkProgress({ done: i + 1, total: PRESETS.length });
+      }
+      const out = await zip.generateAsync({ type: "blob" });
+      downloadBlob(out, "social-media-kit-all-sizes.zip");
+      showToast(`Downloaded all ${PRESETS.length} sizes`);
+    } catch {
+      showToast("Couldn't generate every size — try again", "error");
+    } finally {
+      setPreset(originalPreset);
+      setBulkProgress(null);
     }
   };
 
@@ -121,7 +156,13 @@ export default function SocialMediaKit() {
               </div>
             </div>
             <LogoUpload onFile={onLogo} has={!!logo} />
-            <Button className="w-full" onClick={download} disabled={exporting}><Download /> {exporting ? "Generating…" : `Download PNG (${preset.w}×${preset.h})`}</Button>
+            <Button className="w-full" onClick={download} disabled={exporting || !!bulkProgress}>
+              <Download /> {exporting ? "Generating…" : `Download PNG (${preset.w}×${preset.h})`}
+            </Button>
+            <Button className="w-full" variant="outline" onClick={downloadAllSizes} disabled={exporting || !!bulkProgress}>
+              <Download />{" "}
+              {bulkProgress ? `Generating ${bulkProgress.done}/${bulkProgress.total}…` : `Download all ${PRESETS.length} sizes (ZIP)`}
+            </Button>
           </CardContent>
         </Card>
       </div>
