@@ -335,7 +335,8 @@ export function WorkspaceSidebar() {
           type="button"
           onClick={() => setMobileOpen(true)}
           aria-label="Open Workspace sidebar"
-          className="glass fixed bottom-4 left-4 z-40 grid size-12 place-items-center rounded-full shadow-lg"
+          className="glass fixed bottom-20 left-4 z-40 grid size-12 place-items-center rounded-full shadow-lg"
+          style={{ marginBottom: "env(safe-area-inset-bottom)" }}
         >
           <Menu className="size-5" />
         </button>

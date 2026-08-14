@@ -51,11 +51,19 @@
   }
   html {
     scroll-behavior: smooth;
+    /* Stops the whole page from rubber-banding to reveal blank space above/
+       below on scroll — the elastic overscroll is one of the more obvious
+       "this is a website, not an app" tells on mobile Safari/Chrome. */
+    overscroll-behavior-y: contain;
   }
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "cv11", "ss01";
     text-rendering: optimizeLegibility;
+    /* Removes the gray/blue flash Android/iOS browsers paint on tap by
+       default — native apps don't flash on every touch, and its absence is
+       one of the cheapest, most noticeable "feels like an app" wins. */
+    -webkit-tap-highlight-color: transparent;
   }
   ::selection {
     @apply bg-primary/20;

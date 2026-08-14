@@ -25,7 +25,8 @@ export function IncincLauncher() {
         aria-label={open ? "Close Incinc AI" : "Open Incinc AI"}
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.94 }}
-        className="glass fixed bottom-4 right-4 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg ring-1 ring-primary/20 sm:right-6"
+        className="glass fixed bottom-20 right-4 z-50 flex items-center gap-2 rounded-full px-4 py-3 shadow-lg ring-1 ring-primary/20 sm:bottom-4 sm:right-6"
+        style={{ marginBottom: "env(safe-area-inset-bottom)" }}
       >
         <span className="absolute inset-0 -z-10 animate-pulse rounded-full bg-primary/20 blur-xl" />
         <span className="grid size-6 place-items-center rounded-full bg-primary text-primary-foreground">

@@ -47,7 +47,8 @@ export function ConsentBanner() {
     <div
       role="dialog"
       aria-label="Cookie consent"
-      className="fixed inset-x-0 bottom-0 z-[90] p-3 sm:p-4"
+      className="fixed inset-x-0 bottom-16 z-[90] p-3 md:bottom-0 sm:p-4"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="glass mx-auto flex max-w-3xl flex-col gap-3 rounded-2xl border border-border p-4 shadow-2xl sm:flex-row sm:items-center sm:gap-4 sm:p-5">
         <div className="flex items-start gap-3">

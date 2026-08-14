@@ -35,10 +35,20 @@ export function Navbar() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // Lets the mobile bottom tab bar's "Menu" tab open this same drawer without
+  // threading state through a shared parent.
+  useEffect(() => {
+    function onOpenMobileMenu() {
+      setMobileOpen(true);
+    }
+    window.addEventListener("ttc:open-mobile-menu", onOpenMobileMenu);
+    return () => window.removeEventListener("ttc:open-mobile-menu", onOpenMobileMenu);
+  }, []);
+
   const active = megaMenus.find((m) => m.id === activeMenu) ?? null;
 
   return (
-    <header className="sticky top-0 z-50 w-full">
+    <header className="sticky top-0 z-50 w-full" style={{ paddingTop: "env(safe-area-inset-top)" }}>
       <div className="glass border-x-0 border-t-0">
         <nav className="container-tight relative flex h-16 items-center justify-between" aria-label="Main">
           <Link href="/" aria-label="TechToolsCenter home">

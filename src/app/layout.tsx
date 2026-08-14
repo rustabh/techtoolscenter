@@ -15,6 +15,7 @@ import { Analytics } from "@/components/analytics";
 import { ConsentBanner } from "@/components/consent-banner";
 import { IncincLauncher } from "@/components/incinc/incinc-launcher";
 import { WorkspaceSidebar } from "@/components/sidebar/workspace-sidebar";
+import { MobileBottomNav } from "@/components/navbar/mobile-bottom-nav";
 import { ChromeGate } from "@/components/chrome-gate";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
@@ -67,6 +68,10 @@ export const viewport: Viewport = {
   ],
   width: "device-width",
   initialScale: 1,
+  // Lets the page draw edge-to-edge on notched/home-indicator devices and
+  // makes env(safe-area-inset-*) resolve to real values instead of always 0
+  // — needed for the fixed mobile bottom nav to clear the home indicator.
+  viewportFit: "cover",
 };
 
 const orgJsonLd = organizationLd();
@@ -85,11 +90,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="main" className="relative">{children}</main>
           <ChromeGate>
             <Footer />
+            {/* Reserves space so the fixed mobile bottom nav never covers the
+                last bit of page content — matches the nav's own height plus
+                the device's home-indicator inset. */}
+            <div className="h-16 md:hidden" style={{ height: "calc(4rem + env(safe-area-inset-bottom))" }} aria-hidden />
             <PwaProvider />
             <FileDropProvider />
             <ConsentBanner />
             <WorkspaceSidebar />
             <IncincLauncher />
+            <MobileBottomNav />
           </ChromeGate>
           <Toaster />
         </ThemeProvider>
