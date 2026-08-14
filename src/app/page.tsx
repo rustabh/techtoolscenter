@@ -1,7 +1,8 @@
 import Link from "next/link";
 import {
-  Zap, ArrowRight, Star, CheckCircle2,
+  Zap, ArrowRight, CheckCircle2,
   ShieldCheck, MonitorSmartphone, Globe, BadgeCheck, Rocket, Droplet, Wallet,
+  Briefcase, Building2, GraduationCap, Code2,
 } from "lucide-react";
 import { HeroSearch } from "@/components/hero-search";
 import { ToolCard } from "@/components/tool-card";
@@ -46,11 +47,13 @@ const whyChoose = [
   { icon: Rocket, emoji: "🚀", title: "Always Improving", desc: "New tools and updates ship regularly, guided by the community.", tint: "from-rose-500/15" },
 ];
 
-const testimonials = [
-  { name: "Aarav Sharma", role: "Freelance Designer", quote: "The invoice maker saved me hours every month. It looks more professional than the paid app I used before." },
-  { name: "Priya Nair", role: "Small Business Owner", quote: "GST and EMI calculators are spot on, and I love that nothing gets uploaded. Total peace of mind." },
-  { name: "Daniel Okoro", role: "Product Manager", quote: "The PDF merge and split tools are lightning fast. TechToolsCenter is now my default toolbox." },
-  { name: "Meera Iyer", role: "Student", quote: "Resume builder + word counter got me through my whole application season. Clean and simple." },
+// Real capability, no fabricated names or star ratings — every claim here is
+// something the linked tool actually does, not a review nobody actually wrote.
+const useCases = [
+  { icon: Briefcase, title: "Freelancers", desc: "Generate professional invoices and quotations, track GST, and get paid without a paid app.", href: "/tools/invoice-maker" },
+  { icon: Building2, title: "Small businesses", desc: "GST, EMI and CTC calculators built to Indian rules, plus purchase orders and delivery challans — all private, all free.", href: "/collections/business-toolkit" },
+  { icon: Code2, title: "Developers", desc: "JSON formatting, JWT decoding, hashing, cron helpers and a code playground — the utilities you reach for daily.", href: "/developer-hub" },
+  { icon: GraduationCap, title: "Students", desc: "Build a resume, count words for an assignment, compress a PDF for submission — no sign-up required.", href: "/tools/resume-builder" },
 ];
 
 const homeFaq = [
@@ -270,24 +273,21 @@ export default function HomePage() {
       {/* Most used tools (real stats — hidden until data exists) */}
       <MostUsedTools />
 
-      {/* Testimonials */}
+      {/* Who it's built for */}
       <section className="container-tight py-14">
-        <SectionHeading eyebrow="Loved by makers" title="What people say" subtitle="Trusted by freelancers, founders and students worldwide." />
+        <SectionHeading eyebrow="Built for how you work" title="Whoever you are, there's a tool for that" subtitle="No fabricated reviews here — just what the tools actually do." />
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
-          {testimonials.map((t, i) => (
-            <Reveal key={t.name} delay={i * 0.05}>
-              <figure className="glass h-full rounded-2xl p-6">
-                <div className="flex gap-0.5 text-amber-400">
-                  {Array.from({ length: 5 }).map((_, j) => (
-                    <Star key={j} className="size-4 fill-current" />
-                  ))}
+          {useCases.map((u, i) => (
+            <Reveal key={u.title} delay={i * 0.05}>
+              <Link href={u.href} className="glass group flex h-full items-start gap-4 rounded-2xl p-6 transition-all hover:-translate-y-1 hover:shadow-lg">
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
+                  <u.icon className="size-5" />
+                </span>
+                <div>
+                  <h3 className="font-semibold">{u.title}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{u.desc}</p>
                 </div>
-                <blockquote className="mt-4 text-sm leading-relaxed">“{t.quote}”</blockquote>
-                <figcaption className="mt-4 text-sm">
-                  <span className="font-semibold">{t.name}</span>
-                  <span className="text-muted-foreground"> · {t.role}</span>
-                </figcaption>
-              </figure>
+              </Link>
             </Reveal>
           ))}
         </div>
