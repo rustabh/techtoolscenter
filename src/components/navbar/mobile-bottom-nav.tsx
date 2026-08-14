@@ -2,8 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
 import { Home, LayoutGrid, Search, Menu } from "lucide-react";
 import { cn } from "@/lib/utils";
+
+// Feature-detected — most Android browsers support it, iOS Safari never has
+// and just silently no-ops, so this is safe to fire unconditionally.
+function tap() {
+  navigator.vibrate?.(8);
+}
 
 /**
  * Persistent bottom tab bar, mobile only — the single most recognizable
@@ -17,9 +24,10 @@ export function MobileBottomNav() {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const isTools = pathname?.startsWith("/tools") ?? false;
+  const activeTab = isHome ? "home" : isTools ? "tools" : null;
 
-  const openSearch = () => window.dispatchEvent(new Event("ttc:open-command"));
-  const openMenu = () => window.dispatchEvent(new Event("ttc:open-mobile-menu"));
+  const openSearch = () => { tap(); window.dispatchEvent(new Event("ttc:open-command")); };
+  const openMenu = () => { tap(); window.dispatchEvent(new Event("ttc:open-mobile-menu")); };
 
   return (
     <nav
@@ -30,25 +38,35 @@ export function MobileBottomNav() {
       <div className="grid grid-cols-4">
         <Link
           href="/"
+          onClick={tap}
           aria-current={isHome ? "page" : undefined}
-          className={cn(
-            "flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors active:scale-95",
-            isHome ? "text-primary" : "text-muted-foreground"
-          )}
+          className="relative flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium text-muted-foreground transition-colors active:scale-95"
         >
-          <Home className={cn("size-5", isHome && "fill-primary/15")} />
-          Home
+          {activeTab === "home" && (
+            <motion.span
+              layoutId="bottom-tab-indicator"
+              className="absolute inset-x-3 top-1 h-8 rounded-xl bg-primary/10"
+              transition={{ type: "spring", stiffness: 500, damping: 35 }}
+            />
+          )}
+          <Home className={cn("relative size-5", isHome && "text-primary fill-primary/15")} />
+          <span className={cn("relative", isHome && "text-primary")}>Home</span>
         </Link>
         <Link
           href="/tools"
+          onClick={tap}
           aria-current={isTools ? "page" : undefined}
-          className={cn(
-            "flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors active:scale-95",
-            isTools ? "text-primary" : "text-muted-foreground"
-          )}
+          className="relative flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium text-muted-foreground transition-colors active:scale-95"
         >
-          <LayoutGrid className={cn("size-5", isTools && "fill-primary/15")} />
-          Tools
+          {activeTab === "tools" && (
+            <motion.span
+              layoutId="bottom-tab-indicator"
+              className="absolute inset-x-3 top-1 h-8 rounded-xl bg-primary/10"
+              transition={{ type: "spring", stiffness: 500, damping: 35 }}
+            />
+          )}
+          <LayoutGrid className={cn("relative size-5", isTools && "text-primary fill-primary/15")} />
+          <span className={cn("relative", isTools && "text-primary")}>Tools</span>
         </Link>
         <button
           type="button"
