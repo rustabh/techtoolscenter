@@ -1,16 +1,21 @@
+import { useId } from "react";
 import { cn } from "@/lib/utils";
 
 export function LogoMark({ className }: { className?: string }) {
+  // Unique per instance so the gradient id doesn't collide when the logo renders
+  // more than once on a page (e.g. navbar + footer), which produced duplicate
+  // SVG ids in the DOM.
+  const gradientId = useId();
   return (
     <svg viewBox="0 0 64 64" className={cn("h-8 w-8", className)} role="img" aria-label="TechToolsCenter logo">
       <defs>
-        <linearGradient id="ttc-mark" x1="10" y1="54" x2="54" y2="10" gradientUnits="userSpaceOnUse">
+        <linearGradient id={gradientId} x1="10" y1="54" x2="54" y2="10" gradientUnits="userSpaceOnUse">
           <stop offset="0" stopColor="#1d4ed8" />
           <stop offset="1" stopColor="#5b9bff" />
         </linearGradient>
       </defs>
       <path
-        fill="url(#ttc-mark)"
+        fill={`url(#${gradientId})`}
         d="M28.7 3.9a6.6 6.6 0 0 1 6.6 0l19 11a6.6 6.6 0 0 1 3.3 5.7v22a6.6 6.6 0 0 1-3.3 5.7l-19 11a6.6 6.6 0 0 1-6.6 0l-19-11A6.6 6.6 0 0 1 6.4 42.6v-22a6.6 6.6 0 0 1 3.3-5.7z"
       />
       <g fill="#fff">
