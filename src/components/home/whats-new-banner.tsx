@@ -7,9 +7,9 @@ import { Sparkles, X, ArrowRight } from "lucide-react";
 
 // Bump the id whenever the message changes so returning users see it again.
 const CURRENT = {
-  id: "india-hub-2026-07",
-  text: "India Hub — official government service guides, now with state & city pages",
-  href: "/india-services",
+  id: "useful-websites-2026-08",
+  text: "Useful Websites — a hand-picked directory of free sites that complement our tools",
+  href: "/useful-websites",
 };
 const KEY = "ttc:whatsnew-dismissed";
 
