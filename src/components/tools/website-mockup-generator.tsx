@@ -137,9 +137,9 @@ export default function WebsiteMockupGenerator() {
               }).catch(() => showToast("Couldn't access the clipboard — try Ctrl/Cmd+V instead", "error"))}><Clipboard /> Paste</Button>
             </div>
             <div className="space-y-1.5">
-              <Label>Website URL</Label>
+              <Label htmlFor="mockup-url">Website URL</Label>
               <div className="flex gap-2">
-                <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="example.com" onKeyDown={(e) => e.key === "Enter" && fetchUrl()} />
+                <Input id="mockup-url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="example.com" onKeyDown={(e) => e.key === "Enter" && fetchUrl()} />
                 <Button onClick={fetchUrl} disabled={loading} aria-label="Fetch">{loading ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}</Button>
               </div>
               {error && <p className="text-sm text-destructive">{error}</p>}

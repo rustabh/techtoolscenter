@@ -43,8 +43,8 @@ export default function FindAndReplace() {
       <Card>
         <CardContent className="space-y-4 pt-6">
           <div className="grid gap-4 sm:grid-cols-2">
-            <div className="space-y-1.5"><Label>Find</Label><Input value={find} onChange={(e) => setFind(e.target.value)} /></div>
-            <div className="space-y-1.5"><Label>Replace with</Label><Input value={replace} onChange={(e) => setReplace(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="findreplace-find">Find</Label><Input id="findreplace-find" value={find} onChange={(e) => setFind(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="findreplace-with">Replace with</Label><Input id="findreplace-with" value={replace} onChange={(e) => setReplace(e.target.value)} /></div>
           </div>
           <div className="flex flex-wrap gap-4">
             <Toggle c={caseSensitive} on={setCaseSensitive} label="Case sensitive" />
@@ -58,8 +58,8 @@ export default function FindAndReplace() {
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardContent className="space-y-2 pt-6">
-            <Label>Original</Label>
-            <Textarea className="min-h-[200px]" value={value} onChange={(e) => set(e.target.value)} />
+            <Label htmlFor="findreplace-original">Original</Label>
+            <Textarea id="findreplace-original" className="min-h-[200px]" value={value} onChange={(e) => set(e.target.value)} />
           </CardContent>
         </Card>
         <Card className="bg-gradient-to-br from-primary/5 to-transparent">

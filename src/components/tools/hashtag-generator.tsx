@@ -39,8 +39,8 @@ export default function HashtagGenerator() {
       <Card>
         <CardContent className="space-y-4 pt-6">
           <div className="space-y-1.5">
-            <Label>Topic or keywords</Label>
-            <Input value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="e.g. travel photography" />
+            <Label htmlFor="hashtag-topic">Topic or keywords</Label>
+            <Input id="hashtag-topic" value={topic} onChange={(e) => setTopic(e.target.value)} placeholder="e.g. travel photography" />
           </div>
         </CardContent>
       </Card>

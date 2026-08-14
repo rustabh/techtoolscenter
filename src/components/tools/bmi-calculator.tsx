@@ -64,12 +64,12 @@ export default function BmiCalculator() {
             ))}
           </div>
           <div className="space-y-1.5">
-            <Label>Weight ({value.unit === "metric" ? "kg" : "lb"})</Label>
-            <Input type="number" value={value.weight} onChange={(e) => set({ ...value, weight: e.target.value })} />
+            <Label htmlFor="bmi-weight">Weight ({value.unit === "metric" ? "kg" : "lb"})</Label>
+            <Input id="bmi-weight" type="number" value={value.weight} onChange={(e) => set({ ...value, weight: e.target.value })} />
           </div>
           <div className="space-y-1.5">
-            <Label>Height ({value.unit === "metric" ? "cm" : "in"})</Label>
-            <Input type="number" value={value.height} onChange={(e) => set({ ...value, height: e.target.value })} />
+            <Label htmlFor="bmi-height">Height ({value.unit === "metric" ? "cm" : "in"})</Label>
+            <Input id="bmi-height" type="number" value={value.height} onChange={(e) => set({ ...value, height: e.target.value })} />
           </div>
           <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
         </CardContent>

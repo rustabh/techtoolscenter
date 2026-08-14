@@ -61,11 +61,11 @@ export default function DiffChecker() {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 md:grid-cols-2">
-        <div className="space-y-1.5"><Label>Original</Label>
-          <Textarea className="min-h-[180px] font-mono text-sm" value={value.a} onChange={(e) => set({ ...value, a: e.target.value })} />
+        <div className="space-y-1.5"><Label htmlFor="diff-original">Original</Label>
+          <Textarea id="diff-original" className="min-h-[180px] font-mono text-sm" value={value.a} onChange={(e) => set({ ...value, a: e.target.value })} />
         </div>
-        <div className="space-y-1.5"><Label>Changed</Label>
-          <Textarea className="min-h-[180px] font-mono text-sm" value={value.b} onChange={(e) => set({ ...value, b: e.target.value })} />
+        <div className="space-y-1.5"><Label htmlFor="diff-changed">Changed</Label>
+          <Textarea id="diff-changed" className="min-h-[180px] font-mono text-sm" value={value.b} onChange={(e) => set({ ...value, b: e.target.value })} />
         </div>
       </div>
       <div className="flex flex-wrap gap-4">

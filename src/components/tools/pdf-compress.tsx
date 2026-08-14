@@ -199,9 +199,9 @@ export default function PdfCompress({ preset }: { preset?: Record<string, unknow
               </div>
             ) : (
               <div className="space-y-1.5">
-                <Label>Target file size (KB)</Label>
+                <Label htmlFor="pdf-compress-target-kb">Target file size (KB)</Label>
                 <div className="flex flex-wrap items-center gap-2">
-                  <Input type="number" min={10} value={targetKB} onChange={(e) => setTargetKB(Math.max(10, Number(e.target.value)))} className="max-w-[160px]" />
+                  <Input id="pdf-compress-target-kb" type="number" min={10} value={targetKB} onChange={(e) => setTargetKB(Math.max(10, Number(e.target.value)))} className="max-w-[160px]" />
                   <div className="flex gap-1">
                     {[100, 200, 500, 1024].map((kb) => (
                       <button key={kb} onClick={() => setTargetKB(kb)} className="rounded-lg border border-border px-2 py-1 text-xs hover:bg-secondary">{kb >= 1024 ? "1 MB" : `${kb}KB`}</button>

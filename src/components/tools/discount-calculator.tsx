@@ -35,11 +35,11 @@ export default function DiscountCalculator() {
       <Card>
         <CardHeader><CardTitle>Enter details</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-1.5"><Label>Original price (₹)</Label><Input type="number" value={value.price} onChange={(e) => set({ ...value, price: e.target.value })} /></div>
-          <div className="space-y-1.5"><Label>Discount (%)</Label><Input type="number" value={value.discount} onChange={(e) => set({ ...value, discount: e.target.value })} /></div>
+          <div className="space-y-1.5"><Label htmlFor="discount-price">Original price (₹)</Label><Input id="discount-price" type="number" value={value.price} onChange={(e) => set({ ...value, price: e.target.value })} /></div>
+          <div className="space-y-1.5"><Label htmlFor="discount-pct">Discount (%)</Label><Input id="discount-pct" type="number" value={value.discount} onChange={(e) => set({ ...value, discount: e.target.value })} /></div>
           <div className="space-y-1.5">
-            <Label>Extra stacked discount (%, optional)</Label>
-            <Input type="number" value={value.extraDiscount} onChange={(e) => set({ ...value, extraDiscount: e.target.value })} />
+            <Label htmlFor="discount-extra">Extra stacked discount (%, optional)</Label>
+            <Input id="discount-extra" type="number" value={value.extraDiscount} onChange={(e) => set({ ...value, extraDiscount: e.target.value })} />
             <p className="text-xs text-muted-foreground">Applied on top of the price after the first discount — not simply added to it.</p>
           </div>
           <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />

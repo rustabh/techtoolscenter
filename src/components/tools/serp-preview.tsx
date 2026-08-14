@@ -29,13 +29,13 @@ export default function SerpPreview() {
         <CardHeader><CardTitle>Snippet content</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
-            <div className="flex justify-between"><Label>Title</Label><span className={titleTooLong ? "text-destructive text-xs" : "text-muted-foreground text-xs"}>{value.title.length}/60</span></div>
-            <Input value={value.title} onChange={(e) => set({ ...value, title: e.target.value })} />
+            <div className="flex justify-between"><Label htmlFor="serp-title">Title</Label><span className={titleTooLong ? "text-destructive text-xs" : "text-muted-foreground text-xs"}>{value.title.length}/60</span></div>
+            <Input id="serp-title" value={value.title} onChange={(e) => set({ ...value, title: e.target.value })} />
           </div>
-          <div className="space-y-1.5"><Label>URL</Label><Input value={value.url} onChange={(e) => set({ ...value, url: e.target.value })} /></div>
+          <div className="space-y-1.5"><Label htmlFor="serp-url">URL</Label><Input id="serp-url" value={value.url} onChange={(e) => set({ ...value, url: e.target.value })} /></div>
           <div className="space-y-1.5">
-            <div className="flex justify-between"><Label>Description</Label><span className={descTooLong ? "text-destructive text-xs" : "text-muted-foreground text-xs"}>{value.desc.length}/160</span></div>
-            <Textarea value={value.desc} onChange={(e) => set({ ...value, desc: e.target.value })} />
+            <div className="flex justify-between"><Label htmlFor="serp-desc">Description</Label><span className={descTooLong ? "text-destructive text-xs" : "text-muted-foreground text-xs"}>{value.desc.length}/160</span></div>
+            <Textarea id="serp-desc" value={value.desc} onChange={(e) => set({ ...value, desc: e.target.value })} />
           </div>
           <div className="grid grid-cols-2 gap-2">
             {(["desktop", "mobile"] as const).map((d) => (

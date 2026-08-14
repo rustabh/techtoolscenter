@@ -379,17 +379,17 @@ th{color:${base};font-size:12px;text-transform:uppercase;letter-spacing:.05em}.t
       <Card>
         <CardContent className="grid gap-4 pt-6 md:grid-cols-3">
           <div className="space-y-1.5 md:col-span-1">
-            <Label>Website URL</Label>
+            <Label htmlFor="brandkit-url">Website URL</Label>
             <div className="flex gap-2">
-              <Input value={url} onChange={(e) => setUrl(e.target.value)} placeholder="example.com" onKeyDown={(e) => e.key === "Enter" && fetchMeta()} />
+              <Input id="brandkit-url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="example.com" onKeyDown={(e) => e.key === "Enter" && fetchMeta()} />
               <Button onClick={fetchMeta} disabled={loading}>
                 {loading ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
               </Button>
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label>Business name</Label>
-            <Input value={business} onChange={(e) => setBusiness(e.target.value)} placeholder="Your Brand" />
+            <Label htmlFor="brandkit-business">Business name</Label>
+            <Input id="brandkit-business" value={business} onChange={(e) => setBusiness(e.target.value)} placeholder="Your Brand" />
           </div>
           <div className="space-y-1.5">
             <Label>Logo (optional)</Label>

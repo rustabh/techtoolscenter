@@ -507,8 +507,8 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
             )}
             {kind.priced && (
               <div className="space-y-1.5">
-                <Label>Bank / payment details (optional)</Label>
-                <Textarea placeholder="Account name, number, IFSC, UPI ID…" value={value.bankDetails} onChange={(e) => patch({ bankDetails: e.target.value })} />
+                <Label htmlFor="business-bank-details">Bank / payment details (optional)</Label>
+                <Textarea id="business-bank-details" placeholder="Account name, number, IFSC, UPI ID…" value={value.bankDetails} onChange={(e) => patch({ bankDetails: e.target.value })} />
               </div>
             )}
             <div className="space-y-1.5"><Label>Watermark text (optional)</Label><Input placeholder="e.g. PAID / DRAFT" value={value.watermark} onChange={(e) => patch({ watermark: e.target.value })} /></div>

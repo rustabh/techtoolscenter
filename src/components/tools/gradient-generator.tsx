@@ -42,8 +42,8 @@ export default function GradientGenerator() {
           </div>
           {type === "linear" && (
             <div className="space-y-1.5">
-              <Label>Angle: {angle}°</Label>
-              <input type="range" min={0} max={360} value={angle} onChange={(e) => setAngle(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+              <Label htmlFor="gradient-angle">Angle: {angle}°</Label>
+              <input id="gradient-angle" type="range" min={0} max={360} value={angle} onChange={(e) => setAngle(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
             </div>
           )}
         </CardContent>
