@@ -1,7 +1,7 @@
 import { getTool, getPopularTools, getRecentTools, tools } from "@/lib/tools";
 import { pickForWeek } from "@/lib/home/daily";
 import { aiTools, featuredAiTools, recentlyAddedAiTools } from "@/lib/aihub/tools";
-import { allDevResources, featuredDevResources, recentlyAddedDevResources } from "@/lib/devhub/resources";
+import { featuredDevResources, recentlyAddedDevResources } from "@/lib/devhub/resources";
 import { popularIndiaServices } from "@/lib/india/services";
 import { allPosts } from "@/lib/blog/posts";
 import type { MegaMenuConfig, MegaMenuLink } from "./types";

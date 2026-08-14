@@ -151,7 +151,7 @@ export default async function ProjectHealthDashboard({
           <section>
             <div className="mb-3 flex items-center justify-between">
               <h2 className="flex items-center gap-2 text-lg font-semibold"><Icon name="Rocket" className="size-4 text-primary" /> SEO Health</h2>
-              <Badge variant={seoIssueTotal === 0 ? "success" : toneForIssueCount(seoIssueTotal, 1, 10) === "bad" ? "destructive" : "warning"}>
+              <Badge variant={seoIssueTotal === 0 ? "success" : toneForIssueCount(seoIssueTotal, 10) === "bad" ? "destructive" : "warning"}>
                 {seoIssueTotal === 0 ? "All clear" : `${seoIssueTotal} issue${seoIssueTotal === 1 ? "" : "s"}`}
               </Badge>
             </div>
@@ -214,13 +214,13 @@ export default async function ProjectHealthDashboard({
               <MetricCard
                 label={`Needs refresh (>${d.content.staleThresholdDays}d)`}
                 value={d.content.needsRefresh.length}
-                tone={toneForIssueCount(d.content.needsRefresh.length, 1, 15)}
+                tone={toneForIssueCount(d.content.needsRefresh.length, 15)}
               />
               <MetricCard
                 label="Human review pending"
                 value={d.content.humanReviewPending}
                 hint="posts with no seoTitle/seoDescription override yet"
-                tone={toneForIssueCount(d.content.humanReviewPending, 1, 20)}
+                tone={toneForIssueCount(d.content.humanReviewPending, 20)}
               />
             </div>
             <div className="mt-4 grid gap-4 lg:grid-cols-2">

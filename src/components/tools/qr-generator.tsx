@@ -120,7 +120,7 @@ export default function QrGenerator({ preset }: { preset?: Record<string, unknow
   const [shared, setShared] = useState(false);
   const holderRef = useRef<HTMLDivElement>(null);
   const qrRef = useRef<QRCodeStyling | null>(null);
-  const { copied, copy } = useCopy();
+  const { copied } = useCopy();
   const { value: history, set: setHistory } = useLocalStorage<string[]>("ttc:qr-history", []);
 
   const value = useMemo(() => buildValue(type, fields), [type, fields]);

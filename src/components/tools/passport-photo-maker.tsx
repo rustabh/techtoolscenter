@@ -326,9 +326,6 @@ function PreviewFrame({
   panY: number;
 }) {
   const naturalRatio = image.naturalWidth / image.naturalHeight;
-  // Render the image at cover-fit * zoom size relative to the frame, using percentage-based sizing
-  // so it scales with the frame regardless of its rendered pixel size.
-  const scalePercent = 100 * zoom;
   // Position: 0% aligns image's top/left with frame's top/left after cover-fit;
   // 100% aligns image's bottom/right with frame's bottom/right. panX/panY (0..1) interpolate between.
   const objectPosition = `${panX * 100}% ${panY * 100}%`;

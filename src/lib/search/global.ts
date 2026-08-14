@@ -28,8 +28,6 @@ export interface GlobalResult {
 
 const BLOG_ICON = "FileText";
 const INDIA_ICON = "Landmark";
-const AI_ICON = "Bot";
-const DEV_ICON = "Code2";
 const UPDATE_ICON = "Newspaper";
 
 function aiSearch(query: string, limit: number): GlobalResult[] {

@@ -51,7 +51,7 @@ export function MetricCard({
 }
 
 /** Zero is good (green), small counts are a warning (amber), large counts are bad (red). */
-export function toneForIssueCount(count: number, warningAt = 1, badAt = 5): Tone {
+export function toneForIssueCount(count: number, badAt = 5): Tone {
   if (count <= 0) return "good";
   if (count < badAt) return "warning";
   return "bad";
