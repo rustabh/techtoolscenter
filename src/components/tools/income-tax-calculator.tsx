@@ -73,6 +73,22 @@ function slabTax(taxable: number, slabs: Slab[]): number {
   return tax;
 }
 
+// Section 87A rebate zeroes out tax entirely up to the limit — but just above
+// the limit, a naive "full slab tax, no rebate" calculation creates a cliff:
+// ₹1 more income than the limit can jump tax from ₹0 to tens of thousands,
+// which isn't how the law actually works. The Finance Act's marginal relief
+// clause caps the tax at the amount of income exceeding the limit, so a
+// taxpayer never takes home less than someone just under the limit. This
+// self-limits correctly: near the cliff, full slab tax exceeds the excess
+// income and gets capped; well above the limit, the excess overtakes the
+// slab tax and the cap has no effect, so no separate upper cutoff is needed.
+function taxWithRebateAndMarginalRelief(taxable: number, limit: number, slabs: Slab[]): number {
+  if (taxable <= limit) return 0;
+  const fullTax = slabTax(taxable, slabs);
+  const excessOverLimit = taxable - limit;
+  return Math.min(fullTax, excessOverLimit);
+}
+
 interface RegimeResult {
   gross: number;
   standardDeduction: number;
@@ -87,7 +103,7 @@ interface RegimeResult {
 function computeNewRegime(income: number): RegimeResult {
   const standardDeduction = NEW_REGIME_STANDARD_DEDUCTION;
   const netTaxable = Math.max(income - standardDeduction, 0);
-  const taxBeforeCess = netTaxable <= NEW_REGIME_REBATE_LIMIT ? 0 : slabTax(netTaxable, NEW_REGIME_SLABS);
+  const taxBeforeCess = taxWithRebateAndMarginalRelief(netTaxable, NEW_REGIME_REBATE_LIMIT, NEW_REGIME_SLABS);
   const cess = taxBeforeCess * CESS_RATE;
   const totalTax = taxBeforeCess + cess;
   return { gross: income, standardDeduction, itemizedDeductions: 0, netTaxable, taxBeforeCess, cess, totalTax, takeHome: income - totalTax };
@@ -102,8 +118,7 @@ function computeNewRegime(income: number): RegimeResult {
 function computeOldRegime(income: number, age: IncomeTaxState["age"], itemizedDeductions: number): RegimeResult {
   const standardDeduction = OLD_REGIME_STANDARD_DEDUCTION;
   const netTaxable = Math.max(income - standardDeduction - Math.max(itemizedDeductions, 0), 0);
-  const taxBeforeCess =
-    netTaxable <= OLD_REGIME_REBATE_LIMIT ? 0 : slabTax(netTaxable, OLD_REGIME_SLABS[age]);
+  const taxBeforeCess = taxWithRebateAndMarginalRelief(netTaxable, OLD_REGIME_REBATE_LIMIT, OLD_REGIME_SLABS[age]);
   const cess = taxBeforeCess * CESS_RATE;
   const totalTax = taxBeforeCess + cess;
   return { gross: income, standardDeduction, itemizedDeductions: Math.max(itemizedDeductions, 0), netTaxable, taxBeforeCess, cess, totalTax, takeHome: income - totalTax };
