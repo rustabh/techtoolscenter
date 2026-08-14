@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ChevronDown, ChevronRight, ChevronLeft, PanelLeftOpen, PanelLeftClose, Star, Clock, Flame,
-  Menu, X, ExternalLink, Sun, Moon,
+  X, ExternalLink, Sun, Moon,
 } from "lucide-react";
 import { Icon } from "@/components/icon";
 import { sidebarSections, type SidebarLink } from "@/lib/sidebar/config";
@@ -204,7 +204,7 @@ function SidebarContent({
 }
 
 export function WorkspaceSidebar() {
-  const { mounted, collapsed, setCollapsed, hidden, setHidden, mobileOpen, setMobileOpen, openSections, toggleSection } = useSidebarState();
+  const { mounted, collapsed, setCollapsed, hidden, setHidden, openSections, toggleSection } = useSidebarState();
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [hovering, setHovering] = useState(false);
 
@@ -329,57 +329,12 @@ export function WorkspaceSidebar() {
         )}
       </div>
 
-      {/* Mobile: floating trigger + slide-over drawer */}
-      <div className="md:hidden">
-        <button
-          type="button"
-          onClick={() => setMobileOpen(true)}
-          aria-label="Open Workspace sidebar"
-          className="glass fixed bottom-20 left-4 z-40 grid size-12 place-items-center rounded-full shadow-lg"
-          style={{ marginBottom: "env(safe-area-inset-bottom)" }}
-        >
-          <Menu className="size-5" />
-        </button>
-
-        <AnimatePresence>
-          {mobileOpen && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[60] bg-black/40"
-                onClick={() => setMobileOpen(false)}
-              />
-              <motion.div
-                initial={{ x: "-100%" }}
-                animate={{ x: 0 }}
-                exit={{ x: "-100%" }}
-                transition={{ type: "spring", damping: 28, stiffness: 300 }}
-                className="glass fixed inset-y-0 left-0 z-[61] flex w-[85vw] max-w-sm flex-col rounded-none shadow-2xl"
-              >
-                <div className="flex items-center justify-between border-b border-border/60 px-4 py-4">
-                  <p className="text-base font-bold">Workspace</p>
-                  <button
-                    type="button"
-                    onClick={() => setMobileOpen(false)}
-                    aria-label="Close"
-                    className="rounded-full p-1.5 text-muted-foreground hover:bg-secondary"
-                  >
-                    <X className="size-4" />
-                  </button>
-                </div>
-                <SidebarContent
-                  openSections={openSections}
-                  toggleSection={toggleSection}
-                  onAction={handleAction}
-                  onNavigate={() => setMobileOpen(false)}
-                />
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-      </div>
+      {/* No mobile entry point on purpose — the bottom tab bar's "Menu" tab
+          (and the top navbar's hamburger) already open full site navigation
+          via MobileNavDrawer. A second floating trigger here duplicated that,
+          and on real devices visibly collided with the Incinc launcher FAB.
+          This panel's extra content (widgets, keyboard shortcuts, quick
+          actions) remains fully available on desktop. */}
     </>
   );
 }

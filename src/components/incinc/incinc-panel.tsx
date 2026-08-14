@@ -81,7 +81,7 @@ export function IncincPanel({ onClose }: { onClose: () => void }) {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: 24, scale: 0.96 }}
       transition={{ type: "spring", damping: 24, stiffness: 260 }}
-      className="glass fixed bottom-36 right-4 z-50 flex h-[min(640px,calc(100vh-9rem))] w-[min(400px,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl sm:bottom-24 sm:right-6"
+      className="glass fixed bottom-[calc(9rem+env(safe-area-inset-bottom))] right-4 z-50 flex h-[min(640px,calc(100vh-13rem))] w-[min(400px,calc(100vw-2rem))] flex-col overflow-hidden rounded-3xl md:bottom-24 md:right-6 md:h-[min(640px,calc(100vh-9rem))]"
       role="dialog"
       aria-label="Incinc AI assistant"
     >

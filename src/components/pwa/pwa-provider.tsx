@@ -93,16 +93,18 @@ export function PwaProvider() {
     <>
       {updateReady && (
         <button onClick={applyUpdate}
-          className="fixed inset-x-0 bottom-20 z-50 mx-auto mb-4 flex w-fit items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-lg md:bottom-0">
+          className="fixed inset-x-0 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-50 mx-auto mb-4 flex w-fit items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-lg md:bottom-0">
           <RefreshCw className="size-4" /> A new version is available — tap to update
         </button>
       )}
 
-      {/* bottom-20 clears the fixed mobile tab bar (h-16) plus a little
-          breathing room; sm:bottom-4 restores the original placement once
-          the tab bar is no longer present (it's mobile-only). */}
+      {/* bottom offset clears the fixed mobile tab bar's real height (content
+          + the device's own safe-area inset, which a plain px guess doesn't
+          account for) plus a little breathing room; md:bottom-4 restores the
+          original placement once the tab bar is no longer present (it's
+          hidden at the same md breakpoint). */}
       {mode && (
-        <div className="fixed inset-x-0 bottom-20 z-40 p-4 sm:bottom-4 sm:left-auto sm:right-4 sm:max-w-sm">
+        <div className="fixed inset-x-0 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-40 p-4 md:bottom-4 md:left-auto md:right-4 md:max-w-sm">
           <div className="animate-[slideUp_0.35s_ease-out] overflow-hidden rounded-2xl border border-border bg-card shadow-2xl">
             <div className="flex items-start gap-3 p-4">
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
