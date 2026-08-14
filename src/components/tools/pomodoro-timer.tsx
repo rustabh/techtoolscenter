@@ -5,6 +5,8 @@ import { Play, Pause, RotateCcw } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { showToast } from "@/components/ui/toaster";
+import { useLocalStorage } from "@/hooks/use-local-storage";
+import { localDateISO } from "@/lib/utils";
 
 type Mode = "focus" | "short" | "long";
 const DURATIONS: Record<Mode, number> = { focus: 25 * 60, short: 5 * 60, long: 15 * 60 };
@@ -27,8 +29,15 @@ export default function PomodoroTimer() {
   const [mode, setMode] = useState<Mode>("focus");
   const [left, setLeft] = useState(DURATIONS.focus);
   const [running, setRunning] = useState(false);
-  const [sessions, setSessions] = useState(0);
+  // Keyed by local date (YYYY-MM-DD) -> completed focus-session count that day.
+  // Plain component state would lose the count on every page reload/tab close,
+  // which defeats the point of tracking sessions at all.
+  const { value: history, set: setHistory } = useLocalStorage<Record<string, number>>("uh:pomodoro-history", {});
   const ref = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const today = localDateISO();
+  const sessions = history[today] ?? 0;
+  const totalSessions = Object.values(history).reduce((sum, n) => sum + n, 0);
 
   useEffect(() => {
     if (running) {
@@ -37,7 +46,9 @@ export default function PomodoroTimer() {
           if (l <= 1) {
             beep();
             setRunning(false);
-            if (mode === "focus") setSessions((s) => s + 1);
+            if (mode === "focus") {
+              setHistory((prev) => ({ ...prev, [today]: (prev[today] ?? 0) + 1 }));
+            }
             showToast(mode === "focus" ? "Focus session complete — take a break!" : "Break's over — back to focus.", "info");
             return 0;
           }
@@ -46,7 +57,7 @@ export default function PomodoroTimer() {
       }, 1000);
     }
     return () => { if (ref.current) clearInterval(ref.current); };
-  }, [running, mode]);
+  }, [running, mode, setHistory, today]);
 
   useEffect(() => {
     const m = Math.floor(left / 60), s = left % 60;
@@ -103,7 +114,12 @@ export default function PomodoroTimer() {
           </Button>
           <Button size="lg" variant="outline" onClick={() => { setLeft(DURATIONS[mode]); setRunning(false); }} aria-label="Reset"><RotateCcw /></Button>
         </div>
-        <p className="text-sm text-muted-foreground">Completed focus sessions: <span className="font-semibold text-foreground">{sessions}</span></p>
+        <p className="text-sm text-muted-foreground">
+          Focus sessions today: <span className="font-semibold text-foreground">{sessions}</span>
+          {totalSessions > sessions && (
+            <> · All-time: <span className="font-semibold text-foreground">{totalSessions}</span></>
+          )}
+        </p>
       </CardContent>
     </Card>
   );
