@@ -26,8 +26,8 @@ export default function PercentageCalculator() {
         <CardHeader><CardTitle>What is X% of Y?</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5"><Label>Percentage (%)</Label><Input type="number" value={a1} onChange={(e) => setA1(e.target.value)} /></div>
-            <div className="space-y-1.5"><Label>Of value</Label><Input type="number" value={b1} onChange={(e) => setB1(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="pct-a1">Percentage (%)</Label><Input id="pct-a1" type="number" value={a1} onChange={(e) => setA1(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="pct-b1">Of value</Label><Input id="pct-b1" type="number" value={b1} onChange={(e) => setB1(e.target.value)} /></div>
           </div>
           <div className="rounded-xl bg-primary/10 p-4 text-center">
             <p className="text-sm text-muted-foreground">{a1}% of {b1} is</p>
@@ -40,8 +40,8 @@ export default function PercentageCalculator() {
         <CardHeader><CardTitle>X is what % of Y?</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5"><Label>Value</Label><Input type="number" value={a2} onChange={(e) => setA2(e.target.value)} /></div>
-            <div className="space-y-1.5"><Label>Total</Label><Input type="number" value={b2} onChange={(e) => setB2(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="pct-a2">Value</Label><Input id="pct-a2" type="number" value={a2} onChange={(e) => setA2(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="pct-b2">Total</Label><Input id="pct-b2" type="number" value={b2} onChange={(e) => setB2(e.target.value)} /></div>
           </div>
           <div className="rounded-xl bg-primary/10 p-4 text-center">
             <p className="text-sm text-muted-foreground">{a2} is this % of {b2}</p>
@@ -54,8 +54,8 @@ export default function PercentageCalculator() {
         <CardHeader><CardTitle>% increase / decrease from X to Y</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5"><Label>From</Label><Input type="number" value={a3} onChange={(e) => setA3(e.target.value)} /></div>
-            <div className="space-y-1.5"><Label>To</Label><Input type="number" value={b3} onChange={(e) => setB3(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="pct-a3">From</Label><Input id="pct-a3" type="number" value={a3} onChange={(e) => setA3(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="pct-b3">To</Label><Input id="pct-b3" type="number" value={b3} onChange={(e) => setB3(e.target.value)} /></div>
           </div>
           <div className="rounded-xl bg-primary/10 p-4 text-center">
             <p className="text-sm text-muted-foreground">Change from {a3} to {b3} is a</p>

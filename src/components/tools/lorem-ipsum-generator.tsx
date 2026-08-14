@@ -82,8 +82,8 @@ export default function LoremIpsumGenerator() {
         <CardHeader><CardTitle>Options</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Amount: {count}</Label>
-            <input type="range" min={1} max={20} value={count} onChange={(e) => setCount(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+            <Label htmlFor="lorem-count">Amount: {count}</Label>
+            <input id="lorem-count" type="range" min={1} max={20} value={count} onChange={(e) => setCount(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
           </div>
           <div className="flex flex-wrap gap-2">
             {(["paragraphs", "sentences", "words"] as Unit[]).map((u) => (

@@ -74,7 +74,7 @@ export default function ColorPaletteGenerator() {
         <CardHeader><CardTitle>Base colour</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-wrap items-end gap-4">
-            <div className="space-y-1.5"><Label>Colour</Label><Input type="color" value={base} onChange={(e) => setBase(e.target.value)} className="h-10 w-20 p-1" /></div>
+            <div className="space-y-1.5"><Label htmlFor="palette-color">Colour</Label><Input id="palette-color" type="color" value={base} onChange={(e) => setBase(e.target.value)} className="h-10 w-20 p-1" /></div>
             <div className="flex flex-wrap gap-2">
               {(["analogous", "complementary", "triadic", "shades"] as Scheme[]).map((s) => (
                 <Button key={s} size="sm" variant={scheme === s ? "default" : "outline"} onClick={() => setScheme(s)} className="capitalize">{s}</Button>

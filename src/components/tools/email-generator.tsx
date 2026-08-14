@@ -53,17 +53,17 @@ export default function EmailGenerator() {
       <Card>
         <CardHeader><CardTitle>Details</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-1.5"><Label>Purpose</Label>
-            <Select value={purpose} onChange={(e) => setPurpose(e.target.value as Purpose)}>
+          <div className="space-y-1.5"><Label htmlFor="email-purpose">Purpose</Label>
+            <Select id="email-purpose" value={purpose} onChange={(e) => setPurpose(e.target.value as Purpose)}>
               {Object.keys(templates).map((p) => <option key={p} value={p} className="capitalize">{p.replace("-", " ")}</option>)}
             </Select>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5"><Label>Recipient</Label><Input value={data.recipient} onChange={(e) => set("recipient", e.target.value)} placeholder="Name" /></div>
-            <div className="space-y-1.5"><Label>Your name</Label><Input value={data.sender} onChange={(e) => set("sender", e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="email-recipient">Recipient</Label><Input id="email-recipient" value={data.recipient} onChange={(e) => set("recipient", e.target.value)} placeholder="Name" /></div>
+            <div className="space-y-1.5"><Label htmlFor="email-sender">Your name</Label><Input id="email-sender" value={data.sender} onChange={(e) => set("sender", e.target.value)} /></div>
           </div>
-          <div className="space-y-1.5"><Label>Company</Label><Input value={data.company} onChange={(e) => set("company", e.target.value)} /></div>
-          <div className="space-y-1.5"><Label>Key details</Label><Textarea value={data.details} onChange={(e) => set("details", e.target.value)} placeholder="What is this email about?" /></div>
+          <div className="space-y-1.5"><Label htmlFor="email-company">Company</Label><Input id="email-company" value={data.company} onChange={(e) => set("company", e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="email-details">Key details</Label><Textarea id="email-details" value={data.details} onChange={(e) => set("details", e.target.value)} placeholder="What is this email about?" /></div>
         </CardContent>
       </Card>
       <Card className="bg-gradient-to-br from-primary/5 to-transparent">

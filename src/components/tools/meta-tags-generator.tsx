@@ -59,11 +59,11 @@ export default function MetaTagsGenerator() {
       <Card>
         <CardHeader><CardTitle>Page details</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-1.5"><div className="flex justify-between"><Label>Title</Label>{count(title, 60)}</div><Input value={title} onChange={(e) => setTitle(e.target.value)} /></div>
-          <div className="space-y-1.5"><div className="flex justify-between"><Label>Description</Label>{count(desc, 160)}</div><Textarea value={desc} onChange={(e) => setDesc(e.target.value)} /></div>
-          <div className="space-y-1.5"><Label>Canonical URL</Label><Input value={url} onChange={(e) => setUrl(e.target.value)} /></div>
-          <div className="space-y-1.5"><Label>OG image URL</Label><Input value={image} onChange={(e) => setImage(e.target.value)} /></div>
-          <div className="space-y-1.5"><Label>OG type</Label><Input value={type} onChange={(e) => setType(e.target.value)} /></div>
+          <div className="space-y-1.5"><div className="flex justify-between"><Label htmlFor="meta-title">Title</Label>{count(title, 60)}</div><Input id="meta-title" value={title} onChange={(e) => setTitle(e.target.value)} /></div>
+          <div className="space-y-1.5"><div className="flex justify-between"><Label htmlFor="meta-desc">Description</Label>{count(desc, 160)}</div><Textarea id="meta-desc" value={desc} onChange={(e) => setDesc(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="meta-url">Canonical URL</Label><Input id="meta-url" value={url} onChange={(e) => setUrl(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="meta-image">OG image URL</Label><Input id="meta-image" value={image} onChange={(e) => setImage(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="meta-type">OG type</Label><Input id="meta-type" value={type} onChange={(e) => setType(e.target.value)} /></div>
         </CardContent>
       </Card>
       <div className="space-y-6">

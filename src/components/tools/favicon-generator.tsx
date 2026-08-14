@@ -200,8 +200,8 @@ export default function FaviconGenerator() {
               <ImageUpload onFile={onImage} hasImage={!!img} />
             ) : (
               <div className="space-y-1.5">
-                <Label>{mode === "emoji" ? "Emoji" : "Text (1–2 characters)"}</Label>
-                <Input value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === "emoji" ? "⭐" : "T"} maxLength={mode === "emoji" ? 4 : 2} />
+                <Label htmlFor="favicon-text">{mode === "emoji" ? "Emoji" : "Text (1–2 characters)"}</Label>
+                <Input id="favicon-text" value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === "emoji" ? "⭐" : "T"} maxLength={mode === "emoji" ? 4 : 2} />
               </div>
             )}
           </CardContent>
@@ -211,8 +211,8 @@ export default function FaviconGenerator() {
           <CardHeader><CardTitle>Style</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5"><Label>Background</Label><Input type="color" value={bg} onChange={(e) => setBg(e.target.value)} disabled={transparent} className="h-10 p-1" /></div>
-              {mode !== "image" && <div className="space-y-1.5"><Label>Foreground</Label><Input type="color" value={fg} onChange={(e) => setFg(e.target.value)} className="h-10 p-1" /></div>}
+              <div className="space-y-1.5"><Label htmlFor="favicon-bg">Background</Label><Input id="favicon-bg" type="color" value={bg} onChange={(e) => setBg(e.target.value)} disabled={transparent} className="h-10 p-1" /></div>
+              {mode !== "image" && <div className="space-y-1.5"><Label htmlFor="favicon-fg">Foreground</Label><Input id="favicon-fg" type="color" value={fg} onChange={(e) => setFg(e.target.value)} className="h-10 p-1" /></div>}
             </div>
             <div className="space-y-1.5">
               <Label>Shape</Label>

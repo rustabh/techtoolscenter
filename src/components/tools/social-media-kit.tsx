@@ -121,13 +121,13 @@ export default function SocialMediaKit() {
           <CardHeader><CardTitle>Format</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1.5">
-              <Label>Platform / size</Label>
-              <Select value={preset.id} onChange={(e) => setPreset(PRESETS.find((p) => p.id === e.target.value)!)}>
+              <Label htmlFor="smk-preset">Platform / size</Label>
+              <Select id="smk-preset" value={preset.id} onChange={(e) => setPreset(PRESETS.find((p) => p.id === e.target.value)!)}>
                 {PRESETS.map((p) => <option key={p.id} value={p.id}>{p.label} ({p.w}×{p.h})</option>)}
               </Select>
             </div>
-            <div className="space-y-1.5"><Label>Title</Label><Textarea value={title} onChange={(e) => setTitle(e.target.value)} /></div>
-            <div className="space-y-1.5"><Label>Subtitle</Label><Input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="smk-title">Title</Label><Textarea id="smk-title" value={title} onChange={(e) => setTitle(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="smk-subtitle">Subtitle</Label><Input id="smk-subtitle" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} /></div>
           </CardContent>
         </Card>
 
@@ -144,7 +144,7 @@ export default function SocialMediaKit() {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5"><Label>Text colour</Label><Input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="h-10 p-1" /></div>
+              <div className="space-y-1.5"><Label htmlFor="smk-textcolor">Text colour</Label><Input id="smk-textcolor" type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="h-10 p-1" /></div>
               <div className="space-y-1.5">
                 <Label>Align</Label>
                 <div className="grid grid-cols-2 gap-1">

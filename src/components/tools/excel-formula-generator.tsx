@@ -54,14 +54,14 @@ export default function ExcelFormulaGenerator() {
       <Card>
         <CardHeader><CardTitle>Choose operation</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-1.5"><Label>Operation</Label>
-            <Select value={op} onChange={(e) => { setOp(e.target.value as Op); }}>
+          <div className="space-y-1.5"><Label htmlFor="excel-op">Operation</Label>
+            <Select id="excel-op" value={op} onChange={(e) => { setOp(e.target.value as Op); }}>
               {Object.keys(build).map((o) => <option key={o} value={o} className="uppercase">{o}</option>)}
             </Select>
           </div>
-          {la && <div className="space-y-1.5"><Label>{la}</Label><Input value={a} onChange={(e) => setA(e.target.value)} /></div>}
-          {lb && <div className="space-y-1.5"><Label>{lb}</Label><Input value={b} onChange={(e) => setB(e.target.value)} /></div>}
-          {lc && <div className="space-y-1.5"><Label>{lc}</Label><Input value={c} onChange={(e) => setC(e.target.value)} /></div>}
+          {la && <div className="space-y-1.5"><Label htmlFor="excel-arg-a">{la}</Label><Input id="excel-arg-a" value={a} onChange={(e) => setA(e.target.value)} /></div>}
+          {lb && <div className="space-y-1.5"><Label htmlFor="excel-arg-b">{lb}</Label><Input id="excel-arg-b" value={b} onChange={(e) => setB(e.target.value)} /></div>}
+          {lc && <div className="space-y-1.5"><Label htmlFor="excel-arg-c">{lc}</Label><Input id="excel-arg-c" value={c} onChange={(e) => setC(e.target.value)} /></div>}
         </CardContent>
       </Card>
       <Card className="bg-gradient-to-br from-primary/5 to-transparent">

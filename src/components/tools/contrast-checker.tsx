@@ -84,8 +84,8 @@ export default function ContrastChecker() {
         <CardHeader><CardTitle>Colours</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5"><Label>Text</Label><Input type="color" value={fg} onChange={(e) => setFg(e.target.value)} className="h-10 p-1" /><Input value={fg} onChange={(e) => setFg(e.target.value)} className="font-mono" /></div>
-            <div className="space-y-1.5"><Label>Background</Label><Input type="color" value={bg} onChange={(e) => setBg(e.target.value)} className="h-10 p-1" /><Input value={bg} onChange={(e) => setBg(e.target.value)} className="font-mono" /></div>
+            <div className="space-y-1.5"><Label htmlFor="contrast-fg">Text</Label><Input id="contrast-fg" type="color" value={fg} onChange={(e) => setFg(e.target.value)} className="h-10 p-1" /><Input aria-label="Text color hex value" value={fg} onChange={(e) => setFg(e.target.value)} className="font-mono" /></div>
+            <div className="space-y-1.5"><Label htmlFor="contrast-bg">Background</Label><Input id="contrast-bg" type="color" value={bg} onChange={(e) => setBg(e.target.value)} className="h-10 p-1" /><Input aria-label="Background color hex value" value={bg} onChange={(e) => setBg(e.target.value)} className="font-mono" /></div>
           </div>
           <Button variant="outline" size="sm" onClick={() => { setFg(bg); setBg(fg); }}>
             <ArrowLeftRight className="size-4" /> Swap colours

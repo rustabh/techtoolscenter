@@ -26,12 +26,12 @@ export default function ScreenRuler() {
             ))}
           </div>
           <div className="space-y-1.5">
-            <Label>Ruler length: {length}px</Label>
-            <input type="range" min={200} max={1200} value={length} onChange={(e) => setLength(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+            <Label htmlFor="ruler-length">Ruler length: {length}px</Label>
+            <input id="ruler-length" type="range" min={200} max={1200} value={length} onChange={(e) => setLength(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
           </div>
           <div className="space-y-1.5">
-            <Label>Calibrate DPI: {dpi} (adjust so 1 inch matches a real ruler)</Label>
-            <input type="range" min={72} max={220} value={dpi} onChange={(e) => setDpi(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+            <Label htmlFor="ruler-dpi">Calibrate DPI: {dpi} (adjust so 1 inch matches a real ruler)</Label>
+            <input id="ruler-dpi" type="range" min={72} max={220} value={dpi} onChange={(e) => setDpi(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
           </div>
         </CardContent>
       </Card>

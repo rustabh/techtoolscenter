@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Plus, Trash2, Upload, Printer, FileDown, ImageDown, Sparkles, Wand2, Loader2 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -433,9 +433,9 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <Field label="Number" value={value.number} onChange={(v) => patch({ number: v })} />
-              <div className="space-y-1.5"><Label>Currency</Label><Input value={value.currency} onChange={(e) => patch({ currency: e.target.value })} /></div>
-              <div className="space-y-1.5"><Label>Date</Label><Input type="date" value={value.date} onChange={(e) => patch({ date: e.target.value })} /></div>
-              {kind.priced && <div className="space-y-1.5"><Label>Due date</Label><Input type="date" value={value.dueDate} onChange={(e) => patch({ dueDate: e.target.value })} /></div>}
+              <div className="space-y-1.5"><Label htmlFor="bs-currency">Currency</Label><Input id="bs-currency" value={value.currency} onChange={(e) => patch({ currency: e.target.value })} /></div>
+              <div className="space-y-1.5"><Label htmlFor="bs-date">Date</Label><Input id="bs-date" type="date" value={value.date} onChange={(e) => patch({ date: e.target.value })} /></div>
+              {kind.priced && <div className="space-y-1.5"><Label htmlFor="bs-duedate">Due date</Label><Input id="bs-duedate" type="date" value={value.dueDate} onChange={(e) => patch({ dueDate: e.target.value })} /></div>}
             </div>
             <div className="grid grid-cols-3 gap-2">
               <UploadBtn label={value.logo ? "Logo ✓" : "Logo"} onFile={(f) => upload("logo", f)} />
@@ -482,14 +482,14 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
               <Card>
                 <CardHeader><CardTitle>Charges</CardTitle></CardHeader>
                 <CardContent className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5"><Label>Discount (%)</Label><Input type="number" min={0} value={value.discount} onChange={(e) => patch({ discount: Number(e.target.value) })} /></div>
-                  <div className="space-y-1.5"><Label>Shipping</Label><Input type="number" min={0} value={value.shipping} onChange={(e) => patch({ shipping: Number(e.target.value) })} /></div>
-                  <div className="space-y-1.5"><Label>Tax type</Label>
-                    <Select value={value.taxType} onChange={(e) => patch({ taxType: e.target.value as TaxMode })}>
+                  <div className="space-y-1.5"><Label htmlFor="bs-discount">Discount (%)</Label><Input id="bs-discount" type="number" min={0} value={value.discount} onChange={(e) => patch({ discount: Number(e.target.value) })} /></div>
+                  <div className="space-y-1.5"><Label htmlFor="bs-shipping">Shipping</Label><Input id="bs-shipping" type="number" min={0} value={value.shipping} onChange={(e) => patch({ shipping: Number(e.target.value) })} /></div>
+                  <div className="space-y-1.5"><Label htmlFor="bs-taxtype">Tax type</Label>
+                    <Select id="bs-taxtype" value={value.taxType} onChange={(e) => patch({ taxType: e.target.value as TaxMode })}>
                       {TAX_MODES.map((m) => <option key={m.id} value={m.id}>{m.label}</option>)}
                     </Select>
                   </div>
-                  <div className="space-y-1.5"><Label>Total tax rate (%)</Label><Input type="number" value={value.taxRate} disabled={value.taxType === "none"} onChange={(e) => patch({ taxRate: Number(e.target.value) })} /></div>
+                  <div className="space-y-1.5"><Label htmlFor="bs-taxrate">Total tax rate (%)</Label><Input id="bs-taxrate" type="number" value={value.taxRate} disabled={value.taxType === "none"} onChange={(e) => patch({ taxRate: Number(e.target.value) })} /></div>
                 </CardContent>
               </Card>
             )}
@@ -501,8 +501,8 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
           <CardContent className="space-y-3">
             {value.kind !== "letterhead" && (
               <>
-                <div className="space-y-1.5"><Label>Notes</Label><Textarea value={value.notes} onChange={(e) => patch({ notes: e.target.value })} /></div>
-                <div className="space-y-1.5"><Label>Terms</Label><Textarea value={value.terms} onChange={(e) => patch({ terms: e.target.value })} /></div>
+                <div className="space-y-1.5"><Label htmlFor="bs-notes">Notes</Label><Textarea id="bs-notes" value={value.notes} onChange={(e) => patch({ notes: e.target.value })} /></div>
+                <div className="space-y-1.5"><Label htmlFor="bs-terms">Terms</Label><Textarea id="bs-terms" value={value.terms} onChange={(e) => patch({ terms: e.target.value })} /></div>
               </>
             )}
             {kind.priced && (
@@ -511,7 +511,7 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
                 <Textarea id="business-bank-details" placeholder="Account name, number, IFSC, UPI ID…" value={value.bankDetails} onChange={(e) => patch({ bankDetails: e.target.value })} />
               </div>
             )}
-            <div className="space-y-1.5"><Label>Watermark text (optional)</Label><Input placeholder="e.g. PAID / DRAFT" value={value.watermark} onChange={(e) => patch({ watermark: e.target.value })} /></div>
+            <div className="space-y-1.5"><Label htmlFor="bs-watermark">Watermark text (optional)</Label><Input id="bs-watermark" placeholder="e.g. PAID / DRAFT" value={value.watermark} onChange={(e) => patch({ watermark: e.target.value })} /></div>
             <div className="flex flex-wrap gap-4 pt-1">
               <label className="flex cursor-pointer items-center gap-2 text-sm"><input type="checkbox" checked={value.showQR} onChange={(e) => patch({ showQR: e.target.checked })} className="size-4 accent-[var(--primary)]" /> QR code</label>
               <label className="flex cursor-pointer items-center gap-2 text-sm"><input type="checkbox" checked={value.showBarcode} onChange={(e) => patch({ showBarcode: e.target.checked })} className="size-4 accent-[var(--primary)]" /> Barcode</label>
@@ -797,7 +797,8 @@ function partyLines(p: Party) {
 }
 
 function Field({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
-  return <div className="space-y-1.5"><Label>{label}</Label><Input value={value} onChange={(e) => onChange(e.target.value)} /></div>;
+  const id = useId();
+  return <div className="space-y-1.5"><Label htmlFor={id}>{label}</Label><Input id={id} value={value} onChange={(e) => onChange(e.target.value)} /></div>;
 }
 function UploadBtn({ label, onFile }: { label: string; onFile: (f?: File) => void }) {
   const ref = useRef<HTMLInputElement>(null);

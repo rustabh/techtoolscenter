@@ -111,8 +111,8 @@ export default function PdfWatermark() {
                 <input id="wm-rotation" type="range" min={0} max={90} value={rotation} onChange={(e) => setRotation(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
               </div>
               <div className="space-y-1.5">
-                <Label>Color</Label>
-                <Input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="h-10 p-1" />
+                <Label htmlFor="wm-color">Color</Label>
+                <Input id="wm-color" type="color" value={color} onChange={(e) => setColor(e.target.value)} className="h-10 p-1" />
               </div>
             </div>
             <Button onClick={apply} disabled={busy || !text.trim()}>{busy ? "Applying…" : "Apply watermark & download"}</Button>

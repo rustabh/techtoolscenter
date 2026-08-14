@@ -46,22 +46,22 @@ export default function PromptGenerator() {
       <Card>
         <CardHeader><CardTitle>Describe your prompt</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-1.5"><Label>Role (act as…)</Label><Input value={role} onChange={(e) => setRole(e.target.value)} /></div>
-          <div className="space-y-1.5"><Label>Task</Label><Textarea value={task} onChange={(e) => setTask(e.target.value)} /></div>
-          <div className="space-y-1.5"><Label>Audience</Label><Input value={audience} onChange={(e) => setAudience(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="prompt-role">Role (act as…)</Label><Input id="prompt-role" value={role} onChange={(e) => setRole(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="prompt-task">Task</Label><Textarea id="prompt-task" value={task} onChange={(e) => setTask(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="prompt-audience">Audience</Label><Input id="prompt-audience" value={audience} onChange={(e) => setAudience(e.target.value)} /></div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5"><Label>Tone</Label>
-              <Select value={tone} onChange={(e) => setTone(e.target.value)}>
+            <div className="space-y-1.5"><Label htmlFor="prompt-tone">Tone</Label>
+              <Select id="prompt-tone" value={tone} onChange={(e) => setTone(e.target.value)}>
                 {["professional", "friendly", "persuasive", "casual", "formal", "playful", "authoritative"].map((t) => <option key={t}>{t}</option>)}
               </Select>
             </div>
-            <div className="space-y-1.5"><Label>Format</Label>
-              <Select value={format} onChange={(e) => setFormat(e.target.value)}>
+            <div className="space-y-1.5"><Label htmlFor="prompt-format">Format</Label>
+              <Select id="prompt-format" value={format} onChange={(e) => setFormat(e.target.value)}>
                 {["Markdown", "Plain text", "Bullet list", "JSON", "Table", "Numbered steps"].map((t) => <option key={t}>{t}</option>)}
               </Select>
             </div>
           </div>
-          <div className="space-y-1.5"><Label>Constraints (one per line)</Label><Textarea value={constraints} onChange={(e) => setConstraints(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="prompt-constraints">Constraints (one per line)</Label><Textarea id="prompt-constraints" value={constraints} onChange={(e) => setConstraints(e.target.value)} /></div>
         </CardContent>
       </Card>
       <Card className="bg-gradient-to-br from-primary/5 to-transparent">

@@ -78,8 +78,8 @@ export default function AIStudio() {
           <CardContent className="space-y-4">
             {PROVIDERS.length > 1 && (
               <div className="space-y-1.5">
-                <Label>Engine</Label>
-                <Select value={providerId} onChange={(e) => setProviderId(e.target.value)}>
+                <Label htmlFor="ai-engine">Engine</Label>
+                <Select id="ai-engine" value={providerId} onChange={(e) => setProviderId(e.target.value)}>
                   {PROVIDERS.map((p) => (
                     <option key={p.id} value={p.id} disabled={!p.available}>{p.label}</option>
                   ))}
@@ -88,15 +88,15 @@ export default function AIStudio() {
             )}
             {active.fields.map((f) => (
               <div key={f.name} className="space-y-1.5">
-                <Label>{f.label}</Label>
+                <Label htmlFor={`ai-field-${f.name}`}>{f.label}</Label>
                 {f.type === "textarea" ? (
-                  <Textarea value={inputs[f.name] ?? ""} placeholder={f.placeholder} onChange={(e) => setField(f.name, e.target.value)} />
+                  <Textarea id={`ai-field-${f.name}`} value={inputs[f.name] ?? ""} placeholder={f.placeholder} onChange={(e) => setField(f.name, e.target.value)} />
                 ) : f.type === "select" ? (
-                  <Select value={inputs[f.name] ?? ""} onChange={(e) => setField(f.name, e.target.value)}>
+                  <Select id={`ai-field-${f.name}`} value={inputs[f.name] ?? ""} onChange={(e) => setField(f.name, e.target.value)}>
                     {f.options?.map((o) => <option key={o}>{o}</option>)}
                   </Select>
                 ) : (
-                  <Input value={inputs[f.name] ?? ""} placeholder={f.placeholder} onChange={(e) => setField(f.name, e.target.value)} />
+                  <Input id={`ai-field-${f.name}`} value={inputs[f.name] ?? ""} placeholder={f.placeholder} onChange={(e) => setField(f.name, e.target.value)} />
                 )}
               </div>
             ))}

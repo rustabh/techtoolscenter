@@ -57,8 +57,8 @@ export default function ColorConverter() {
         <CardContent className="space-y-4">
           <div className="h-40 rounded-2xl border border-border" style={{ background: hex }} />
           <div className="grid grid-cols-3 items-end gap-3">
-            <div className="space-y-1.5"><Label>Picker</Label><Input type="color" value={hex} onChange={(e) => setHex(e.target.value)} className="h-10 p-1" /></div>
-            <div className="col-span-2 space-y-1.5"><Label>HEX</Label><Input value={hex} onChange={(e) => setHex(e.target.value)} className="font-mono" /></div>
+            <div className="space-y-1.5"><Label htmlFor="colorconv-picker">Picker</Label><Input id="colorconv-picker" type="color" value={hex} onChange={(e) => setHex(e.target.value)} className="h-10 p-1" /></div>
+            <div className="col-span-2 space-y-1.5"><Label htmlFor="colorconv-hex">HEX</Label><Input id="colorconv-hex" value={hex} onChange={(e) => setHex(e.target.value)} className="font-mono" /></div>
           </div>
         </CardContent>
       </Card>

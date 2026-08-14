@@ -392,8 +392,8 @@ th{color:${base};font-size:12px;text-transform:uppercase;letter-spacing:.05em}.t
             <Input id="brandkit-business" value={business} onChange={(e) => setBusiness(e.target.value)} placeholder="Your Brand" />
           </div>
           <div className="space-y-1.5">
-            <Label>Logo (optional)</Label>
-            <input ref={logoInput} type="file" accept="image/*" className="hidden" onChange={(e) => onLogo(e.target.files?.[0])} />
+            <Label htmlFor="brandkit-logo-input">Logo (optional)</Label>
+            <input id="brandkit-logo-input" ref={logoInput} type="file" accept="image/*" className="hidden" onChange={(e) => onLogo(e.target.files?.[0])} />
             <Button variant="outline" className="w-full" onClick={() => logoInput.current?.click()}>
               <Upload /> {uploadedLogo ? "Change logo" : "Upload logo"}
             </Button>

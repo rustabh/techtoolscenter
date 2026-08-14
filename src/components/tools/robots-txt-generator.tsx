@@ -63,12 +63,12 @@ export default function RobotsTxtGenerator() {
             <input type="checkbox" checked={allowAll} onChange={(e) => setAllowAll(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" />
             Allow all crawlers by default
           </label>
-          <div className="space-y-1.5"><Label>Disallow paths (one per line)</Label><Textarea value={disallow} onChange={(e) => setDisallow(e.target.value)} /></div>
-          <div className="space-y-1.5"><Label>Crawl delay (seconds, optional)</Label><Input value={crawlDelay} onChange={(e) => setCrawlDelay(e.target.value)} placeholder="e.g. 10" /></div>
-          <div className="space-y-1.5"><Label>Sitemap URL</Label><Input value={sitemap} onChange={(e) => setSitemap(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="robots-disallow">Disallow paths (one per line)</Label><Textarea id="robots-disallow" value={disallow} onChange={(e) => setDisallow(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="robots-crawldelay">Crawl delay (seconds, optional)</Label><Input id="robots-crawldelay" value={crawlDelay} onChange={(e) => setCrawlDelay(e.target.value)} placeholder="e.g. 10" /></div>
+          <div className="space-y-1.5"><Label htmlFor="robots-sitemap">Sitemap URL</Label><Input id="robots-sitemap" value={sitemap} onChange={(e) => setSitemap(e.target.value)} /></div>
           <div className="space-y-1.5">
-            <Label>Block AI-training crawlers (optional)</Label>
-            <div className="space-y-1.5">
+            <Label id="robots-aibots-label">Block AI-training crawlers (optional)</Label>
+            <div className="space-y-1.5" role="group" aria-labelledby="robots-aibots-label">
               {AI_BOTS.map((bot) => (
                 <label key={bot.id} className="flex cursor-pointer items-center justify-between rounded-lg border border-border px-3 py-2 text-sm">
                   {bot.label}

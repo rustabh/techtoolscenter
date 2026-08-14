@@ -56,7 +56,7 @@ export default function BlogOutlineGenerator() {
       <Card>
         <CardHeader><CardTitle>Topic</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-1.5"><Label>Blog title or topic</Label><Input value={topic} onChange={(e) => setTopic(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="blogoutline-topic">Blog title or topic</Label><Input id="blogoutline-topic" value={topic} onChange={(e) => setTopic(e.target.value)} /></div>
           <p className="text-sm text-muted-foreground">A complete, SEO-friendly outline is generated automatically as you type.</p>
         </CardContent>
       </Card>

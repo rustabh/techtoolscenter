@@ -138,10 +138,10 @@ function SingleFileTab({ title, action, fields, name, showSize }: {
       {file && (
         <Card><CardHeader><CardTitle>{title}</CardTitle></CardHeader><CardContent className="space-y-4">
           {fields.map((f) => (
-            <div key={f.key} className="space-y-1.5"><Label>{f.label}</Label>
+            <div key={f.key} className="space-y-1.5"><Label htmlFor={`pdfstudio-${f.key}`}>{f.label}</Label>
               {f.options
-                ? <Select value={opts[f.key]} onChange={(e) => setOpts((o) => ({ ...o, [f.key]: e.target.value }))}>{f.options.map((o) => <option key={o} value={o}>{o}°</option>)}</Select>
-                : <Input value={opts[f.key]} onChange={(e) => setOpts((o) => ({ ...o, [f.key]: e.target.value }))} />}
+                ? <Select id={`pdfstudio-${f.key}`} value={opts[f.key]} onChange={(e) => setOpts((o) => ({ ...o, [f.key]: e.target.value }))}>{f.options.map((o) => <option key={o} value={o}>{o}°</option>)}</Select>
+                : <Input id={`pdfstudio-${f.key}`} value={opts[f.key]} onChange={(e) => setOpts((o) => ({ ...o, [f.key]: e.target.value }))} />}
             </div>
           ))}
           {err && <p className="text-sm text-destructive">{err}</p>}
@@ -216,7 +216,7 @@ function SignTab() {
         <Card><CardHeader><CardTitle>Add signature</CardTitle></CardHeader><CardContent className="space-y-4">
           <input ref={sigRef} type="file" accept="image/png,image/jpeg" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) { const r = new FileReader(); r.onload = () => setSig(r.result as string); r.readAsDataURL(f); } }} />
           <Button variant="outline" onClick={() => sigRef.current?.click()}><UploadCloud /> {sig ? "Signature ✓" : "Upload signature image"}</Button>
-          <div className="space-y-1.5"><Label>Place on page</Label><Input type="number" value={page} onChange={(e) => setPage(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="pdfstudio-sig-page">Place on page</Label><Input id="pdfstudio-sig-page" type="number" value={page} onChange={(e) => setPage(e.target.value)} /></div>
           <Button onClick={run} disabled={!sig || busy}><Download /> {busy ? "Signing…" : "Sign & download"}</Button>
           <p className="text-xs text-muted-foreground">Stamps your signature image bottom-right. For legally binding e-signatures use a certified provider.</p>
         </CardContent></Card>

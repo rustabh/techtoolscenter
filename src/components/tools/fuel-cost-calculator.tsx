@@ -28,14 +28,14 @@ export default function FuelCostCalculator() {
       <Card>
         <CardHeader><CardTitle>Trip details</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-1.5"><Label>Distance (km)</Label><Input type="number" value={distance} onChange={(e) => setDistance(e.target.value)} /></div>
-          <div className="space-y-1.5"><Label>Mileage (km per litre)</Label><Input type="number" value={mileage} onChange={(e) => setMileage(e.target.value)} /></div>
-          <div className="space-y-1.5"><Label>Fuel price (₹ per litre)</Label><Input type="number" value={price} onChange={(e) => setPrice(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="fuel-distance">Distance (km)</Label><Input id="fuel-distance" type="number" value={distance} onChange={(e) => setDistance(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="fuel-mileage">Mileage (km per litre)</Label><Input id="fuel-mileage" type="number" value={mileage} onChange={(e) => setMileage(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="fuel-price">Fuel price (₹ per litre)</Label><Input id="fuel-price" type="number" value={price} onChange={(e) => setPrice(e.target.value)} /></div>
           <label className="flex cursor-pointer items-center gap-2 text-sm">
             <input type="checkbox" checked={roundTrip} onChange={(e) => setRoundTrip(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" />
             Round trip (there and back)
           </label>
-          <div className="space-y-1.5"><Label>Split between people</Label><Input type="number" min={1} value={people} onChange={(e) => setPeople(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="fuel-people">Split between people</Label><Input id="fuel-people" type="number" min={1} value={people} onChange={(e) => setPeople(e.target.value)} /></div>
         </CardContent>
       </Card>
       <Card className="bg-gradient-to-br from-primary/5 to-transparent">

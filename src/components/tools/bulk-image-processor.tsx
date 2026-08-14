@@ -173,20 +173,20 @@ export default function BulkImageProcessor() {
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 {(op === "compress" || op === "webp") && (
-                  <div className="space-y-1.5"><Label>Quality: {Math.round(quality * 100)}%</Label>
-                    <input type="range" min={0.1} max={1} step={0.05} value={quality} onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+                  <div className="space-y-1.5"><Label htmlFor="bulk-quality">Quality: {Math.round(quality * 100)}%</Label>
+                    <input id="bulk-quality" type="range" min={0.1} max={1} step={0.05} value={quality} onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
                   </div>
                 )}
                 {(op === "compress" || op === "webp" || op === "resize") && (
-                  <div className="space-y-1.5"><Label>Max width (px)</Label><Input type="number" value={width} onChange={(e) => setWidth(Number(e.target.value))} /></div>
+                  <div className="space-y-1.5"><Label htmlFor="bulk-width">Max width (px)</Label><Input id="bulk-width" type="number" value={width} onChange={(e) => setWidth(Number(e.target.value))} /></div>
                 )}
               </div>
               {/* Naming rules */}
               <div className="space-y-2">
-                <Label>Auto naming</Label>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <Input placeholder="Prefix" value={prefix} onChange={(e) => setPrefix(e.target.value)} />
-                  <Input placeholder="Suffix" value={suffix} onChange={(e) => setSuffix(e.target.value)} />
+                <Label id="bulk-naming-label">Auto naming</Label>
+                <div className="grid gap-2 sm:grid-cols-2" role="group" aria-labelledby="bulk-naming-label">
+                  <Input aria-label="Filename prefix" placeholder="Prefix" value={prefix} onChange={(e) => setPrefix(e.target.value)} />
+                  <Input aria-label="Filename suffix" placeholder="Suffix" value={suffix} onChange={(e) => setSuffix(e.target.value)} />
                 </div>
                 <div className="flex flex-wrap gap-4 text-sm">
                   <label className="flex cursor-pointer items-center gap-2"><input type="checkbox" checked={counter} onChange={(e) => setCounter(e.target.checked)} className="size-4 accent-[var(--primary)]" /> Add counter</label>

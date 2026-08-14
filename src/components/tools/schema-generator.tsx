@@ -62,8 +62,8 @@ export default function SchemaGenerator() {
       <Card>
         <CardHeader><CardTitle>Schema type</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-1.5"><Label>Type</Label>
-            <Select value={type} onChange={(e) => setType(e.target.value as SType)}>
+          <div className="space-y-1.5"><Label htmlFor="schema-type">Type</Label>
+            <Select id="schema-type" value={type} onChange={(e) => setType(e.target.value as SType)}>
               {[...Object.keys(FIELDS), "FAQPage"].map((t) => <option key={t}>{t}</option>)}
             </Select>
           </div>
@@ -72,12 +72,12 @@ export default function SchemaGenerator() {
               {faqs.map((item, i) => (
                 <div key={i} className="space-y-2 rounded-xl border border-border p-3">
                   <div className="flex items-center justify-between">
-                    <Label>Question {i + 1}</Label>
+                    <Label htmlFor={`schema-faq-q-${i}`}>Question {i + 1}</Label>
                     {faqs.length > 1 && (
                       <button type="button" className="text-xs text-muted-foreground hover:text-destructive" onClick={() => setFaqs((prev) => prev.filter((_, idx) => idx !== i))}>Remove</button>
                     )}
                   </div>
-                  <Input value={item.q} onChange={(e) => setFaqs((prev) => prev.map((x, idx) => (idx === i ? { ...x, q: e.target.value } : x)))} placeholder="Question" />
+                  <Input id={`schema-faq-q-${i}`} value={item.q} onChange={(e) => setFaqs((prev) => prev.map((x, idx) => (idx === i ? { ...x, q: e.target.value } : x)))} placeholder="Question" />
                   <Input value={item.a} onChange={(e) => setFaqs((prev) => prev.map((x, idx) => (idx === i ? { ...x, a: e.target.value } : x)))} placeholder="Answer" />
                 </div>
               ))}
@@ -85,7 +85,7 @@ export default function SchemaGenerator() {
             </div>
           ) : (
             FIELDS[type].map((field) => (
-              <div key={field.key} className="space-y-1.5"><Label>{field.label}</Label><Input value={g(field.key)} onChange={(e) => set(field.key, e.target.value)} /></div>
+              <div key={field.key} className="space-y-1.5"><Label htmlFor={`schema-field-${field.key}`}>{field.label}</Label><Input id={`schema-field-${field.key}`} value={g(field.key)} onChange={(e) => set(field.key, e.target.value)} /></div>
             ))
           )}
         </CardContent>

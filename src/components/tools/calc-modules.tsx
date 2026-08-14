@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
 import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -22,10 +22,11 @@ function Result({ label, value, big }: { label: string; value: string; big?: boo
   );
 }
 function Field({ label, value, onChange, type = "number" }: { label: string; value: string; onChange: (v: string) => void; type?: string }) {
+  const id = useId();
   return (
     <div className="space-y-1.5">
-      <Label>{label}</Label>
-      <Input type={type} value={value} onChange={(e) => onChange(e.target.value)} />
+      <Label htmlFor={id}>{label}</Label>
+      <Input id={id} type={type} value={value} onChange={(e) => onChange(e.target.value)} />
     </div>
   );
 }
@@ -127,7 +128,7 @@ export function CompoundInterestCalc() {
   }, [p, r, y, f]);
   return <Shell title="Compound interest"
     inputs={<><Field label="Principal (₹)" value={p} onChange={setP} /><Field label="Rate (% p.a.)" value={r} onChange={setR} /><Field label="Years" value={y} onChange={setY} />
-      <div className="space-y-1.5"><Label>Compounding</Label><Select value={f} onChange={(e) => setF(e.target.value)}><option value="1">Yearly</option><option value="2">Half-yearly</option><option value="4">Quarterly</option><option value="12">Monthly</option></Select></div></>}
+      <div className="space-y-1.5"><Label htmlFor="calc-compounding">Compounding</Label><Select id="calc-compounding" value={f} onChange={(e) => setF(e.target.value)}><option value="1">Yearly</option><option value="2">Half-yearly</option><option value="4">Quarterly</option><option value="12">Monthly</option></Select></div></>}
     results={<><Result label="Maturity amount" value={formatCurrency(d.amount)} big /><Result label="Interest earned" value={formatCurrency(d.interest)} /></>} />;
 }
 
@@ -158,7 +159,7 @@ export function BmrCalc() {
   }, [w, h, a, g]);
   return <Shell title="BMR (Mifflin-St Jeor)"
     inputs={<><Field label="Weight (kg)" value={w} onChange={setW} /><Field label="Height (cm)" value={h} onChange={setH} /><Field label="Age" value={a} onChange={setA} />
-      <div className="space-y-1.5"><Label>Gender</Label><Select value={g} onChange={(e) => setG(e.target.value)}><option value="male">Male</option><option value="female">Female</option></Select></div></>}
+      <div className="space-y-1.5"><Label htmlFor="calc-bmr-gender">Gender</Label><Select id="calc-bmr-gender" value={g} onChange={(e) => setG(e.target.value)}><option value="male">Male</option><option value="female">Female</option></Select></div></>}
     results={<><Result label="Basal Metabolic Rate" value={`${Math.round(bmr)} kcal/day`} big /><Result label="Sedentary (×1.2)" value={`${Math.round(bmr * 1.2)} kcal`} /><Result label="Active (×1.55)" value={`${Math.round(bmr * 1.55)} kcal`} /></>} />;
 }
 
@@ -173,7 +174,7 @@ export function BodyFatCalc() {
     return isFinite(v) ? Math.max(0, v) : 0;
   }, [g, h, neck, waist, hip]);
   return <Shell title="Body fat (US Navy)"
-    inputs={<><div className="space-y-1.5"><Label>Gender</Label><Select value={g} onChange={(e) => setG(e.target.value)}><option value="male">Male</option><option value="female">Female</option></Select></div>
+    inputs={<><div className="space-y-1.5"><Label htmlFor="calc-bodyfat-gender">Gender</Label><Select id="calc-bodyfat-gender" value={g} onChange={(e) => setG(e.target.value)}><option value="male">Male</option><option value="female">Female</option></Select></div>
       <Field label="Height (cm)" value={h} onChange={setH} /><Field label="Neck (cm)" value={neck} onChange={setNeck} /><Field label="Waist (cm)" value={waist} onChange={setWaist} />
       {g === "female" && <Field label="Hip (cm)" value={hip} onChange={setHip} />}</>}
     results={<Result label="Estimated body fat" value={`${bf.toFixed(1)}%`} big />} />;
@@ -204,7 +205,7 @@ export function TimeCalc() {
   }, [h1, m1, h2, m2, op]);
   return <Shell title="Time calculator"
     inputs={<><div className="grid grid-cols-2 gap-3"><Field label="Hours 1" value={h1} onChange={setH1} /><Field label="Minutes 1" value={m1} onChange={setM1} /></div>
-      <div className="space-y-1.5"><Label>Operation</Label><Select value={op} onChange={(e) => setOp(e.target.value)}><option value="+">Add</option><option value="-">Subtract</option></Select></div>
+      <div className="space-y-1.5"><Label htmlFor="calc-time-op">Operation</Label><Select id="calc-time-op" value={op} onChange={(e) => setOp(e.target.value)}><option value="+">Add</option><option value="-">Subtract</option></Select></div>
       <div className="grid grid-cols-2 gap-3"><Field label="Hours 2" value={h2} onChange={setH2} /><Field label="Minutes 2" value={m2} onChange={setM2} /></div></>}
     results={<Result label="Result" value={total} big />} />;
 }

@@ -250,17 +250,17 @@ export default function QrGenerator({ preset }: { preset?: Record<string, unknow
           <CardHeader><CardTitle>Content</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1.5">
-              <Label>QR type</Label>
-              <Select value={type} onChange={(e) => { setType(e.target.value as QrType); setFields({}); }}>
+              <Label htmlFor="qr-type">QR type</Label>
+              <Select id="qr-type" value={type} onChange={(e) => { setType(e.target.value as QrType); setFields({}); }}>
                 {TYPES.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
               </Select>
             </div>
             {FORMS[type].map((field) => (
               <div key={field.key} className="space-y-1.5">
-                <Label>{field.label}</Label>
+                <Label htmlFor={`qr-field-${field.key}`}>{field.label}</Label>
                 {field.area
-                  ? <Textarea value={fields[field.key] ?? ""} onChange={(e) => setFields((f) => ({ ...f, [field.key]: e.target.value }))} placeholder={field.placeholder} />
-                  : <Input type={field.type ?? "text"} value={fields[field.key] ?? ""} onChange={(e) => setFields((f) => ({ ...f, [field.key]: e.target.value }))} placeholder={field.placeholder} />}
+                  ? <Textarea id={`qr-field-${field.key}`} value={fields[field.key] ?? ""} onChange={(e) => setFields((f) => ({ ...f, [field.key]: e.target.value }))} placeholder={field.placeholder} />
+                  : <Input id={`qr-field-${field.key}`} type={field.type ?? "text"} value={fields[field.key] ?? ""} onChange={(e) => setFields((f) => ({ ...f, [field.key]: e.target.value }))} placeholder={field.placeholder} />}
               </div>
             ))}
             {type === "wifi" && (
@@ -288,19 +288,19 @@ export default function QrGenerator({ preset }: { preset?: Record<string, unknow
               </div>
             </div>
             <div className="grid grid-cols-3 gap-4">
-              <div className="space-y-1.5"><Label>Color</Label><Input type="color" value={fg} onChange={(e) => setFg(e.target.value)} className="h-10 p-1" /></div>
-              <div className="space-y-1.5"><Label>Gradient 2</Label><Input type="color" value={fg2 || "#ffffff"} onChange={(e) => setFg2(e.target.value)} className="h-10 p-1" /></div>
-              <div className="space-y-1.5"><Label>Background</Label><Input type="color" value={bg} onChange={(e) => setBg(e.target.value)} disabled={transparent} className="h-10 p-1" /></div>
+              <div className="space-y-1.5"><Label htmlFor="qr-fg">Color</Label><Input id="qr-fg" type="color" value={fg} onChange={(e) => setFg(e.target.value)} className="h-10 p-1" /></div>
+              <div className="space-y-1.5"><Label htmlFor="qr-fg2">Gradient 2</Label><Input id="qr-fg2" type="color" value={fg2 || "#ffffff"} onChange={(e) => setFg2(e.target.value)} className="h-10 p-1" /></div>
+              <div className="space-y-1.5"><Label htmlFor="qr-bg">Background</Label><Input id="qr-bg" type="color" value={bg} onChange={(e) => setBg(e.target.value)} disabled={transparent} className="h-10 p-1" /></div>
             </div>
             {fg2 && <Button variant="ghost" size="sm" onClick={() => setFg2("")}>Remove gradient</Button>}
             <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1.5"><Label>Dot style</Label>
-                <Select value={dot} onChange={(e) => setDot(e.target.value as DotType)}>
+              <div className="space-y-1.5"><Label htmlFor="qr-dot">Dot style</Label>
+                <Select id="qr-dot" value={dot} onChange={(e) => setDot(e.target.value as DotType)}>
                   {(["square", "rounded", "dots", "classy", "classy-rounded", "extra-rounded"] as DotType[]).map((x) => <option key={x} value={x}>{x}</option>)}
                 </Select>
               </div>
-              <div className="space-y-1.5"><Label>Corner / eye shape</Label>
-                <Select value={corner} onChange={(e) => setCorner(e.target.value as CornerType)}>
+              <div className="space-y-1.5"><Label htmlFor="qr-corner">Corner / eye shape</Label>
+                <Select id="qr-corner" value={corner} onChange={(e) => setCorner(e.target.value as CornerType)}>
                   {(["square", "dot", "extra-rounded"] as CornerType[]).map((x) => <option key={x} value={x}>{x}</option>)}
                 </Select>
               </div>
@@ -317,15 +317,15 @@ export default function QrGenerator({ preset }: { preset?: Record<string, unknow
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label>Size: {size}px</Label>
-              <input type="range" min={200} max={640} step={20} value={size} onChange={(e) => setSize(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+              <Label htmlFor="qr-size">Size: {size}px</Label>
+              <input id="qr-size" type="range" min={200} max={640} step={20} value={size} onChange={(e) => setSize(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center gap-2">
                 <LogoInput onFile={onLogo} hasLogo={!!logo} />
                 {logo && <Button variant="ghost" size="sm" onClick={() => setLogo(null)}>Remove</Button>}
               </div>
-              <div className="space-y-1.5"><Label>Frame caption</Label><Input value={caption} onChange={(e) => setCaption(e.target.value)} placeholder="Scan me" /></div>
+              <div className="space-y-1.5"><Label htmlFor="qr-caption">Frame caption</Label><Input id="qr-caption" value={caption} onChange={(e) => setCaption(e.target.value)} placeholder="Scan me" /></div>
             </div>
           </CardContent>
         </Card>

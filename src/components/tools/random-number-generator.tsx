@@ -48,12 +48,12 @@ export default function RandomNumberGenerator() {
         <CardHeader><CardTitle>Options</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1.5"><Label>Minimum</Label><Input type="number" value={min} onChange={(e) => setMin(e.target.value)} /></div>
-            <div className="space-y-1.5"><Label>Maximum</Label><Input type="number" value={max} onChange={(e) => setMax(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="rng-min">Minimum</Label><Input id="rng-min" type="number" value={min} onChange={(e) => setMin(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="rng-max">Maximum</Label><Input id="rng-max" type="number" value={max} onChange={(e) => setMax(e.target.value)} /></div>
           </div>
           <div className="space-y-1.5">
-            <Label>How many: {count}</Label>
-            <input type="range" min={1} max={50} value={count} onChange={(e) => setCount(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+            <Label htmlFor="rng-count">How many: {count}</Label>
+            <input id="rng-count" type="range" min={1} max={50} value={count} onChange={(e) => setCount(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
           </div>
           <label className="flex cursor-pointer items-center gap-2 text-sm">
             <input type="checkbox" checked={unique} onChange={(e) => setUnique(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" />

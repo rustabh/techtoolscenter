@@ -127,8 +127,8 @@ export default function CgpaCalculator() {
             </div>
             {value.formula === "custom" && (
               <div className="max-w-[160px] space-y-1.5">
-                <Label>Multiplier</Label>
-                <Input type="number" step="0.1" value={value.multiplier} onChange={(e) => set({ ...value, multiplier: e.target.value })} />
+                <Label htmlFor="cgpa-multiplier">Multiplier</Label>
+                <Input id="cgpa-multiplier" type="number" step="0.1" value={value.multiplier} onChange={(e) => set({ ...value, multiplier: e.target.value })} />
               </div>
             )}
           </CardContent>
@@ -141,8 +141,8 @@ export default function CgpaCalculator() {
             <CardHeader><CardTitle>Enter your CGPA</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-1.5">
-                <Label>CGPA (out of 10)</Label>
-                <Input type="number" step="0.01" min="0" max="10" value={value.cgpa} onChange={(e) => set({ ...value, cgpa: e.target.value })} />
+                <Label htmlFor="cgpa-input">CGPA (out of 10)</Label>
+                <Input id="cgpa-input" type="number" step="0.01" min="0" max="10" value={value.cgpa} onChange={(e) => set({ ...value, cgpa: e.target.value })} />
               </div>
               <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
             </CardContent>
@@ -166,8 +166,8 @@ export default function CgpaCalculator() {
             <CardHeader><CardTitle>Enter your percentage</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-1.5">
-                <Label>Percentage</Label>
-                <Input type="number" step="0.01" min="0" max="100" value={value.percent} onChange={(e) => set({ ...value, percent: e.target.value })} />
+                <Label htmlFor="cgpa-percent">Percentage</Label>
+                <Input id="cgpa-percent" type="number" step="0.01" min="0" max="100" value={value.percent} onChange={(e) => set({ ...value, percent: e.target.value })} />
               </div>
               <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
             </CardContent>

@@ -175,29 +175,29 @@ function ComposeForm({ kind, onDone, add, onSubmitted }: {
       <CardContent>
         <form onSubmit={submit} className="space-y-4">
           <div className="space-y-1.5">
-            <Label>{kind === "tool" ? "Tool name" : "Title"}</Label>
-            <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={kind === "tool" ? "e.g. AI background remover" : "Short summary"} required />
+            <Label htmlFor="community-title">{kind === "tool" ? "Tool name" : "Title"}</Label>
+            <Input id="community-title" value={title} onChange={(e) => setTitle(e.target.value)} placeholder={kind === "tool" ? "e.g. AI background remover" : "Short summary"} required />
           </div>
           {kind === "tool" && (
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-1.5"><Label>Category</Label>
-                <Select value={category} onChange={(e) => setCategory(e.target.value)}>{CATEGORIES.map((c) => <option key={c}>{c}</option>)}</Select>
+              <div className="space-y-1.5"><Label htmlFor="community-category">Category</Label>
+                <Select id="community-category" value={category} onChange={(e) => setCategory(e.target.value)}>{CATEGORIES.map((c) => <option key={c}>{c}</option>)}</Select>
               </div>
-              <div className="space-y-1.5"><Label>Priority</Label>
-                <Select value={priority} onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")}>
+              <div className="space-y-1.5"><Label htmlFor="community-priority">Priority</Label>
+                <Select id="community-priority" value={priority} onChange={(e) => setPriority(e.target.value as "low" | "medium" | "high")}>
                   <option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option>
                 </Select>
               </div>
             </div>
           )}
           <div className="space-y-1.5">
-            <Label>Description</Label>
-            <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder={kind === "bug" ? "What happened? Which tool, and what did you expect?" : "Describe it in a sentence or two"} required />
+            <Label htmlFor="community-description">Description</Label>
+            <Textarea id="community-description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder={kind === "bug" ? "What happened? Which tool, and what did you expect?" : "Describe it in a sentence or two"} required />
           </div>
           {kind === "tool" && (
             <>
-              <div className="space-y-1.5"><Label>Use case (optional)</Label><Input value={useCase} onChange={(e) => setUseCase(e.target.value)} placeholder="What would you use it for?" /></div>
-              <div className="space-y-1.5"><Label>Email (optional)</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Get notified when it ships" /></div>
+              <div className="space-y-1.5"><Label htmlFor="community-usecase">Use case (optional)</Label><Input id="community-usecase" value={useCase} onChange={(e) => setUseCase(e.target.value)} placeholder="What would you use it for?" /></div>
+              <div className="space-y-1.5"><Label htmlFor="community-email">Email (optional)</Label><Input id="community-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Get notified when it ships" /></div>
             </>
           )}
           <div className="flex gap-2">

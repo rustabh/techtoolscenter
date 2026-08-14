@@ -32,8 +32,8 @@ export default function GradientGenerator() {
         <CardHeader><CardTitle>Gradient</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5"><Label>Color 1</Label><Input type="color" value={c1} onChange={(e) => setC1(e.target.value)} className="h-10 p-1" /></div>
-            <div className="space-y-1.5"><Label>Color 2</Label><Input type="color" value={c2} onChange={(e) => setC2(e.target.value)} className="h-10 p-1" /></div>
+            <div className="space-y-1.5"><Label htmlFor="grad-c1">Color 1</Label><Input id="grad-c1" type="color" value={c1} onChange={(e) => setC1(e.target.value)} className="h-10 p-1" /></div>
+            <div className="space-y-1.5"><Label htmlFor="grad-c2">Color 2</Label><Input id="grad-c2" type="color" value={c2} onChange={(e) => setC2(e.target.value)} className="h-10 p-1" /></div>
           </div>
           <div className="grid grid-cols-2 gap-2">
             {(["linear", "radial"] as const).map((t) => (

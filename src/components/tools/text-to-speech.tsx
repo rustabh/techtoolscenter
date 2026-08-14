@@ -144,8 +144,8 @@ export default function TextToSpeech() {
         <CardHeader><CardTitle>Voice & playback</CardTitle></CardHeader>
         <CardContent className="space-y-5">
           <div className="space-y-1.5">
-            <Label>Voice</Label>
-            <Select aria-label="Voice" value={voiceURI} onChange={(e) => setVoiceURI(e.target.value)}>
+            <Label htmlFor="tts-voice">Voice</Label>
+            <Select id="tts-voice" value={voiceURI} onChange={(e) => setVoiceURI(e.target.value)}>
               {voices.map((v) => (
                 <option key={v.voiceURI} value={v.voiceURI}>{v.name} ({v.lang})</option>
               ))}
@@ -153,16 +153,16 @@ export default function TextToSpeech() {
           </div>
 
           <div className="space-y-1.5">
-            <Label>Speed: {rate.toFixed(1)}×</Label>
-            <input type="range" min={0.5} max={2} step={0.1} value={rate} onChange={(e) => setRate(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+            <Label htmlFor="tts-rate">Speed: {rate.toFixed(1)}×</Label>
+            <input id="tts-rate" type="range" min={0.5} max={2} step={0.1} value={rate} onChange={(e) => setRate(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
           </div>
           <div className="space-y-1.5">
-            <Label>Pitch: {pitch.toFixed(1)}</Label>
-            <input type="range" min={0} max={2} step={0.1} value={pitch} onChange={(e) => setPitch(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+            <Label htmlFor="tts-pitch">Pitch: {pitch.toFixed(1)}</Label>
+            <input id="tts-pitch" type="range" min={0} max={2} step={0.1} value={pitch} onChange={(e) => setPitch(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
           </div>
           <div className="space-y-1.5">
-            <Label>Volume: {Math.round(volume * 100)}%</Label>
-            <input type="range" min={0} max={1} step={0.05} value={volume} onChange={(e) => setVolume(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+            <Label htmlFor="tts-volume">Volume: {Math.round(volume * 100)}%</Label>
+            <input id="tts-volume" type="range" min={0} max={1} step={0.05} value={volume} onChange={(e) => setVolume(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
           </div>
 
           <div className="flex flex-wrap gap-2">

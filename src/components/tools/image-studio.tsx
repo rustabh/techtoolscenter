@@ -149,8 +149,8 @@ function EditTab({ img, meta }: { img: HTMLImageElement; meta: { size: number } 
               <Button size="sm" variant={flipH ? "default" : "outline"} onClick={() => setFlipH((v) => !v)}><FlipHorizontal /> Flip H</Button>
               <Button size="sm" variant={flipV ? "default" : "outline"} onClick={() => setFlipV((v) => !v)}><FlipVertical /> Flip V</Button>
             </div>
-            <div className="space-y-1.5"><Label>Width (resize / upscale): {width}px</Label>
-              <input type="range" min={50} max={img.width * 3} value={width} onChange={(e) => setWidth(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+            <div className="space-y-1.5"><Label htmlFor="istudio-width">Width (resize / upscale): {width}px</Label>
+              <input id="istudio-width" type="range" min={50} max={img.width * 3} value={width} onChange={(e) => setWidth(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
             </div>
           </CardContent>
         </Card>
@@ -158,27 +158,27 @@ function EditTab({ img, meta }: { img: HTMLImageElement; meta: { size: number } 
           <CardHeader><CardTitle>Adjust</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {([["Brightness", bright, setBright, 0, 200], ["Contrast", contrast, setContrast, 0, 200], ["Blur", blur, setBlur, 0, 20]] as const).map(([l, v, set, min, max]) => (
-              <div key={l} className="space-y-1"><Label>{l}: {v}{l === "Blur" ? "px" : "%"}</Label>
-                <input type="range" min={min} max={max} value={v} onChange={(e) => set(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+              <div key={l} className="space-y-1"><Label htmlFor={`istudio-adjust-${l}`}>{l}: {v}{l === "Blur" ? "px" : "%"}</Label>
+                <input id={`istudio-adjust-${l}`} type="range" min={min} max={max} value={v} onChange={(e) => set(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
               </div>
             ))}
             <label className="flex cursor-pointer items-center gap-2 text-sm">
               <input type="checkbox" checked={sharpen} onChange={(e) => setSharpen(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" /> Sharpen
             </label>
-            <div className="space-y-1.5"><Label>Watermark text</Label><Input value={wm} onChange={(e) => setWm(e.target.value)} placeholder="© Your brand" /></div>
+            <div className="space-y-1.5"><Label htmlFor="istudio-watermark">Watermark text</Label><Input id="istudio-watermark" value={wm} onChange={(e) => setWm(e.target.value)} placeholder="© Your brand" /></div>
           </CardContent>
         </Card>
         <Card>
           <CardHeader><CardTitle>Export</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1.5"><Label>Format</Label>
-                <Select value={format} onChange={(e) => setFormat(e.target.value)}>
+              <div className="space-y-1.5"><Label htmlFor="istudio-format">Format</Label>
+                <Select id="istudio-format" value={format} onChange={(e) => setFormat(e.target.value)}>
                   <option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option>
                 </Select>
               </div>
-              <div className="space-y-1.5"><Label>Quality: {Math.round(quality * 100)}%</Label>
-                <input type="range" min={0.1} max={1} step={0.05} value={quality} onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+              <div className="space-y-1.5"><Label htmlFor="istudio-quality">Quality: {Math.round(quality * 100)}%</Label>
+                <input id="istudio-quality" type="range" min={0.1} max={1} step={0.05} value={quality} onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
               </div>
             </div>
             <Button className="w-full" onClick={save}><Download /> Download</Button>
@@ -448,8 +448,8 @@ function BackgroundTab({ img }: { img: HTMLImageElement }) {
   return (
     <div className="grid gap-6 lg:grid-cols-[280px_1fr]">
       <Card><CardHeader><CardTitle>Remove background</CardTitle></CardHeader><CardContent className="space-y-4">
-        <div className="space-y-1.5"><Label>Background colour to remove</Label><Input type="color" value={key} onChange={(e) => setKey(e.target.value)} className="h-10 p-1" /></div>
-        <div className="space-y-1.5"><Label>Tolerance: {tol}</Label><input type="range" min={5} max={120} value={tol} onChange={(e) => setTol(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" /></div>
+        <div className="space-y-1.5"><Label htmlFor="istudio-bgkey">Background colour to remove</Label><Input id="istudio-bgkey" type="color" value={key} onChange={(e) => setKey(e.target.value)} className="h-10 p-1" /></div>
+        <div className="space-y-1.5"><Label htmlFor="istudio-tolerance">Tolerance: {tol}</Label><input id="istudio-tolerance" type="range" min={5} max={120} value={tol} onChange={(e) => setTol(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" /></div>
         <Button className="w-full" onClick={save}><Download /> Download PNG</Button>
         <p className="text-xs text-muted-foreground">Removes a solid/near-solid background colour. For complex photo backgrounds, a dedicated AI remover is more accurate.</p>
       </CardContent></Card>
@@ -508,9 +508,9 @@ function BatchTab() {
       <Button variant="outline" onClick={() => ref.current?.click()}><UploadCloud /> Select images</Button>
       {files.length > 0 && <p className="text-sm text-muted-foreground">{files.length} image(s) selected</p>}
       <div className="grid grid-cols-3 gap-3">
-        <div className="space-y-1.5"><Label>Max width</Label><Input type="number" value={width} onChange={(e) => setWidth(Number(e.target.value))} /></div>
-        <div className="space-y-1.5"><Label>Format</Label><Select value={format} onChange={(e) => setFormat(e.target.value)}><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></Select></div>
-        <div className="space-y-1.5"><Label>Quality: {Math.round(quality * 100)}%</Label><input type="range" min={0.1} max={1} step={0.05} value={quality} onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" /></div>
+        <div className="space-y-1.5"><Label htmlFor="bulk2-width">Max width</Label><Input id="bulk2-width" type="number" value={width} onChange={(e) => setWidth(Number(e.target.value))} /></div>
+        <div className="space-y-1.5"><Label htmlFor="bulk2-format">Format</Label><Select id="bulk2-format" value={format} onChange={(e) => setFormat(e.target.value)}><option value="image/jpeg">JPG</option><option value="image/png">PNG</option><option value="image/webp">WebP</option></Select></div>
+        <div className="space-y-1.5"><Label htmlFor="bulk2-quality">Quality: {Math.round(quality * 100)}%</Label><input id="bulk2-quality" type="range" min={0.1} max={1} step={0.05} value={quality} onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" /></div>
       </div>
       <Button onClick={run} disabled={!files.length || busy}><Download /> {busy ? "Processing…" : "Process & download ZIP"}</Button>
     </CardContent></Card>

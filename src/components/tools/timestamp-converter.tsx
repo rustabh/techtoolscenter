@@ -67,7 +67,7 @@ export default function TimestampConverter() {
         <Card>
           <CardHeader><CardTitle>Timestamp → Date</CardTitle></CardHeader>
           <CardContent className="space-y-3">
-            <div className="space-y-1.5"><Label>Unix timestamp</Label><Input value={ts} onChange={(e) => setTs(e.target.value)} className="font-mono" /></div>
+            <div className="space-y-1.5"><Label htmlFor="ts-unix">Unix timestamp</Label><Input id="ts-unix" value={ts} onChange={(e) => setTs(e.target.value)} className="font-mono" /></div>
             <Button size="sm" variant="outline" onClick={() => setTs(String(now))}>Use now</Button>
             {parsed && (
               <div className="space-y-2 rounded-xl bg-secondary/50 p-3 text-sm">
@@ -82,7 +82,7 @@ export default function TimestampConverter() {
         <Card>
           <CardHeader><CardTitle>Date → Timestamp</CardTitle></CardHeader>
           <CardContent className="space-y-3">
-            <div className="space-y-1.5"><Label>Date &amp; time</Label><Input type="datetime-local" value={dt} onChange={(e) => setDt(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="ts-datetime">Date &amp; time</Label><Input id="ts-datetime" type="datetime-local" value={dt} onChange={(e) => setDt(e.target.value)} /></div>
             {fromDate !== null && (
               <div className="rounded-xl bg-secondary/50 p-3 text-sm">
                 <p className="text-muted-foreground">Unix timestamp (seconds)</p>

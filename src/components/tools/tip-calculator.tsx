@@ -35,19 +35,19 @@ export default function TipCalculator() {
       <Card>
         <CardHeader><CardTitle>Bill details</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="space-y-1.5"><Label>Bill amount (₹)</Label><Input type="number" value={bill} onChange={(e) => setBill(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="tip-bill">Bill amount (₹)</Label><Input id="tip-bill" type="number" value={bill} onChange={(e) => setBill(e.target.value)} /></div>
           <div className="space-y-2">
-            <Label>Tip: {tip}%</Label>
+            <Label htmlFor="tip-percent">Tip: {tip}%</Label>
             <div className="flex flex-wrap gap-2">
               {[5, 10, 15, 18, 20, 25].map((t) => (
                 <Button key={t} size="sm" variant={tip === t ? "default" : "outline"} onClick={() => setTip(t)}>{t}%</Button>
               ))}
             </div>
-            <input type="range" min={0} max={40} value={tip} onChange={(e) => setTip(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+            <input id="tip-percent" type="range" min={0} max={40} value={tip} onChange={(e) => setTip(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
           </div>
           <div className="space-y-1.5">
-            <Label>Split between: {people} {people === 1 ? "person" : "people"}</Label>
-            <input type="range" min={1} max={20} value={people} onChange={(e) => setPeople(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+            <Label htmlFor="tip-people">Split between: {people} {people === 1 ? "person" : "people"}</Label>
+            <input id="tip-people" type="range" min={1} max={20} value={people} onChange={(e) => setPeople(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
           </div>
           <div className="space-y-2">
             <Label>Round each share up to nearest</Label>

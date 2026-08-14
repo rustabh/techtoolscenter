@@ -347,11 +347,11 @@ export default function AppScreenshotGenerator() {
           <CardHeader><CardTitle>Content</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <ShotUpload onFile={onShot} has={!!img} />
-            <div className="space-y-1.5"><Label>Headline</Label><Input value={title} onChange={(e) => setTitle(e.target.value)} /></div>
-            <div className="space-y-1.5"><Label>Subtitle</Label><Input value={subtitle} onChange={(e) => setSubtitle(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="asg-headline">Headline</Label><Input id="asg-headline" value={title} onChange={(e) => setTitle(e.target.value)} /></div>
+            <div className="space-y-1.5"><Label htmlFor="asg-subtitle">Subtitle</Label><Input id="asg-subtitle" value={subtitle} onChange={(e) => setSubtitle(e.target.value)} /></div>
             <div className="space-y-1.5">
-              <Label>Device colour</Label>
-              <Input type="color" value={frameColor} onChange={(e) => setFrameColor(e.target.value)} className="h-10 p-1" />
+              <Label htmlFor="asg-color">Device colour</Label>
+              <Input id="asg-color" type="color" value={frameColor} onChange={(e) => setFrameColor(e.target.value)} className="h-10 p-1" />
             </div>
             <label className="flex cursor-pointer items-center gap-2 text-sm">
               <input type="checkbox" checked={safeAreas} onChange={(e) => setSafeAreas(e.target.checked)} className="size-4 accent-[var(--primary)]" />
