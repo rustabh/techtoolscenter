@@ -36,14 +36,14 @@ function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number
   return lines;
 }
 
-function drawImpactText(ctx: CanvasRenderingContext2D, text: string, cx: number, y: number, size: number, maxWidth: number, anchor: "top" | "bottom") {
+function drawImpactText(ctx: CanvasRenderingContext2D, text: string, cx: number, y: number, size: number, maxWidth: number, anchor: "top" | "bottom", textColor: string, outlineColor: string) {
   if (!text.trim()) return;
   ctx.font = `700 ${size}px Impact, "Arial Black", sans-serif`;
   ctx.textAlign = "center";
   ctx.textBaseline = anchor === "top" ? "top" : "bottom";
   ctx.lineWidth = size * 0.08;
-  ctx.strokeStyle = "black";
-  ctx.fillStyle = "white";
+  ctx.strokeStyle = outlineColor;
+  ctx.fillStyle = textColor;
   ctx.lineJoin = "round";
 
   const lines = wrapLines(ctx, text.toUpperCase(), maxWidth);
@@ -62,6 +62,8 @@ export default function MemeGenerator() {
   const [topText, setTopText] = useState("TOP TEXT");
   const [bottomText, setBottomText] = useState("BOTTOM TEXT");
   const [fontSize, setFontSize] = useState(48);
+  const [textColor, setTextColor] = useState("#ffffff");
+  const [outlineColor, setOutlineColor] = useState("#000000");
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const onFile = (file: File) => {
@@ -89,9 +91,9 @@ export default function MemeGenerator() {
     ctx.drawImage(img, 0, 0);
     const size = Math.max(18, (fontSize / 100) * img.naturalWidth * 0.14);
     const maxWidth = img.naturalWidth * 0.92;
-    drawImpactText(ctx, topText, img.naturalWidth / 2, img.naturalHeight * 0.06, size, maxWidth, "top");
-    drawImpactText(ctx, bottomText, img.naturalWidth / 2, img.naturalHeight * 0.94, size, maxWidth, "bottom");
-  }, [img, topText, bottomText, fontSize]);
+    drawImpactText(ctx, topText, img.naturalWidth / 2, img.naturalHeight * 0.06, size, maxWidth, "top", textColor, outlineColor);
+    drawImpactText(ctx, bottomText, img.naturalWidth / 2, img.naturalHeight * 0.94, size, maxWidth, "bottom", textColor, outlineColor);
+  }, [img, topText, bottomText, fontSize, textColor, outlineColor]);
 
   const download = () => {
     const canvas = canvasRef.current;
@@ -139,6 +141,16 @@ export default function MemeGenerator() {
             <div className="space-y-1.5">
               <Label htmlFor="meme-font-size">Text size: {fontSize}%</Label>
               <input id="meme-font-size" type="range" min={20} max={100} value={fontSize} onChange={(e) => setFontSize(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1.5">
+                <Label htmlFor="meme-text-color">Text color</Label>
+                <Input id="meme-text-color" type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="h-10 p-1" />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="meme-outline-color">Outline color</Label>
+                <Input id="meme-outline-color" type="color" value={outlineColor} onChange={(e) => setOutlineColor(e.target.value)} className="h-10 p-1" />
+              </div>
             </div>
             <Button variant="outline" size="sm" onClick={randomize}><Shuffle className="size-4" /> Try a sample caption</Button>
           </CardContent>
