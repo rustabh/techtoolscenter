@@ -7,6 +7,8 @@ import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { track } from "@/lib/stats/stats";
+import { useGenerationHistory } from "@/hooks/use-generation-history";
+import { GenerationHistoryPanel } from "@/components/tools/generation-history-panel";
 
 function looksLikeUrl(text: string) {
   return /^https?:\/\//i.test(text.trim());
@@ -23,6 +25,7 @@ export default function QrScanner() {
   const [cameraError, setCameraError] = useState("");
   const [result, setResult] = useState("");
   const { copied, copy } = useCopy();
+  const { history, add, remove, clear } = useGenerationHistory("uh:qr-scan-history");
 
   const stopCamera = useCallback(() => {
     if (frameRef.current) cancelAnimationFrame(frameRef.current);
@@ -53,12 +56,13 @@ export default function QrScanner() {
     const code = jsQR(frame.data, frame.width, frame.height, { inversionAttempts: "dontInvert" });
     if (code?.data) {
       setResult(code.data);
+      add(code.data);
       track("filesProcessed");
       stopCamera();
       return;
     }
     frameRef.current = requestAnimationFrame(tick);
-  }, [stopCamera]);
+  }, [stopCamera, add]);
 
   const startCamera = async () => {
     setCameraError("");
@@ -101,6 +105,7 @@ export default function QrScanner() {
       const code = jsQR(frame.data, frame.width, frame.height);
       if (code?.data) {
         setResult(code.data);
+        add(code.data);
         track("filesProcessed");
       } else {
         setCameraError("No QR code found in that image. Try a clearer, well-lit photo of the code.");
@@ -182,6 +187,19 @@ export default function QrScanner() {
           ) : (
             <p className="text-sm text-muted-foreground">Start the camera or upload an image to decode a QR code.</p>
           )}
+        </CardContent>
+      </Card>
+
+      <Card className="lg:col-span-2">
+        <CardHeader><CardTitle>Scan history</CardTitle></CardHeader>
+        <CardContent>
+          <GenerationHistoryPanel
+            history={history}
+            onRemove={remove}
+            onClear={clear}
+            onRestore={(value) => setResult(value)}
+            emptyLabel="Nothing scanned yet — past results will show up here."
+          />
         </CardContent>
       </Card>
     </div>
