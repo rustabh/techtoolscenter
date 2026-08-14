@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { ActionBar } from "@/components/tools/action-bar";
-import { formatCurrency, slugify, localDateISO } from "@/lib/utils";
+import { formatCurrency, slugify, localDateISO, downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
 
 type PaymentMode = "Cash" | "Cheque" | "Bank Transfer" | "UPI";
@@ -115,23 +115,15 @@ export default function RentReceiptGenerator() {
 
   const patch = (p: Partial<RentReceiptState>) => set({ ...value, ...p });
   const [exporting, setExporting] = useState(false);
+  const [bulkYear, setBulkYear] = useState(String(new Date().getFullYear()));
+  const [bulkBusy, setBulkBusy] = useState(false);
 
   const words = useMemo(() => amountInWords(value.rentAmount), [value.rentAmount]);
 
-  const downloadPdf = async () => {
-    if (exporting) return;
-    setExporting(true);
-    try {
-      await generatePdf();
-      showToast("Downloaded rent receipt PDF");
-    } catch {
-      showToast("Couldn't generate the PDF — try again", "error");
-    } finally {
-      setExporting(false);
-    }
-  };
-
-  const generatePdf = async () => {
+  // Builds one receipt PDF as a jsPDF doc for an arbitrary period, reused by
+  // both the single-month download and the bulk 12-month generator below —
+  // the layout logic only needs to exist once.
+  const buildReceiptDoc = async (period: { from: string; to: string; date: string }) => {
     const { jsPDF } = await import("jspdf");
     const doc = new jsPDF();
     const margin = 14;
@@ -147,7 +139,7 @@ export default function RentReceiptGenerator() {
 
     const bodyLine = `Received a sum of ${formatCurrency(value.rentAmount)}${
       words ? ` (${words})` : ""
-    } from ${value.tenantName} towards rent of the premises situated at ${value.tenantAddress || "-"} for the period from ${formatDate(value.rentPeriodFrom)} to ${formatDate(value.rentPeriodTo)}, paid via ${value.paymentMode}.`;
+    } from ${value.tenantName} towards rent of the premises situated at ${value.tenantAddress || "-"} for the period from ${formatDate(period.from)} to ${formatDate(period.to)}, paid via ${value.paymentMode}.`;
     const bodyLines = doc.splitTextToSize(bodyLine, 182);
     doc.text(bodyLines, margin, y);
     y += bodyLines.length * 6 + 8;
@@ -167,7 +159,7 @@ export default function RentReceiptGenerator() {
     y += 4;
 
     doc.text(`Place: ${value.city || "-"}`, margin, y);
-    doc.text(`Date: ${formatDate(value.receiptDate)}`, 140, y);
+    doc.text(`Date: ${formatDate(period.date)}`, 140, y);
     y += 24;
 
     doc.line(140, y, 196, y);
@@ -183,9 +175,52 @@ export default function RentReceiptGenerator() {
     const stampLines = doc.splitTextToSize(stampNote, 182);
     doc.text(stampLines, margin, y);
 
-    const month = value.rentPeriodFrom ? value.rentPeriodFrom.slice(0, 7) : todayIso().slice(0, 7);
-    const filename = `rent-receipt-${slugify(value.tenantName || "tenant")}-${month}.pdf`;
-    doc.save(filename);
+    return doc;
+  };
+
+  const downloadPdf = async () => {
+    if (exporting) return;
+    setExporting(true);
+    try {
+      const doc = await buildReceiptDoc({ from: value.rentPeriodFrom, to: value.rentPeriodTo, date: value.receiptDate });
+      const month = value.rentPeriodFrom ? value.rentPeriodFrom.slice(0, 7) : todayIso().slice(0, 7);
+      doc.save(`rent-receipt-${slugify(value.tenantName || "tenant")}-${month}.pdf`);
+      showToast("Downloaded rent receipt PDF");
+    } catch {
+      showToast("Couldn't generate the PDF — try again", "error");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  // Most people reach for this tool once a year for HRA proof, which needs
+  // one receipt per month, not one — building all 12 by hand (change dates,
+  // download, repeat) is the actual friction this tool should remove.
+  const downloadAllMonths = async () => {
+    const year = parseInt(bulkYear, 10);
+    if (!Number.isInteger(year) || year < 2000 || year > 2100) {
+      showToast("Enter a valid 4-digit year", "error");
+      return;
+    }
+    setBulkBusy(true);
+    try {
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+      for (let month = 0; month < 12; month++) {
+        const from = localDateISO(new Date(year, month, 1));
+        const to = localDateISO(new Date(year, month + 1, 0));
+        const doc = await buildReceiptDoc({ from, to, date: to });
+        const monthTag = from.slice(0, 7);
+        zip.file(`rent-receipt-${slugify(value.tenantName || "tenant")}-${monthTag}.pdf`, doc.output("blob"));
+      }
+      const out = await zip.generateAsync({ type: "blob" });
+      downloadBlob(out, `rent-receipts-${slugify(value.tenantName || "tenant")}-${year}.zip`);
+      showToast(`Downloaded all 12 months for ${year}`);
+    } catch {
+      showToast("Couldn't generate the ZIP — try again", "error");
+    } finally {
+      setBulkBusy(false);
+    }
   };
 
   return (
@@ -325,6 +360,38 @@ export default function RentReceiptGenerator() {
           canUndo={canUndo}
           canRedo={canRedo}
         />
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Generate a full year (all 12 months)</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <p className="text-xs text-muted-foreground">
+              Most employers ask for one rent receipt per month as HRA proof — generate all 12 for a year as a
+              ZIP instead of downloading them one at a time.
+            </p>
+            <div className="flex items-end gap-2">
+              <div className="flex-1 space-y-1.5">
+                <Label htmlFor="rr-bulk-year">Year</Label>
+                <Input
+                  id="rr-bulk-year"
+                  type="number"
+                  value={bulkYear}
+                  onChange={(e) => setBulkYear(e.target.value)}
+                  placeholder="2026"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={downloadAllMonths}
+                disabled={bulkBusy}
+                className="h-10 shrink-0 rounded-xl border border-primary bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+              >
+                {bulkBusy ? "Generating 12 receipts…" : "Download all 12 (ZIP)"}
+              </button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       <div className="lg:sticky lg:top-20 lg:h-fit">
