@@ -46,6 +46,7 @@ export default function YoutubeThumbnailDownloader() {
   const [unavailable, setUnavailable] = useState<Record<string, boolean>>({});
   const [loaded, setLoaded] = useState<Record<string, boolean>>({});
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [bulkBusy, setBulkBusy] = useState(false);
   const { copy } = useCopy();
 
   const videoId = useMemo(() => extractVideoId(input), [input]);
@@ -66,6 +67,41 @@ export default function YoutubeThumbnailDownloader() {
       showToast(`Downloaded ${key}.jpg`);
     } catch {
       window.open(url, "_blank");
+    }
+  };
+
+  // Downloading each available size individually meant N separate click-and-
+  // save-dialog round trips for a video with N available resolutions — a ZIP
+  // of everything at once is the actual thing someone comparing sizes wants.
+  const downloadAll = async () => {
+    if (!videoId || bulkBusy) return;
+    const available = QUALITIES.filter((q) => !unavailable[q.key]);
+    setBulkBusy(true);
+    try {
+      const JSZip = (await import("jszip")).default;
+      const zip = new JSZip();
+      let count = 0;
+      for (const q of available) {
+        const res = await fetch(`https://img.youtube.com/vi/${videoId}/${q.key}.jpg`);
+        if (!res.ok) continue;
+        const blob = await res.blob();
+        // Skip YouTube's tiny grey placeholder served for resolutions this
+        // particular video never had one uploaded for.
+        if (q.key !== "default" && blob.size < 2000) continue;
+        zip.file(`youtube-${videoId}-${q.key}.jpg`, blob);
+        count++;
+      }
+      if (count === 0) {
+        showToast("No thumbnails available to download yet", "error");
+        return;
+      }
+      const out = await zip.generateAsync({ type: "blob" });
+      downloadBlob(out, `youtube-${videoId}-thumbnails.zip`);
+      showToast(`Downloaded ${count} thumbnail${count === 1 ? "" : "s"}`);
+    } catch {
+      showToast("Couldn't build the ZIP — try again", "error");
+    } finally {
+      setBulkBusy(false);
     }
   };
 
@@ -121,7 +157,14 @@ export default function YoutubeThumbnailDownloader() {
       </Card>
 
       <Card className="bg-gradient-to-br from-primary/5 to-transparent">
-        <CardHeader><CardTitle>Thumbnails</CardTitle></CardHeader>
+        <CardHeader className="flex-row items-center justify-between space-y-0">
+          <CardTitle>Thumbnails</CardTitle>
+          {videoId && (
+            <Button size="sm" variant="outline" onClick={downloadAll} disabled={bulkBusy}>
+              <Download className="size-4" /> {bulkBusy ? "Zipping…" : "Download all (ZIP)"}
+            </Button>
+          )}
+        </CardHeader>
         <CardContent>
           {!videoId ? (
             <div className="flex flex-col items-center justify-center gap-2 py-12 text-center text-muted-foreground">
