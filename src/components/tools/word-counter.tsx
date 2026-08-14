@@ -8,6 +8,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { ActionBar } from "@/components/tools/action-bar";
 import { downloadBlob } from "@/lib/utils";
 
+const STOPWORDS = new Set([
+  "the", "and", "for", "are", "but", "not", "you", "your", "with", "this", "that",
+  "have", "has", "had", "was", "were", "will", "would", "can", "could", "should",
+  "from", "they", "them", "their", "there", "here", "what", "when", "where", "which",
+  "who", "why", "how", "all", "any", "each", "few", "more", "most", "other", "some",
+  "such", "than", "too", "very", "just", "into", "about", "over", "after", "before",
+  "our", "out", "off", "own", "same", "then", "once", "does", "did", "doing", "being",
+]);
+
 export default function WordCounter() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<string>("uh:wordcount", "");
   const { copied, copy } = useCopy();
@@ -25,6 +34,19 @@ export default function WordCounter() {
     const paragraphs = text.trim() ? text.split(/\n+/).filter((p) => p.trim()).length : 0;
     const readingTime = Math.ceil(words / 200);
     return { words, chars, charsNoSpace, sentences, paragraphs, readingTime };
+  }, [value]);
+
+  const topWords = useMemo(() => {
+    const raw = value.toLowerCase().match(/[a-z0-9'-]+/g) ?? [];
+    const counts = new Map<string, number>();
+    for (const w of raw) {
+      const cleaned = w.replace(/^['-]+|['-]+$/g, "");
+      if (cleaned.length < 3 || STOPWORDS.has(cleaned)) continue;
+      counts.set(cleaned, (counts.get(cleaned) ?? 0) + 1);
+    }
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+      .slice(0, 10);
   }, [value]);
 
   const items = [
@@ -46,6 +68,21 @@ export default function WordCounter() {
           </div>
         ))}
       </div>
+      {topWords.length > 0 && (
+        <Card>
+          <CardContent className="pt-6">
+            <p className="mb-3 text-sm font-medium text-muted-foreground">Most frequent words</p>
+            <div className="flex flex-wrap gap-2">
+              {topWords.map(([word, count]) => (
+                <span key={word} className="inline-flex items-center gap-1.5 rounded-full bg-secondary px-3 py-1 text-sm">
+                  {word}
+                  <span className="rounded-full bg-background px-1.5 text-xs font-semibold text-primary">{count}</span>
+                </span>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
       <Card>
         <CardContent className="space-y-4 pt-6">
           <Textarea
