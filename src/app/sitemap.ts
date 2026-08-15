@@ -34,6 +34,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/blog`, lastModified: now, changeFrequency: "daily", priority: 0.8 },
     { url: `${base}/india-services`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/useful-websites`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${base}/business-templates`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/community`, lastModified: now, changeFrequency: "daily", priority: 0.6 },
     { url: `${base}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
     { url: `${base}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },

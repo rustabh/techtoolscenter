@@ -96,7 +96,7 @@ export const sidebarSections: SidebarSection[] = [
     icon: "Rocket",
     items: [
       { label: "Startup Hub", href: "/collections/business-toolkit" },
-      { label: "Business Templates", comingSoon: true },
+      { label: "Business Templates", href: "/business-templates" },
       { label: "Pitch Decks", comingSoon: true },
       { label: "Business Plan", comingSoon: true },
       { label: "Proposal Generator", comingSoon: true },
