@@ -12,12 +12,21 @@ import { Type } from "lucide-react";
 const UPSIDE: Record<string, string> = { a: "ɐ", b: "q", c: "ɔ", d: "p", e: "ǝ", f: "ɟ", g: "ƃ", h: "ɥ", i: "ᴉ", j: "ɾ", k: "ʞ", l: "l", m: "ɯ", n: "u", o: "o", p: "d", q: "b", r: "ɹ", s: "s", t: "ʇ", u: "n", v: "ʌ", w: "ʍ", x: "x", y: "ʎ", z: "z" };
 
 type Mode = "chars" | "words" | "lines" | "upside" | "mirror";
+// Mirror is deliberately an identity transform on the text itself — a real
+// mirror flips BOTH the left-to-right order of characters AND the shape of
+// each glyph in one motion. Pre-reversing the character order here (as this
+// used to do, identically to "Reverse characters") and then visually
+// flipping the preview would cancel the order back out, leaving individual
+// letters mirror-shaped but in normal reading order — not what a mirror
+// actually produces. Instead the string stays untouched and the *preview*
+// alone gets a CSS horizontal flip, so what's rendered is a genuine mirror
+// image of the original.
 const MODES: { id: Mode; label: string; fn: (t: string) => string }[] = [
   { id: "chars", label: "Reverse characters", fn: (t) => [...t].reverse().join("") },
   { id: "words", label: "Reverse word order", fn: (t) => t.split(/\s+/).reverse().join(" ") },
   { id: "lines", label: "Reverse line order", fn: (t) => t.split("\n").reverse().join("\n") },
   { id: "upside", label: "Upside down", fn: (t) => [...t.toLowerCase()].reverse().map((c) => UPSIDE[c] ?? c).join("") },
-  { id: "mirror", label: "Mirror", fn: (t) => [...t].reverse().join("") },
+  { id: "mirror", label: "Mirror", fn: (t) => t },
 ];
 
 export default function ReverseText() {
@@ -42,7 +51,20 @@ export default function ReverseText() {
         <CardHeader><CardTitle>Result</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           {out ? (
-            <pre className="min-h-[200px] whitespace-pre-wrap break-words rounded-xl bg-secondary/50 p-4 text-sm">{out}</pre>
+            <>
+              <pre
+                className="min-h-[200px] whitespace-pre-wrap break-words rounded-xl bg-secondary/50 p-4 text-sm"
+                style={mode === "mirror" ? { transform: "scaleX(-1)" } : undefined}
+              >
+                {out}
+              </pre>
+              {mode === "mirror" && (
+                <p className="text-xs text-muted-foreground">
+                  This is a visual mirror effect — hold it up to an actual mirror and it reads normally. Copying gives
+                  the plain, unflipped text, since most apps can&apos;t render mirrored glyphs.
+                </p>
+              )}
+            </>
           ) : (
             <div className="flex min-h-[200px] flex-col items-center justify-center gap-2 rounded-xl bg-secondary/50 p-4 text-center text-sm text-muted-foreground">
               <Type className="size-6 opacity-50" />
