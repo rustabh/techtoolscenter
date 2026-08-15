@@ -22,6 +22,8 @@ export default function MetaTagsGenerator() {
   const [url, setUrl] = useState("https://techtoolscenter.com");
   const [image, setImage] = useState("https://techtoolscenter.com/opengraph-image");
   const [type, setType] = useState("website");
+  const [indexable, setIndexable] = useState(true);
+  const [themeColor, setThemeColor] = useState("");
   const { copied, copy } = useCopy();
 
   const tags = useMemo(() => {
@@ -30,6 +32,9 @@ export default function MetaTagsGenerator() {
       `<title>${t}</title>`,
       `<meta name="description" content="${d}">`,
       `<link rel="canonical" href="${u}">`,
+      `<meta name="robots" content="${indexable ? "index, follow" : "noindex, nofollow"}">`,
+      `<meta name="viewport" content="width=device-width, initial-scale=1">`,
+      themeColor ? `<meta name="theme-color" content="${escapeAttr(themeColor)}">` : "",
       ``,
       `<!-- OpenGraph -->`,
       `<meta property="og:type" content="${ty}">`,
@@ -43,8 +48,8 @@ export default function MetaTagsGenerator() {
       `<meta name="twitter:title" content="${t}">`,
       `<meta name="twitter:description" content="${d}">`,
       `<meta name="twitter:image" content="${img}">`,
-    ].join("\n");
-  }, [title, desc, url, image, type]);
+    ].filter((line, i, arr) => line !== "" || arr[i - 1] !== "").join("\n");
+  }, [title, desc, url, image, type, indexable, themeColor]);
 
   const count = (v: string, max: number) => (
     <span className={v.length > max ? "text-destructive" : "text-muted-foreground"}>{v.length}/{max}</span>
@@ -64,6 +69,12 @@ export default function MetaTagsGenerator() {
           <div className="space-y-1.5"><Label htmlFor="meta-url">Canonical URL</Label><Input id="meta-url" value={url} onChange={(e) => setUrl(e.target.value)} /></div>
           <div className="space-y-1.5"><Label htmlFor="meta-image">OG image URL</Label><Input id="meta-image" value={image} onChange={(e) => setImage(e.target.value)} /></div>
           <div className="space-y-1.5"><Label htmlFor="meta-type">OG type</Label><Input id="meta-type" value={type} onChange={(e) => setType(e.target.value)} /></div>
+          <div className="space-y-1.5"><Label htmlFor="meta-theme-color">Theme color (optional)</Label><Input id="meta-theme-color" type="text" placeholder="#4f46e5" value={themeColor} onChange={(e) => setThemeColor(e.target.value)} /></div>
+          <label className="flex cursor-pointer items-center justify-between rounded-xl border border-border p-3 text-sm">
+            Allow this page to be indexed
+            <input type="checkbox" checked={indexable} onChange={(e) => setIndexable(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" />
+          </label>
+          {!indexable && <p className="text-xs text-amber-500">robots will be set to &quot;noindex, nofollow&quot; — this page won&apos;t appear in search results.</p>}
         </CardContent>
       </Card>
       <div className="space-y-6">

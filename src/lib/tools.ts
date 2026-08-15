@@ -1231,14 +1231,15 @@ export const tools: Tool[] = [
     name: "Meta Tags Generator",
     description: "Generate SEO meta, OpenGraph and Twitter Card tags.",
     longDescription:
-      "Produce a complete set of SEO tags for any page — title, description, canonical, OpenGraph and Twitter Card — from a simple form, with a live character-count check and copy-ready HTML.",
+      "Produce a complete set of SEO tags for any page — title, description, canonical, robots, viewport, an optional theme-color, OpenGraph and Twitter Card — from a simple form, with a live character-count check and copy-ready HTML.",
     category: "SEO",
     icon: "Tags",
-    keywords: ["meta tags", "og tags", "twitter card", "seo tags", "meta generator"],
+    keywords: ["meta tags", "og tags", "twitter card", "seo tags", "meta generator", "robots meta tag", "noindex"],
     addedOn: "2026-07-16",
     popular: true,
     faq: [
-      { question: "What tags are generated?", answer: "Meta title & description, canonical, OpenGraph (title, description, image, url, type) and Twitter Card tags." },
+      { question: "What tags are generated?", answer: "Meta title & description, canonical, robots, viewport, an optional theme-color, OpenGraph (title, description, image, url, type) and Twitter Card tags." },
+      { question: "How do I stop a page from being indexed?", answer: "Uncheck \"Allow this page to be indexed\" — the generated robots tag switches to \"noindex, nofollow\"." },
       { question: "How long should title & description be?", answer: "Aim for ~60 characters for titles and ~155 for descriptions — the tool shows live counts." },
     ],
   },
