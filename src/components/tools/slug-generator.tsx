@@ -64,8 +64,8 @@ export default function SlugGenerator() {
               <div className="max-h-[240px] space-y-1.5 overflow-auto rounded-xl bg-secondary/50 p-4">
                 {batchSlugs.length === 0 ? (
                   <p className="text-sm text-muted-foreground">Slugs appear here…</p>
-                ) : batchSlugs.map((r) => (
-                  <p key={r.title} className="break-all font-mono text-sm text-primary">{r.slug || "—"}</p>
+                ) : batchSlugs.map((r, i) => (
+                  <p key={i} className="break-all font-mono text-sm text-primary">{r.slug || "—"}</p>
                 ))}
               </div>
               <ActionBar
