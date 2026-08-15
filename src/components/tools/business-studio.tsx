@@ -285,6 +285,30 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
     const { r, g, b } = hexToRgb(accent);
     const primary: [number, number, number] = [r, g, b];
 
+    // A4 is 297mm tall. Neither the letterhead body nor the notes/terms/
+    // signature block below the items table previously checked remaining
+    // page space, so a long body letter or long notes/terms silently drew
+    // past the bottom edge — invisible in the exported PDF, with the
+    // signature/stamp/QR block sometimes landing entirely off-page.
+    const PAGE_BOTTOM = 279;
+    const PAGE_TOP = 20;
+    const ensureSpace = (y: number, needed: number) => {
+      if (y + needed > PAGE_BOTTOM) { doc.addPage(); return PAGE_TOP; }
+      return y;
+    };
+    // Draws one line at a time (rather than jsPDF's single-call array text,
+    // which has no concept of page boundaries) so long text breaks onto a
+    // new page instead of running off the current one.
+    const drawWrapped = (lines: string[], x: number, startY: number, lineHeight: number) => {
+      let y = startY;
+      for (const line of lines) {
+        y = ensureSpace(y, lineHeight);
+        doc.text(line, x, y);
+        y += lineHeight;
+      }
+      return y;
+    };
+
     if (value.logo) { try { doc.addImage(value.logo, "PNG", 14, 12, 28, 28); } catch {} }
     doc.setFontSize(22);
     doc.setTextColor(...primary);
@@ -299,8 +323,9 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
       doc.setTextColor(40);
       doc.setFontSize(11);
       const bodyLines = doc.splitTextToSize(value.bodyText, 180);
-      doc.text(bodyLines, 14, 70);
-      const signY = 70 + bodyLines.length * 6 + 20;
+      let y = drawWrapped(bodyLines, 14, 70, 6);
+      y = ensureSpace(y + 20, 26);
+      const signY = y;
       if (value.stamp) { try { doc.addImage(value.stamp, "PNG", 14, signY, 26, 26); } catch {} }
       if (qrUrl) { try { doc.addImage(qrUrl, "PNG", 60, signY + 2, 24, 24); } catch {} }
       if (value.signature) { try { doc.addImage(value.signature, "PNG", 150, signY + 2, 40, 18); doc.text("Authorised signature", 150, signY + 26); } catch {} }
@@ -328,6 +353,7 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
       let y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 8;
       if (kind.priced) {
         const put = (label: string, val: string, bold = false) => {
+          y = ensureSpace(y, bold ? 8 : 6);
           doc.setFont("helvetica", bold ? "bold" : "normal");
           doc.setFontSize(bold ? 12 : 10);
           doc.setTextColor(bold ? 20 : 80);
@@ -346,9 +372,10 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
       doc.setFont("helvetica", "normal");
       doc.setFontSize(9);
       doc.setTextColor(80);
-      if (value.notes) { const lines = doc.splitTextToSize(`Notes: ${value.notes}`, 180); doc.text(lines, 14, y); y += lines.length * 5 + 1; }
-      if (value.terms) { const lines = doc.splitTextToSize(`Terms: ${value.terms}`, 180); doc.text(lines, 14, y); y += lines.length * 5 + 1; }
-      if (value.bankDetails) { const lines = doc.splitTextToSize(`Bank details: ${value.bankDetails}`, 180); doc.text(lines, 14, y); y += lines.length * 5 + 1; }
+      if (value.notes) { const lines = doc.splitTextToSize(`Notes: ${value.notes}`, 180); y = drawWrapped(lines, 14, y, 5) + 1; }
+      if (value.terms) { const lines = doc.splitTextToSize(`Terms: ${value.terms}`, 180); y = drawWrapped(lines, 14, y, 5) + 1; }
+      if (value.bankDetails) { const lines = doc.splitTextToSize(`Bank details: ${value.bankDetails}`, 180); y = drawWrapped(lines, 14, y, 5) + 1; }
+      y = ensureSpace(y, 30);
       if (value.signature) { try { doc.addImage(value.signature, "PNG", 150, y + 4, 40, 18); doc.text("Authorised signature", 150, y + 28); } catch {} }
       if (value.stamp) { try { doc.addImage(value.stamp, "PNG", 14, y + 2, 26, 26); } catch {} }
       if (qrUrl) { try { doc.addImage(qrUrl, "PNG", 60, y + 2, 24, 24); } catch {} }
