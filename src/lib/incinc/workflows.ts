@@ -147,6 +147,37 @@ export const loanPrepWorkflow: AssistantResponse = {
   ],
 };
 
+export const freelanceWorkflow: AssistantResponse = {
+  summary:
+    "Freelancing in India doesn't require registering a company — but invoicing correctly, knowing when GST kicks in, and paying tax on time are the three things that actually matter. Here's the order that avoids surprises.",
+  recommendedTools: [
+    { label: "Invoice Maker", href: "/tools/invoice-maker", kind: "internal", description: "Send professional invoices to clients — GST-compliant if you're registered, plain if you're not." },
+    { label: "GST Calculator", href: "/tools/gst-calculator", kind: "internal", description: "Check what GST would add to an invoice once you cross the registration threshold." },
+    { label: "Income Tax Calculator", href: "/tools/income-tax-calculator", kind: "internal", description: "Estimate what you'll owe on freelance income under the old vs new regime." },
+    { label: "Number to Words", href: "/tools/number-to-words", kind: "internal", description: "Write out an invoice or contract amount correctly in words." },
+  ],
+  workflow: [
+    { label: "Invoice Maker", href: "/tools/invoice-maker", kind: "internal", description: "Start invoicing clients professionally from your first project" },
+    { label: "GST Registration", href: "/india-services/business-tax/gst-registration", kind: "internal", description: "Only required once your turnover crosses the threshold — check before assuming you need it" },
+    { label: "Income Tax Calculator", href: "/tools/income-tax-calculator", kind: "internal", description: "Estimate quarterly advance tax so you're not caught short at filing time" },
+    { label: "India Hub: ITR Filing Guide", href: "/india-services/business-tax/itr-filing", kind: "internal", description: "Freelance income is usually filed as business/professional income — check the right ITR form" },
+  ],
+  relatedBlogs: [
+    { label: "Old vs New Tax Regime: Which to Choose", href: "/blog/old-vs-new-tax-regime-which-to-choose", kind: "internal" },
+  ],
+  officialResources: [
+    { label: "GST Portal", href: "https://www.gst.gov.in", kind: "external" },
+    { label: "Income Tax e-Filing Portal", href: "https://www.incometax.gov.in", kind: "external" },
+  ],
+  estimatedTime: "10 minutes to send your first invoice; ongoing for tax prep",
+  difficulty: "Beginner",
+  nextStep: "Start by sending a proper invoice — you don't need GST registration or a company to do that.",
+  actions: [
+    { label: "Open Invoice Maker", href: "/tools/invoice-maker", kind: "internal" },
+    { label: "Open Income Tax Calculator", href: "/tools/income-tax-calculator", kind: "internal" },
+  ],
+};
+
 export const saasStackWorkflow: AssistantResponse = {
   summary:
     "For a modern SaaS built fast by a small team, this stack covers the frontend, database/auth, hosting, payments and an AI coding workflow.",
