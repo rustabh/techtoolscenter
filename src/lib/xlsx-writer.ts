@@ -34,11 +34,17 @@ function xmlEscapeText(s: string): string {
 }
 
 const NUMERIC_CELL = /^-?\d+(\.\d+)?$/;
+// Comma-thousands-separated numbers (1,234.56 / 12,34,567.89) — the standard
+// format in the bank-statement and invoice PDFs this tool is built for.
+// Without this, every amount column imports as text instead of a number,
+// which breaks SUM/sort/filter in Excel — the entire point of the export.
+const THOUSANDS_NUMERIC_CELL = /^-?\d{1,3}(,\d{2,3})+(\.\d+)?$/;
 
 function cellXml(ref: string, raw: string): string {
   const value = raw.trim();
   if (!value) return "";
   if (NUMERIC_CELL.test(value)) return `<c r="${ref}"><v>${value}</v></c>`;
+  if (THOUSANDS_NUMERIC_CELL.test(value)) return `<c r="${ref}"><v>${value.replace(/,/g, "")}</v></c>`;
   return `<c r="${ref}" t="inlineStr"><is><t xml:space="preserve">${xmlEscapeText(raw)}</t></is></c>`;
 }
 
