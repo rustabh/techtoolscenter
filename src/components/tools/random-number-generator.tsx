@@ -9,11 +9,24 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { GenerationHistoryPanel } from "@/components/tools/generation-history-panel";
 
+// Rejection sampling — `arr[0] % range` alone is statistically biased
+// whenever range doesn't evenly divide 2^32 (i.e. almost always), because
+// the values just below 2^32 wrap around and land on the low end of the
+// range slightly more often than the rest. Rejecting draws that fall in
+// that leftover, not-evenly-divisible tail makes every output value in
+// range truly equally likely.
 function rand(min: number, max: number) {
   const range = max - min + 1;
+  if (range <= 0) return min;
+  const TWO_32 = 0x100000000;
+  const rejectionThreshold = TWO_32 - (TWO_32 % range);
   const arr = new Uint32Array(1);
-  crypto.getRandomValues(arr);
-  return min + (arr[0] % range);
+  let x: number;
+  do {
+    crypto.getRandomValues(arr);
+    x = arr[0];
+  } while (x >= rejectionThreshold);
+  return min + (x % range);
 }
 
 export default function RandomNumberGenerator() {
