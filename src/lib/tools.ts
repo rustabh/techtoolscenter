@@ -1325,13 +1325,13 @@ export const tools: Tool[] = [
     name: "CSS Gradient Generator",
     description: "Design CSS gradients visually and copy the code.",
     longDescription:
-      "Create beautiful linear and radial CSS gradients. Pick colours and angle, preview live, and copy production-ready CSS — perfect for backgrounds, buttons and hero sections.",
+      "Create beautiful linear, radial and conic CSS gradients with any number of colour stops. Pick colours and angle, preview live, and copy production-ready CSS — perfect for backgrounds, buttons and hero sections.",
     category: "Developer",
     icon: "Blend",
-    keywords: ["css gradient", "gradient generator", "linear gradient", "radial gradient", "background"],
+    keywords: ["css gradient", "gradient generator", "linear gradient", "radial gradient", "conic gradient", "background", "multi-stop gradient"],
     addedOn: "2026-07-16",
     faq: [
-      { question: "Which gradient types are supported?", answer: "Linear and radial gradients with adjustable colours and angle." },
+      { question: "Which gradient types are supported?", answer: "Linear, radial and conic gradients, each with adjustable colours and angle (except radial, which has no angle) and any number of colour stops." },
       { question: "Is the CSS ready to use?", answer: "Yes. Copy the generated background property straight into your stylesheet." },
     ],
   },
