@@ -281,6 +281,22 @@ export const tools: Tool[] = [
     ],
   },
   {
+    slug: "proposal-generator",
+    name: "Proposal Generator",
+    description: "Write a client proposal — overview, scope, timeline & pricing — and export a PDF.",
+    longDescription:
+      "Put together a professional client proposal: an overview of what you're offering, a scope-of-work list, a project timeline, itemised pricing with an automatic total, and your terms — all in one editable document. Unlike an invoice or quotation, a proposal is meant to persuade before work is agreed, not just itemise a price. Pick an accent color, preview it live, and export a clean PDF.",
+    category: "Business",
+    icon: "Handshake",
+    keywords: ["proposal", "proposal generator", "client proposal", "business proposal", "project proposal", "scope of work"],
+    addedOn: "2026-08-16",
+    faq: [
+      { question: "How is this different from a quotation?", answer: "A quotation is a fixed price offer for defined items. A proposal is a persuasive document — it explains the approach, scope of work and timeline before pricing is even discussed, which matters for services and projects where the client needs to understand what they're agreeing to, not just the price." },
+      { question: "Is my proposal data saved?", answer: "Yes — it's saved to your browser's local storage automatically, so you can come back and keep editing. Nothing is uploaded anywhere." },
+      { question: "Can I remove sections I don't need?", answer: "Yes. Scope, timeline and pricing are all optional lists — leave them empty and that section is skipped entirely in the exported PDF." },
+    ],
+  },
+  {
     slug: "gst-calculator",
     name: "GST Calculator",
     description: "Calculate GST inclusive and exclusive amounts for any rate.",

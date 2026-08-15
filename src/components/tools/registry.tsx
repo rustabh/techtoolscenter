@@ -22,6 +22,7 @@ const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> 
   "estimate-maker": dynamic(() => import("./estimate-maker"), { loading: ToolSkeleton, ssr: false }),
   "purchase-order-generator": dynamic(() => import("./purchase-order-generator"), { loading: ToolSkeleton, ssr: false }),
   "receipt-generator": dynamic(() => import("./receipt-generator"), { loading: ToolSkeleton, ssr: false }),
+  "proposal-generator": dynamic(() => import("./proposal-generator"), { loading: ToolSkeleton, ssr: false }),
   "delivery-challan": dynamic(() => import("./delivery-challan"), { loading: ToolSkeleton, ssr: false }),
   "credit-note": dynamic(() => import("./credit-note"), { loading: ToolSkeleton, ssr: false }),
   "debit-note": dynamic(() => import("./debit-note"), { loading: ToolSkeleton, ssr: false }),
