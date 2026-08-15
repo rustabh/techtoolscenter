@@ -32,9 +32,9 @@ export default function FindAndReplace() {
     }
   }, [value, find, replace, caseSensitive, useRegex, wholeWord]);
 
-  const Toggle = ({ c, on, label }: { c: boolean; on: (v: boolean) => void; label: string }) => (
-    <label className="flex cursor-pointer items-center gap-2 text-sm">
-      <input type="checkbox" checked={c} onChange={(e) => on(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" />{label}
+  const Toggle = ({ c, on, label, disabled, title }: { c: boolean; on: (v: boolean) => void; label: string; disabled?: boolean; title?: string }) => (
+    <label className={`flex items-center gap-2 text-sm ${disabled ? "cursor-not-allowed text-muted-foreground" : "cursor-pointer"}`} title={title}>
+      <input type="checkbox" checked={c} disabled={disabled} onChange={(e) => on(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" />{label}
     </label>
   );
 
@@ -48,7 +48,13 @@ export default function FindAndReplace() {
           </div>
           <div className="flex flex-wrap gap-4">
             <Toggle c={caseSensitive} on={setCaseSensitive} label="Case sensitive" />
-            <Toggle c={wholeWord} on={setWholeWord} label="Whole word" />
+            <Toggle
+              c={wholeWord}
+              on={setWholeWord}
+              label="Whole word"
+              disabled={useRegex}
+              title={useRegex ? "Doesn't combine with a custom regex — wrap your own pattern in \\b if you need word boundaries" : undefined}
+            />
             <Toggle c={useRegex} on={setUseRegex} label="Regex" />
           </div>
           {error && <p className="text-sm text-destructive">Regex error: {error}</p>}
