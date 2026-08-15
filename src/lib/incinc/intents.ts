@@ -8,7 +8,7 @@ import type { IndiaService } from "@/lib/india/types";
 import { lookupGlossaryTerm } from "./glossary";
 import { lookupKnowledge } from "./knowledge";
 import { searchCatalog } from "./catalog";
-import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow, itrFilingWorkflow, loanPrepWorkflow } from "./workflows";
+import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow, itrFilingWorkflow, loanPrepWorkflow, freelanceWorkflow } from "./workflows";
 
 function toolLink(slug: string): LinkItem | null {
   const t = getTool(slug);
@@ -120,6 +120,22 @@ const fastPaths: FastPath[] = [
       }),
   },
   {
+    id: "compress-image",
+    intent: "tool",
+    test: (q) => /(image|photo|picture|pic|jpe?g|png)/.test(q) && /(compress|shrink|smaller|reduce|too\s*(large|big)|under\s*\d+\s*(mb|kb))/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Compress a photo right in your browser — pick a quality level and see the exact new file size before you download.",
+        recommendedTools: compact([toolLink("image-compressor"), toolLink("image-studio")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "30 seconds",
+        difficulty: "Beginner",
+        nextStep: "Drag in your image, adjust the quality slider, and compare the before/after size.",
+        actions: [{ label: "Open Image Compressor", href: "/tools/image-compressor", kind: "internal" }],
+      }),
+  },
+  {
     id: "passport-photo",
     intent: "workflow",
     test: (q) => /passport/.test(q) && /(photo|pic|picture|image|photograph)/.test(q),
@@ -141,6 +157,12 @@ const fastPaths: FastPath[] = [
         nextStep: "Try Image Studio first — it's free and your image never leaves your device.",
         actions: [{ label: "Open Image Studio", href: "/tools/image-studio", kind: "internal" }],
       }),
+  },
+  {
+    id: "freelance-workflow",
+    intent: "workflow",
+    test: (q) => /freelanc/.test(q),
+    build: () => withIntent("workflow", freelanceWorkflow),
   },
   {
     id: "invoice",
@@ -177,6 +199,141 @@ const fastPaths: FastPath[] = [
         difficulty: "Beginner",
         nextStep: "Pick a QR type (URL, Wi-Fi, UPI, vCard...) and customize its look before downloading.",
         actions: [{ label: "Open QR Studio", href: "/tools/qr-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "jwt-decoder",
+    intent: "tool",
+    test: (q) => /jwt/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Paste a JWT to see its decoded header and payload instantly — entirely client-side, so the token never leaves your browser.",
+        recommendedTools: compact([toolLink("jwt-decoder")]),
+        relatedBlogs: [{ label: "JWT Decoder Explained: How to Safely Inspect a JSON Web Token", href: "/blog/jwt-decoder-explained-how-to-inspect-json-web-tokens", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open JWT Decoder", href: "/tools/jwt-decoder", kind: "internal" }],
+      }),
+  },
+  {
+    id: "csv-json-converter",
+    intent: "tool",
+    test: (q) => /csv/.test(q) && /json/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Convert CSV to JSON, or JSON to CSV, right in your browser — paste, upload, or drag a file in.",
+        recommendedTools: compact([toolLink("csv-json-converter")]),
+        relatedBlogs: [{ label: "CSV to JSON: What's the Difference and When to Convert", href: "/blog/csv-to-json-difference-when-to-convert", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open CSV ⇄ JSON Converter", href: "/tools/csv-json-converter", kind: "internal" }],
+      }),
+  },
+  {
+    id: "json-formatter",
+    intent: "tool",
+    test: (q) => /json/.test(q) && /(format|validat|beautif|pretty|lint)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Format, validate and beautify JSON, with the exact syntax error location pointed out if it's invalid.",
+        recommendedTools: compact([toolLink("json-formatter")]),
+        relatedBlogs: [{ label: "How to Validate and Beautify JSON Online (and Actually Fix It)", href: "/blog/json-formatter-validate-and-beautify-json-online", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open JSON Formatter", href: "/tools/json-formatter", kind: "internal" }],
+      }),
+  },
+  {
+    id: "base64",
+    intent: "tool",
+    test: (q) => /base\s*64/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Encode text or a file to Base64, or decode a Base64 string back to its original form.",
+        recommendedTools: compact([toolLink("base64-encoder")]),
+        relatedBlogs: [{ label: "What Is Base64 Encoding? A Plain-English Explanation", href: "/blog/what-is-base64-encoding-explained", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Base64 Encoder/Decoder", href: "/tools/base64-encoder", kind: "internal" }],
+      }),
+  },
+  {
+    id: "url-encode",
+    intent: "tool",
+    test: (q) => /url\s*(encod|decod)/.test(q) || /percent[\s-]?encod/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Percent-encode a value to make it safe inside a URL, or decode an already-encoded string back to plain text.",
+        recommendedTools: compact([toolLink("url-encoder")]),
+        relatedBlogs: [{ label: "URL Encoding Explained: What Percent-Encoding Actually Does", href: "/blog/url-encoding-explained-what-percent-encoding-actually-does", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open URL Encoder / Decoder", href: "/tools/url-encoder", kind: "internal" }],
+      }),
+  },
+  {
+    id: "uuid-generator",
+    intent: "tool",
+    test: (q) => /uuid/.test(q) || /\bguid\b/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Generate one or many UUIDs (v4, or other versions) — copy a single one or export a bulk list.",
+        recommendedTools: compact([toolLink("uuid-generator")]),
+        relatedBlogs: [{ label: "What Is a UUID and When Do You Actually Need One?", href: "/blog/what-is-a-uuid-when-do-you-need-one", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open UUID Generator", href: "/tools/uuid-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "hash-generator",
+    intent: "tool",
+    test: (q) => /(checksum|md5|sha-?1\b|sha-?256|sha-?512)/.test(q) || (/hash/.test(q) && !/hashtag/.test(q)),
+    build: () =>
+      withIntent("tool", {
+        summary: "Generate an MD5, SHA-1, SHA-256 or SHA-512 hash of text or a file — useful for verifying a download or checking two files match.",
+        recommendedTools: compact([toolLink("hash-generator")]),
+        relatedBlogs: [{ label: "MD5 vs SHA-256: What's the Difference and Which Should You Use?", href: "/blog/md5-vs-sha-256-difference-which-to-use", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Hash Generator", href: "/tools/hash-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "timestamp-converter",
+    intent: "tool",
+    test: (q) => /timestamp/.test(q) || /unix\s*time/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Convert a Unix timestamp to a readable date, or the other way around, with timezone handling built in.",
+        recommendedTools: compact([toolLink("timestamp-converter")]),
+        relatedBlogs: [{ label: "What Is a Unix Timestamp, and How Do You Convert It?", href: "/blog/what-is-a-unix-timestamp-and-how-to-convert-it", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Timestamp Converter", href: "/tools/timestamp-converter", kind: "internal" }],
+      }),
+  },
+  {
+    id: "youtube-thumbnail",
+    intent: "tool",
+    test: (q) => /youtube/.test(q) && /thumbnail/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Download any YouTube video's thumbnail in the highest resolution available, straight from the video URL.",
+        recommendedTools: compact([toolLink("youtube-thumbnail-downloader")]),
+        relatedBlogs: [{ label: "How to Download YouTube Thumbnails in HD", href: "/blog/how-to-download-youtube-thumbnail-hd", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "10 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open YouTube Thumbnail Downloader", href: "/tools/youtube-thumbnail-downloader", kind: "internal" }],
       }),
   },
   {
@@ -307,6 +464,82 @@ const fastPaths: FastPath[] = [
       }),
   },
   {
+    id: "bmi-calculator",
+    intent: "tool",
+    test: (q) => /\bbmi\b/.test(q) || (/body\s*mass/.test(q) && /index/.test(q)),
+    build: () =>
+      withIntent("tool", {
+        summary: "Calculate your Body Mass Index from height and weight, with the standard underweight/normal/overweight/obese category shown alongside it.",
+        recommendedTools: compact([toolLink("bmi-calculator")]),
+        relatedBlogs: [{ label: "BMI Explained: What It Actually Measures", href: "/blog/bmi-explained-what-it-actually-measures", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "10 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open BMI Calculator", href: "/tools/bmi-calculator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "percentage-calculator",
+    intent: "tool",
+    test: (q) => /percentage/.test(q) && /(calculat|find|work\s*out)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Work out a percentage, a percentage change, or what number a percentage represents — all the common percentage calculations in one place.",
+        recommendedTools: compact([toolLink("percentage-calculator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "10 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Percentage Calculator", href: "/tools/percentage-calculator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "tip-calculator",
+    intent: "tool",
+    test: (q) => /tip/.test(q) && /(calculat|split|bill)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Calculate a tip and split the total bill evenly across any number of people.",
+        recommendedTools: compact([toolLink("tip-calculator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "10 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Tip Calculator", href: "/tools/tip-calculator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "cgpa-calculator",
+    intent: "tool",
+    test: (q) => /cgpa/.test(q) || (/\bgpa\b/.test(q) && /(calculat|convert|percentage)/.test(q)),
+    build: () =>
+      withIntent("tool", {
+        summary: "Convert CGPA to percentage (or the other way around) using the correct formula for CBSE, VTU and other common university scales.",
+        recommendedTools: compact([toolLink("cgpa-calculator")]),
+        relatedBlogs: [{ label: "CGPA to Percentage: CBSE, VTU and University Formulas Explained", href: "/blog/cgpa-to-percentage-calculator-guide", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "10 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open CGPA Calculator", href: "/tools/cgpa-calculator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "income-tax-calculator",
+    intent: "tool",
+    test: (q) => /income\s*tax/.test(q) && /(calculat|estimate|how\s*much)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Estimate your income tax liability under both the old and new regime, and see which one actually saves you more.",
+        recommendedTools: compact([toolLink("income-tax-calculator")]),
+        relatedBlogs: [{ label: "Old vs New Tax Regime: Which to Choose", href: "/blog/old-vs-new-tax-regime-which-to-choose", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "2 minutes",
+        difficulty: "Beginner",
+        nextStep: "Enter your income once and compare both regimes side by side before you file.",
+        actions: [{ label: "Open Income Tax Calculator", href: "/tools/income-tax-calculator", kind: "internal" }],
+      }),
+  },
+  {
     id: "gst-calculator",
     intent: "tool",
     test: (q) => /gst/.test(q) && /(calculat|add|remove|split|inclusive|exclusive)/.test(q),
@@ -326,6 +559,37 @@ const fastPaths: FastPath[] = [
         ]),
       });
     },
+  },
+  {
+    id: "rent-receipt-generator",
+    intent: "tool",
+    test: (q) => /rent\s*receipt/.test(q) || (/rent/.test(q) && /(receipt|generat)/.test(q) && !/agreement/.test(q)),
+    build: () =>
+      withIntent("tool", {
+        summary: "Generate a rent receipt with landlord and tenant details, revenue stamp note, and a downloadable PDF — the exact document you need to claim HRA exemption.",
+        recommendedTools: compact([toolLink("rent-receipt-generator")]),
+        relatedBlogs: [{ label: "HRA Exemption Explained: How Much of Your House Rent Allowance Is Tax-Free", href: "/blog/hra-exemption-explained-how-much-is-tax-free", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "2 minutes",
+        difficulty: "Beginner",
+        nextStep: "Generating receipts for all 12 months at once? The tool has a bulk ZIP download for that.",
+        actions: [{ label: "Open Rent Receipt Generator", href: "/tools/rent-receipt-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "salary-slip-generator",
+    intent: "tool",
+    test: (q) => /salary\s*slip/.test(q) || /payslip/.test(q) || /pay\s*slip/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Create a professional salary slip with earnings, deductions and net pay calculated automatically — download as a PDF.",
+        recommendedTools: compact([toolLink("salary-slip-generator")]),
+        relatedBlogs: [{ label: "How to Calculate Your In-Hand Salary From CTC", href: "/blog/how-to-calculate-in-hand-salary-from-ctc", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "2 minutes",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Salary Slip Generator", href: "/tools/salary-slip-generator", kind: "internal" }],
+      }),
   },
   {
     id: "generate-password",
@@ -478,6 +742,51 @@ const fastPaths: FastPath[] = [
       }),
   },
   {
+    id: "pdf-to-jpg",
+    intent: "tool",
+    test: (q) => /pdf[\s\S]*\b(jpe?g|png|image)\b/.test(q) && !/(compress|merge|split|rotat|watermark|page\s*number)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Convert every page of a PDF into a JPG (or PNG) image, or go the other way and rebuild a PDF from images — both directions, no watermark.",
+        recommendedTools: compact([toolLink("pdf-to-jpg")]),
+        relatedBlogs: [{ label: "How to Convert PDF to JPG (and Back)", href: "/blog/how-to-convert-pdf-to-jpg-and-back", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "30 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open PDF to JPG", href: "/tools/pdf-to-jpg", kind: "internal" }],
+      }),
+  },
+  {
+    id: "image-to-pdf",
+    intent: "tool",
+    test: (q) => /\b(jpe?g|png|photo|image|picture)s?\b[\s\S]*\bpdf\b/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Combine one or more photos into a single PDF, in the order you choose — useful for submitting scanned documents as one file.",
+        recommendedTools: compact([toolLink("image-to-pdf")]),
+        relatedBlogs: [{ label: "How to Convert Photos into a Single PDF", href: "/blog/how-to-convert-photos-into-one-pdf", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "30 seconds",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Image to PDF", href: "/tools/image-to-pdf", kind: "internal" }],
+      }),
+  },
+  {
+    id: "pdf-to-excel",
+    intent: "tool",
+    test: (q) => /pdf/.test(q) && /excel/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Pull tables out of a PDF (like a bank statement) into an editable Excel spreadsheet.",
+        recommendedTools: compact([toolLink("pdf-to-excel")]),
+        relatedBlogs: [{ label: "How to Convert a Bank Statement PDF to Excel", href: "/blog/how-to-convert-bank-statement-pdf-to-excel", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open PDF to Excel", href: "/tools/pdf-to-excel", kind: "internal" }],
+      }),
+  },
+  {
     id: "watermark-image",
     intent: "tool",
     test: (q) => /watermark/.test(q) && !/pdf/.test(q),
@@ -566,6 +875,22 @@ const fastPaths: FastPath[] = [
         estimatedTime: "1 minute",
         difficulty: "Beginner",
         actions: [{ label: "Open Typing Speed Test", href: "/tools/typing-speed-test", kind: "internal" }],
+      }),
+  },
+  {
+    id: "pomodoro-timer",
+    intent: "tool",
+    test: (q) => /pomodoro/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Run focused work sessions with the Pomodoro Technique — 25 minutes on, 5 off, with your completed sessions tracked by day.",
+        recommendedTools: compact([toolLink("pomodoro-timer")]),
+        relatedBlogs: [{ label: "The Pomodoro Technique Explained: How to Actually Use It", href: "/blog/pomodoro-technique-explained-how-to-actually-use-it", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "25 minutes per session",
+        difficulty: "Beginner",
+        nextStep: "Pick one task, start the timer, and take the break when it rings — don't skip it.",
+        actions: [{ label: "Open Pomodoro Timer", href: "/tools/pomodoro-timer", kind: "internal" }],
       }),
   },
   {
