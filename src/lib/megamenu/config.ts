@@ -191,7 +191,7 @@ export const developerHubMenu: MegaMenuConfig = {
       icon: "GraduationCap",
       groups: [{ items: [
         { label: "Playgrounds", href: "/developer-hub/playground" },
-        { label: "Roadmaps", comingSoon: true },
+        { label: "Roadmaps", href: "/developer-hub/roadmaps" },
         { label: "Documentation", href: "/developer-hub/documentation" },
         { label: "Useful Developer Websites", href: "/developer-hub/learning" },
       ] }],

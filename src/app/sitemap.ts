@@ -27,6 +27,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/tools`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/developer-hub`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/developer-hub/playground`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/developer-hub/roadmaps`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
     { url: `${base}/ai-hub`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
     { url: `${base}/ai-hub/collections`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/collections`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
