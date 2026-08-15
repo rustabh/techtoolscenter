@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { BlogCard, Pagination } from "@/components/blog/blog-bits";
-import { allPosts, paginate, POSTS_PER_PAGE } from "@/lib/blog/posts";
+import { allPosts, paginate, totalBlogPages } from "@/lib/blog/posts";
 import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
+// Any page number outside the statically-generated set (including page 1,
+// which is redirected to /blog via next.config.mjs — a real HTTP redirect,
+// unlike redirect() called inside a statically-cached page, which only
+// produces a client-side meta-refresh) gets Next's built-in 404 before this
+// component ever runs, with a correct 404 HTTP status.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
-  const total = Math.max(1, Math.ceil(allPosts().length / POSTS_PER_PAGE));
-  return Array.from({ length: total }, (_, i) => ({ page: String(i + 1) }));
+  const total = totalBlogPages(allPosts().length);
+  return Array.from({ length: Math.max(0, total - 1) }, (_, i) => ({ page: String(i + 2) }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ page: string }> }): Promise<Metadata> {
@@ -21,10 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ page: str
 
 export default async function BlogPaged({ params }: { params: Promise<{ page: string }> }) {
   const { page } = await params;
-  const n = Number(page);
-  if (!Number.isInteger(n) || n < 1) notFound();
-  const { items, current, total } = paginate(allPosts(), n);
-  if (n > total) notFound();
+  const { items, current, total } = paginate(allPosts(), Number(page));
 
   return (
     <div className="container-tight py-12">

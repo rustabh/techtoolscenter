@@ -5860,12 +5860,26 @@ export function relatedPosts(post: BlogPost, limit = 3): BlogPost[] {
   return scored.slice(0, limit).map((s) => s.p);
 }
 
-export const POSTS_PER_PAGE = 6;
-export function paginate(list: BlogPost[], page: number, perPage = POSTS_PER_PAGE) {
-  const total = Math.max(1, Math.ceil(list.length / perPage));
+// The first page is intentionally kept small (a focused "latest articles"
+// preview on /blog itself); every page after that shows a much larger batch,
+// since by then the reader is deliberately browsing the archive rather than
+// skimming what's new.
+export const POSTS_PER_PAGE_FIRST = 6;
+export const POSTS_PER_PAGE = 24;
+
+export function totalBlogPages(count: number): number {
+  if (count <= POSTS_PER_PAGE_FIRST) return 1;
+  return 1 + Math.ceil((count - POSTS_PER_PAGE_FIRST) / POSTS_PER_PAGE);
+}
+
+export function paginate(list: BlogPost[], page: number) {
+  const total = totalBlogPages(list.length);
   const current = Math.min(Math.max(1, page), total);
-  const start = (current - 1) * perPage;
-  return { items: list.slice(start, start + perPage), current, total };
+  if (current <= 1) {
+    return { items: list.slice(0, POSTS_PER_PAGE_FIRST), current, total };
+  }
+  const start = POSTS_PER_PAGE_FIRST + (current - 2) * POSTS_PER_PAGE;
+  return { items: list.slice(start, start + POSTS_PER_PAGE), current, total };
 }
 
 /* ---------------- Table of Contents ---------------- */
