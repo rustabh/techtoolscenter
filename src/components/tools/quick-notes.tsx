@@ -1,13 +1,13 @@
 "use client";
 
 import { useMemo } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Download, Plus, Trash2 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, downloadBlob } from "@/lib/utils";
 
 interface Note { id: string; title: string; body: string; }
 interface State { notes: Note[]; active: string; }
@@ -36,6 +36,11 @@ export default function QuickNotes() {
     const notes = value.notes.filter((n) => n.id !== id);
     set({ notes: notes.length ? notes : seed().notes, active: notes[0]?.id ?? seed().active });
   };
+  const downloadNote = () => {
+    if (!active) return;
+    const filename = `${(active.title || "note").replace(/[\\/:*?"<>|]+/g, " ").trim() || "note"}.txt`;
+    downloadBlob(new Blob([active.body], { type: "text/plain" }), filename);
+  };
 
   return (
     <div className="grid gap-6 lg:grid-cols-[260px_1fr]">
@@ -55,7 +60,12 @@ export default function QuickNotes() {
       </Card>
       <Card>
         <CardContent className="space-y-3 pt-6">
-          <Input value={active?.title ?? ""} onChange={(e) => update({ title: e.target.value })} placeholder="Note title" className="text-lg font-semibold" />
+          <div className="flex items-center gap-2">
+            <Input value={active?.title ?? ""} onChange={(e) => update({ title: e.target.value })} placeholder="Note title" className="text-lg font-semibold" />
+            <Button variant="outline" size="sm" onClick={downloadNote} aria-label="Download this note as .txt">
+              <Download className="size-4" /> Download
+            </Button>
+          </div>
           <Textarea value={active?.body ?? ""} onChange={(e) => update({ body: e.target.value })} placeholder="Start writing…" className="min-h-[340px]" />
           <p className={cn("text-xs", saveError ? "font-medium text-destructive" : "text-muted-foreground")}>
             {stats.words} words · {stats.chars} characters ·{" "}

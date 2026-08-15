@@ -1079,7 +1079,7 @@ export const tools: Tool[] = [
     name: "Quick Notes",
     description: "A fast scratchpad that saves your notes in your browser.",
     longDescription:
-      "A distraction-free notepad that automatically saves to your browser as you type. Keep multiple notes, with word and character counts — perfect for quick thoughts, to-dos and drafts.",
+      "A distraction-free notepad that automatically saves to your browser as you type. Keep multiple notes, with word and character counts and a one-click .txt download — perfect for quick thoughts, to-dos and drafts.",
     category: "Everyday",
     icon: "StickyNote",
     keywords: ["notes", "notepad", "scratchpad", "quick notes", "online notepad"],
@@ -1087,6 +1087,7 @@ export const tools: Tool[] = [
     faq: [
       { question: "Are my notes saved?", answer: "Yes. Notes are stored in your browser's local storage and remain after you close the tab. They never leave your device." },
       { question: "Can I keep multiple notes?", answer: "Yes. Create, rename and switch between several notes." },
+      { question: "Can I get a note out as a file?", answer: "Yes — the Download button next to the title saves the current note as a plain .txt file." },
     ],
   },
   {
