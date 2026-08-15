@@ -720,15 +720,15 @@ export const tools: Tool[] = [
   {
     slug: "color-converter",
     name: "Color Picker & Converter",
-    description: "Pick a color and convert between HEX, RGB and HSL.",
+    description: "Pick a color and convert between HEX, RGB, HSL and CMYK.",
     longDescription:
-      "Pick any color and instantly see its HEX, RGB and HSL values. Copy any format with one click — ideal for design, CSS and theming work.",
+      "Pick any color and instantly see its HEX, RGB, HSL and CMYK values. Copy any format with one click — ideal for design, CSS/theming work and print (CMYK).",
     category: "Developer",
     icon: "Palette",
-    keywords: ["color picker", "hex to rgb", "hsl", "color converter", "css color"],
+    keywords: ["color picker", "hex to rgb", "hsl", "cmyk", "color converter", "css color", "rgb to cmyk"],
     addedOn: "2026-07-14",
     faq: [
-      { question: "Which formats are supported?", answer: "HEX, RGB and HSL, all kept in sync as you pick or type." },
+      { question: "Which formats are supported?", answer: "HEX, RGB, HSL and CMYK, all kept in sync as you pick or type." },
       { question: "Can I copy the values?", answer: "Yes. Each format has a copy button for quick use in your CSS." },
     ],
   },

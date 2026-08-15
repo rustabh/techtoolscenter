@@ -28,13 +28,24 @@ function rgbToHsl(r: number, g: number, b: number) {
   }
   return { h: Math.round(h * 360), s: Math.round(s * 100), l: Math.round(l * 100) };
 }
+function rgbToCmyk(r: number, g: number, b: number) {
+  const rn = r / 255, gn = g / 255, bn = b / 255;
+  const k = 1 - Math.max(rn, gn, bn);
+  if (k === 1) return { c: 0, m: 0, y: 0, k: 100 };
+  const c = (1 - rn - k) / (1 - k);
+  const m = (1 - gn - k) / (1 - k);
+  const y = (1 - bn - k) / (1 - k);
+  return { c: Math.round(c * 100), m: Math.round(m * 100), y: Math.round(y * 100), k: Math.round(k * 100) };
+}
 
 export default function ColorConverter() {
   const [hex, setHex] = useState("#4f46e5");
   const { r, g, b } = hexToRgb(hex);
   const { h, s, l } = rgbToHsl(r, g, b);
+  const { c, m: cmykM, y, k } = rgbToCmyk(r, g, b);
   const rgb = `rgb(${r}, ${g}, ${b})`;
   const hsl = `hsl(${h}, ${s}%, ${l}%)`;
+  const cmyk = `cmyk(${c}%, ${cmykM}%, ${y}%, ${k}%)`;
   const { copied, copy } = useCopy();
   const [last, setLast] = useState("");
 
@@ -68,6 +79,7 @@ export default function ColorConverter() {
           <Row label="HEX" val={hex.toUpperCase()} />
           <Row label="RGB" val={rgb} />
           <Row label="HSL" val={hsl} />
+          <Row label="CMYK" val={cmyk} />
         </CardContent>
       </Card>
     </div>
