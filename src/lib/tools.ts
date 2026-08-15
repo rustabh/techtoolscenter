@@ -660,13 +660,14 @@ export const tools: Tool[] = [
     name: "Base64 Encoder / Decoder",
     description: "Encode text to Base64 or decode Base64 back to text.",
     longDescription:
-      "Convert any text to and from Base64 with full Unicode support. Encode data for transport or decode Base64 strings back to readable text — entirely in your browser.",
+      "Convert any text to and from Base64 with full Unicode support, including a URL-safe variant (-/_ instead of +//, no padding) for JWTs and URL parameters. Encode data for transport or decode Base64 strings back to readable text — entirely in your browser.",
     category: "Developer",
     icon: "Binary",
-    keywords: ["base64", "encode", "decode", "base64 encoder", "base64 decoder"],
+    keywords: ["base64", "encode", "decode", "base64 encoder", "base64 decoder", "url safe base64", "jwt base64"],
     addedOn: "2026-07-13",
     faq: [
       { question: "Does it support Unicode?", answer: "Yes. Emoji and non-Latin characters are handled correctly during both encoding and decoding." },
+      { question: "What's the URL-safe option for?", answer: "Standard Base64 uses + and / and pads with =, all of which need escaping inside a URL. The URL-safe variant swaps those for - and _ and drops padding — used by JWTs, URL query parameters and filesystem-safe names." },
       { question: "Is my data uploaded?", answer: "No. All encoding and decoding happens locally in your browser." },
     ],
   },

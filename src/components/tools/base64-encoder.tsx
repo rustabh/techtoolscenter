@@ -11,16 +11,31 @@ import { ActionBar } from "@/components/tools/action-bar";
 import { downloadBlob } from "@/lib/utils";
 import { FileDropzone } from "@/components/tools/file-dropzone";
 
-function encode(s: string) {
+// URL-safe Base64 (RFC 4648 §5) swaps the two characters that aren't safe
+// unescaped in a URL or filename (+ and /) for - and _, and conventionally
+// drops the trailing = padding — used by JWTs, URL query params and
+// filesystem-safe names.
+function toUrlSafe(b64: string) {
+  return b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+function fromUrlSafe(s: string) {
+  const withStandardChars = s.replace(/-/g, "+").replace(/_/g, "/");
+  const padded = withStandardChars + "=".repeat((4 - (withStandardChars.length % 4)) % 4);
+  return padded;
+}
+
+function encode(s: string, urlSafe: boolean) {
   try {
-    return btoa(unescape(encodeURIComponent(s)));
+    const b64 = btoa(unescape(encodeURIComponent(s)));
+    return urlSafe ? toUrlSafe(b64) : b64;
   } catch {
     return "⚠ Couldn't encode this text (it may contain an invalid character)";
   }
 }
-function decode(s: string) {
+function decode(s: string, urlSafe: boolean) {
   try {
-    return decodeURIComponent(escape(atob(s.trim())));
+    const b64 = urlSafe ? fromUrlSafe(s.trim()) : s.trim();
+    return decodeURIComponent(escape(atob(b64)));
   } catch {
     return "⚠ Invalid Base64 input";
   }
@@ -31,6 +46,7 @@ export default function Base64Encoder() {
   const [mode, setMode] = useState<"encode" | "decode" | "file">("encode");
   const [file, setFile] = useState<{ name: string; base64: string; mime: string } | null>(null);
   const [includeDataUri, setIncludeDataUri] = useState(true);
+  const [urlSafe, setUrlSafe] = useState(false);
   const { copied, copy } = useCopy();
 
   const output = useMemo(() => {
@@ -38,8 +54,8 @@ export default function Base64Encoder() {
       if (!file) return "";
       return includeDataUri ? `data:${file.mime};base64,${file.base64}` : file.base64;
     }
-    return mode === "encode" ? encode(value) : decode(value);
-  }, [value, mode, file, includeDataUri]);
+    return mode === "encode" ? encode(value, urlSafe) : decode(value, urlSafe);
+  }, [value, mode, file, includeDataUri, urlSafe]);
 
   const onFile = (f: File) => {
     const reader = new FileReader();
@@ -91,6 +107,10 @@ export default function Base64Encoder() {
           <Card>
             <CardContent className="space-y-4 pt-6">
               <Textarea aria-label="Input" className="min-h-[220px] font-mono text-sm" value={value} onChange={(e) => set(e.target.value)} placeholder={mode === "encode" ? "Text to encode…" : "Base64 to decode…"} />
+              <label className="flex cursor-pointer items-center gap-2 text-sm">
+                <input type="checkbox" checked={urlSafe} onChange={(e) => setUrlSafe(e.target.checked)} className="size-4 accent-[hsl(var(--primary))]" />
+                URL-safe (<code className="font-mono text-xs">-</code>/<code className="font-mono text-xs">_</code> instead of <code className="font-mono text-xs">+</code>/<code className="font-mono text-xs">/</code>, no padding) — used by JWTs and URL parameters
+              </label>
               <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
             </CardContent>
           </Card>
