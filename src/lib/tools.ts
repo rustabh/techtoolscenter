@@ -1247,13 +1247,13 @@ export const tools: Tool[] = [
     name: "Schema Markup Generator",
     description: "Generate Schema.org JSON-LD structured data.",
     longDescription:
-      "Create valid Schema.org JSON-LD for common types — Organization, Website, Article, Product, FAQ, Breadcrumb and LocalBusiness — from a simple form, ready to paste into your page head.",
+      "Create valid Schema.org JSON-LD for common types — Organization, Website, Article, Product, FAQPage, HowTo, BreadcrumbList and LocalBusiness — from a simple form, ready to paste into your page head.",
     category: "SEO",
     icon: "Braces",
-    keywords: ["schema generator", "json-ld", "structured data", "rich results", "schema.org"],
+    keywords: ["schema generator", "json-ld", "structured data", "rich results", "schema.org", "howto schema", "breadcrumb schema"],
     addedOn: "2026-07-16",
     faq: [
-      { question: "Which schema types are supported?", answer: "Organization, Website, Article, Product, FAQPage, BreadcrumbList and LocalBusiness." },
+      { question: "Which schema types are supported?", answer: "Organization, Website, Article, Product, FAQPage, HowTo, BreadcrumbList and LocalBusiness." },
       { question: "Is the output valid?", answer: "Yes. It produces well-formed JSON-LD following Schema.org; test it in Google's Rich Results tool." },
     ],
   },
