@@ -41,7 +41,12 @@ export default function RobotsTxtGenerator() {
 
   const out = useMemo(() => {
     const lines = ["User-agent: *"];
+    // Per the robots.txt spec, everything is crawlable by default unless an
+    // explicit Disallow is present — simply omitting "Allow: /" does NOT
+    // block anything on its own. Unchecking "allow all" has to actually
+    // emit "Disallow: /", or the checkbox silently does nothing.
     if (allowAll) lines.push("Allow: /");
+    else lines.push("Disallow: /");
     disallow.split("\n").map((d) => d.trim()).filter(Boolean).forEach((d) => lines.push(`Disallow: ${d}`));
     if (crawlDelay) lines.push(`Crawl-delay: ${crawlDelay}`);
     for (const bot of AI_BOTS) {
