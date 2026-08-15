@@ -22,10 +22,20 @@ type SetKey = keyof typeof SETS;
 // password on a router label).
 const AMBIGUOUS = "0O1lI|";
 
+// Rejection sampling — `arr[0] % max` alone is statistically biased whenever
+// max doesn't evenly divide 2^32 (i.e. almost always), skewing which
+// characters land in the generated password. Rejecting draws that fall in
+// the leftover, not-evenly-divisible tail makes every character equally likely.
 function secureRandom(max: number) {
+  const TWO_32 = 0x100000000;
+  const rejectionThreshold = TWO_32 - (TWO_32 % max);
   const arr = new Uint32Array(1);
-  crypto.getRandomValues(arr);
-  return arr[0] % max;
+  let x: number;
+  do {
+    crypto.getRandomValues(arr);
+    x = arr[0];
+  } while (x >= rejectionThreshold);
+  return x % max;
 }
 
 export default function PasswordGenerator() {
