@@ -117,27 +117,40 @@ function csvEscapeField(value: CsvValue, delimiter: string): string {
   return str;
 }
 
+// Flattens a nested value into `out` under `prefix`, using dot-notation for
+// nested objects (address.city, address.zip). Arrays are kept as a single
+// JSON-string cell rather than expanded into indexed columns — indexing
+// would make each record produce a different column set depending on its
+// array length, which breaks CSV's fixed-column shape far worse than a
+// compact JSON string in one cell does.
+function flattenValue(value: unknown, prefix: string, out: CsvRecord) {
+  if (value === null) { out[prefix] = null; return; }
+  if (Array.isArray(value)) { out[prefix] = JSON.stringify(value); return; }
+  if (typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    const keys = Object.keys(obj);
+    if (keys.length === 0) { out[prefix] = "{}"; return; }
+    for (const key of keys) flattenValue(obj[key], `${prefix}.${key}`, out);
+    return;
+  }
+  out[prefix] = value as CsvValue;
+}
+
 function jsonToCsv(json: string, delimiter: string): string {
   const parsed: unknown = JSON.parse(json);
 
   if (!Array.isArray(parsed)) {
-    throw new Error("Input must be a JSON array of flat objects (no nested objects/arrays)");
+    throw new Error("Input must be a JSON array of objects");
   }
 
   const records = parsed as unknown[];
   const flatRecords: CsvRecord[] = records.map((item) => {
     if (typeof item !== "object" || item === null || Array.isArray(item)) {
-      throw new Error("Input must be a JSON array of flat objects (no nested objects/arrays)");
+      throw new Error("Input must be a JSON array of objects (each item must be an object, not a primitive or array)");
     }
     const obj = item as Record<string, unknown>;
     const flat: CsvRecord = {};
-    for (const key of Object.keys(obj)) {
-      const val = obj[key];
-      if (typeof val === "object" && val !== null) {
-        throw new Error("Input must be a JSON array of flat objects (no nested objects/arrays)");
-      }
-      flat[key] = val as CsvValue;
-    }
+    for (const key of Object.keys(obj)) flattenValue(obj[key], key, flat);
     return flat;
   });
 

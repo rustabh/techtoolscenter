@@ -1515,13 +1515,13 @@ export const tools: Tool[] = [
     name: "CSV to JSON Converter",
     description: "Convert CSV to JSON or JSON back to CSV, with quoted-field support.",
     longDescription:
-      "Paste CSV to get a clean JSON array, or paste a JSON array of flat objects to get CSV — handles quoted fields containing commas correctly in both directions.",
+      "Paste CSV to get a clean JSON array, or paste a JSON array of objects to get CSV — handles quoted fields containing commas correctly in both directions, and automatically flattens nested objects into dot-notation columns (address.city, address.zip) rather than failing on them.",
     category: "Developer",
     icon: "FileSpreadsheet",
     keywords: ["csv to json", "json to csv", "csv converter", "csv json online converter", "convert spreadsheet to json"],
     addedOn: "2026-07-31",
     faq: [
-      { question: "What if my JSON has nested objects?", answer: "JSON to CSV requires a flat array of objects (no nested objects or arrays) — you'll get a clear error message if the structure doesn't match." },
+      { question: "What if my JSON has nested objects?", answer: "Nested objects are automatically flattened into dot-notation columns — {\"address\":{\"city\":\"Pune\"}} becomes a column named address.city. Arrays are kept as a single JSON-string cell, since expanding them into indexed columns would give each record a different column count." },
       { question: "Does it handle commas inside a CSV field?", answer: "Yes, as long as the field is wrapped in double quotes, e.g. \"Smith, John\" is parsed as one field." },
     ],
   },
