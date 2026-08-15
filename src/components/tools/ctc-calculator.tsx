@@ -126,6 +126,14 @@ export default function CtcCalculator() {
             <p className="text-4xl font-bold text-primary">{formatCurrency(result.netMonthly)}</p>
           </div>
 
+          {result.netAnnual < 0 && (
+            <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive">
+              This combination of PF % and bonus adds up to more than the CTC can actually cover, so the take-home
+              above has gone negative — it isn&apos;t a real result. Double-check the PF contribution % (12% is
+              standard; it&apos;s only much higher for a deliberate Voluntary PF top-up) and the bonus amount.
+            </div>
+          )}
+
           <div className="grid grid-cols-2 gap-3 rounded-xl bg-secondary/60 p-3 text-sm">
             <div className="font-medium text-muted-foreground">Component</div>
             <div className="grid grid-cols-2 gap-2 text-right font-medium text-muted-foreground">
