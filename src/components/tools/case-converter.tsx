@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { downloadBlob } from "@/lib/utils";
 
 type Mode =
   | "upper" | "lower" | "title" | "sentence"
@@ -90,6 +91,8 @@ export default function CaseConverter() {
             onReset={reset}
             onCopy={() => copy(output)}
             copied={copied}
+            onDownload={() => downloadBlob(new Blob([output], { type: "text/plain" }), "converted.txt")}
+            downloadLabel="Download .txt"
             canUndo={canUndo}
             canRedo={canRedo}
           />
