@@ -13,8 +13,13 @@ import { GenerationHistoryPanel } from "@/components/tools/generation-history-pa
 const MODIFIERS = ["", "tips", "life", "daily", "community", "love", "ideas", "trends", "2026", "official", "world", "pro", "inspo", "goals"];
 const PREFIX = ["", "best", "my", "the", "insta", "top"];
 
+// \p{L}/\p{N} (Unicode letter/number) instead of a-zA-Z0-9 so topics typed in
+// Hindi or any other non-Latin script still produce real hashtags instead of
+// silently collapsing to "#" once every letter gets stripped. \p{M} keeps
+// combining marks (e.g. Devanagari matras like the ि in डिजिटल) attached to
+// their base letter — without it words come out with vowel signs dropped.
 function toTag(s: string) {
-  return "#" + s.replace(/[^a-zA-Z0-9]/g, "").toLowerCase();
+  return "#" + s.replace(/[^\p{L}\p{M}\p{N}]/gu, "").toLowerCase();
 }
 
 export default function HashtagGenerator() {
