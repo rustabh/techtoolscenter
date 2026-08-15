@@ -7,8 +7,10 @@ import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
+import { showToast } from "@/components/ui/toaster";
 import { downloadBlob, localDateISO } from "@/lib/utils";
 
 interface SitemapUrl {
@@ -36,7 +38,16 @@ function escapeXml(s: string) {
 export default function SitemapGenerator() {
   const { value, set } = useLocalStorage<SitemapUrl[]>("uh:sitemap-generator", initial());
   const [today] = useState(() => localDateISO());
+  const [bulk, setBulk] = useState("");
   const { copied, copy } = useCopy();
+
+  const addBulkUrls = () => {
+    const urls = bulk.split("\n").map((l) => l.trim()).filter(Boolean);
+    if (!urls.length) return;
+    set([...value, ...urls.map((loc) => newUrl(loc))]);
+    setBulk("");
+    showToast(`Added ${urls.length} URL${urls.length === 1 ? "" : "s"}`);
+  };
 
   const xml = useMemo(() => {
     const entries = value
@@ -95,6 +106,13 @@ export default function SitemapGenerator() {
           <Button type="button" variant="outline" size="sm" onClick={() => set([...value, newUrl()])}>
             <Plus /> Add URL
           </Button>
+          <div className="space-y-1.5 rounded-xl border border-dashed border-border p-3">
+            <Label htmlFor="sitemap-bulk">Bulk add (one URL per line)</Label>
+            <Textarea id="sitemap-bulk" value={bulk} onChange={(e) => setBulk(e.target.value)} placeholder={"https://example.com/page-1\nhttps://example.com/page-2"} className="min-h-[90px] font-mono text-xs" />
+            <Button type="button" variant="outline" size="sm" onClick={addBulkUrls} disabled={!bulk.trim()}>
+              <Plus /> Add all
+            </Button>
+          </div>
         </CardContent>
       </Card>
 

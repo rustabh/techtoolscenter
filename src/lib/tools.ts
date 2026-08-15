@@ -1669,14 +1669,14 @@ export const tools: Tool[] = [
     name: "Sitemap.xml Generator",
     description: "Build a sitemap.xml file from a list of URLs.",
     longDescription:
-      "Add your site's URLs with a change frequency and priority for each, then copy or download a valid sitemap.xml ready to submit to search engines.",
+      "Add your site's URLs with a change frequency and priority for each — one at a time or pasted in bulk, one per line — then copy or download a valid sitemap.xml ready to submit to search engines.",
     category: "Developer",
     icon: "ListTree",
     keywords: ["sitemap generator", "sitemap.xml generator", "create sitemap", "xml sitemap tool"],
     addedOn: "2026-07-31",
     faq: [
       { question: "What is changefreq/priority for?", answer: "Hints to search engines about how often a page changes and its relative importance — they're advisory, not guarantees of crawl behaviour." },
-      { question: "Can I generate a sitemap for a large site?", answer: "Yes, add as many URLs as you need — for very large sites, search engines recommend splitting into multiple sitemap files linked from a sitemap index." },
+      { question: "Can I generate a sitemap for a large site?", answer: "Yes — paste a full list of URLs (one per line) into the bulk-add box to add them all at once, rather than one at a time. For very large sites, search engines recommend splitting into multiple sitemap files linked from a sitemap index." },
     ],
   },
   {
