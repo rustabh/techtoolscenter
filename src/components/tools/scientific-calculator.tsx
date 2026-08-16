@@ -16,14 +16,38 @@ const KEY_LABELS: Record<string, string> = {
   "C": "clear", "⌫": "backspace", "=": "equals", "e": "Euler's number",
 };
 
+// A "%" after +/- is a percentage-of-the-running-total, not a bare fraction —
+// every real calculator (Windows, iPhone, physical) treats "1000+18%" as
+// "1000 + 18% of 1000" = 1180, not "1000 + 0.18" = 1000.18. Rewrite those
+// cases to "A+(A*B/100)" before the generic "N%" -> "(N/100)" pass below
+// handles the remaining standalone/×/÷ cases (e.g. "10×50%" = 5, "50%" =
+// 0.5), which keep their plain fractional meaning.
+function expandContextualPercent(expr: string): string {
+  const PCT_OF_TOTAL = /(\d+(?:\.\d+)?)([+\-])(\d+(?:\.\d+)?)%/;
+  let out = expr;
+  while (PCT_OF_TOTAL.test(out)) {
+    out = out.replace(PCT_OF_TOTAL, (_m, base, op, pct) => `${base}${op}(${base}*${pct}/100)`);
+  }
+  return out;
+}
+
+// Parenthesize every remaining "N%" as "(N/100)" rather than just stripping
+// "%" to a bare "/100" suffix — division isn't associative, so text-splicing
+// "/100" after the number breaks under a preceding "÷": "100÷4%" would
+// become "100/4/100" (= 0.25, left-to-right) instead of "100/(4/100)"
+// (= 2500, the correct reading of "100 divided by 4 percent").
+function parenthesizePercent(expr: string): string {
+  return expr.replace(/(\d+(?:\.\d+)?)%/g, "($1/100)");
+}
+
 function evaluate(expr: string): string {
   try {
-    const js = expr
+    const js = parenthesizePercent(expandContextualPercent(expr))
       .replace(/π/g, "Math.PI").replace(/(?<![a-z])e(?![a-z])/g, "Math.E")
       .replace(/asin\(/g, "asinD(").replace(/acos\(/g, "acosD(").replace(/atan\(/g, "atanD(")
       .replace(/sin\(/g, "sinD(").replace(/cos\(/g, "cosD(").replace(/tan\(/g, "tanD(")
       .replace(/√\(/g, "Math.sqrt(").replace(/log\(/g, "Math.log10(").replace(/ln\(/g, "Math.log(")
-      .replace(/\^/g, "**").replace(/×/g, "*").replace(/÷/g, "/").replace(/%/g, "/100");
+      .replace(/\^/g, "**").replace(/×/g, "*").replace(/÷/g, "/");
     // eslint-disable-next-line no-new-func
     const fn = new Function("sinD", "cosD", "tanD", "asinD", "acosD", "atanD", `return ${js || 0}`);
     const sinD = (x: number) => Math.sin((x * Math.PI) / 180);
