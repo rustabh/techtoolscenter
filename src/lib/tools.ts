@@ -1986,6 +1986,22 @@ export const tools: Tool[] = [
       { question: "Does it handle long documents with multiple pages?", answer: "Yes — the PDF automatically paginates onto additional A4 pages as your content grows." },
     ],
   },
+  {
+    slug: "business-plan-generator",
+    name: "Business Plan Generator",
+    description: "Write a structured business plan — summary, market, financials, milestones — and export a PDF.",
+    longDescription:
+      "Build a complete business plan: executive summary, problem/solution, market and competition analysis, business model, marketing plan, operations, team, milestones with target dates, and a financial summary — all in one editable document with a live preview. Pick an accent color and export a clean, investor-ready PDF. Everything is saved to your browser automatically as you type.",
+    category: "Business",
+    icon: "Briefcase",
+    keywords: ["business plan generator", "business plan template", "startup business plan", "free business plan maker", "business plan pdf"],
+    addedOn: "2026-08-16",
+    faq: [
+      { question: "Is this a real business plan or just a template?", answer: "It's a structured editor covering every section investors and lenders expect — executive summary, market, financials, milestones — that you fill in with your own numbers and research. It won't write your strategy for you, but it keeps the structure consistent and exports a polished PDF." },
+      { question: "Is my business plan data saved?", answer: "Yes — it's saved to your browser's local storage automatically. Nothing is uploaded anywhere." },
+      { question: "Can I use this for a bank loan or investor pitch?", answer: "Yes — the exported PDF follows the standard business plan structure (summary, market, model, financials, milestones) that banks and investors expect to see, including for Mudra loan and other funding applications." },
+    ],
+  },
 ];
 
 // Tools added on or after this date show a "New" badge. Fixed for deterministic SSR.
