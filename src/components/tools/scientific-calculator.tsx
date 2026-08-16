@@ -16,48 +16,86 @@ const KEY_LABELS: Record<string, string> = {
   "C": "clear", "⌫": "backspace", "=": "equals", "e": "Euler's number",
 };
 
-// A "%" after +/- is a percentage-of-the-running-total, not a bare fraction —
-// every real calculator (Windows, iPhone, physical) treats "1000+18%" as
-// "1000 + 18% of 1000" = 1180, not "1000 + 0.18" = 1000.18. Rewrite those
-// cases to "A+(A*B/100)" before the generic "N%" -> "(N/100)" pass below
-// handles the remaining standalone/×/÷ cases (e.g. "10×50%" = 5, "50%" =
-// 0.5), which keep their plain fractional meaning.
-function expandContextualPercent(expr: string): string {
-  const PCT_OF_TOTAL = /(\d+(?:\.\d+)?)([+\-])(\d+(?:\.\d+)?)%/;
-  let out = expr;
-  while (PCT_OF_TOTAL.test(out)) {
-    out = out.replace(PCT_OF_TOTAL, (_m, base, op, pct) => `${base}${op}(${base}*${pct}/100)`);
-  }
-  return out;
-}
-
-// Parenthesize every remaining "N%" as "(N/100)" rather than just stripping
-// "%" to a bare "/100" suffix — division isn't associative, so text-splicing
-// "/100" after the number breaks under a preceding "÷": "100÷4%" would
-// become "100/4/100" (= 0.25, left-to-right) instead of "100/(4/100)"
-// (= 2500, the correct reading of "100 divided by 4 percent").
+// Parenthesize every "N%" as "(N/100)" rather than just stripping "%" to a
+// bare "/100" suffix — division isn't associative, so text-splicing "/100"
+// after the number breaks under a preceding "÷": "100÷4%" would become
+// "100/4/100" (= 0.25, left-to-right) instead of "100/(4/100)" (= 2500, the
+// correct reading of "100 divided by 4 percent").
 function parenthesizePercent(expr: string): string {
   return expr.replace(/(\d+(?:\.\d+)?)%/g, "($1/100)");
 }
 
+function toJs(expr: string): string {
+  return parenthesizePercent(expr)
+    .replace(/π/g, "Math.PI").replace(/(?<![a-z])e(?![a-z])/g, "Math.E")
+    .replace(/asin\(/g, "asinD(").replace(/acos\(/g, "acosD(").replace(/atan\(/g, "atanD(")
+    .replace(/sin\(/g, "sinD(").replace(/cos\(/g, "cosD(").replace(/tan\(/g, "tanD(")
+    .replace(/√\(/g, "Math.sqrt(").replace(/log\(/g, "Math.log10(").replace(/ln\(/g, "Math.log(")
+    .replace(/\^/g, "**").replace(/×/g, "*").replace(/÷/g, "/");
+}
+
+function runJs(js: string): number {
+  // eslint-disable-next-line no-new-func
+  const fn = new Function("sinD", "cosD", "tanD", "asinD", "acosD", "atanD", `return ${js || 0}`);
+  const sinD = (x: number) => Math.sin((x * Math.PI) / 180);
+  const cosD = (x: number) => Math.cos((x * Math.PI) / 180);
+  const tanD = (x: number) => Math.tan((x * Math.PI) / 180);
+  const asinD = (x: number) => (Math.asin(x) * 180) / Math.PI;
+  const acosD = (x: number) => (Math.acos(x) * 180) / Math.PI;
+  const atanD = (x: number) => (Math.atan(x) * 180) / Math.PI;
+  const out = fn(sinD, cosD, tanD, asinD, acosD, atanD);
+  if (typeof out !== "number" || !isFinite(out)) throw new Error("Invalid result");
+  return out;
+}
+
+// Splits an expression into its top-level +/- terms (ignoring +/- nested
+// inside parentheses), each tagged with the operator preceding it — the
+// first term is implicitly "+". This is what lets chained percentages like
+// "100+10%+5%" work: each "%" needs to apply against the running total *up
+// to that point* (110, then 5.5 on top for 115.5 total), not against the
+// literal number that appears before it in the text — a single
+// text-substitution pass has no way to know the running total, since it
+// only exists after the previous term has actually been computed.
+function splitTopLevelTerms(expr: string): { op: "+" | "-"; term: string }[] {
+  const terms: { op: "+" | "-"; term: string }[] = [];
+  let depth = 0;
+  let current = "";
+  let currentOp: "+" | "-" = "+";
+  for (const ch of expr) {
+    if (ch === "(") depth++;
+    if (ch === ")") depth--;
+    if (depth === 0 && (ch === "+" || ch === "-") && current !== "") {
+      terms.push({ op: currentOp, term: current });
+      currentOp = ch;
+      current = "";
+      continue;
+    }
+    current += ch;
+  }
+  terms.push({ op: currentOp, term: current });
+  return terms;
+}
+
+const PURE_PERCENT = /^(\d+(?:\.\d+)?)%$/;
+
+function evaluateExpr(expr: string): number {
+  const terms = splitTopLevelTerms(expr);
+  let total = 0;
+  terms.forEach(({ op, term }, i) => {
+    const pct = term.match(PURE_PERCENT);
+    // A bare "N%" term chained after +/- means "N percent of the running
+    // total so far" — only from the second term on; a lone leading "50%"
+    // has nothing to be a percentage of yet, so it falls through to the
+    // standalone (N/100) reading that toJs/parenthesizePercent give it.
+    const val = i > 0 && pct ? total * (parseFloat(pct[1]) / 100) : runJs(toJs(term));
+    total = i === 0 ? val : op === "+" ? total + val : total - val;
+  });
+  return total;
+}
+
 function evaluate(expr: string): string {
   try {
-    const js = parenthesizePercent(expandContextualPercent(expr))
-      .replace(/π/g, "Math.PI").replace(/(?<![a-z])e(?![a-z])/g, "Math.E")
-      .replace(/asin\(/g, "asinD(").replace(/acos\(/g, "acosD(").replace(/atan\(/g, "atanD(")
-      .replace(/sin\(/g, "sinD(").replace(/cos\(/g, "cosD(").replace(/tan\(/g, "tanD(")
-      .replace(/√\(/g, "Math.sqrt(").replace(/log\(/g, "Math.log10(").replace(/ln\(/g, "Math.log(")
-      .replace(/\^/g, "**").replace(/×/g, "*").replace(/÷/g, "/");
-    // eslint-disable-next-line no-new-func
-    const fn = new Function("sinD", "cosD", "tanD", "asinD", "acosD", "atanD", `return ${js || 0}`);
-    const sinD = (x: number) => Math.sin((x * Math.PI) / 180);
-    const cosD = (x: number) => Math.cos((x * Math.PI) / 180);
-    const tanD = (x: number) => Math.tan((x * Math.PI) / 180);
-    const asinD = (x: number) => (Math.asin(x) * 180) / Math.PI;
-    const acosD = (x: number) => (Math.acos(x) * 180) / Math.PI;
-    const atanD = (x: number) => (Math.atan(x) * 180) / Math.PI;
-    const out = fn(sinD, cosD, tanD, asinD, acosD, atanD);
-    if (typeof out !== "number" || !isFinite(out)) return "Error";
+    const out = evaluateExpr(expr);
     return String(Math.round(out * 1e10) / 1e10);
   } catch {
     return "Error";
