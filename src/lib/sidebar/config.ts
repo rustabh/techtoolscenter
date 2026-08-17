@@ -97,7 +97,7 @@ export const sidebarSections: SidebarSection[] = [
     items: [
       { label: "Startup Hub", href: "/collections/business-toolkit" },
       { label: "Business Templates", href: "/business-templates" },
-      { label: "Pitch Decks", comingSoon: true },
+      { label: "Pitch Decks", href: "/tools/pitch-deck-generator" },
       { label: "Business Plan", href: "/tools/business-plan-generator" },
       { label: "Proposal Generator", href: "/tools/proposal-generator" },
     ],
