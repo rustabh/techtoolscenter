@@ -119,11 +119,16 @@ export default function BrandKitGenerator() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState("");
+  // Auto-detected colour isn't always right (wrong theme-color meta tag, no
+  // meta tag at all, or the user just wants a different brand colour) — this
+  // lets them override it manually without losing the detected value.
+  const [colorOverride, setColorOverride] = useState<string | null>(null);
   const { copied, copy } = useCopy();
   const logoInput = useRef<HTMLInputElement>(null);
 
   const brandName = business.trim() || meta?.title || meta?.host || "Your Brand";
-  const base = meta?.themeColor && /^#/.test(meta.themeColor) ? meta.themeColor : "#4f46e5";
+  const detectedBase = meta?.themeColor && /^#/.test(meta.themeColor) ? meta.themeColor : "#4f46e5";
+  const base = colorOverride || detectedBase;
   const palette = useMemo(() => STEPS.map((s) => ({ k: s.k, hex: mix(base, s.t, s.a) })), [base]);
   const detected = (meta?.colors && meta.colors.length ? meta.colors : [base]).slice(0, 6);
   const fonts = useMemo(() => {
@@ -435,6 +440,26 @@ th{color:${base};font-size:12px;text-transform:uppercase;letter-spacing:.05em}.t
                   <span className="block h-8 rounded" style={{ background: p.hex }} />
                 </button>
               ))}
+            </div>
+            <div className="flex items-center gap-2 pt-1">
+              <input
+                type="color"
+                aria-label="Override primary brand colour"
+                value={base}
+                onChange={(e) => setColorOverride(e.target.value)}
+                className="h-9 w-9 shrink-0 cursor-pointer rounded-lg border border-border bg-transparent p-0.5"
+              />
+              <Input
+                aria-label="Primary brand colour hex"
+                value={base}
+                onChange={(e) => setColorOverride(e.target.value)}
+                className="h-9 font-mono text-xs"
+              />
+              {colorOverride && (
+                <Button size="sm" variant="ghost" className="shrink-0 px-2 text-xs" onClick={() => setColorOverride(null)}>
+                  Reset
+                </Button>
+              )}
             </div>
             <Button size="sm" variant="outline" onClick={() => copy(cssText)}>{copied ? "Copied!" : "Copy CSS tokens"}</Button>
           </CardContent>
