@@ -17,7 +17,7 @@ import { getTool } from "@/lib/tools";
 import { getLanding } from "@/lib/landing/landing";
 import { getPost } from "@/lib/blog/posts";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
-import { socialTitle } from "@/lib/seo/metadata";
+import { socialTitle, defaultOgImage } from "@/lib/seo/metadata";
 import { relatedToolsFor } from "@/lib/seo/related";
 import { siteConfig } from "@/lib/site";
 
@@ -41,8 +41,8 @@ export async function generateMetadata({ params }: { params: Promise<{ category:
         ? { languages: { "en-IN": `/india-services/${svc.category}/${svc.slug}`, "hi-IN": `/hi/india-services/${svc.slug}` } }
         : {}),
     },
-    openGraph: { type: "article", title: socialTitle(title), description, url: `${siteConfig.url}/india-services/${svc.category}/${svc.slug}` },
-    twitter: { card: "summary_large_image", title: socialTitle(title), description },
+    openGraph: { type: "article", title: socialTitle(title), description, url: `${siteConfig.url}/india-services/${svc.category}/${svc.slug}`, images: [defaultOgImage()] },
+    twitter: { card: "summary_large_image", title: socialTitle(title), description, images: [defaultOgImage()] },
   };
 }
 
