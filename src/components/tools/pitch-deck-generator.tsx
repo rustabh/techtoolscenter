@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { ChevronDown, ChevronUp, Image as ImageIcon, Plus, Trash2 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -72,29 +72,205 @@ function fitCover(iw: number, ih: number, bw: number, bh: number) {
   return { w: iw * s, h: ih * s };
 }
 
+function tint(hex: string, amount: number): string {
+  const { r, g, b } = hexToRgb(hex);
+  const mix = (c: number) => Math.round(c + (255 - c) * amount);
+  return `rgb(${mix(r)}, ${mix(g)}, ${mix(b)})`;
+}
+
+function roundRectPath(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+type IconTopic = "problem" | "solution" | "market" | "product" | "model" | "traction" | "competition" | "team" | "ask";
+
+// Simple flat-icon glyphs drawn with plain canvas primitives — no external
+// assets or network fetches, so the default template can ship with a
+// distinct placeholder per slide topic without fabricating stock photos.
+function drawIcon(ctx: CanvasRenderingContext2D, topic: IconTopic, cx: number, cy: number, r: number, solid: string) {
+  ctx.fillStyle = solid;
+  ctx.strokeStyle = solid;
+  ctx.lineCap = "round";
+  ctx.lineJoin = "round";
+
+  switch (topic) {
+    case "problem": {
+      const s = r * 1.15;
+      ctx.lineWidth = r * 0.18;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - s);
+      ctx.lineTo(cx + s * 0.95, cy + s * 0.75);
+      ctx.lineTo(cx - s * 0.95, cy + s * 0.75);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - s * 0.25);
+      ctx.lineTo(cx, cy + s * 0.15);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(cx, cy + s * 0.42, r * 0.09, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
+    case "solution": {
+      ctx.beginPath();
+      ctx.arc(cx, cy - r * 0.15, r * 0.62, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillRect(cx - r * 0.22, cy + r * 0.35, r * 0.44, r * 0.22);
+      ctx.lineWidth = r * 0.1;
+      [[-1, -1], [1, -1], [-1.3, 0], [1.3, 0]].forEach(([dx, dy]) => {
+        ctx.beginPath();
+        ctx.moveTo(cx + dx * r * 0.75, cy - r * 0.15 + dy * r * 0.5);
+        ctx.lineTo(cx + dx * r * 1.05, cy - r * 0.15 + dy * r * 0.7);
+        ctx.stroke();
+      });
+      break;
+    }
+    case "market": {
+      const bw = r * 0.32;
+      [0.5, 0.9, 0.7, 1.1].forEach((hf, i) => {
+        const x = cx - r * 1.05 + i * (bw + r * 0.18);
+        const bh = r * hf;
+        ctx.fillRect(x, cy + r * 0.55 - bh, bw, bh);
+      });
+      break;
+    }
+    case "product": {
+      const s = r * 1.1;
+      roundRectPath(ctx, cx - s, cy - s * 0.8, s * 2, s * 1.6, r * 0.15);
+      ctx.fill();
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = r * 0.09;
+      ctx.beginPath();
+      ctx.moveTo(cx - s, cy - s * 0.1);
+      ctx.lineTo(cx + s, cy - s * 0.1);
+      ctx.moveTo(cx, cy - s * 0.1);
+      ctx.lineTo(cx, cy + s * 0.8);
+      ctx.stroke();
+      break;
+    }
+    case "model": {
+      ctx.globalAlpha = 0.85;
+      ctx.beginPath(); ctx.arc(cx - r * 0.35, cy, r * 0.55, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 0.55;
+      ctx.beginPath(); ctx.arc(cx + r * 0.35, cy, r * 0.55, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 1;
+      break;
+    }
+    case "traction": {
+      ctx.lineWidth = r * 0.14;
+      ctx.beginPath();
+      ctx.moveTo(cx - r * 1.1, cy + r * 0.6);
+      ctx.lineTo(cx - r * 0.3, cy - r * 0.1);
+      ctx.lineTo(cx + r * 0.25, cy + r * 0.2);
+      ctx.lineTo(cx + r * 1.1, cy - r * 0.75);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx + r * 1.1, cy - r * 0.75);
+      ctx.lineTo(cx + r * 0.65, cy - r * 0.75);
+      ctx.moveTo(cx + r * 1.1, cy - r * 0.75);
+      ctx.lineTo(cx + r * 1.1, cy - r * 0.3);
+      ctx.stroke();
+      break;
+    }
+    case "competition": {
+      const bw = r * 0.5;
+      [{ h: r * 0.9, x: cx - bw * 1.5 - r * 0.12 }, { h: r * 1.3, x: cx - bw / 2 }, { h: r * 0.65, x: cx + bw * 0.5 + r * 0.12 }].forEach((bar) => {
+        ctx.fillRect(bar.x, cy + r * 0.7 - bar.h, bw, bar.h);
+      });
+      break;
+    }
+    case "team": {
+      [-r * 0.55, 0, r * 0.55].forEach((dx, i) => {
+        ctx.globalAlpha = i === 1 ? 1 : 0.7;
+        ctx.beginPath(); ctx.arc(cx + dx, cy - r * 0.35, r * 0.28, 0, Math.PI * 2); ctx.fill();
+        roundRectPath(ctx, cx + dx - r * 0.34, cy + r * 0.02, r * 0.68, r * 0.55, r * 0.2);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      break;
+    }
+    case "ask": {
+      [1, 0.66].forEach((f) => {
+        ctx.globalAlpha = f === 1 ? 0.4 : 0.7;
+        ctx.lineWidth = r * 0.16;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * f, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+      ctx.globalAlpha = 1;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r * 0.33, 0, Math.PI * 2);
+      ctx.fill();
+      break;
+    }
+  }
+}
+
+function generatePlaceholder(topic: IconTopic, accentHex: string): { dataUrl: string; w: number; h: number } {
+  const W = 480, H = 300;
+  const canvas = document.createElement("canvas");
+  canvas.width = W;
+  canvas.height = H;
+  const ctx = canvas.getContext("2d")!;
+
+  ctx.fillStyle = tint(accentHex, 0.94);
+  roundRectPath(ctx, 0, 0, W, H, 20);
+  ctx.fill();
+
+  const cx = W / 2, cy = H / 2, r = 78;
+  ctx.fillStyle = tint(accentHex, 0.82);
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fill();
+
+  const { r: rr, g: gg, b: bb } = hexToRgb(accentHex);
+  drawIcon(ctx, topic, cx, cy, r * 0.62, `rgb(${rr}, ${gg}, ${bb})`);
+
+  return { dataUrl: canvas.toDataURL("image/png"), w: W, h: H };
+}
+
+function slideWithImage(title: string, bullets: string, topic: IconTopic, position: ImagePosition, accent: string): Slide {
+  const img = generatePlaceholder(topic, accent);
+  return { ...newSlide(title, bullets), image: img.dataUrl, imageW: img.w, imageH: img.h, imagePosition: position };
+}
+
 function initial(): PitchDeckState {
+  const accent = ACCENTS[0].hex;
   return {
     companyName: "Northwind Retail",
     tagline: "Sustainable everyday essentials, delivered.",
     contactEmail: "founder@northwind.example",
-    accent: ACCENTS[0].hex,
+    accent,
     slides: [
       newSlide("Northwind Retail"),
-      newSlide("Problem", "Everyday household products are overwhelmingly sold in single-use plastic\nRefill options exist but are inconvenient or unavailable in most retail channels\nEnvironmentally conscious households have no easy, affordable alternative"),
-      newSlide("Solution", "A subscription refill service for household essentials\nCustomers buy a reusable container once, then order concentrated refills\nRefills are cheaper per use and generate a fraction of the packaging waste"),
-      newSlide("Market", "Target: urban, environmentally conscious households aged 25–45\nInitial focus on 3 metro cities before national expansion\nGrowing regulatory and consumer pressure against single-use plastic"),
-      newSlide("Product", "Reusable containers designed for repeat refilling\nConcentrated refill pouches — cleaning, personal care, home essentials\nDirect-to-door subscription with flexible delivery frequency"),
-      newSlide("Business Model", "Recurring refill subscriptions plus one-time container sales\nTarget 60% gross margin on refills after the first container purchase\nRetention-driven — the model gets more profitable the longer a customer stays"),
-      newSlide("Traction", "Pre-launch waitlist validated real demand ahead of building\nFounding team has prior D2C operations and sustainable packaging experience\nManufacturing partner secured for refill concentrate production"),
-      newSlide("Competition", "Large FMCG brands offer no refill option\nSmall refill shops exist but with no delivery\nNorthwind combines e-commerce convenience with refill-model sustainability"),
-      newSlide("Team", "Founding team of 2 with D2C operations and packaging manufacturing background\nHiring a logistics lead in month 3"),
-      newSlide("The Ask", "Raising ₹50,00,000 for 12 months of runway\nFunds inventory, warehouse setup, and initial customer acquisition\nTargeting break-even at ~2,500 active subscribers, within 14 months of launch"),
+      slideWithImage("Problem", "Everyday household products are overwhelmingly sold in single-use plastic\nRefill options exist but are inconvenient or unavailable in most retail channels\nEnvironmentally conscious households have no easy, affordable alternative", "problem", "right", accent),
+      slideWithImage("Solution", "A subscription refill service for household essentials\nCustomers buy a reusable container once, then order concentrated refills\nRefills are cheaper per use and generate a fraction of the packaging waste", "solution", "left", accent),
+      slideWithImage("Market", "Target: urban, environmentally conscious households aged 25–45\nInitial focus on 3 metro cities before national expansion\nGrowing regulatory and consumer pressure against single-use plastic", "market", "top", accent),
+      slideWithImage("Product", "Reusable containers designed for repeat refilling\nConcentrated refill pouches — cleaning, personal care, home essentials\nDirect-to-door subscription with flexible delivery frequency", "product", "right", accent),
+      slideWithImage("Business Model", "Recurring refill subscriptions plus one-time container sales\nTarget 60% gross margin on refills after the first container purchase\nRetention-driven — the model gets more profitable the longer a customer stays", "model", "left", accent),
+      slideWithImage("Traction", "Pre-launch waitlist validated real demand ahead of building\nFounding team has prior D2C operations and sustainable packaging experience\nManufacturing partner secured for refill concentrate production", "traction", "top", accent),
+      slideWithImage("Competition", "Large FMCG brands offer no refill option\nSmall refill shops exist but with no delivery\nNorthwind combines e-commerce convenience with refill-model sustainability", "competition", "right", accent),
+      slideWithImage("Team", "Founding team of 2 with D2C operations and packaging manufacturing background\nHiring a logistics lead in month 3", "team", "left", accent),
+      slideWithImage("The Ask", "Raising ₹50,00,000 for 12 months of runway\nFunds inventory, warehouse setup, and initial customer acquisition\nTargeting break-even at ~2,500 active subscribers, within 14 months of launch", "ask", "background", accent),
     ],
   };
 }
 
 export default function PitchDeckGenerator() {
-  const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<PitchDeckState>("uh:pitch-deck", initial());
+  // The default template's placeholder icons are drawn to a canvas, which is
+  // real work — computing it fresh on every keystroke's re-render (initial()
+  // would otherwise be called on every render, since it's evaluated before
+  // useLocalStorage even runs) would be wasteful, so it's memoized to once
+  // per mount instead.
+  const initialState = useMemo(() => initial(), []);
+  const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<PitchDeckState>("uh:pitch-deck", initialState);
   const value: PitchDeckState = { ...stored, accent: stored.accent ?? ACCENTS[0].hex, slides: (stored.slides ?? []).map(normalizeSlide) };
   const [exporting, setExporting] = useState(false);
   const patch = (p: Partial<PitchDeckState>) => set({ ...value, ...p });
