@@ -21,6 +21,13 @@ const OPS: { id: Op; label: string }[] = [
   { id: "rotate", label: "Rotate 90°" },
 ];
 
+type OutFormat = "jpeg" | "webp" | "png";
+const OUT_FORMATS: { id: OutFormat; ext: string; mime: string; label: string }[] = [
+  { id: "jpeg", ext: "jpg", mime: "image/jpeg", label: "JPEG" },
+  { id: "webp", ext: "webp", mime: "image/webp", label: "WebP" },
+  { id: "png", ext: "png", mime: "image/png", label: "PNG" },
+];
+
 function loadImg(file: File): Promise<HTMLImageElement> {
   return new Promise((res, rej) => {
     const img = new Image();
@@ -42,6 +49,10 @@ export default function BulkImageProcessor() {
   const [op, setOp] = useState<Op>("compress");
   const [quality, setQuality] = useState(0.7);
   const [width, setWidth] = useState(1080);
+  // Only compress/resize expose this — "Convert to WebP" is inherently a
+  // fixed-format operation, and rotate stays lossless PNG to preserve any
+  // transparency in the source untouched.
+  const [outFormat, setOutFormat] = useState<OutFormat>("jpeg");
   const [prefix, setPrefix] = useState("");
   const [suffix, setSuffix] = useState("");
   const [counter, setCounter] = useState(true);
@@ -73,21 +84,28 @@ export default function BulkImageProcessor() {
       ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
       ext = "png"; mime = "image/png";
     } else if (op === "resize") {
+      const out = OUT_FORMATS.find((f) => f.id === outFormat)!;
+      ext = out.ext; mime = out.mime;
       const scale = Math.min(1, width / img.naturalWidth);
       canvas.width = Math.round(img.naturalWidth * scale);
       canvas.height = Math.round(img.naturalHeight * scale);
-      canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
-      ext = "png"; mime = "image/png";
+      const ctx = canvas.getContext("2d")!;
+      if (outFormat !== "png") { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     } else {
       const scale = Math.min(1, width / img.naturalWidth);
       canvas.width = Math.round(img.naturalWidth * scale);
       canvas.height = Math.round(img.naturalHeight * scale);
       const ctx = canvas.getContext("2d")!;
-      if (op === "compress") { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+      if (op === "compress") {
+        const out = OUT_FORMATS.find((f) => f.id === outFormat)!;
+        ext = out.ext; mime = out.mime;
+        if (outFormat !== "png") { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+      }
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
       if (op === "webp") { ext = "webp"; mime = "image/webp"; }
     }
-    const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, mime, op === "resize" || op === "rotate" ? undefined : quality));
+    const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, mime, op === "rotate" || ((op === "compress" || op === "resize") && outFormat === "png") ? undefined : quality));
     if (!blob) throw new Error("Encode failed");
     return { blob, name: makeName(file.name, ext, i) };
   });
@@ -172,7 +190,7 @@ export default function BulkImageProcessor() {
                 ))}
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                {(op === "compress" || op === "webp") && (
+                {(op === "compress" || op === "webp" || (op === "resize" && outFormat !== "png")) && (
                   <div className="space-y-1.5"><Label htmlFor="bulk-quality">Quality: {Math.round(quality * 100)}%</Label>
                     <input id="bulk-quality" type="range" min={0.1} max={1} step={0.05} value={quality} onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
                   </div>
@@ -181,6 +199,19 @@ export default function BulkImageProcessor() {
                   <div className="space-y-1.5"><Label htmlFor="bulk-width">Max width (px)</Label><Input id="bulk-width" type="number" value={width} onChange={(e) => setWidth(Number(e.target.value))} /></div>
                 )}
               </div>
+              {(op === "compress" || op === "resize") && (
+                <div className="space-y-1.5">
+                  <Label id="bulk-format-label">Output format</Label>
+                  <div className="flex gap-1.5" role="group" aria-labelledby="bulk-format-label">
+                    {OUT_FORMATS.map((f) => (
+                      <button key={f.id} onClick={() => setOutFormat(f.id)}
+                        className={`rounded-lg border px-3 py-1.5 text-xs font-medium transition-colors ${outFormat === f.id ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"}`}>
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
               {/* Naming rules */}
               <div className="space-y-2">
                 <Label id="bulk-naming-label">Auto naming</Label>
