@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { ActionBar } from "@/components/tools/action-bar";
 import { Type } from "lucide-react";
+import { downloadBlob } from "@/lib/utils";
 
 export default function RemoveDuplicateLines() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<string>("uh:dedupe", "apple\nbanana\napple\n\ncherry\nBanana\ncherry");
@@ -64,7 +65,7 @@ export default function RemoveDuplicateLines() {
               <p>Nothing to show — type something above</p>
             </div>
           )}
-          <ActionBar onCopy={() => copy(output)} copied={copied} />
+          <ActionBar onCopy={() => copy(output)} copied={copied} onDownload={() => downloadBlob(new Blob([output], { type: "text/plain" }), "deduped.txt")} downloadLabel="Download .txt" />
         </CardContent>
       </Card>
     </div>

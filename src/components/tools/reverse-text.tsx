@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
 import { Type } from "lucide-react";
+import { downloadBlob } from "@/lib/utils";
 
 const UPSIDE: Record<string, string> = { a: "ɐ", b: "q", c: "ɔ", d: "p", e: "ǝ", f: "ɟ", g: "ƃ", h: "ɥ", i: "ᴉ", j: "ɾ", k: "ʞ", l: "l", m: "ɯ", n: "u", o: "o", p: "d", q: "b", r: "ɹ", s: "s", t: "ʇ", u: "n", v: "ʌ", w: "ʍ", x: "x", y: "ʎ", z: "z" };
 
@@ -71,7 +72,7 @@ export default function ReverseText() {
               <p>Nothing to show — type something above</p>
             </div>
           )}
-          <ActionBar onUndo={undo} onRedo={redo} onReset={reset} onCopy={() => copy(out)} copied={copied} canUndo={canUndo} canRedo={canRedo} />
+          <ActionBar onUndo={undo} onRedo={redo} onReset={reset} onCopy={() => copy(out)} copied={copied} onDownload={() => downloadBlob(new Blob([out], { type: "text/plain" }), "reversed.txt")} downloadLabel="Download .txt" canUndo={canUndo} canRedo={canRedo} />
         </CardContent>
       </Card>
     </div>

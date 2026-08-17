@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ActionBar } from "@/components/tools/action-bar";
 import { Type } from "lucide-react";
+import { downloadBlob } from "@/lib/utils";
 
 export default function FindAndReplace() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<string>("uh:findreplace", "The quick brown fox. The lazy dog.");
@@ -79,7 +80,7 @@ export default function FindAndReplace() {
                 <p>Nothing to show — type something above</p>
               </div>
             )}
-            <ActionBar onUndo={undo} onRedo={redo} onReset={reset} onCopy={() => copy(output)} copied={copied} canUndo={canUndo} canRedo={canRedo} />
+            <ActionBar onUndo={undo} onRedo={redo} onReset={reset} onCopy={() => copy(output)} copied={copied} onDownload={() => downloadBlob(new Blob([output], { type: "text/plain" }), "replaced.txt")} downloadLabel="Download .txt" canUndo={canUndo} canRedo={canRedo} />
           </CardContent>
         </Card>
       </div>
