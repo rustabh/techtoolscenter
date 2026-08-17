@@ -50,7 +50,7 @@ export default function PdfStudio() {
         const deg = parseInt(opts.deg, 10);
         doc.getPages().forEach((p) => p.setRotation(degrees((p.getRotation().angle + deg) % 360)));
         return doc.save();
-      }} fields={[{ key: "deg", label: "Rotate by", def: "90", options: ["90", "180", "270"] }]} name="rotated.pdf" />}
+      }} fields={[{ key: "deg", label: "Rotate by", def: "90", options: ["90", "180", "270"], suffix: "°" }]} name="rotated.pdf" />}
       {tab === "organize" && <SingleFileTab title="Delete pages" action={async (file, opts) => {
         const src = await loadPdf(file); const { PDFDocument } = await import("pdf-lib");
         const total = src.getPageCount(); const remove = new Set(parsePageRange(opts.range, total));
@@ -63,18 +63,58 @@ export default function PdfStudio() {
       {tab === "watermark" && <SingleFileTab title="Add watermark" action={async (file, opts) => {
         const { rgb, degrees, StandardFonts } = await import("pdf-lib"); const doc = await loadPdf(file);
         const font = await doc.embedFont(StandardFonts.HelveticaBold);
+        const text = opts.text || "DRAFT";
+        const size = Number(opts.size) || 50;
+        const rotation = Number(opts.rotation) || 0;
+        const opacity = (Number(opts.opacity) || 25) / 100;
+        const hex = /^#[0-9a-f]{6}$/i.test(opts.color) ? opts.color : "#999999";
+        const r = parseInt(hex.slice(1, 3), 16) / 255, g = parseInt(hex.slice(3, 5), 16) / 255, b = parseInt(hex.slice(5, 7), 16) / 255;
+        const textWidth = font.widthOfTextAtSize(text, size);
+        // Same anchor-correction as the dedicated PDF Watermark tool: pdf-lib
+        // rotates drawText around the baseline's left edge, not the text's
+        // visual center, so naive centering swings off-axis once rotated.
+        const rad = (rotation * Math.PI) / 180;
+        const dx = textWidth / 2, dy = size * 0.35;
+        const rx = dx * Math.cos(rad) - dy * Math.sin(rad);
+        const ry = dx * Math.sin(rad) + dy * Math.cos(rad);
         doc.getPages().forEach((p) => {
           const { width, height } = p.getSize();
-          p.drawText(opts.text || "DRAFT", { x: width / 2 - 120, y: height / 2, size: 50, font, color: rgb(0.6, 0.6, 0.6), opacity: 0.25, rotate: degrees(45) });
+          p.drawText(text, { x: width / 2 - rx, y: height / 2 - ry, size, font, color: rgb(r, g, b), opacity, rotate: degrees(rotation) });
         });
         return doc.save();
-      }} fields={[{ key: "text", label: "Watermark text", def: "CONFIDENTIAL" }]} name="watermarked.pdf" />}
-      {tab === "numbers" && <SingleFileTab title="Add page numbers" action={async (file) => {
+      }} fields={[
+        { key: "text", label: "Watermark text", def: "CONFIDENTIAL" },
+        { key: "opacity", label: "Opacity", def: "25", options: ["10", "25", "40", "60", "80"], suffix: "%" },
+        { key: "size", label: "Font size", def: "50", options: ["24", "36", "50", "72", "96"], suffix: "px" },
+        { key: "rotation", label: "Rotation", def: "45", options: ["0", "30", "45", "60", "90"], suffix: "°" },
+        { key: "color", label: "Color", def: "#999999", type: "color" },
+      ]} name="watermarked.pdf" />}
+      {tab === "numbers" && <SingleFileTab title="Add page numbers" action={async (file, opts) => {
         const { rgb, StandardFonts } = await import("pdf-lib"); const doc = await loadPdf(file);
         const font = await doc.embedFont(StandardFonts.Helvetica); const pages = doc.getPages();
-        pages.forEach((p, i) => { const { width } = p.getSize(); p.drawText(`${i + 1} / ${pages.length}`, { x: width / 2 - 12, y: 18, size: 10, font, color: rgb(0.3, 0.3, 0.3) }); });
+        const total = pages.length;
+        const size = Number(opts.size) || 11;
+        const startAt = Math.max(1, parseInt(opts.startAt, 10) || 1);
+        const position = opts.position || "bottom-center";
+        const render = opts.format === "n" ? (n: number) => `${n}` : opts.format === "page-n" ? (n: number) => `Page ${n}` : (n: number, t: number) => `${n} of ${t}`;
+        const margin = 28;
+        pages.forEach((p, i) => {
+          const { width, height } = p.getSize();
+          const label = render(startAt + i, total);
+          const textWidth = font.widthOfTextAtSize(label, size);
+          const x = position.endsWith("left") ? margin : position.endsWith("right") ? width - margin - textWidth : width / 2 - textWidth / 2;
+          const y = position.startsWith("top") ? height - margin : margin;
+          p.drawText(label, { x, y, size, font, color: rgb(0.3, 0.3, 0.3) });
+        });
         return doc.save();
-      }} fields={[]} name="numbered.pdf" />}
+      }} fields={[
+        { key: "position", label: "Position", def: "bottom-center", options: ["top-left", "top-center", "top-right", "bottom-left", "bottom-center", "bottom-right"],
+          labels: { "top-left": "Top left", "top-center": "Top center", "top-right": "Top right", "bottom-left": "Bottom left", "bottom-center": "Bottom center", "bottom-right": "Bottom right" } },
+        { key: "format", label: "Format", def: "n-of-total", options: ["n", "page-n", "n-of-total"],
+          labels: { n: "1, 2, 3…", "page-n": "Page 1", "n-of-total": "1 of 10" } },
+        { key: "startAt", label: "Start at", def: "1" },
+        { key: "size", label: "Font size", def: "11", options: ["9", "11", "14", "18", "24"], suffix: "px" },
+      ]} name="numbered.pdf" />}
       {tab === "headerfooter" && <SingleFileTab title="Header & footer" action={async (file, opts) => {
         const { rgb, StandardFonts } = await import("pdf-lib"); const doc = await loadPdf(file);
         const font = await doc.embedFont(StandardFonts.Helvetica);
@@ -107,7 +147,7 @@ function Dropzone({ onFiles, multiple, accept = "application/pdf", label }: { on
   return <FileDropzone icon={UploadCloud} title={label} accept={accept} multiple={multiple} onFiles={onFiles} className="p-8" />;
 }
 
-interface Field { key: string; label: string; def: string; options?: string[] }
+interface Field { key: string; label: string; def: string; options?: string[]; type?: "text" | "color"; suffix?: string; labels?: Record<string, string> }
 function SingleFileTab({ title, action, fields, name, showSize }: {
   title: string; action: (file: File, opts: Record<string, string>) => Promise<Uint8Array>; fields: Field[]; name: string; showSize?: boolean;
 }) {
@@ -139,8 +179,10 @@ function SingleFileTab({ title, action, fields, name, showSize }: {
         <Card><CardHeader><CardTitle>{title}</CardTitle></CardHeader><CardContent className="space-y-4">
           {fields.map((f) => (
             <div key={f.key} className="space-y-1.5"><Label htmlFor={`pdfstudio-${f.key}`}>{f.label}</Label>
-              {f.options
-                ? <Select id={`pdfstudio-${f.key}`} value={opts[f.key]} onChange={(e) => setOpts((o) => ({ ...o, [f.key]: e.target.value }))}>{f.options.map((o) => <option key={o} value={o}>{o}°</option>)}</Select>
+              {f.type === "color"
+                ? <Input id={`pdfstudio-${f.key}`} type="color" value={opts[f.key]} onChange={(e) => setOpts((o) => ({ ...o, [f.key]: e.target.value }))} className="h-10 p-1" />
+                : f.options
+                ? <Select id={`pdfstudio-${f.key}`} value={opts[f.key]} onChange={(e) => setOpts((o) => ({ ...o, [f.key]: e.target.value }))}>{f.options.map((o) => <option key={o} value={o}>{f.labels?.[o] ?? `${o}${f.suffix ?? ""}`}</option>)}</Select>
                 : <Input id={`pdfstudio-${f.key}`} value={opts[f.key]} onChange={(e) => setOpts((o) => ({ ...o, [f.key]: e.target.value }))} />}
             </div>
           ))}
