@@ -12,10 +12,62 @@ import { ActionBar } from "@/components/tools/action-bar";
 import { downloadBlob } from "@/lib/utils";
 import { FileDropzone } from "@/components/tools/file-dropzone";
 
-const ALGOS = ["SHA-1", "SHA-256", "SHA-384", "SHA-512"] as const;
+const ALGOS = ["MD5", "SHA-1", "SHA-256", "SHA-384", "SHA-512"] as const;
 type Algo = (typeof ALGOS)[number];
 
+// Per-round left-rotate amounts and the sine-derived additive constants from RFC 1321.
+const MD5_SHIFTS = [
+  7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22, 7, 12, 17, 22,
+  5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20, 5, 9, 14, 20,
+  4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23, 4, 11, 16, 23,
+  6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21, 6, 10, 15, 21,
+];
+const MD5_K = Array.from({ length: 64 }, (_, i) => Math.floor(Math.abs(Math.sin(i + 1)) * 2 ** 32) >>> 0);
+
+function rotl(x: number, n: number) {
+  return ((x << n) | (x >>> (32 - n))) >>> 0;
+}
+
+// Web Crypto's SubtleCrypto deliberately doesn't implement MD5 (it's
+// cryptographically broken), but plenty of legacy checksums/tooling still
+// publish MD5 — so it needs its own from-scratch implementation here.
+function md5(data: Uint8Array): string {
+  const bitLen = data.length * 8;
+  const padded = new Uint8Array(Math.ceil((data.length + 9) / 64) * 64);
+  padded.set(data);
+  padded[data.length] = 0x80;
+  const view = new DataView(padded.buffer);
+  view.setUint32(padded.length - 8, bitLen >>> 0, true);
+  view.setUint32(padded.length - 4, Math.floor(bitLen / 2 ** 32), true);
+
+  let a0 = 0x67452301, b0 = 0xefcdab89, c0 = 0x98badcfe, d0 = 0x10325476;
+
+  for (let chunk = 0; chunk < padded.length; chunk += 64) {
+    const M = Array.from({ length: 16 }, (_, i) => view.getUint32(chunk + i * 4, true));
+    let [a, b, c, d] = [a0, b0, c0, d0];
+    for (let i = 0; i < 64; i++) {
+      let f: number, g: number;
+      if (i < 16) { f = (b & c) | (~b & d); g = i; }
+      else if (i < 32) { f = (d & b) | (~d & c); g = (5 * i + 1) % 16; }
+      else if (i < 48) { f = b ^ c ^ d; g = (3 * i + 5) % 16; }
+      else { f = c ^ (b | ~d); g = (7 * i) % 16; }
+      f = (f + a + MD5_K[i] + M[g]) >>> 0;
+      a = d; d = c; c = b;
+      b = (b + rotl(f, MD5_SHIFTS[i])) >>> 0;
+    }
+    a0 = (a0 + a) >>> 0; b0 = (b0 + b) >>> 0; c0 = (c0 + c) >>> 0; d0 = (d0 + d) >>> 0;
+  }
+
+  // MD5 outputs each 32-bit word little-endian, unlike SHA's big-endian digests.
+  const toLE = (n: number) => [0, 8, 16, 24].map((s) => ((n >>> s) & 0xff).toString(16).padStart(2, "0")).join("");
+  return toLE(a0) + toLE(b0) + toLE(c0) + toLE(d0);
+}
+
 async function hashBytes(algo: Algo, data: BufferSource) {
+  if (algo === "MD5") {
+    const bytes = data instanceof Uint8Array ? data : new Uint8Array(data instanceof ArrayBuffer ? data : data.buffer);
+    return md5(bytes);
+  }
   const buf = await crypto.subtle.digest(algo, data);
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
