@@ -16,12 +16,20 @@ interface CtcState {
   bonus: string;
   pfEmployee: string;
   professionalTax: string;
+  basicPct: string; // basic as % of (CTC - bonus) — 50% is the common rule-of-thumb default, but real employer structures vary
+  hraPct: string; // HRA as % of basic
 }
 
-const initial: CtcState = { ctc: "1200000", bonus: "0", pfEmployee: "12", professionalTax: "200" };
+const initial: CtcState = { ctc: "1200000", bonus: "0", pfEmployee: "12", professionalTax: "200", basicPct: "50", hraPct: "50" };
 
 export default function CtcCalculator() {
-  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<CtcState>("uh:ctc", initial);
+  const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<CtcState>("uh:ctc", initial);
+  // Calculations saved before the configurable-split option shipped won't have these fields.
+  const value = useMemo(() => ({
+    ...stored,
+    basicPct: stored.basicPct ?? "50",
+    hraPct: stored.hraPct ?? "50",
+  }), [stored]);
   const { copied, copy } = useCopy();
 
   const result = useMemo(() => {
@@ -30,9 +38,11 @@ export default function CtcCalculator() {
     const pfPct = parseFloat(value.pfEmployee) || 0;
     const ptMonthly = parseFloat(value.professionalTax) || 0;
     const ptAnnual = ptMonthly * 12;
+    const basicPct = (parseFloat(value.basicPct) || 0) / 100;
+    const hraPct = (parseFloat(value.hraPct) || 0) / 100;
 
-    const basic = Math.max(0.5 * (ctc - bonus), 0);
-    const hra = 0.5 * basic;
+    const basic = Math.max(basicPct * (ctc - bonus), 0);
+    const hra = hraPct * basic;
     const employerPf = (pfPct / 100) * basic;
     const employeePf = (pfPct / 100) * basic;
     const otherAllowances = Math.max(ctc - basic - hra - employerPf - bonus, 0);
@@ -91,6 +101,29 @@ export default function CtcCalculator() {
               onChange={(e) => set({ ...value, bonus: e.target.value })}
             />
           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="ctc-basic-pct">Basic (% of CTC − bonus)</Label>
+              <Input
+                id="ctc-basic-pct"
+                type="number"
+                inputMode="decimal"
+                value={value.basicPct}
+                onChange={(e) => set({ ...value, basicPct: e.target.value })}
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="ctc-hra-pct">HRA (% of basic)</Label>
+              <Input
+                id="ctc-hra-pct"
+                type="number"
+                inputMode="decimal"
+                value={value.hraPct}
+                onChange={(e) => set({ ...value, hraPct: e.target.value })}
+              />
+            </div>
+          </div>
+          <p className="-mt-2 text-xs text-muted-foreground">50%/50% is a common rule-of-thumb default; check your offer letter for your employer&apos;s actual structure.</p>
           <div className="space-y-1.5">
             <Label htmlFor="ctc-pf">Employee PF contribution (% of basic)</Label>
             <Input
