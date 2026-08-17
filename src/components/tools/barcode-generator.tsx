@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import JsBarcode from "jsbarcode";
 import { History } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
@@ -19,12 +19,21 @@ interface BarState {
   format: string;
   width: number;
   height: number;
+  lineColor: string;
+  background: string;
+  displayValue: boolean;
 }
-const initial: BarState = { value: "UTILITYHUB123", format: "CODE128", width: 2, height: 100 };
+const initial: BarState = { value: "UTILITYHUB123", format: "CODE128", width: 2, height: 100, lineColor: "#000000", background: "#ffffff", displayValue: true };
 const formats = ["CODE128", "CODE39", "EAN13", "EAN8", "UPC", "ITF14", "MSI", "pharmacode"];
 
 export default function BarcodeGenerator() {
-  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<BarState>("uh:barcode", initial);
+  const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<BarState>("uh:barcode", initial);
+  const value: BarState = useMemo(() => ({
+    ...stored,
+    lineColor: stored.lineColor ?? "#000000",
+    background: stored.background ?? "#ffffff",
+    displayValue: stored.displayValue ?? true,
+  }), [stored]);
   const svgRef = useRef<SVGSVGElement>(null);
   const [error, setError] = useState("");
   const { history, add, remove, clear } = useGenerationHistory("uh:history:barcode-generator");
@@ -36,9 +45,10 @@ export default function BarcodeGenerator() {
         format: value.format,
         width: value.width,
         height: value.height,
-        displayValue: true,
+        displayValue: value.displayValue,
         margin: 12,
-        background: "#ffffff",
+        lineColor: value.lineColor,
+        background: value.background,
       });
       setError("");
     } catch {
@@ -65,6 +75,13 @@ export default function BarcodeGenerator() {
       canvas.toBlob((b) => b && downloadBlob(b, "barcode.png"));
     };
     img.src = url;
+  };
+
+  const downloadSvg = () => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const data = new XMLSerializer().serializeToString(svg);
+    downloadBlob(new Blob([data], { type: "image/svg+xml;charset=utf-8" }), "barcode.svg");
   };
 
   return (
@@ -96,6 +113,22 @@ export default function BarcodeGenerator() {
                 onChange={(e) => set({ ...value, height: Number(e.target.value) })} className="w-full accent-[hsl(var(--primary))]" />
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-1.5">
+              <Label htmlFor="bc-line-color">Bar color</Label>
+              <input id="bc-line-color" type="color" value={value.lineColor} onChange={(e) => set({ ...value, lineColor: e.target.value })}
+                className="h-10 w-full cursor-pointer rounded-lg border border-border bg-transparent p-1" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="bc-bg-color">Background</Label>
+              <input id="bc-bg-color" type="color" value={value.background} onChange={(e) => set({ ...value, background: e.target.value })}
+                className="h-10 w-full cursor-pointer rounded-lg border border-border bg-transparent p-1" />
+            </div>
+          </div>
+          <label className="flex cursor-pointer items-center justify-between rounded-xl border border-border p-3 text-sm">
+            Show number below barcode
+            <input type="checkbox" checked={value.displayValue} onChange={(e) => set({ ...value, displayValue: e.target.checked })} className="size-4 accent-[hsl(var(--primary))]" />
+          </label>
           <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
         </CardContent>
       </Card>
@@ -112,6 +145,7 @@ export default function BarcodeGenerator() {
               className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50">
               Download PNG
             </button>
+            <Button variant="outline" size="sm" disabled={!!error} onClick={downloadSvg}>Download SVG</Button>
             <Button variant="outline" size="sm" disabled={!!error} onClick={() => add(value.value, value.format)}>
               <History className="size-4" /> Save to history
             </Button>
