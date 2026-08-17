@@ -7,7 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
+import { showToast } from "@/components/ui/toaster";
 import { formatCurrency } from "@/lib/utils";
+import { LogoEditor, fitContain, readLogoFile, type LogoAlign } from "@/components/tools/logo-editor";
 
 interface Row { id: string; label: string; amount: number; }
 interface SalaryState {
@@ -18,6 +20,11 @@ interface SalaryState {
   month: string;
   earnings: Row[];
   deductions: Row[];
+  logo?: string;
+  logoW?: number;
+  logoH?: number;
+  logoAlign: LogoAlign;
+  logoSize: number; // 30-70, % of the logo's max box width
 }
 
 const row = (label = "", amount = 0): Row => ({ id: Math.random().toString(36).slice(2), label, amount });
@@ -31,38 +38,63 @@ function initial(): SalaryState {
     month: new Date().toLocaleString("en-US", { month: "long", year: "numeric" }),
     earnings: [row("Basic", 30000), row("HRA", 12000), row("Special Allowance", 8000)],
     deductions: [row("Provident Fund", 3600), row("Professional Tax", 200)],
+    logoAlign: "center",
+    logoSize: 45,
   };
 }
 
 const sum = (rows: Row[]) => rows.reduce((s, r) => s + (r.amount || 0), 0);
 
 export default function SalarySlipGenerator() {
-  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<SalaryState>("uh:salary", initial());
+  const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<SalaryState>("uh:salary", initial());
+  const value: SalaryState = {
+    ...stored,
+    logoAlign: stored.logoAlign ?? "center",
+    logoSize: stored.logoSize ?? 45,
+  };
   const totals = useMemo(() => {
     const gross = sum(value.earnings);
     const ded = sum(value.deductions);
     return { gross, ded, net: gross - ded };
-  }, [value]);
+  }, [value.earnings, value.deductions]);
 
   const patch = (p: Partial<SalaryState>) => set({ ...value, ...p });
   const patchRow = (key: "earnings" | "deductions", id: string, p: Partial<Row>) =>
     set({ ...value, [key]: value[key].map((r) => (r.id === id ? { ...r, ...p } : r)) });
+
+  const onLogoUpload = (file: File) =>
+    readLogoFile(
+      file,
+      (dataUrl, w, h) => patch({ logo: dataUrl, logoW: w, logoH: h }),
+      (message) => showToast(message, "error"),
+    );
+  const removeLogo = () => patch({ logo: undefined, logoW: undefined, logoH: undefined });
 
   const downloadPdf = async () => {
     const { jsPDF } = await import("jspdf");
     const autoTable = (await import("jspdf-autotable")).default;
     const doc = new jsPDF();
     const primary: [number, number, number] = [79, 70, 229];
+
+    let offset = 0;
+    if (value.logo && value.logoW && value.logoH) {
+      const boxW = 18 + (value.logoSize / 100) * 24;
+      const fit = fitContain(value.logoW, value.logoH, boxW, 22);
+      const x = value.logoAlign === "left" ? 14 : value.logoAlign === "right" ? 196 - fit.w : 105 - fit.w / 2;
+      doc.addImage(value.logo, "PNG", x, 14, fit.w, fit.h);
+      offset = fit.h + 6;
+    }
+
     doc.setFontSize(16); doc.setTextColor(...primary);
-    doc.text(value.company, 105, 20, { align: "center" });
+    doc.text(value.company, 105, 20 + offset, { align: "center" });
     doc.setFontSize(11); doc.setTextColor(80);
-    doc.text(`Salary Slip — ${value.month}`, 105, 28, { align: "center" });
+    doc.text(`Salary Slip — ${value.month}`, 105, 28 + offset, { align: "center" });
     doc.setFontSize(9); doc.setTextColor(40);
-    doc.text(`Employee: ${value.employee}`, 14, 40);
-    doc.text(`Designation: ${value.designation}`, 14, 46);
-    doc.text(`Employee ID: ${value.empId}`, 140, 40);
+    doc.text(`Employee: ${value.employee}`, 14, 40 + offset);
+    doc.text(`Designation: ${value.designation}`, 14, 46 + offset);
+    doc.text(`Employee ID: ${value.empId}`, 140, 40 + offset);
     autoTable(doc, {
-      startY: 54,
+      startY: 54 + offset,
       head: [["Earnings", "Amount", "Deductions", "Amount"]],
       body: Array.from({ length: Math.max(value.earnings.length, value.deductions.length) }).map((_, i) => [
         value.earnings[i]?.label ?? "", value.earnings[i] ? formatCurrency(value.earnings[i].amount) : "",
@@ -105,6 +137,10 @@ export default function SalarySlipGenerator() {
             <Input placeholder="Designation" value={value.designation} onChange={(e) => patch({ designation: e.target.value })} />
             <Input placeholder="Employee ID" value={value.empId} onChange={(e) => patch({ empId: e.target.value })} />
             <Input placeholder="Month" value={value.month} onChange={(e) => patch({ month: e.target.value })} />
+            <div className="col-span-2">
+              <LogoEditor logo={value.logo} align={value.logoAlign} size={value.logoSize} onUpload={onLogoUpload} onRemove={removeLogo}
+                onAlign={(a) => patch({ logoAlign: a })} onSize={(n) => patch({ logoSize: n })} />
+            </div>
           </CardContent>
         </Card>
         {RowEditor({ title: "Earnings", field: "earnings" })}
@@ -114,6 +150,12 @@ export default function SalarySlipGenerator() {
 
       <div className="lg:sticky lg:top-20 lg:h-fit">
         <div className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
+          {value.logo && (
+            <div className={`mb-4 flex ${value.logoAlign === "left" ? "justify-start" : value.logoAlign === "right" ? "justify-end" : "justify-center"}`}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={value.logo} alt="" className="max-h-16 object-contain" style={{ maxWidth: `${value.logoSize}%` }} />
+            </div>
+          )}
           <h3 className="text-center text-lg font-bold text-indigo-600">{value.company}</h3>
           <p className="text-center text-xs text-slate-500">Salary Slip — {value.month}</p>
           <div className="mt-4 grid grid-cols-2 gap-1 text-xs text-slate-600">

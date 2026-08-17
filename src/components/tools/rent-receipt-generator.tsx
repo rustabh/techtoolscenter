@@ -10,6 +10,7 @@ import { Select } from "@/components/ui/select";
 import { ActionBar } from "@/components/tools/action-bar";
 import { formatCurrency, slugify, localDateISO, downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
+import { LogoEditor, fitContain, readLogoFile, type LogoAlign } from "@/components/tools/logo-editor";
 
 type PaymentMode = "Cash" | "Cheque" | "Bank Transfer" | "UPI";
 
@@ -25,6 +26,11 @@ interface RentReceiptState {
   paymentMode: PaymentMode;
   city: string;
   receiptDate: string;
+  logo?: string;
+  logoW?: number;
+  logoH?: number;
+  logoAlign: LogoAlign;
+  logoSize: number; // 30-70, % of the logo's max box width
 }
 
 const PAYMENT_MODES: PaymentMode[] = ["Cash", "Cheque", "Bank Transfer", "UPI"];
@@ -56,6 +62,8 @@ function initial(): RentReceiptState {
     paymentMode: "Bank Transfer",
     city: "",
     receiptDate: todayIso(),
+    logoAlign: "center",
+    logoSize: 45,
   };
 }
 
@@ -108,15 +116,28 @@ function amountInWords(amount: number): string {
 }
 
 export default function RentReceiptGenerator() {
-  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<RentReceiptState>(
+  const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<RentReceiptState>(
     "uh:rent-receipt",
     initial()
   );
+  const value: RentReceiptState = {
+    ...stored,
+    logoAlign: stored.logoAlign ?? "center",
+    logoSize: stored.logoSize ?? 45,
+  };
 
   const patch = (p: Partial<RentReceiptState>) => set({ ...value, ...p });
   const [exporting, setExporting] = useState(false);
   const [bulkYear, setBulkYear] = useState(String(new Date().getFullYear()));
   const [bulkBusy, setBulkBusy] = useState(false);
+
+  const onLogoUpload = (file: File) =>
+    readLogoFile(
+      file,
+      (dataUrl, w, h) => patch({ logo: dataUrl, logoW: w, logoH: h }),
+      (message) => showToast(message, "error"),
+    );
+  const removeLogo = () => patch({ logo: undefined, logoW: undefined, logoH: undefined });
 
   const words = useMemo(() => amountInWords(value.rentAmount), [value.rentAmount]);
 
@@ -128,6 +149,14 @@ export default function RentReceiptGenerator() {
     const doc = new jsPDF();
     const margin = 14;
     let y = 20;
+
+    if (value.logo && value.logoW && value.logoH) {
+      const boxW = 18 + (value.logoSize / 100) * 24;
+      const fit = fitContain(value.logoW, value.logoH, boxW, 22);
+      const x = value.logoAlign === "left" ? margin : value.logoAlign === "right" ? 196 - fit.w : 105 - fit.w / 2;
+      doc.addImage(value.logo, "PNG", x, 14, fit.w, fit.h);
+      y += fit.h + 6;
+    }
 
     doc.setFontSize(16);
     doc.setTextColor(20, 20, 20);
@@ -259,6 +288,8 @@ export default function RentReceiptGenerator() {
                 Required if annual rent exceeds ₹1,00,000 — ask your employer.
               </p>
             </div>
+            <LogoEditor logo={value.logo} align={value.logoAlign} size={value.logoSize} onUpload={onLogoUpload} onRemove={removeLogo}
+              onAlign={(a) => patch({ logoAlign: a })} onSize={(n) => patch({ logoSize: n })} />
           </CardContent>
         </Card>
 
@@ -396,6 +427,12 @@ export default function RentReceiptGenerator() {
 
       <div className="lg:sticky lg:top-20 lg:h-fit">
         <div className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
+          {value.logo && (
+            <div className={`mb-4 flex ${value.logoAlign === "left" ? "justify-start" : value.logoAlign === "right" ? "justify-end" : "justify-center"}`}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={value.logo} alt="" className="max-h-16 object-contain" style={{ maxWidth: `${value.logoSize}%` }} />
+            </div>
+          )}
           <h3 className="text-center text-lg font-bold text-indigo-600">RENT RECEIPT</h3>
 
           <p className="mt-4 text-sm leading-relaxed text-slate-700">

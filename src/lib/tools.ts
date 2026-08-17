@@ -316,14 +316,15 @@ export const tools: Tool[] = [
   {
     slug: "salary-slip-generator",
     name: "Salary Slip Generator",
-    description: "Create detailed salary slips with earnings, deductions and net pay.",
+    description: "Create detailed salary slips with your company logo, earnings, deductions and net pay.",
     longDescription:
-      "Produce professional pay slips for employees. Enter earnings (basic, HRA, allowances), deductions (PF, tax) and employee details to generate a clean, downloadable salary slip PDF.",
+      "Produce professional pay slips for employees. Add your company logo (aligned left, center or right, with an adjustable size), enter earnings (basic, HRA, allowances), deductions (PF, tax) and employee details to generate a clean, downloadable salary slip PDF.",
     category: "Business",
     icon: "Wallet",
-    keywords: ["salary slip", "payslip", "pay slip", "salary", "payroll"],
+    keywords: ["salary slip", "payslip", "pay slip", "salary", "payroll", "salary slip with logo"],
     addedOn: "2026-07-02",
     faq: [
+      { question: "Can I add my company logo?", answer: "Yes — upload a logo, choose left, center or right alignment, and drag the size slider to adjust how large it appears in both the preview and the exported PDF." },
       { question: "Can I add custom earnings and deductions?", answer: "Yes, you can add any number of earning and deduction line items with custom labels and amounts." },
       { question: "Does it calculate net pay?", answer: "Yes. Net pay is calculated automatically as total earnings minus total deductions." },
     ],
@@ -1420,15 +1421,16 @@ export const tools: Tool[] = [
   {
     slug: "rent-receipt-generator",
     name: "Rent Receipt Generator",
-    description: "Create a rent receipt for HRA tax exemption claims — free PDF download.",
+    description: "Create a rent receipt for HRA tax exemption claims, with an optional logo — free PDF download.",
     longDescription:
-      "Generate a clean rent receipt with landlord and tenant details, rent period and payment mode — exactly what's needed to claim HRA (House Rent Allowance) tax exemption from your employer or in your ITR.",
+      "Generate a clean rent receipt with landlord and tenant details, rent period and payment mode — exactly what's needed to claim HRA (House Rent Allowance) tax exemption from your employer or in your ITR. Optionally add a logo (aligned left, center or right, with an adjustable size) for a property management company or landlord brand — it carries through to both the single receipt and the 12-month bulk download.",
     category: "Business",
     icon: "House",
     keywords: ["rent receipt generator", "hra rent receipt", "rent receipt for hra exemption", "rent receipt format", "rent receipt pdf"],
     addedOn: "2026-07-31",
     popular: true,
     faq: [
+      { question: "Can I add a logo to the receipt?", answer: "Yes — upload a logo, choose left, center or right alignment, and adjust its size. It appears on both the single receipt download and every receipt in the 12-month bulk ZIP." },
       { question: "Do I need my landlord's PAN?", answer: "It's required by most employers if your annual rent exceeds ₹1,00,000 — ask your landlord for it if that applies to you. It's optional on the receipt otherwise." },
       { question: "Do I need a revenue stamp?", answer: "As a general practice under the Indian Stamp Act, a ₹1 revenue stamp is affixed and signed across when rent is paid in cash and the receipt amount exceeds ₹5,000. Print the receipt and add one if that applies to you." },
       { question: "How many receipts do I need for the year?", answer: "Most employers ask for one receipt per month, or a quarterly set — check what your employer's HR/payroll process requires." },
