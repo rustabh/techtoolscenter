@@ -18,11 +18,19 @@ const transforms: Record<Mode, (s: string) => string> = {
   lower: (s) => s.toLowerCase(),
   title: (s) => s.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()),
   sentence: (s) => s.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase()),
-  camel: (s) =>
-    s
+  camel: (s) => {
+    // A leading separator (" hello world", "-hello-world") makes the first
+    // match start at position 0, which capitalizes the first letter too —
+    // producing PascalCase output from a camelCase button. camelCase's
+    // first letter must always be lowercase, so force it explicitly, the
+    // same way the pascal transform below already forces its first letter
+    // uppercase regardless of leading separators.
+    const result = s
       .toLowerCase()
       .replace(/[^a-zA-Z0-9]+(.)/g, (_, c) => c.toUpperCase())
-      .replace(/[^a-zA-Z0-9]/g, ""),
+      .replace(/[^a-zA-Z0-9]/g, "");
+    return result.charAt(0).toLowerCase() + result.slice(1);
+  },
   pascal: (s) => {
     const camel = s.toLowerCase().replace(/[^a-zA-Z0-9]+(.)/g, (_, c) => c.toUpperCase()).replace(/[^a-zA-Z0-9]/g, "");
     return camel.charAt(0).toUpperCase() + camel.slice(1);
