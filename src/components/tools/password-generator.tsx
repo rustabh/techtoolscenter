@@ -5,6 +5,7 @@ import { RefreshCw } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
 
@@ -44,14 +45,19 @@ export default function PasswordGenerator() {
     lower: true, upper: true, numbers: true, symbols: true,
   });
   const [excludeAmbiguous, setExcludeAmbiguous] = useState(false);
+  // Free-form exclusion, separate from "ambiguous" — many sites' password
+  // policies reject specific punctuation (e.g. "{}[]"), and there's no way
+  // to drop just those without disabling the whole symbols set.
+  const [excludeChars, setExcludeChars] = useState("");
   const [password, setPassword] = useState("");
   const { copied, copy } = useCopy();
 
   const buildPool = useCallback(() => {
     let pool = (Object.keys(opts) as SetKey[]).filter((k) => opts[k]).map((k) => SETS[k]).join("");
     if (excludeAmbiguous) pool = pool.split("").filter((c) => !AMBIGUOUS.includes(c)).join("");
+    if (excludeChars) pool = pool.split("").filter((c) => !excludeChars.includes(c)).join("");
     return pool;
-  }, [opts, excludeAmbiguous]);
+  }, [opts, excludeAmbiguous, excludeChars]);
 
   const generate = useCallback(() => {
     const pool = buildPool();
@@ -67,7 +73,7 @@ export default function PasswordGenerator() {
   useEffect(() => {
     generate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [length, opts, excludeAmbiguous]);
+  }, [length, opts, excludeAmbiguous, excludeChars]);
 
   // "R" or Ctrl/Cmd+Enter regenerates without reaching for the mouse.
   useEffect(() => {
@@ -136,6 +142,11 @@ export default function PasswordGenerator() {
               />
             </label>
             <p className="text-xs text-muted-foreground">Drops 0/O, 1/l/I and | — easy to misread when written down or read aloud.</p>
+            <div className="space-y-1.5 pt-1">
+              <Label htmlFor="pw-exclude-chars">Exclude specific characters (optional)</Label>
+              <Input id="pw-exclude-chars" placeholder="e.g. {}[]<>" value={excludeChars} onChange={(e) => setExcludeChars(e.target.value)} />
+              <p className="text-xs text-muted-foreground">Useful when a site&apos;s password policy rejects certain punctuation.</p>
+            </div>
           </div>
         </CardContent>
       </Card>
