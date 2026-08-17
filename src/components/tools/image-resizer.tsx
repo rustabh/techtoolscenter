@@ -24,6 +24,8 @@ const PRESETS: { label: string; w: number; h: number }[] = [
 ];
 
 type FitMode = "cover" | "fit";
+type ImgFormat = "png" | "jpeg" | "webp";
+const MIME: Record<ImgFormat, string> = { png: "image/png", jpeg: "image/jpeg", webp: "image/webp" };
 
 export default function ImageResizer({ preset }: { preset?: Record<string, unknown> }) {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
@@ -40,6 +42,8 @@ export default function ImageResizer({ preset }: { preset?: Record<string, unkno
   // ever cropped off.
   const [fitMode, setFitMode] = useState<FitMode>("cover");
   const [padColor, setPadColor] = useState("#ffffff");
+  const [format, setFormat] = useState<ImgFormat>("png");
+  const [quality, setQuality] = useState(0.9);
   const [result, setResult] = useState<{ url: string; size: number; blob: Blob } | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -94,7 +98,7 @@ export default function ImageResizer({ preset }: { preset?: Record<string, unkno
         const dh = img.naturalHeight * scale;
         ctx.drawImage(img, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
       }
-      const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, "image/png"));
+      const blob = await new Promise<Blob | null>((res) => canvas.toBlob(res, MIME[format], format === "png" ? undefined : quality));
       if (!blob) throw new Error("empty blob");
       setResult({ url: URL.createObjectURL(blob), size: blob.size, blob });
       track(["imagesOptimized", "filesProcessed"]);
@@ -172,6 +176,24 @@ export default function ImageResizer({ preset }: { preset?: Record<string, unkno
                 )}
               </div>
               <div className="space-y-1.5">
+                <Label id="ir-format-label">Output format</Label>
+                <div className="grid grid-cols-3 gap-1.5" aria-labelledby="ir-format-label">
+                  {(["png", "jpeg", "webp"] as ImgFormat[]).map((f) => (
+                    <button key={f} onClick={() => { setFormat(f); setResult(null); }}
+                      className={`rounded-lg border px-2 py-1.5 text-xs font-medium uppercase transition-colors ${format === f ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"}`}>
+                      {f}
+                    </button>
+                  ))}
+                </div>
+                {format !== "png" && (
+                  <div className="space-y-1.5 pt-1">
+                    <Label htmlFor="ir-quality" className="text-xs text-muted-foreground">Quality: {Math.round(quality * 100)}%</Label>
+                    <input id="ir-quality" type="range" min={0.1} max={1} step={0.05} value={quality}
+                      onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+                  </div>
+                )}
+              </div>
+              <div className="space-y-1.5">
                 <Label>Presets</Label>
                 <div className="grid grid-cols-2 gap-1.5">
                   {PRESETS.map((p) => (
@@ -185,7 +207,7 @@ export default function ImageResizer({ preset }: { preset?: Record<string, unkno
               </div>
               <Button onClick={resize} disabled={busy} className="w-full">{busy ? "Resizing…" : `Resize to ${width}×${height}`}</Button>
               {result && (
-                <Button variant="outline" className="w-full" onClick={() => { downloadBlob(result.blob, `${name}-${width}x${height}.png`); showToast("Downloaded resized image"); }}>Download resized image</Button>
+                <Button variant="outline" className="w-full" onClick={() => { downloadBlob(result.blob, `${name}-${width}x${height}.${format === "jpeg" ? "jpg" : format}`); showToast("Downloaded resized image"); }}>Download resized image</Button>
               )}
             </CardContent>
           </Card>
