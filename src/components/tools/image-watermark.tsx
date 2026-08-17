@@ -11,6 +11,9 @@ import { showToast } from "@/components/ui/toaster";
 import { FileDropzone } from "@/components/tools/file-dropzone";
 
 type Position = "center" | "top-left" | "top-right" | "bottom-left" | "bottom-right" | "tiled";
+type OutFormat = "png" | "jpeg" | "webp";
+const MIME: Record<OutFormat, string> = { png: "image/png", jpeg: "image/jpeg", webp: "image/webp" };
+const EXT: Record<OutFormat, string> = { png: "png", jpeg: "jpg", webp: "webp" };
 
 export default function ImageWatermark() {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
@@ -20,6 +23,8 @@ export default function ImageWatermark() {
   const [rotation, setRotation] = useState(-30);
   const [color, setColor] = useState("#ffffff");
   const [position, setPosition] = useState<Position>("tiled");
+  const [format, setFormat] = useState<OutFormat>("png");
+  const [quality, setQuality] = useState(0.92);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const onFile = (file: File) => {
@@ -44,6 +49,9 @@ export default function ImageWatermark() {
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
     const ctx = canvas.getContext("2d")!;
+    // JPEG/WebP have no alpha channel — matte any transparency to white
+    // before drawing, or it would render as black on export.
+    if (format !== "png") { ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
     ctx.drawImage(img, 0, 0);
     if (!text.trim()) return;
 
@@ -83,15 +91,15 @@ export default function ImageWatermark() {
       drawAt(x, y);
     }
     ctx.globalAlpha = 1;
-  }, [img, text, opacity, size, rotation, color, position]);
+  }, [img, text, opacity, size, rotation, color, position, format]);
 
   const download = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     canvas.toBlob((blob) => {
       if (!blob) return;
-      downloadBlob(blob, "watermarked.png");
-    }, "image/png");
+      downloadBlob(blob, `watermarked.${EXT[format]}`);
+    }, MIME[format], format === "png" ? undefined : quality);
   };
 
   return (
@@ -154,6 +162,23 @@ export default function ImageWatermark() {
                 <Label htmlFor="iw-color">Color</Label>
                 <Input id="iw-color" type="color" value={color} onChange={(e) => setColor(e.target.value)} className="h-10 p-1" />
               </div>
+            </div>
+            <div className="space-y-1.5">
+              <Label id="iw-format-label">Output format</Label>
+              <div className="grid grid-cols-3 gap-2" aria-labelledby="iw-format-label">
+                {(["png", "jpeg", "webp"] as OutFormat[]).map((f) => (
+                  <button key={f} type="button" onClick={() => setFormat(f)}
+                    className={`rounded-xl border px-2 py-2 text-xs font-medium uppercase transition-colors ${format === f ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-secondary"}`}>
+                    {f}
+                  </button>
+                ))}
+              </div>
+              {format !== "png" && (
+                <div className="space-y-1.5 pt-1">
+                  <Label htmlFor="iw-quality" className="text-xs text-muted-foreground">Quality: {Math.round(quality * 100)}%</Label>
+                  <input id="iw-quality" type="range" min={0.1} max={1} step={0.05} value={quality} onChange={(e) => setQuality(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
+                </div>
+              )}
             </div>
           </CardContent>
         </Card>
