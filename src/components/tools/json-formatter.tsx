@@ -6,6 +6,7 @@ import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { ActionBar } from "@/components/tools/action-bar";
 import { downloadBlob } from "@/lib/utils";
 
@@ -32,11 +33,35 @@ function locateError(source: string, message: string): { line: number; column: n
   return null;
 }
 
+// Recursively rebuilds every plain object with its keys alphabetized so
+// JSON.stringify emits them in sorted order — JSON itself doesn't define key
+// order, but a diff-friendly, deterministic order is often exactly what
+// someone reaching for "beautify" wants (e.g. comparing two API responses).
+function sortKeysDeep(v: unknown): unknown {
+  if (Array.isArray(v)) return v.map(sortKeysDeep);
+  if (v !== null && typeof v === "object") {
+    const out: Record<string, unknown> = {};
+    for (const k of Object.keys(v as Record<string, unknown>).sort()) {
+      out[k] = sortKeysDeep((v as Record<string, unknown>)[k]);
+    }
+    return out;
+  }
+  return v;
+}
+
+const INDENT_OPTIONS = [
+  { label: "2 spaces", value: "2" },
+  { label: "4 spaces", value: "4" },
+  { label: "Tab", value: "tab" },
+];
+
 export default function JsonFormatter() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<string>("uh:json", '{"name":"TechToolsCenter","tools":31,"free":true}');
   const [output, setOutput] = useState("");
   const [error, setError] = useState("");
   const [errorLoc, setErrorLoc] = useState<{ line: number; column: number; index: number } | null>(null);
+  const [indent, setIndent] = useState<"2" | "4" | "tab">("2");
+  const [sortKeys, setSortKeys] = useState(false);
   const { copied, copy } = useCopy();
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
@@ -48,8 +73,10 @@ export default function JsonFormatter() {
       return;
     }
     try {
-      const parsed = JSON.parse(value);
-      setOutput(JSON.stringify(parsed, null, mode === "beautify" ? 2 : 0));
+      let parsed = JSON.parse(value);
+      if (sortKeys) parsed = sortKeysDeep(parsed);
+      const space = mode === "minify" ? 0 : indent === "tab" ? "\t" : Number(indent);
+      setOutput(JSON.stringify(parsed, null, space));
       setError("");
       setErrorLoc(null);
     } catch (e) {
@@ -77,7 +104,7 @@ export default function JsonFormatter() {
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value]);
+  }, [value, indent, sortKeys]);
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -87,6 +114,15 @@ export default function JsonFormatter() {
           <div className="flex flex-wrap items-center gap-2">
             <Button size="sm" onClick={() => run("beautify")} title="Ctrl/Cmd+Enter">Beautify</Button>
             <Button size="sm" variant="outline" onClick={() => run("minify")}>Minify</Button>
+            <Select aria-label="Indent width" value={indent} onChange={(e) => setIndent(e.target.value as "2" | "4" | "tab")} className="h-9 w-auto text-xs">
+              {INDENT_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>{o.label}</option>
+              ))}
+            </Select>
+            <label className="flex cursor-pointer items-center gap-1.5 text-xs text-muted-foreground">
+              <input type="checkbox" checked={sortKeys} onChange={(e) => setSortKeys(e.target.checked)} className="size-3.5 accent-[hsl(var(--primary))]" />
+              Sort keys
+            </label>
             <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
             <span className="ml-auto hidden text-xs text-muted-foreground sm:inline">Ctrl/Cmd+Enter to beautify</span>
           </div>
