@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { ActionBar } from "@/components/tools/action-bar";
 import { Type } from "lucide-react";
+import { downloadBlob } from "@/lib/utils";
 
 export default function TextCleaner() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<string>("uh:cleaner", "  This   text\n\n\nhas    messy   spacing\n\n  and lines.  ");
@@ -18,7 +19,15 @@ export default function TextCleaner() {
     if (opts.breaks) t = t.replace(/\n+/g, " ");
     if (opts.spaces) t = t.replace(/[ \t]+/g, " ");
     if (opts.blank) t = t.replace(/\n\s*\n+/g, "\n");
-    if (opts.special) t = t.replace(/[^\w\s.,!?'"-]/g, "");
+    // \w only matches [A-Za-z0-9_], so the naive version of this stripped
+    // every non-Latin character — Devanagari, Tamil and other regional
+    // scripts, accented Latin letters, emoji — not just symbols. \p{L}/\p{N}
+    // (any Unicode letter/number) fixes base characters, but Indic and
+    // Arabic scripts also rely on combining marks (vowel signs, virama) that
+    // sit in the separate \p{M} category — without it, "नमस्ते" degrades to
+    // the broken "नमसत". Keep all three so only actual punctuation/symbols
+    // outside the allowed set get stripped.
+    if (opts.special) t = t.replace(/[^\p{L}\p{N}\p{M}\s.,!?'"-]/gu, "");
     if (opts.trim) t = t.split("\n").map((l) => l.trim()).join("\n").trim();
     return t;
   }, [value, opts]);
@@ -54,7 +63,7 @@ export default function TextCleaner() {
               <p>Nothing to show — type something above</p>
             </div>
           )}
-          <ActionBar onUndo={undo} onRedo={redo} onReset={reset} onCopy={() => copy(output)} copied={copied} canUndo={canUndo} canRedo={canRedo} />
+          <ActionBar onUndo={undo} onRedo={redo} onReset={reset} onCopy={() => copy(output)} copied={copied} onDownload={() => downloadBlob(new Blob([output], { type: "text/plain" }), "cleaned.txt")} downloadLabel="Download .txt" canUndo={canUndo} canRedo={canRedo} />
         </CardContent>
       </Card>
     </div>
