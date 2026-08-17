@@ -1,7 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { Image as ImageIcon, Plus, Trash2 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -15,6 +15,7 @@ import { formatCurrency, localDateISO } from "@/lib/utils";
 interface ScopeItem { id: string; title: string; detail: string; }
 interface TimelineItem { id: string; phase: string; duration: string; }
 interface PricingItem { id: string; item: string; amount: string; }
+type LogoAlign = "left" | "center" | "right";
 
 interface ProposalState {
   companyName: string; companyEmail: string; companyWebsite: string;
@@ -26,6 +27,11 @@ interface ProposalState {
   pricing: PricingItem[];
   terms: string;
   accent: string;
+  logo?: string;
+  logoW?: number;
+  logoH?: number;
+  logoAlign: LogoAlign;
+  logoSize: number; // 30-70, % of the logo's max box width
 }
 
 const rid = () => Math.random().toString(36).slice(2);
@@ -41,6 +47,11 @@ const ACCENTS = [
 function hexToRgb(hex: string) {
   const int = parseInt(hex.replace("#", ""), 16);
   return { r: (int >> 16) & 255, g: (int >> 8) & 255, b: int & 255 };
+}
+
+function fitContain(iw: number, ih: number, bw: number, bh: number) {
+  const s = Math.min(bw / iw, bh / ih);
+  return { w: iw * s, h: ih * s };
 }
 
 function initial(): ProposalState {
@@ -67,14 +78,46 @@ function initial(): ProposalState {
     ],
     terms: "50% due to begin work, 50% due on launch. This proposal is valid for 30 days from the date above. Scope changes outside the items listed will be quoted separately.",
     accent: ACCENTS[0].hex,
+    logoAlign: "left",
+    logoSize: 45,
   };
 }
 
 export default function ProposalGenerator() {
   const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<ProposalState>("uh:proposal", initial());
-  const value = stored.accent ? stored : { ...stored, accent: ACCENTS[0].hex };
+  const value: ProposalState = {
+    ...stored,
+    accent: stored.accent ?? ACCENTS[0].hex,
+    logoAlign: stored.logoAlign ?? "left",
+    logoSize: stored.logoSize ?? 45,
+  };
   const [exporting, setExporting] = useState(false);
   const patch = (p: Partial<ProposalState>) => set({ ...value, ...p });
+
+  const onLogoUpload = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      showToast("That's not an image file — try a JPG, PNG or WebP", "error");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) { showToast("Couldn't process that image", "error"); return; }
+        ctx.drawImage(img, 0, 0);
+        patch({ logo: canvas.toDataURL("image/png"), logoW: img.naturalWidth, logoH: img.naturalHeight });
+      };
+      img.onerror = () => showToast("Couldn't read that image — the file may be corrupted", "error");
+      img.src = reader.result as string;
+    };
+    reader.onerror = () => showToast("Couldn't read that file — try again", "error");
+    reader.readAsDataURL(file);
+  };
+  const removeLogo = () => patch({ logo: undefined, logoW: undefined, logoH: undefined });
 
   const total = useMemo(
     () => value.pricing.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0),
@@ -115,6 +158,14 @@ export default function ProposalGenerator() {
       ensureSpace(needed);
       doc.text(lines, 14, y); y += needed;
     };
+
+    if (value.logo && value.logoW && value.logoH) {
+      const boxW = 18 + (value.logoSize / 100) * 24; // 30-70% maps to ~25-35mm
+      const fit = fitContain(value.logoW, value.logoH, boxW, 22);
+      const x = value.logoAlign === "left" ? 14 : value.logoAlign === "right" ? 196 - fit.w : 105 - fit.w / 2;
+      doc.addImage(value.logo, "PNG", x, y, fit.w, fit.h);
+      y += fit.h + 6;
+    }
 
     doc.setFontSize(20); doc.setTextColor(20); doc.text(value.title || "Proposal", 14, y); y += 7;
     doc.setFontSize(10); doc.setTextColor(r, g, b);
@@ -207,6 +258,10 @@ export default function ProposalGenerator() {
             <Input placeholder="Client name" value={value.clientName} onChange={(e) => patch({ clientName: e.target.value })} />
             <Input placeholder="Client company" value={value.clientCompany} onChange={(e) => patch({ clientCompany: e.target.value })} />
             <Textarea className="col-span-2" placeholder="Overview — what this proposal covers and why" value={value.overview} onChange={(e) => patch({ overview: e.target.value })} />
+            <div className="col-span-2">
+              <LogoEditor logo={value.logo} align={value.logoAlign} size={value.logoSize} onUpload={onLogoUpload} onRemove={removeLogo}
+                onAlign={(a) => patch({ logoAlign: a })} onSize={(n) => patch({ logoSize: n })} />
+            </div>
             <div className="col-span-2 space-y-1.5">
               <Label>Accent color</Label>
               <div className="flex flex-wrap gap-2">
@@ -262,6 +317,12 @@ export default function ProposalGenerator() {
 
       <div className="lg:sticky lg:top-20 lg:h-fit">
         <div className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
+          {value.logo && (
+            <div className={`mb-4 flex ${value.logoAlign === "left" ? "justify-start" : value.logoAlign === "right" ? "justify-end" : "justify-center"}`}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={value.logo} alt="" className="max-h-16 object-contain" style={{ maxWidth: `${value.logoSize}%` }} />
+            </div>
+          )}
           <h2 className="text-xl font-bold">{value.title || "Proposal title"}</h2>
           <p className="mt-0.5 text-xs" style={{ color: value.accent }}>{[value.proposalNumber, value.date].filter(Boolean).join(" · ")}</p>
           <div className="my-4 h-px bg-slate-200" />
@@ -321,6 +382,76 @@ function PreviewSection({ title, accent, children }: { title: string; accent: st
     <div className="mt-4">
       <h3 className="mb-2 text-xs font-bold uppercase tracking-wider" style={{ color: accent }}>{title}</h3>
       {children}
+    </div>
+  );
+}
+
+function LogoEditor({
+  logo, align, size, onUpload, onRemove, onAlign, onSize,
+}: {
+  logo?: string;
+  align: "left" | "center" | "right";
+  size: number;
+  onUpload: (f: File) => void;
+  onRemove: () => void;
+  onAlign: (a: "left" | "center" | "right") => void;
+  onSize: (n: number) => void;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  return (
+    <div className="rounded-lg border border-dashed border-border/70 p-2.5">
+      <input
+        ref={ref}
+        type="file"
+        accept="image/*"
+        className="hidden"
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (file) onUpload(file);
+          e.target.value = "";
+        }}
+      />
+      {!logo ? (
+        <Button variant="outline" size="sm" type="button" onClick={() => ref.current?.click()}>
+          <ImageIcon className="size-4" /> Add company logo
+        </Button>
+      ) : (
+        <div className="flex items-start gap-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={logo} alt="" className="h-14 w-20 shrink-0 rounded-md border border-border object-contain bg-secondary/40" />
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="flex flex-wrap gap-1">
+              {(["left", "center", "right"] as const).map((a) => (
+                <button
+                  key={a}
+                  type="button"
+                  onClick={() => onAlign(a)}
+                  className={`rounded-md border px-2 py-1 text-[11px] font-medium capitalize transition-colors ${
+                    align === a ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-secondary"
+                  }`}
+                >
+                  {a}
+                </button>
+              ))}
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="range"
+                min={30}
+                max={70}
+                value={size}
+                onChange={(e) => onSize(Number(e.target.value))}
+                aria-label="Logo size"
+                className="w-full accent-[hsl(var(--primary))]"
+              />
+              <span className="w-9 shrink-0 text-right text-[11px] text-muted-foreground">{size}%</span>
+            </div>
+          </div>
+          <Button variant="ghost" size="sm" type="button" aria-label="Remove logo" onClick={onRemove}>
+            <Trash2 className="size-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

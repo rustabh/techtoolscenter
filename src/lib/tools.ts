@@ -283,15 +283,16 @@ export const tools: Tool[] = [
   {
     slug: "proposal-generator",
     name: "Proposal Generator",
-    description: "Write a client proposal — overview, scope, timeline & pricing — and export a PDF.",
+    description: "Write a client proposal — overview, scope, timeline & pricing — with your logo, and export a PDF.",
     longDescription:
-      "Put together a professional client proposal: an overview of what you're offering, a scope-of-work list, a project timeline, itemised pricing with an automatic total, and your terms — all in one editable document. Unlike an invoice or quotation, a proposal is meant to persuade before work is agreed, not just itemise a price. Pick an accent color, preview it live, and export a clean PDF.",
+      "Put together a professional client proposal: an overview of what you're offering, a scope-of-work list, a project timeline, itemised pricing with an automatic total, and your terms — all in one editable document. Add your company logo, align it left, center or right, and adjust its size to match your brand. Unlike an invoice or quotation, a proposal is meant to persuade before work is agreed, not just itemise a price. Pick an accent color, preview it live, and export a clean PDF.",
     category: "Business",
     icon: "Handshake",
-    keywords: ["proposal", "proposal generator", "client proposal", "business proposal", "project proposal", "scope of work"],
+    keywords: ["proposal", "proposal generator", "client proposal", "business proposal", "project proposal", "scope of work", "proposal with logo"],
     addedOn: "2026-08-16",
     faq: [
       { question: "How is this different from a quotation?", answer: "A quotation is a fixed price offer for defined items. A proposal is a persuasive document — it explains the approach, scope of work and timeline before pricing is even discussed, which matters for services and projects where the client needs to understand what they're agreeing to, not just the price." },
+      { question: "Can I add my company logo?", answer: "Yes — upload a logo, choose left, center or right alignment, and drag the size slider to adjust how large it appears in both the preview and the exported PDF." },
       { question: "Is my proposal data saved?", answer: "Yes — it's saved to your browser's local storage automatically, so you can come back and keep editing. Nothing is uploaded anywhere." },
       { question: "Can I remove sections I don't need?", answer: "Yes. Scope, timeline and pricing are all optional lists — leave them empty and that section is skipped entirely in the exported PDF." },
     ],
@@ -1989,15 +1990,16 @@ export const tools: Tool[] = [
   {
     slug: "business-plan-generator",
     name: "Business Plan Generator",
-    description: "Write a structured business plan — summary, market, financials, milestones — and export a PDF.",
+    description: "Write a structured business plan — summary, market, financials, milestones — with your logo, and export a PDF.",
     longDescription:
-      "Build a complete business plan: executive summary, problem/solution, market and competition analysis, business model, marketing plan, operations, team, milestones with target dates, and a financial summary — all in one editable document with a live preview. Pick an accent color and export a clean, investor-ready PDF. Everything is saved to your browser automatically as you type.",
+      "Build a complete business plan: executive summary, problem/solution, market and competition analysis, business model, marketing plan, operations, team, milestones with target dates, and a financial summary — all in one editable document with a live preview. Add your company logo, align it left, center or right, and adjust its size to match your brand. Pick an accent color and export a clean, investor-ready PDF. Everything is saved to your browser automatically as you type.",
     category: "Business",
     icon: "Briefcase",
-    keywords: ["business plan generator", "business plan template", "startup business plan", "free business plan maker", "business plan pdf"],
+    keywords: ["business plan generator", "business plan template", "startup business plan", "free business plan maker", "business plan pdf", "business plan with logo"],
     addedOn: "2026-08-16",
     faq: [
       { question: "Is this a real business plan or just a template?", answer: "It's a structured editor covering every section investors and lenders expect — executive summary, market, financials, milestones — that you fill in with your own numbers and research. It won't write your strategy for you, but it keeps the structure consistent and exports a polished PDF." },
+      { question: "Can I add my company logo?", answer: "Yes — upload a logo, choose left, center or right alignment, and drag the size slider to adjust how large it appears in both the preview and the exported PDF." },
       { question: "Is my business plan data saved?", answer: "Yes — it's saved to your browser's local storage automatically. Nothing is uploaded anywhere." },
       { question: "Can I use this for a bank loan or investor pitch?", answer: "Yes — the exported PDF follows the standard business plan structure (summary, market, model, financials, milestones) that banks and investors expect to see, including for Mudra loan and other funding applications." },
     ],
