@@ -13,6 +13,9 @@ function hexToRgb(hex: string) {
   const int = parseInt(n, 16);
   return { r: (int >> 16) & 255, g: (int >> 8) & 255, b: int & 255 };
 }
+function toHex2(n: number) {
+  return Math.round(Math.min(255, Math.max(0, n))).toString(16).padStart(2, "0");
+}
 function rgbToHsl(r: number, g: number, b: number) {
   r /= 255; g /= 255; b /= 255;
   const max = Math.max(r, g, b), min = Math.min(r, g, b);
@@ -40,12 +43,17 @@ function rgbToCmyk(r: number, g: number, b: number) {
 
 export default function ColorConverter() {
   const [hex, setHex] = useState("#4f46e5");
+  const [alpha, setAlpha] = useState(100);
   const { r, g, b } = hexToRgb(hex);
   const { h, s, l } = rgbToHsl(r, g, b);
   const { c, m: cmykM, y, k } = rgbToCmyk(r, g, b);
+  const a = alpha / 100;
   const rgb = `rgb(${r}, ${g}, ${b})`;
   const hsl = `hsl(${h}, ${s}%, ${l}%)`;
   const cmyk = `cmyk(${c}%, ${cmykM}%, ${y}%, ${k}%)`;
+  const hex8 = `${hex}${toHex2(alpha / 100 * 255)}`;
+  const rgba = `rgba(${r}, ${g}, ${b}, ${a})`;
+  const hsla = `hsla(${h}, ${s}%, ${l}%, ${a})`;
   const { copied, copy } = useCopy();
   const [last, setLast] = useState("");
 
@@ -66,10 +74,23 @@ export default function ColorConverter() {
       <Card>
         <CardHeader><CardTitle>Pick a color</CardTitle></CardHeader>
         <CardContent className="space-y-4">
-          <div className="h-40 rounded-2xl border border-border" style={{ background: hex }} />
+          <div
+            className="h-40 rounded-2xl border border-border"
+            style={{
+              backgroundImage: `linear-gradient(rgba(${r},${g},${b},${a}), rgba(${r},${g},${b},${a})), repeating-conic-gradient(#ccc 0% 25%, #fff 0% 50%)`,
+              backgroundSize: "100%, 16px 16px",
+            }}
+          />
           <div className="grid grid-cols-3 items-end gap-3">
             <div className="space-y-1.5"><Label htmlFor="colorconv-picker">Picker</Label><Input id="colorconv-picker" type="color" value={hex} onChange={(e) => setHex(e.target.value)} className="h-10 p-1" /></div>
             <div className="col-span-2 space-y-1.5"><Label htmlFor="colorconv-hex">HEX</Label><Input id="colorconv-hex" value={hex} onChange={(e) => setHex(e.target.value)} className="font-mono" /></div>
+          </div>
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <Label htmlFor="colorconv-alpha">Alpha</Label>
+              <span className="font-mono text-sm font-semibold">{alpha}%</span>
+            </div>
+            <input id="colorconv-alpha" type="range" min={0} max={100} value={alpha} onChange={(e) => setAlpha(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
           </div>
         </CardContent>
       </Card>
@@ -80,6 +101,13 @@ export default function ColorConverter() {
           <Row label="RGB" val={rgb} />
           <Row label="HSL" val={hsl} />
           <Row label="CMYK" val={cmyk} />
+          {alpha < 100 && (
+            <>
+              <Row label="HEX8" val={hex8.toUpperCase()} />
+              <Row label="RGBA" val={rgba} />
+              <Row label="HSLA" val={hsla} />
+            </>
+          )}
         </CardContent>
       </Card>
     </div>
