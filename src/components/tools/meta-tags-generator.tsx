@@ -28,6 +28,12 @@ export default function MetaTagsGenerator() {
 
   const tags = useMemo(() => {
     const t = escapeAttr(title), d = escapeAttr(desc), u = escapeAttr(url), img = escapeAttr(image), ty = escapeAttr(type);
+    // twitter:summary_large_image specifically requires an image per
+    // Twitter's own Card spec — emitting it with no image (or an empty
+    // og:image/twitter:image content="") produces tags that validators flag
+    // and that social platforms may reject or render blank. Fall back to
+    // the imageless "summary" card, and drop the image lines entirely
+    // rather than emitting them empty.
     return [
       `<title>${t}</title>`,
       `<meta name="description" content="${d}">`,
@@ -41,13 +47,13 @@ export default function MetaTagsGenerator() {
       `<meta property="og:title" content="${t}">`,
       `<meta property="og:description" content="${d}">`,
       `<meta property="og:url" content="${u}">`,
-      `<meta property="og:image" content="${img}">`,
+      image ? `<meta property="og:image" content="${img}">` : "",
       ``,
       `<!-- Twitter -->`,
-      `<meta name="twitter:card" content="summary_large_image">`,
+      `<meta name="twitter:card" content="${image ? "summary_large_image" : "summary"}">`,
       `<meta name="twitter:title" content="${t}">`,
       `<meta name="twitter:description" content="${d}">`,
-      `<meta name="twitter:image" content="${img}">`,
+      image ? `<meta name="twitter:image" content="${img}">` : "",
     ].filter((line, i, arr) => line !== "" || arr[i - 1] !== "").join("\n");
   }, [title, desc, url, image, type, indexable, themeColor]);
 
