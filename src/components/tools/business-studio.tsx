@@ -14,6 +14,7 @@ import { showToast } from "@/components/ui/toaster";
 import { formatCurrency, localDateISO } from "@/lib/utils";
 import { saveItem } from "@/lib/saved";
 import { newItem, subtotal, type LineItem, type Party } from "./doc-types";
+import { fitContain, readLogoFile } from "@/components/tools/logo-editor";
 
 /* ------------------------------------------------------------------ */
 /* Document types                                                      */
@@ -107,6 +108,9 @@ interface BizState {
   bankDetails: string;
   bodyText: string; // letterhead
   logo: string | null;
+  logoW?: number;
+  logoH?: number;
+  logoSize: number; // 50-150, % of the layout's default logo size
   signature: string | null;
   stamp: string | null;
   watermark: string;
@@ -142,6 +146,7 @@ function initial(kind: DocKind = "invoice"): BizState {
     bankDetails: "",
     bodyText: "Dear Sir/Madam,\n\nWrite your letter content here.\n\nWarm regards,",
     logo: null,
+    logoSize: 100,
     signature: null,
     stamp: null,
     watermark: "",
@@ -166,7 +171,8 @@ const AI_DRAFTS: Record<DocKind, { notes: string; terms: string; items: [string,
 
 export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
   const storageKey = lockKind ? `uh:doc-${lockKind}` : "uh:business-studio";
-  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<BizState>(storageKey, initial(lockKind));
+  const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<BizState>(storageKey, initial(lockKind));
+  const value: BizState = { ...stored, logoSize: stored.logoSize ?? 100 };
   const printRef = useRef<HTMLDivElement>(null);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [barUrl, setBarUrl] = useState<string | null>(null);
@@ -190,7 +196,7 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
     const taxAmt = (taxable * rate) / 100;
     const grand = taxable + taxAmt + shipping;
     return { sub, discountAmt, taxable, taxAmt, grand, rate, shipping };
-  }, [value]);
+  }, [value.items, value.discount, value.shipping, value.taxType, value.taxRate]);
 
   // Individual tax lines to render (label + amount) based on the chosen mode.
   const taxLines = useMemo((): { label: string; amt: number }[] => {
@@ -247,6 +253,16 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
 
   const upload = (key: "logo" | "signature" | "stamp", file?: File) => {
     if (!file) return;
+    if (key === "logo") {
+      // Captures natural dimensions so the PDF can fit the logo into its box
+      // preserving aspect ratio, instead of forcing it into a fixed square.
+      readLogoFile(
+        file,
+        (dataUrl, w, h) => patch({ logo: dataUrl, logoW: w, logoH: h }),
+        (message) => showToast(message, "error"),
+      );
+      return;
+    }
     const reader = new FileReader();
     reader.onload = () => patch({ [key]: reader.result as string } as Partial<BizState>);
     reader.readAsDataURL(file);
@@ -309,7 +325,13 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
       return y;
     };
 
-    if (value.logo) { try { doc.addImage(value.logo, "PNG", 14, 12, 28, 28); } catch {} }
+    if (value.logo) {
+      try {
+        const box = 28 * (value.logoSize / 100);
+        const fit = value.logoW && value.logoH ? fitContain(value.logoW, value.logoH, box, box) : { w: box, h: box };
+        doc.addImage(value.logo, "PNG", 14, 12, fit.w, fit.h);
+      } catch {}
+    }
     doc.setFontSize(22);
     doc.setTextColor(...primary);
     doc.text(kind.title || value.company.name || "LETTERHEAD", 196, 22, { align: "right" });
@@ -469,6 +491,21 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
               <UploadBtn label={value.signature ? "Sign ✓" : "Signature"} onFile={(f) => upload("signature", f)} />
               <UploadBtn label={value.stamp ? "Stamp ✓" : "Stamp"} onFile={(f) => upload("stamp", f)} />
             </div>
+            {value.logo && (
+              <div className="flex items-center gap-2">
+                <Label htmlFor="bs-logo-size" className="shrink-0 text-xs text-muted-foreground">Logo size</Label>
+                <input
+                  id="bs-logo-size"
+                  type="range"
+                  min={50}
+                  max={150}
+                  value={value.logoSize}
+                  onChange={(e) => patch({ logoSize: Number(e.target.value) })}
+                  className="w-full accent-[hsl(var(--primary))]"
+                />
+                <span className="w-10 shrink-0 text-right text-xs text-muted-foreground">{value.logoSize}%</span>
+              </div>
+            )}
             <Button variant="secondary" size="sm" className="w-full" onClick={aiDraft} disabled={value.kind === "letterhead"}>
               <Wand2 className="size-4" /> AI smart draft — auto-fill items, notes & terms
             </Button>
@@ -692,10 +729,10 @@ type HeaderProps = {
   barUrl: string | null;
 };
 
-function Logo({ src, name, className = "h-12" }: { src: string | null; name: string; className?: string }) {
+function Logo({ src, name, className = "", basePx = 48, scale = 100 }: { src: string | null; name: string; className?: string; basePx?: number; scale?: number }) {
   return src ? (
     // eslint-disable-next-line @next/next/no-img-element
-    <img src={src} alt="Logo" className={`${className} w-auto object-contain`} />
+    <img src={src} alt="Logo" className={`${className} w-auto object-contain`} style={{ height: `${basePx * (scale / 100)}px` }} />
   ) : (
     <p className="text-lg font-bold">{name}</p>
   );
@@ -736,7 +773,7 @@ function DocHeader({ layout, value, kind, accent, titleColor, barUrl }: HeaderPr
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <Logo src={value.logo} name={value.company.name} />
+          <Logo src={value.logo} name={value.company.name} basePx={48} scale={value.logoSize} />
           <Barcode url={barUrl} />
         </div>
       </div>
@@ -751,7 +788,7 @@ function DocHeader({ layout, value, kind, accent, titleColor, barUrl }: HeaderPr
           <p className="mt-1 text-xs opacity-90">#{value.number}</p>
         </div>
         <div className="text-right">
-          <Logo src={value.logo} name={value.company.name} className="ml-auto h-12" />
+          <Logo src={value.logo} name={value.company.name} className="ml-auto" basePx={48} scale={value.logoSize} />
           <p className="mt-1 text-sm font-semibold">{value.company.name}</p>
           <p className="text-xs text-slate-500">Date: {value.date}</p>
           {kind.priced && <p className="text-xs text-slate-500">Due: {value.dueDate}</p>}
@@ -765,7 +802,7 @@ function DocHeader({ layout, value, kind, accent, titleColor, barUrl }: HeaderPr
     return (
       <div className="flex items-end justify-between border-b border-slate-300 pb-4">
         <div>
-          <Logo src={value.logo} name={value.company.name} className="h-10" />
+          <Logo src={value.logo} name={value.company.name} basePx={40} scale={value.logoSize} />
           <p className="mt-1 text-sm font-medium text-slate-700">{value.company.name}</p>
         </div>
         <div className="text-right">
@@ -785,7 +822,7 @@ function DocHeader({ layout, value, kind, accent, titleColor, barUrl }: HeaderPr
         </div>
         <div className="flex flex-1 items-start justify-between pt-1">
           <div>
-            <Logo src={value.logo} name={value.company.name} />
+            <Logo src={value.logo} name={value.company.name} basePx={48} scale={value.logoSize} />
             {value.logo && <p className="mt-1 text-sm font-semibold">{value.company.name}</p>}
           </div>
           <div>
@@ -801,7 +838,7 @@ function DocHeader({ layout, value, kind, accent, titleColor, barUrl }: HeaderPr
   return (
     <div className="flex items-start justify-between border-b-2 pb-4" style={{ borderColor: accent }}>
       <div>
-        <Logo src={value.logo} name={value.company.name} className="mb-2 h-14" />
+        <Logo src={value.logo} name={value.company.name} className="mb-2" basePx={56} scale={value.logoSize} />
         {value.logo && <p className="text-sm font-semibold">{value.company.name}</p>}
       </div>
       <div className="text-right">
