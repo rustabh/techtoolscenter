@@ -61,21 +61,32 @@ export default function EmiCalculator() {
     const interest = total - P;
     const prepayment = simulatePrepayment(P, r, emi, n, parseFloat(value.extraMonthly) || 0);
 
-    // Yearly amortization
+    // Yearly amortization — iterate by actual month count (n), not the raw
+    // "years" input rounded down. A fractional tenure like 4.5 years gives
+    // n = 54 months; looping `y <= years` only ever runs 4 full 12-month
+    // blocks and silently drops the last 6 months (and the balance never
+    // reaching 0) from the table, even though the summary above is computed
+    // correctly from n. Grouping by however many months remain in the final
+    // block keeps integer-year tenures identical to before while fixing the
+    // fractional case.
     let balance = P;
     const schedule: { year: number; principal: number; interest: number; balance: number }[] = [];
-    const years = parseFloat(value.years) || 0;
-    for (let y = 1; y <= years; y++) {
+    let month = 0;
+    let yearIndex = 0;
+    while (month < n) {
+      yearIndex++;
       let yearInterest = 0;
       let yearPrincipal = 0;
-      for (let m = 0; m < 12; m++) {
+      const monthsInBlock = Math.min(12, n - month);
+      for (let m = 0; m < monthsInBlock; m++) {
         const interestPart = balance * r;
         const principalPart = emi - interestPart;
         yearInterest += interestPart;
         yearPrincipal += principalPart;
         balance -= principalPart;
+        month++;
       }
-      schedule.push({ year: y, principal: yearPrincipal, interest: yearInterest, balance: Math.max(balance, 0) });
+      schedule.push({ year: yearIndex, principal: yearPrincipal, interest: yearInterest, balance: Math.max(balance, 0) });
     }
     return { emi, total, interest, principal: P, schedule, prepayment };
   }, [value]);
