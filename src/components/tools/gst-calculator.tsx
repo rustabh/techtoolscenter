@@ -13,16 +13,27 @@ import { formatCurrency } from "@/lib/utils";
 interface GstState {
   amount: string;
   rate: string;
+  rateChoice: string; // a RATE_PRESETS value, or "custom" — drives which control shows, not the calculation
   mode: "exclusive" | "inclusive";
   gstType: "split" | "igst";
 }
 
-const initial: GstState = { amount: "1000", rate: "18", mode: "exclusive", gstType: "split" };
+// The common 5-slab list (3/5/12/18/28) misses real GST rates that plenty of
+// transactions actually use — 0.1%/0.25% (precious stones/metals), 1.5%
+// (some real estate), 6%/7.5% (certain notified goods) — leaving no way to
+// calculate those without a custom-rate escape hatch.
+const RATE_PRESETS = ["0.1", "0.25", "1.5", "3", "5", "6", "7.5", "12", "18", "28"];
+
+const initial: GstState = { amount: "1000", rate: "18", rateChoice: "18", mode: "exclusive", gstType: "split" };
 
 export default function GstCalculator() {
   const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<GstState>("uh:gst", initial);
-  // Calculations saved before the IGST option shipped won't have this field.
-  const value = useMemo(() => (stored.gstType ? stored : { ...stored, gstType: "split" as const }), [stored]);
+  // Calculations saved before the IGST/custom-rate options shipped won't have these fields.
+  const value = useMemo(() => ({
+    ...stored,
+    gstType: stored.gstType ?? "split",
+    rateChoice: stored.rateChoice ?? (RATE_PRESETS.includes(stored.rate) ? stored.rate : "custom"),
+  }), [stored]);
   const { copied, copy } = useCopy();
 
   const result = useMemo(() => {
@@ -64,11 +75,28 @@ export default function GstCalculator() {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="gst-rate">GST rate (%)</Label>
-            <Select id="gst-rate" value={value.rate} onChange={(e) => set({ ...value, rate: e.target.value })}>
-              {["3", "5", "12", "18", "28"].map((r) => (
+            <Select
+              id="gst-rate"
+              value={value.rateChoice}
+              onChange={(e) => {
+                const choice = e.target.value;
+                set(choice === "custom" ? { ...value, rateChoice: choice } : { ...value, rateChoice: choice, rate: choice });
+              }}
+            >
+              {RATE_PRESETS.map((r) => (
                 <option key={r} value={r}>{r}%</option>
               ))}
+              <option value="custom">Custom</option>
             </Select>
+            {value.rateChoice === "custom" && (
+              <Input
+                type="number"
+                inputMode="decimal"
+                placeholder="Custom rate (%)"
+                value={value.rate}
+                onChange={(e) => set({ ...value, rate: e.target.value })}
+              />
+            )}
           </div>
           <div className="space-y-1.5">
             <Label>Type</Label>
