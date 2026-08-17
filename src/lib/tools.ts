@@ -2005,17 +2005,18 @@ export const tools: Tool[] = [
   {
     slug: "pitch-deck-generator",
     name: "Pitch Deck Generator",
-    description: "Build an investor pitch deck — cover, problem, solution, market, ask — and export a landscape PDF.",
+    description: "Build an investor pitch deck — cover, problem, solution, market, ask — with images, and export a landscape PDF.",
     longDescription:
-      "Put together a complete pitch deck using the standard structure investors expect: a cover slide, problem, solution, market size, product, business model, traction, competition, team and the ask — each as its own slide with a title and bullet points. Reorder slides, pick an accent color, preview every slide as you build, and export a clean landscape PDF ready to present or send. Everything is saved to your browser automatically as you type.",
+      "Put together a complete pitch deck using the standard structure investors expect: a cover slide, problem, solution, market size, product, business model, traction, competition, team and the ask — each as its own slide with a title and bullet points. Add an image to any slide and position it left, right, top or as a full-bleed background, with a size slider to adjust how much space it takes up. Reorder slides, pick an accent color, preview every slide as you build, and export a clean landscape PDF ready to present or send. Everything is saved to your browser automatically as you type.",
     category: "Business",
     icon: "Presentation",
-    keywords: ["pitch deck generator", "pitch deck template", "investor pitch deck", "startup pitch deck maker", "pitch deck pdf"],
+    keywords: ["pitch deck generator", "pitch deck template", "investor pitch deck", "startup pitch deck maker", "pitch deck pdf", "pitch deck with images"],
     addedOn: "2026-08-18",
     faq: [
       { question: "How is this different from the Business Plan Generator?", answer: "A business plan is the full, detailed internal document. A pitch deck is a short, visual summary of it, built to be presented live in 10–15 minutes — this tool follows the standard slide-by-slide pitch deck structure, not the longer business-plan format." },
       { question: "How many slides should a pitch deck have?", answer: "Most investor decks run 10–15 slides. The default template here covers the 10 sections investors most commonly expect — you can add, remove or reorder slides to fit your story." },
-      { question: "Is my pitch deck data saved?", answer: "Yes — it's saved to your browser's local storage automatically as you go. Nothing is uploaded anywhere." },
+      { question: "Can I add images to slides?", answer: "Yes — click \"Add image\" on any slide, then choose where it sits (left, right, top, or full-bleed background) and drag the size slider to adjust how much of the slide it takes up. The cover slide always uses its image as a full background behind the title." },
+      { question: "Is my pitch deck data saved?", answer: "Yes — it's saved to your browser's local storage automatically as you go, images included. Nothing is uploaded anywhere." },
       { question: "Can I reorder slides?", answer: "Yes — use the up/down arrows on each slide to move it, or add and remove slides freely." },
     ],
   },
