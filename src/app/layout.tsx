@@ -7,6 +7,7 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { CommandPalette } from "@/components/command-palette";
 import { siteConfig } from "@/lib/site";
+import { defaultOgImage } from "@/lib/seo/metadata";
 import { organizationLd, websiteLd } from "@/lib/seo/schema";
 import { PwaProvider } from "@/components/pwa/pwa-provider";
 import { FileDropProvider } from "@/components/files/file-drop-provider";
@@ -39,11 +40,13 @@ export const metadata: Metadata = {
     siteName: siteConfig.name,
     title: `${siteConfig.name} — Free Online Tools`,
     description: siteConfig.description,
+    images: [defaultOgImage()],
   },
   twitter: {
     card: "summary_large_image",
     title: `${siteConfig.name} — Free Online Tools`,
     description: siteConfig.description,
+    images: [defaultOgImage()],
     creator: siteConfig.twitter,
   },
   robots: {
