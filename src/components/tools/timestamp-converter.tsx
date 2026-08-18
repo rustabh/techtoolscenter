@@ -45,7 +45,11 @@ export default function TimestampConverter() {
   const parsed = (() => {
     const n = Number(ts);
     if (!isFinite(n) || !ts) return null;
-    const ms = ts.trim().length > 10 ? n : n * 1000;
+    // Guess seconds vs milliseconds from magnitude, not string length — a
+    // leading "-" on a pre-1970 seconds timestamp (e.g. "-1000000000") was
+    // pushing the string past the 10-character threshold and getting the
+    // value treated as milliseconds, landing the parsed date decades off.
+    const ms = Math.abs(n) > 9999999999 ? n : n * 1000;
     const d = new Date(ms);
     return isNaN(d.getTime()) ? null : d;
   })();
