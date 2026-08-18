@@ -77,7 +77,7 @@ export function Footer() {
             Copyright © 2026 {siteConfig.name}. All Rights Reserved.
           </p>
           <p className="text-xs">
-            Designed &amp; Developed by{" "}
+            Curated &amp; Coded by{" "}
             <a
               href={siteConfig.developer.url}
               target="_blank"
