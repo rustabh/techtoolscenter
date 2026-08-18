@@ -17,12 +17,12 @@ export const metadata: Metadata = buildSimpleMetadata({
   canonical: "/ai-hub/learning",
 });
 
+// Every slug here must exist in src/lib/blog/posts.ts — getPost() silently
+// drops anything that doesn't, so a stale/renamed slug quietly shrinks this
+// section instead of erroring.
 const guideSlugs = [
-  "chatgpt-vs-claude-vs-gemini-2026",
   "how-to-compare-ai-tools-before-you-commit",
   "how-to-write-better-ai-prompts",
-  "best-free-ai-tools-for-coding-2026",
-  "best-free-ai-image-generators-2026",
   "ai-video-generators-what-they-do-free-options",
   "best-free-ai-tools-for-small-business-india",
   "how-to-use-ai-to-write-a-better-resume",
