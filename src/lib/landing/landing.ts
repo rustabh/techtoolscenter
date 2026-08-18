@@ -558,3 +558,19 @@ export function landingsForCore(core: string, exceptSlug?: string): LandingPage[
 export function landingSlugs(): string[] {
   return landingPages.map((l) => l.slug);
 }
+
+/**
+ * Sibling pages for the "Related pages" cross-link section, rotated by each
+ * page's own position in its core group. A plain `landingsForCore(...).slice(0, limit)`
+ * always returns the same first-`limit` pages regardless of caller, so in a
+ * group larger than `limit` most pages never get linked to by any sibling.
+ * Rotating the window per-slug guarantees every page in a group of size N>=2
+ * is reachable from at least one other page's list.
+ */
+export function relatedLandingsForCore(core: string, slug: string, limit = 6): LandingPage[] {
+  const group = landingPages.filter((l) => l.core === core);
+  const selfIndex = group.findIndex((l) => l.slug === slug);
+  if (selfIndex === -1) return group.filter((l) => l.slug !== slug).slice(0, limit);
+  const rotated = [...group.slice(selfIndex + 1), ...group.slice(0, selfIndex)];
+  return rotated.slice(0, limit);
+}

@@ -10,14 +10,14 @@ import { getTool, getCategoryMeta } from "@/lib/tools";
 import { collectionForTool } from "@/lib/collections";
 import { getPost } from "@/lib/blog/posts";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
-import { landingsForCore, type LandingPage } from "@/lib/landing/landing";
+import { relatedLandingsForCore, type LandingPage } from "@/lib/landing/landing";
 import { siteConfig } from "@/lib/site";
 
 export function LandingView({ page }: { page: LandingPage }) {
   const core = getTool(page.core);
   const cat = core ? getCategoryMeta(core.category) : null;
   const col = core ? collectionForTool(core) : null;
-  const siblings = landingsForCore(page.core, page.slug).slice(0, 6);
+  const siblings = relatedLandingsForCore(page.core, page.slug);
   const relatedTools = page.relatedTools.map(getTool).filter(Boolean);
   const relatedBlog = (page.relatedBlog ?? []).map(getPost).filter(Boolean);
 
