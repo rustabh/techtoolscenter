@@ -135,9 +135,10 @@ export default function YoutubeThumbnailDownloader() {
         <CardHeader><CardTitle>Video link</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
-            <Label>YouTube URL or video ID</Label>
+            <Label htmlFor="yt-thumb-input">YouTube URL or video ID</Label>
             <div className="flex gap-2">
               <Input
+                id="yt-thumb-input"
                 value={input}
                 onChange={(e) => { setInput(e.target.value); setUnavailable({}); setLoaded({}); }}
                 placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
