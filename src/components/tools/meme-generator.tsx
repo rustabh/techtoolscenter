@@ -36,11 +36,10 @@ function wrapLines(ctx: CanvasRenderingContext2D, text: string, maxWidth: number
   return lines;
 }
 
-function drawImpactText(ctx: CanvasRenderingContext2D, text: string, cx: number, y: number, size: number, maxWidth: number, anchor: "top" | "bottom", textColor: string, outlineColor: string) {
+function drawImpactText(ctx: CanvasRenderingContext2D, text: string, cx: number, y: number, size: number, maxWidth: number, anchor: "top" | "middle" | "bottom", textColor: string, outlineColor: string) {
   if (!text.trim()) return;
   ctx.font = `700 ${size}px Impact, "Arial Black", sans-serif`;
   ctx.textAlign = "center";
-  ctx.textBaseline = anchor === "top" ? "top" : "bottom";
   ctx.lineWidth = size * 0.08;
   ctx.strokeStyle = outlineColor;
   ctx.fillStyle = textColor;
@@ -48,8 +47,20 @@ function drawImpactText(ctx: CanvasRenderingContext2D, text: string, cx: number,
 
   const lines = wrapLines(ctx, text.toUpperCase(), maxWidth);
   const lineHeight = size * 1.15;
-  const ordered = anchor === "bottom" ? [...lines].reverse() : lines;
 
+  if (anchor === "middle") {
+    ctx.textBaseline = "middle";
+    const startY = y - ((lines.length - 1) * lineHeight) / 2;
+    lines.forEach((line, i) => {
+      const ly = startY + i * lineHeight;
+      ctx.strokeText(line, cx, ly);
+      ctx.fillText(line, cx, ly);
+    });
+    return;
+  }
+
+  ctx.textBaseline = anchor === "top" ? "top" : "bottom";
+  const ordered = anchor === "bottom" ? [...lines].reverse() : lines;
   ordered.forEach((line, i) => {
     const ly = anchor === "bottom" ? y - i * lineHeight : y + i * lineHeight;
     ctx.strokeText(line, cx, ly);
@@ -60,6 +71,7 @@ function drawImpactText(ctx: CanvasRenderingContext2D, text: string, cx: number,
 export default function MemeGenerator() {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
   const [topText, setTopText] = useState("TOP TEXT");
+  const [middleText, setMiddleText] = useState("");
   const [bottomText, setBottomText] = useState("BOTTOM TEXT");
   const [fontSize, setFontSize] = useState(48);
   const [textColor, setTextColor] = useState("#ffffff");
@@ -92,8 +104,9 @@ export default function MemeGenerator() {
     const size = Math.max(18, (fontSize / 100) * img.naturalWidth * 0.14);
     const maxWidth = img.naturalWidth * 0.92;
     drawImpactText(ctx, topText, img.naturalWidth / 2, img.naturalHeight * 0.06, size, maxWidth, "top", textColor, outlineColor);
+    drawImpactText(ctx, middleText, img.naturalWidth / 2, img.naturalHeight * 0.5, size, maxWidth, "middle", textColor, outlineColor);
     drawImpactText(ctx, bottomText, img.naturalWidth / 2, img.naturalHeight * 0.94, size, maxWidth, "bottom", textColor, outlineColor);
-  }, [img, topText, bottomText, fontSize, textColor, outlineColor]);
+  }, [img, topText, middleText, bottomText, fontSize, textColor, outlineColor]);
 
   const download = () => {
     const canvas = canvasRef.current;
@@ -133,6 +146,10 @@ export default function MemeGenerator() {
             <div className="space-y-1.5">
               <Label htmlFor="top-text">Top text</Label>
               <Input id="top-text" value={topText} onChange={(e) => setTopText(e.target.value)} placeholder="TOP TEXT" />
+            </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="middle-text">Middle text (optional)</Label>
+              <Input id="middle-text" value={middleText} onChange={(e) => setMiddleText(e.target.value)} placeholder="e.g. NOBODY:" />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="bottom-text">Bottom text</Label>
