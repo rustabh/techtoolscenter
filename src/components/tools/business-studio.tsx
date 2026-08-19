@@ -88,6 +88,16 @@ const TAX_MODES: { id: TaxMode; label: string }[] = [
   { id: "none", label: "No tax" },
 ];
 
+/* Payment status — shown as a coloured badge on the preview, PDF and PNG
+   export so a customer/vendor can tell at a glance where the document
+   stands, without editing the watermark text by hand. */
+type PaymentStatus = "due" | "paid" | "pending";
+const PAYMENT_STATUSES: { id: PaymentStatus; label: string; bg: string; rgb: [number, number, number] }[] = [
+  { id: "due", label: "Due", bg: "#dc2626", rgb: [220, 38, 38] },
+  { id: "pending", label: "Pending", bg: "#d97706", rgb: [217, 119, 6] },
+  { id: "paid", label: "Paid", bg: "#16a34a", rgb: [22, 163, 74] },
+];
+
 /* ------------------------------------------------------------------ */
 interface BizState {
   kind: DocKind;
@@ -95,6 +105,7 @@ interface BizState {
   number: string;
   date: string;
   dueDate: string;
+  paymentStatus: PaymentStatus;
   currency: string;
   company: Party;
   customer: Party;
@@ -133,6 +144,7 @@ function initial(kind: DocKind = "invoice"): BizState {
     number: autoNumber(prefix),
     date: localDateISO(),
     dueDate: localDateISO(new Date(Date.now() + 12096e5)),
+    paymentStatus: "due",
     currency: "INR",
     company: { ...emptyParty, name: "Your Company" },
     customer: { ...emptyParty },
@@ -172,7 +184,7 @@ const AI_DRAFTS: Record<DocKind, { notes: string; terms: string; items: [string,
 export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
   const storageKey = lockKind ? `uh:doc-${lockKind}` : "uh:business-studio";
   const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<BizState>(storageKey, initial(lockKind));
-  const value: BizState = { ...stored, logoSize: stored.logoSize ?? 100 };
+  const value: BizState = { ...stored, logoSize: stored.logoSize ?? 100, paymentStatus: stored.paymentStatus ?? "due" };
   const printRef = useRef<HTMLDivElement>(null);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [barUrl, setBarUrl] = useState<string | null>(null);
@@ -339,7 +351,16 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
     doc.setTextColor(90);
     doc.text(`#${value.number}`, 196, 30, { align: "right" });
     doc.text(`Date: ${value.date}`, 196, 36, { align: "right" });
-    if (kind.priced) doc.text(`Due: ${value.dueDate}`, 196, 42, { align: "right" });
+    let metaY = 36;
+    if (kind.priced && value.dueDate) { doc.text(`Due: ${value.dueDate}`, 196, 42, { align: "right" }); metaY = 42; }
+    if (kind.priced) {
+      const status = PAYMENT_STATUSES.find((s) => s.id === value.paymentStatus) ?? PAYMENT_STATUSES[0];
+      doc.setFont("helvetica", "bold");
+      doc.setTextColor(...status.rgb);
+      doc.text(status.label.toUpperCase(), 196, metaY + 6, { align: "right" });
+      doc.setFont("helvetica", "normal");
+      doc.setTextColor(90);
+    }
 
     if (value.kind === "letterhead") {
       doc.setTextColor(40);
@@ -484,8 +505,32 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
               <Field label="Number" value={value.number} onChange={(v) => patch({ number: v })} />
               <div className="space-y-1.5"><Label htmlFor="bs-currency">Currency</Label><Input id="bs-currency" value={value.currency} onChange={(e) => patch({ currency: e.target.value })} /></div>
               <div className="space-y-1.5"><Label htmlFor="bs-date">Date</Label><Input id="bs-date" type="date" value={value.date} onChange={(e) => patch({ date: e.target.value })} /></div>
-              {kind.priced && <div className="space-y-1.5"><Label htmlFor="bs-duedate">Due date</Label><Input id="bs-duedate" type="date" value={value.dueDate} onChange={(e) => patch({ dueDate: e.target.value })} /></div>}
+              {kind.priced && (
+                <div className="space-y-1.5">
+                  <Label htmlFor="bs-duedate">Due date (optional)</Label>
+                  <Input id="bs-duedate" type="date" value={value.dueDate} onChange={(e) => patch({ dueDate: e.target.value })} />
+                </div>
+              )}
             </div>
+            {kind.priced && (
+              <div className="space-y-1.5">
+                <Label>Payment status</Label>
+                <div className="grid grid-cols-3 gap-1.5">
+                  {PAYMENT_STATUSES.map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => patch({ paymentStatus: s.id })}
+                      aria-pressed={value.paymentStatus === s.id}
+                      className={`rounded-lg border px-2 py-1.5 text-xs font-medium transition-colors ${value.paymentStatus === s.id ? "text-white" : "border-border hover:bg-secondary"}`}
+                      style={value.paymentStatus === s.id ? { background: s.bg, borderColor: s.bg } : undefined}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="grid grid-cols-3 gap-2">
               <UploadBtn label={value.logo ? "Logo ✓" : "Logo"} onFile={(f) => upload("logo", f)} />
               <UploadBtn label={value.signature ? "Sign ✓" : "Signature"} onFile={(f) => upload("signature", f)} />
@@ -738,13 +783,23 @@ function Logo({ src, name, className = "", basePx = 48, scale = 100 }: { src: st
   );
 }
 
+function StatusBadge({ status, className = "" }: { status: PaymentStatus; className?: string }) {
+  const s = PAYMENT_STATUSES.find((p) => p.id === status) ?? PAYMENT_STATUSES[0];
+  return (
+    <span className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white ${className}`} style={{ background: s.bg }}>
+      {s.label}
+    </span>
+  );
+}
+
 function Meta({ value, kind, muted }: { value: BizState; kind: HeaderProps["kind"]; muted?: string }) {
   const c = muted ?? "text-slate-500";
   return (
     <div className={`text-right text-xs ${c}`}>
       <p>#{value.number}</p>
       <p>Date: {value.date}</p>
-      {kind.priced && <p>Due: {value.dueDate}</p>}
+      {kind.priced && value.dueDate && <p>Due: {value.dueDate}</p>}
+      {kind.priced && <p className="mt-1"><StatusBadge status={value.paymentStatus} /></p>}
     </div>
   );
 }
@@ -769,7 +824,8 @@ function DocHeader({ layout, value, kind, accent, titleColor, barUrl }: HeaderPr
           <div className="text-right text-xs opacity-95">
             <p>#{value.number}</p>
             <p>Date: {value.date}</p>
-            {kind.priced && <p>Due: {value.dueDate}</p>}
+            {kind.priced && value.dueDate && <p>Due: {value.dueDate}</p>}
+            {kind.priced && <p className="mt-1"><StatusBadge status={value.paymentStatus} /></p>}
           </div>
         </div>
         <div className="flex items-center justify-between">
@@ -791,7 +847,8 @@ function DocHeader({ layout, value, kind, accent, titleColor, barUrl }: HeaderPr
           <Logo src={value.logo} name={value.company.name} className="ml-auto" basePx={48} scale={value.logoSize} />
           <p className="mt-1 text-sm font-semibold">{value.company.name}</p>
           <p className="text-xs text-slate-500">Date: {value.date}</p>
-          {kind.priced && <p className="text-xs text-slate-500">Due: {value.dueDate}</p>}
+          {kind.priced && value.dueDate && <p className="text-xs text-slate-500">Due: {value.dueDate}</p>}
+          {kind.priced && <p className="mt-1"><StatusBadge status={value.paymentStatus} /></p>}
           <Barcode url={barUrl} />
         </div>
       </div>
