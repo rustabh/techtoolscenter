@@ -13,6 +13,30 @@ interface AgeState {
   to: string;
 }
 
+// `new Date("YYYY-MM-DD")` parses the string as UTC midnight, but every
+// getter used below (getFullYear/getMonth/getDate/getDay) reads back in the
+// browser's LOCAL time zone — so for anyone in a negative UTC offset (all of
+// North & South America), the date silently reads back as the day before,
+// throwing off every result: years/months/days, the weekday, and the
+// milestone/next-birthday dates. Parsing the y/m/d directly into a local
+// Date sidesteps the UTC round-trip entirely.
+function parseLocalDate(iso: string): Date {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!match) return new Date(NaN);
+  const [, y, m, d] = match;
+  return new Date(Number(y), Number(m) - 1, Number(d));
+}
+
+// Calendar-day difference between two local Date objects, anchored to their
+// y/m/d via Date.UTC — subtracting .getTime() directly would be off by an
+// hour (and therefore a day, once floored/ceiled) for any range that crosses
+// a daylight-saving transition, since local midnight isn't always 24h apart.
+function daysBetween(a: Date, b: Date): number {
+  const ua = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  const ub = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+  return Math.round((ub - ua) / 86400000);
+}
+
 const WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 // Ages people commonly track for practical reasons (voting/driving age,
 // senior-citizen concessions, etc.) — shown only if still upcoming.
@@ -23,8 +47,8 @@ export default function AgeCalculator() {
   const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<AgeState>("uh:age", initial);
 
   const result = useMemo(() => {
-    const from = new Date(value.from);
-    const to = new Date(value.to);
+    const from = parseLocalDate(value.from);
+    const to = parseLocalDate(value.to);
     if (isNaN(from.getTime()) || isNaN(to.getTime()) || to < from) return null;
 
     let years = to.getFullYear() - from.getFullYear();
@@ -39,7 +63,7 @@ export default function AgeCalculator() {
       months += 12;
     }
 
-    const totalDays = Math.floor((to.getTime() - from.getTime()) / 86400000);
+    const totalDays = daysBetween(from, to);
     const totalWeeks = Math.floor(totalDays / 7);
     const totalMonths = years * 12 + months;
     const totalHours = totalDays * 24;
@@ -47,7 +71,7 @@ export default function AgeCalculator() {
     // next birthday
     const next = new Date(to.getFullYear(), from.getMonth(), from.getDate());
     if (next < to) next.setFullYear(to.getFullYear() + 1);
-    const daysToBirthday = Math.ceil((next.getTime() - to.getTime()) / 86400000);
+    const daysToBirthday = daysBetween(to, next);
 
     const weekday = WEEKDAYS[from.getDay()];
 
@@ -56,7 +80,7 @@ export default function AgeCalculator() {
       .slice(0, 3)
       .map((age) => {
         const date = new Date(from.getFullYear() + age, from.getMonth(), from.getDate());
-        const daysAway = Math.ceil((date.getTime() - to.getTime()) / 86400000);
+        const daysAway = daysBetween(to, date);
         return { age, date, daysAway };
       });
 
