@@ -34,21 +34,24 @@ function formatTeams(teams: string[][]): string {
 
 export default function RandomTeamGenerator() {
   const [namesInput, setNamesInput] = useState("");
+  const [splitMode, setSplitMode] = useState<"count" | "size">("count");
   const [teamCount, setTeamCount] = useState(2);
+  const [teamSize, setTeamSize] = useState(4);
   const [teams, setTeams] = useState<string[][]>([]);
   const { copied, copy } = useCopy();
   const { history, add, remove, clear } = useGenerationHistory("uh:history:random-team-generator");
 
   const names = namesInput.split("\n").map((n) => n.trim()).filter(Boolean);
+  const effectiveTeamCount = splitMode === "size" ? Math.max(1, Math.ceil(names.length / Math.max(1, teamSize))) : teamCount;
 
   const generate = useCallback(() => {
     if (names.length < 2) return;
-    const count = Math.min(teamCount, names.length);
+    const count = Math.min(Math.max(1, effectiveTeamCount), names.length);
     const result = splitIntoTeams(names, count);
     setTeams(result);
     add(formatTeams(result), `${names.length} people · ${count} teams`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [namesInput, teamCount, add]);
+  }, [namesInput, effectiveTeamCount, add]);
 
   const loadSample = () => setNamesInput(SAMPLE_NAMES.join("\n"));
 
@@ -69,9 +72,24 @@ export default function RandomTeamGenerator() {
             <p className="text-xs text-muted-foreground">{names.length} name{names.length === 1 ? "" : "s"} entered</p>
           </div>
           <div className="space-y-1.5">
-            <Label htmlFor="team-count">Number of teams</Label>
-            <Input id="team-count" type="number" min={2} max={Math.max(2, names.length)} value={teamCount} onChange={(e) => setTeamCount(Math.max(2, parseInt(e.target.value) || 2))} />
+            <Label>Split by</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <Button type="button" variant={splitMode === "count" ? "default" : "outline"} size="sm" onClick={() => setSplitMode("count")}>Number of teams</Button>
+              <Button type="button" variant={splitMode === "size" ? "default" : "outline"} size="sm" onClick={() => setSplitMode("size")}>People per team</Button>
+            </div>
           </div>
+          {splitMode === "count" ? (
+            <div className="space-y-1.5">
+              <Label htmlFor="team-count">Number of teams</Label>
+              <Input id="team-count" type="number" min={2} max={Math.max(2, names.length)} value={teamCount} onChange={(e) => setTeamCount(Math.max(2, parseInt(e.target.value) || 2))} />
+            </div>
+          ) : (
+            <div className="space-y-1.5">
+              <Label htmlFor="team-size">People per team</Label>
+              <Input id="team-size" type="number" min={1} max={Math.max(1, names.length)} value={teamSize} onChange={(e) => setTeamSize(Math.max(1, parseInt(e.target.value) || 1))} />
+              <p className="text-xs text-muted-foreground">{names.length > 0 ? `Makes ${effectiveTeamCount} team${effectiveTeamCount === 1 ? "" : "s"}` : "Add names to see the team count"}</p>
+            </div>
+          )}
           <div className="flex flex-wrap gap-2">
             <Button onClick={generate} disabled={names.length < 2}>Split into teams</Button>
             <Button variant="outline" onClick={loadSample}>Load sample names</Button>
