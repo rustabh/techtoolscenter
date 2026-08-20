@@ -63,15 +63,6 @@ function bulletLines(bullets: string): string[] {
   return bullets.split("\n").map((l) => l.trim()).filter(Boolean);
 }
 
-function fitContain(iw: number, ih: number, bw: number, bh: number) {
-  const s = Math.min(bw / iw, bh / ih);
-  return { w: iw * s, h: ih * s };
-}
-function fitCover(iw: number, ih: number, bw: number, bh: number) {
-  const s = Math.max(bw / iw, bh / ih);
-  return { w: iw * s, h: ih * s };
-}
-
 function tint(hex: string, amount: number): string {
   const { r, g, b } = hexToRgb(hex);
   const mix = (c: number) => Math.round(c + (255 - c) * amount);
@@ -273,6 +264,7 @@ export default function PitchDeckGenerator() {
   const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<PitchDeckState>("uh:pitch-deck", initialState);
   const value: PitchDeckState = { ...stored, accent: stored.accent ?? ACCENTS[0].hex, slides: (stored.slides ?? []).map(normalizeSlide) };
   const [exporting, setExporting] = useState(false);
+  const slideNodesRef = useRef<Map<string, HTMLDivElement>>(new Map());
   const patch = (p: Partial<PitchDeckState>) => set({ ...value, ...p });
 
   const patchSlide = (id: string, p: Partial<Slide>) => patch({ slides: value.slides.map((s) => (s.id === id ? { ...s, ...p } : s)) });
@@ -314,134 +306,31 @@ export default function PitchDeckGenerator() {
   };
   const removeSlideImage = (id: string) => patchSlide(id, { image: undefined, imageW: undefined, imageH: undefined });
 
+  // Captures each slide's own preview node rather than redrawing the deck
+  // a second time with hand-placed jsPDF coordinates, so the exported PDF
+  // always matches whatever's actually on screen. Each page is sized to
+  // that slide's own captured dimensions (a 16:9 preview), not forced into
+  // A4 landscape's different ~1.41:1 aspect ratio.
   const downloadPdf = async () => {
     if (exporting) return;
+    const nodes = value.slides.map((s) => slideNodesRef.current.get(s.id)).filter((n): n is HTMLDivElement => !!n);
+    if (nodes.length === 0) {
+      showToast("Nothing to export yet", "error");
+      return;
+    }
     setExporting(true);
     try {
-      await generatePdf();
+      const { exportSlidesToPdf } = await import("@/lib/pdf/capture-to-pdf");
+      await exportSlidesToPdf(nodes, {
+        filename: `${(value.companyName || "pitch-deck").replace(/\s+/g, "-").toLowerCase()}-pitch-deck.pdf`,
+        captureStyle: { border: "none", boxShadow: "none", borderRadius: "0" },
+      });
       showToast("Pitch deck PDF downloaded");
     } catch {
       showToast("Couldn't generate the PDF — try again", "error");
     } finally {
       setExporting(false);
     }
-  };
-
-  const generatePdf = async () => {
-    const { jsPDF } = await import("jspdf");
-    const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
-    const { r, g, b } = hexToRgb(value.accent);
-    const PAGE_W = 297;
-    const PAGE_H = 210;
-    const MARGIN = 18;
-
-    const drawBullets = (lines: string[], x: number, yStart: number, maxWidth: number) => {
-      let y = yStart;
-      doc.setFontSize(13);
-      lines.forEach((line) => {
-        const wrapped = doc.splitTextToSize(line, Math.max(maxWidth - 7, 10));
-        doc.setTextColor(r, g, b);
-        doc.text("•", x, y);
-        doc.setTextColor(40);
-        doc.text(wrapped, x + 7, y);
-        y += wrapped.length * 7.5 + 5;
-      });
-    };
-
-    const drawImageIn = (slide: Slide, x: number, y: number, w: number, h: number, mode: "contain" | "cover") => {
-      if (!slide.image || !slide.imageW || !slide.imageH) return;
-      const fit = mode === "cover" ? fitCover(slide.imageW, slide.imageH, w, h) : fitContain(slide.imageW, slide.imageH, w, h);
-      const dx = x + (w - fit.w) / 2;
-      const dy = y + (h - fit.h) / 2;
-      doc.addImage(slide.image, "PNG", dx, dy, fit.w, fit.h);
-    };
-
-    const panel = (x: number, y: number, w: number, h: number) => {
-      doc.saveGraphicsState();
-      doc.setGState(doc.GState({ opacity: 0.88 }));
-      doc.setFillColor(255, 255, 255);
-      doc.roundedRect(x, y, w, h, 3, 3, "F");
-      doc.restoreGraphicsState();
-    };
-
-    value.slides.forEach((slide, i) => {
-      if (i > 0) doc.addPage();
-      const isCover = i === 0;
-
-      if (isCover) {
-        if (slide.image) drawImageIn(slide, 0, 0, PAGE_W, PAGE_H, "cover");
-        doc.setFillColor(r, g, b);
-        doc.rect(0, 0, PAGE_W, 8, "F");
-
-        if (slide.image) panel(PAGE_W / 2 - 90, PAGE_H / 2 - 26, 180, 52);
-        doc.setFontSize(34);
-        doc.setTextColor(20);
-        doc.text(slide.title || value.companyName, PAGE_W / 2, PAGE_H / 2 - 8, { align: "center" });
-        if (value.tagline) {
-          doc.setFontSize(14);
-          doc.setTextColor(100);
-          doc.text(value.tagline, PAGE_W / 2, PAGE_H / 2 + 6, { align: "center" });
-        }
-        if (value.contactEmail) {
-          doc.setFontSize(10);
-          doc.setTextColor(r, g, b);
-          doc.text(value.contactEmail, PAGE_W / 2, PAGE_H - 20, { align: "center" });
-        }
-        return;
-      }
-
-      const contentTop = 45;
-      const contentBottom = PAGE_H - 18;
-      const contentLeft = MARGIN;
-      const contentRight = PAGE_W - MARGIN;
-      const contentWidth = contentRight - contentLeft;
-      const contentHeight = contentBottom - contentTop;
-      const bullets = bulletLines(slide.bullets);
-      const hasImage = Boolean(slide.image);
-
-      if (hasImage && slide.imagePosition === "background") {
-        drawImageIn(slide, 0, 0, PAGE_W, PAGE_H, "cover");
-      }
-
-      doc.setFillColor(r, g, b);
-      doc.rect(0, 0, PAGE_W, 6, "F");
-
-      const panelWidth = hasImage && slide.imagePosition === "background" ? contentWidth * 0.55 : contentWidth;
-      if (hasImage && slide.imagePosition === "background") panel(contentLeft - 6, 20, panelWidth + 12, contentBottom - 20 + 6);
-
-      doc.setFontSize(24);
-      doc.setTextColor(20);
-      doc.text(slide.title || `Slide ${i + 1}`, MARGIN, 32);
-
-      doc.setDrawColor(r, g, b);
-      doc.setLineWidth(0.8);
-      doc.line(MARGIN, 38, MARGIN + 30, 38);
-
-      if (hasImage && slide.imagePosition === "left") {
-        const boxW = contentWidth * (slide.imageScale / 100);
-        drawImageIn(slide, contentLeft, contentTop, boxW, contentHeight, "contain");
-        drawBullets(bullets, contentLeft + boxW + 8, 55, contentWidth - boxW - 8);
-      } else if (hasImage && slide.imagePosition === "right") {
-        const boxW = contentWidth * (slide.imageScale / 100);
-        drawImageIn(slide, contentRight - boxW, contentTop, boxW, contentHeight, "contain");
-        drawBullets(bullets, contentLeft, 55, contentWidth - boxW - 8);
-      } else if (hasImage && slide.imagePosition === "top") {
-        const boxH = contentHeight * (slide.imageScale / 100);
-        drawImageIn(slide, contentLeft, contentTop, contentWidth, boxH, "contain");
-        drawBullets(bullets, contentLeft, contentTop + boxH + 12, contentWidth);
-      } else if (hasImage && slide.imagePosition === "background") {
-        drawBullets(bullets, contentLeft, 55, panelWidth);
-      } else {
-        drawBullets(bullets, contentLeft, 55, contentWidth);
-      }
-
-      doc.setFontSize(9);
-      doc.setTextColor(150);
-      doc.text(value.companyName, MARGIN, PAGE_H - 10);
-      doc.text(`${i + 1} / ${value.slides.length}`, PAGE_W - MARGIN, PAGE_H - 10, { align: "right" });
-    });
-
-    doc.save(`${(value.companyName || "pitch-deck").replace(/\s+/g, "-").toLowerCase()}-pitch-deck.pdf`);
   };
 
   return (
@@ -515,6 +404,25 @@ export default function PitchDeckGenerator() {
             <SlidePreview key={slide.id} slide={slide} index={i} total={value.slides.length} value={value} />
           ))}
         </div>
+      </div>
+
+      {/* Hidden full-size export renders — captured for the PDF instead of the
+          truncated on-screen thumbnails, so bullets beyond 5 aren't dropped. */}
+      <div aria-hidden style={{ position: "fixed", top: 0, left: -100000, pointerEvents: "none" }}>
+        {value.slides.map((slide, i) => (
+          <SlidePreview
+            key={slide.id}
+            slide={slide}
+            index={i}
+            total={value.slides.length}
+            value={value}
+            mode="export"
+            onRef={(el) => {
+              if (el) slideNodesRef.current.set(slide.id, el);
+              else slideNodesRef.current.delete(slide.id);
+            }}
+          />
+        ))}
       </div>
     </div>
   );
@@ -595,46 +503,67 @@ function SlideImageEditor({
   );
 }
 
-function SlideText({ title, bullets, accent }: { title: string; bullets: string[]; accent: string }) {
+type SlideMode = "thumbnail" | "export";
+
+function SlideText({ title, bullets, accent, mode }: { title: string; bullets: string[]; accent: string; mode: SlideMode }) {
+  // The small on-screen thumbnail caps bullets at 5 purely so a compact
+  // card doesn't overflow — it was never meant to hide content from the
+  // actual exported slide. The full-size export render shows every bullet.
+  const shown = mode === "export" ? bullets : bullets.slice(0, 5);
   return (
     <>
-      <h3 className="text-sm font-bold" style={{ color: accent }}>{title}</h3>
-      <div className="mt-2 space-y-1 overflow-hidden">
-        {bullets.slice(0, 5).map((line, j) => (
-          <p key={j} className="text-[11px] leading-snug text-slate-600">• {line}</p>
+      <h3 className={mode === "export" ? "text-[42px] font-bold leading-tight" : "text-sm font-bold"} style={{ color: accent }}>{title}</h3>
+      <div className={mode === "export" ? "mt-6 space-y-3 overflow-hidden" : "mt-2 space-y-1 overflow-hidden"}>
+        {shown.map((line, j) => (
+          <p key={j} className={mode === "export" ? "text-[22px] leading-snug text-slate-600" : "text-[11px] leading-snug text-slate-600"}>• {line}</p>
         ))}
       </div>
     </>
   );
 }
 
-function SlidePreview({ slide, index, total, value }: { slide: Slide; index: number; total: number; value: PitchDeckState }) {
+// Renders one slide. `mode="thumbnail"` is the small aspect-video card
+// shown in the editor list; `mode="export"` renders the same slide at full
+// 1600×900 resolution with untruncated bullets and larger text, and is
+// what actually gets captured for the PDF — both share this one JSX
+// definition, so there's no second, independently-drifting PDF layout to
+// keep in sync with the preview.
+function SlidePreview({
+  slide, index, total, value, mode = "thumbnail", onRef,
+}: {
+  slide: Slide; index: number; total: number; value: PitchDeckState; mode?: SlideMode; onRef?: (el: HTMLDivElement | null) => void;
+}) {
+  const isExport = mode === "export";
   const title = slide.title || (index === 0 ? value.companyName : `Slide ${index + 1}`);
   const bullets = bulletLines(slide.bullets);
   const isCover = index === 0;
 
   return (
-    <div className="aspect-video overflow-hidden rounded-2xl border border-border bg-white text-slate-900 shadow-sm">
+    <div
+      ref={onRef}
+      className={isExport ? "overflow-hidden bg-white text-slate-900" : "aspect-video overflow-hidden rounded-2xl border border-border bg-white text-slate-900 shadow-sm"}
+      style={isExport ? { width: 1600, height: 900 } : undefined}
+    >
       {isCover ? (
         slide.image ? (
           <div className="relative flex h-full flex-col items-center justify-center overflow-hidden text-center">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={slide.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
-            <div className="relative rounded-xl bg-white/85 px-4 py-3 backdrop-blur-sm">
-              <h2 className="text-lg font-bold">{title}</h2>
-              {value.tagline && <p className="mt-1 text-xs text-slate-500">{value.tagline}</p>}
+            <div className={isExport ? "relative rounded-xl bg-white/85 px-16 py-10 backdrop-blur-sm" : "relative rounded-xl bg-white/85 px-4 py-3 backdrop-blur-sm"}>
+              <h2 className={isExport ? "text-[64px] font-bold leading-tight" : "text-lg font-bold"}>{title}</h2>
+              {value.tagline && <p className={isExport ? "mt-4 text-[28px] text-slate-500" : "mt-1 text-xs text-slate-500"}>{value.tagline}</p>}
             </div>
           </div>
         ) : (
-          <div className="flex h-full flex-col items-center justify-center p-5 text-center">
-            <h2 className="text-lg font-bold">{title}</h2>
-            {value.tagline && <p className="mt-1 text-xs text-slate-500">{value.tagline}</p>}
+          <div className={isExport ? "flex h-full flex-col items-center justify-center p-16 text-center" : "flex h-full flex-col items-center justify-center p-5 text-center"}>
+            <h2 className={isExport ? "text-[64px] font-bold leading-tight" : "text-lg font-bold"}>{title}</h2>
+            {value.tagline && <p className={isExport ? "mt-4 text-[28px] text-slate-500" : "mt-1 text-xs text-slate-500"}>{value.tagline}</p>}
           </div>
         )
       ) : !slide.image ? (
-        <div className="flex h-full flex-col p-5">
-          <SlideText title={title} bullets={bullets} accent={value.accent} />
-          <div className="mt-auto flex justify-between pt-1 text-[9px] text-slate-400">
+        <div className={isExport ? "flex h-full flex-col p-16" : "flex h-full flex-col p-5"}>
+          <SlideText title={title} bullets={bullets} accent={value.accent} mode={mode} />
+          <div className={isExport ? "mt-auto flex justify-between pt-4 text-[18px] text-slate-400" : "mt-auto flex justify-between pt-1 text-[9px] text-slate-400"}>
             <span>{value.companyName}</span>
             <span>{index + 1} / {total}</span>
           </div>
@@ -643,28 +572,28 @@ function SlidePreview({ slide, index, total, value }: { slide: Slide; index: num
         <div className="relative flex h-full overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={slide.image} alt="" className="absolute inset-0 h-full w-full object-cover" />
-          <div className="relative flex h-full w-[58%] flex-col bg-white/85 p-4 backdrop-blur-sm">
-            <SlideText title={title} bullets={bullets} accent={value.accent} />
+          <div className={isExport ? "relative flex h-full w-[58%] flex-col bg-white/85 p-10 backdrop-blur-sm" : "relative flex h-full w-[58%] flex-col bg-white/85 p-4 backdrop-blur-sm"}>
+            <SlideText title={title} bullets={bullets} accent={value.accent} mode={mode} />
           </div>
         </div>
       ) : slide.imagePosition === "top" ? (
-        <div className="flex h-full flex-col gap-2 p-5">
+        <div className={isExport ? "flex h-full flex-col gap-4 p-16" : "flex h-full flex-col gap-2 p-5"}>
           <div className="overflow-hidden rounded-md bg-slate-100" style={{ height: `${slide.imageScale}%` }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={slide.image} alt="" className="h-full w-full object-contain" />
           </div>
           <div className="min-h-0 flex-1 overflow-hidden">
-            <SlideText title={title} bullets={bullets} accent={value.accent} />
+            <SlideText title={title} bullets={bullets} accent={value.accent} mode={mode} />
           </div>
         </div>
       ) : (
-        <div className={`flex h-full gap-3 p-5 ${slide.imagePosition === "left" ? "flex-row" : "flex-row-reverse"}`}>
+        <div className={`flex h-full gap-3 ${isExport ? "p-16" : "p-5"} ${slide.imagePosition === "left" ? "flex-row" : "flex-row-reverse"}`}>
           <div className="shrink-0 overflow-hidden rounded-md bg-slate-100" style={{ width: `${slide.imageScale}%` }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={slide.image} alt="" className="h-full w-full object-contain" />
           </div>
           <div className="min-w-0 flex-1 overflow-hidden">
-            <SlideText title={title} bullets={bullets} accent={value.accent} />
+            <SlideText title={title} bullets={bullets} accent={value.accent} mode={mode} />
           </div>
         </div>
       )}

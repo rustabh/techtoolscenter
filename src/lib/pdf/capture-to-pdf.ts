@@ -116,3 +116,50 @@ export async function exportNodeToPdf(node: HTMLElement, options: CaptureToPdfOp
 
   doc.save(options.filename);
 }
+
+export interface CaptureSlidesToPdfOptions {
+  filename: string;
+  pixelRatio?: number;
+  backgroundColor?: string;
+  quality?: number;
+  captureStyle?: Partial<CSSStyleDeclaration>;
+}
+
+/**
+ * Exports a list of slide-preview nodes to a PDF with exactly one page per
+ * node, each page sized to that slide's own captured pixel dimensions
+ * (rather than forcing every slide into a fixed A4 shape). A pitch deck's
+ * slide previews render at a 16:9 aspect ratio on screen; A4 landscape is
+ * ~1.41:1, so stretching a 16:9 capture to fill an A4 page would distort
+ * it (or need letterboxing). Sizing each page from the capture's own
+ * width/height instead guarantees no distortion and no added whitespace.
+ */
+export async function exportSlidesToPdf(nodes: HTMLElement[], options: CaptureSlidesToPdfOptions): Promise<void> {
+  if (nodes.length === 0) throw new Error("No slides to export");
+  const { toJpeg } = await import("html-to-image");
+  const { jsPDF } = await import("jspdf");
+  const pixelRatio = options.pixelRatio ?? 2;
+  const backgroundColor = options.backgroundColor ?? "#ffffff";
+  const quality = options.quality ?? 0.92;
+
+  let doc: InstanceType<typeof jsPDF> | null = null;
+  for (let i = 0; i < nodes.length; i++) {
+    const dataUrl = await toJpeg(nodes[i], {
+      pixelRatio,
+      cacheBust: true,
+      backgroundColor,
+      quality,
+      style: options.captureStyle,
+    });
+    const img = await loadImage(dataUrl);
+    const orientation = img.width >= img.height ? "landscape" : "portrait";
+    if (!doc) {
+      doc = new jsPDF({ orientation, unit: "px", format: [img.width, img.height] });
+    } else {
+      doc.addPage([img.width, img.height], orientation);
+    }
+    doc.addImage(dataUrl, "JPEG", 0, 0, img.width, img.height);
+  }
+
+  doc!.save(options.filename);
+}

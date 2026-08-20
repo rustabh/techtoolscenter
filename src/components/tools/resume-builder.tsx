@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,11 +28,6 @@ const ACCENTS = [
   { id: "amber", hex: "#d97706" }, { id: "slate", hex: "#334155" }, { id: "sky", hex: "#0284c7" },
 ];
 
-function hexToRgb(hex: string) {
-  const int = parseInt(hex.replace("#", ""), 16);
-  return { r: (int >> 16) & 255, g: (int >> 8) & 255, b: int & 255 };
-}
-
 function initial(): ResumeState {
   return {
     name: "Alex Doe", role: "Full-Stack Developer",
@@ -52,66 +47,33 @@ export default function ResumeBuilder() {
   // hexToRgb() (crash) or a color style (silently renders black).
   const value = stored.accent ? stored : { ...stored, accent: ACCENTS[0].hex };
   const [exporting, setExporting] = useState(false);
+  const printRef = useRef<HTMLDivElement>(null);
   const patch = (p: Partial<ResumeState>) => set({ ...value, ...p });
   const patchEntry = (key: "experience" | "education", id: string, p: Partial<Entry>) =>
     set({ ...value, [key]: value[key].map((e) => (e.id === id ? { ...e, ...p } : e)) });
 
+  // Captures the live preview itself rather than redrawing the resume a
+  // second time with hand-placed jsPDF coordinates, so the download always
+  // matches whatever's actually on screen (accent color, spacing, content).
   const downloadPdf = async () => {
     if (exporting) return;
+    if (!printRef.current) {
+      showToast("Nothing to export yet", "error");
+      return;
+    }
     setExporting(true);
     try {
-      await generatePdf();
+      const { exportNodeToPdf } = await import("@/lib/pdf/capture-to-pdf");
+      await exportNodeToPdf(printRef.current, {
+        filename: `${(value.name || "resume").replace(/\s+/g, "-")}-resume.pdf`,
+        captureStyle: { border: "none", boxShadow: "none", borderRadius: "0" },
+      });
       showToast("Resume PDF downloaded");
     } catch {
       showToast("Couldn't generate the PDF — try again", "error");
     } finally {
       setExporting(false);
     }
-  };
-
-  const generatePdf = async () => {
-    const { jsPDF } = await import("jspdf");
-    const doc = new jsPDF();
-    const { r, g, b } = hexToRgb(value.accent);
-    let y = 20;
-    doc.setFontSize(22); doc.setTextColor(20); doc.text(value.name, 14, y); y += 7;
-    doc.setFontSize(12); doc.setTextColor(r, g, b); doc.text(value.role, 14, y); y += 7;
-    doc.setFontSize(9); doc.setTextColor(90);
-    doc.text([value.email, value.phone, value.location, value.website].filter(Boolean).join("  ·  "), 14, y); y += 8;
-    doc.setDrawColor(220); doc.line(14, y, 196, y); y += 8;
-
-    // A4 page is 297mm tall; keep an 18mm bottom margin and break to a new
-    // page instead of silently clipping content past the first page.
-    const PAGE_BOTTOM = 279;
-    const ensureSpace = (needed: number) => {
-      if (y + needed > PAGE_BOTTOM) { doc.addPage(); y = 20; }
-    };
-    const section = (title: string) => { ensureSpace(10); doc.setFontSize(12); doc.setTextColor(r, g, b); doc.text(title.toUpperCase(), 14, y); y += 6; doc.setTextColor(40); };
-    const wrap = (text: string, size = 9) => {
-      doc.setFontSize(size);
-      const lines = doc.splitTextToSize(text, 182);
-      const needed = lines.length * 5;
-      ensureSpace(needed);
-      doc.text(lines, 14, y); y += needed;
-    };
-
-    section("Summary"); wrap(value.summary); y += 4;
-    section("Experience");
-    value.experience.forEach((e) => {
-      ensureSpace(5);
-      doc.setFontSize(10); doc.setTextColor(20); doc.text(`${e.title} — ${e.subtitle}`, 14, y);
-      doc.setTextColor(120); doc.text(e.date, 196, y, { align: "right" }); y += 5;
-      doc.setTextColor(70); wrap(e.detail); y += 3;
-    });
-    y += 2; section("Education");
-    value.education.forEach((e) => {
-      ensureSpace(5);
-      doc.setFontSize(10); doc.setTextColor(20); doc.text(`${e.title} — ${e.subtitle}`, 14, y);
-      doc.setTextColor(120); doc.text(e.date, 196, y, { align: "right" }); y += 5;
-      doc.setTextColor(70); wrap(e.detail); y += 3;
-    });
-    y += 2; section("Skills"); wrap(value.skills);
-    doc.save(`${(value.name || "resume").replace(/\s+/g, "-")}-resume.pdf`);
   };
 
   const EntryEditor = ({ title, field }: { title: string; field: "experience" | "education" }) => (
@@ -181,7 +143,7 @@ export default function ResumeBuilder() {
       </div>
 
       <div className="lg:sticky lg:top-20 lg:h-fit">
-        <div className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
+        <div ref={printRef} className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
           <h2 className="text-2xl font-bold">{value.name}</h2>
           <p className="font-medium" style={{ color: value.accent }}>{value.role}</p>
           <p className="mt-1 text-xs text-slate-500">{[value.email, value.phone, value.location, value.website].filter(Boolean).join("  ·  ")}</p>
@@ -208,7 +170,7 @@ export default function ResumeBuilder() {
 
 function Section({ title, accent, children }: { title: string; accent: string; children: React.ReactNode }) {
   return (
-    <div className="mb-4">
+    <div data-pdf-block className="mb-4">
       <h3 className="mb-2 text-xs font-bold uppercase tracking-wider" style={{ color: accent }}>{title}</h3>
       {children}
     </div>
@@ -216,7 +178,7 @@ function Section({ title, accent, children }: { title: string; accent: string; c
 }
 function EntryView({ e }: { e: Entry }) {
   return (
-    <div className="mb-2">
+    <div data-pdf-block className="mb-2">
       <div className="flex items-baseline justify-between">
         <p className="text-sm font-semibold text-slate-800">{e.title} <span className="font-normal text-slate-500">— {e.subtitle}</span></p>
         <p className="text-[11px] text-slate-400">{e.date}</p>

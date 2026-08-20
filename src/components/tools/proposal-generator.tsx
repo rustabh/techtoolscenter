@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
 import { showToast } from "@/components/ui/toaster";
 import { formatCurrency, localDateISO } from "@/lib/utils";
-import { LogoEditor, fitContain, readLogoFile, type LogoAlign } from "@/components/tools/logo-editor";
+import { LogoEditor, readLogoFile, type LogoAlign } from "@/components/tools/logo-editor";
 
 interface ScopeItem { id: string; title: string; detail: string; }
 interface TimelineItem { id: string; phase: string; duration: string; }
@@ -43,11 +43,6 @@ const ACCENTS = [
   { id: "indigo", hex: "#4f46e5" }, { id: "emerald", hex: "#059669" }, { id: "rose", hex: "#e11d48" },
   { id: "amber", hex: "#d97706" }, { id: "slate", hex: "#334155" }, { id: "sky", hex: "#0284c7" },
 ];
-
-function hexToRgb(hex: string) {
-  const int = parseInt(hex.replace("#", ""), 16);
-  return { r: (int >> 16) & 255, g: (int >> 8) & 255, b: int & 255 };
-}
 
 function initial(): ProposalState {
   return {
@@ -87,6 +82,7 @@ export default function ProposalGenerator() {
     logoSize: stored.logoSize ?? 45,
   };
   const [exporting, setExporting] = useState(false);
+  const printRef = useRef<HTMLDivElement>(null);
   const patch = (p: Partial<ProposalState>) => set({ ...value, ...p });
 
   const onLogoUpload = (file: File) =>
@@ -106,101 +102,28 @@ export default function ProposalGenerator() {
   const patchTimeline = (id: string, p: Partial<TimelineItem>) => patch({ timeline: value.timeline.map((t) => (t.id === id ? { ...t, ...p } : t)) });
   const patchPricing = (id: string, p: Partial<PricingItem>) => patch({ pricing: value.pricing.map((x) => (x.id === id ? { ...x, ...p } : x)) });
 
+  // Captures the live preview itself rather than redrawing the proposal a
+  // second time with hand-placed jsPDF coordinates, so the download always
+  // matches whatever's actually on screen.
   const downloadPdf = async () => {
     if (exporting) return;
+    if (!printRef.current) {
+      showToast("Nothing to export yet", "error");
+      return;
+    }
     setExporting(true);
     try {
-      await generatePdf();
+      const { exportNodeToPdf } = await import("@/lib/pdf/capture-to-pdf");
+      await exportNodeToPdf(printRef.current, {
+        filename: `${(value.title || "proposal").replace(/\s+/g, "-").toLowerCase()}.pdf`,
+        captureStyle: { border: "none", boxShadow: "none", borderRadius: "0" },
+      });
       showToast("Proposal PDF downloaded");
     } catch {
       showToast("Couldn't generate the PDF — try again", "error");
     } finally {
       setExporting(false);
     }
-  };
-
-  const generatePdf = async () => {
-    const { jsPDF } = await import("jspdf");
-    const doc = new jsPDF();
-    const { r, g, b } = hexToRgb(value.accent);
-    let y = 20;
-
-    const PAGE_BOTTOM = 279;
-    const ensureSpace = (needed: number) => { if (y + needed > PAGE_BOTTOM) { doc.addPage(); y = 20; } };
-    const section = (title: string) => { ensureSpace(10); doc.setFontSize(12); doc.setTextColor(r, g, b); doc.text(title.toUpperCase(), 14, y); y += 6; doc.setTextColor(40); };
-    const wrap = (text: string, size = 9) => {
-      if (!text) return;
-      doc.setFontSize(size);
-      const lines = doc.splitTextToSize(text, 182);
-      const needed = lines.length * 5;
-      ensureSpace(needed);
-      doc.text(lines, 14, y); y += needed;
-    };
-
-    if (value.logo && value.logoW && value.logoH) {
-      const boxW = 18 + (value.logoSize / 100) * 24; // 30-70% maps to ~25-35mm
-      const fit = fitContain(value.logoW, value.logoH, boxW, 22);
-      const x = value.logoAlign === "left" ? 14 : value.logoAlign === "right" ? 196 - fit.w : 105 - fit.w / 2;
-      doc.addImage(value.logo, "PNG", x, y, fit.w, fit.h);
-      y += fit.h + 6;
-    }
-
-    doc.setFontSize(20); doc.setTextColor(20); doc.text(value.title || "Proposal", 14, y); y += 7;
-    doc.setFontSize(10); doc.setTextColor(r, g, b);
-    doc.text([value.proposalNumber, value.date].filter(Boolean).join("  ·  "), 14, y); y += 8;
-    doc.setDrawColor(220); doc.line(14, y, 196, y); y += 8;
-
-    doc.setFontSize(9); doc.setTextColor(90);
-    doc.text(`From: ${value.companyName}`, 14, y);
-    doc.text(`To: ${value.clientName}${value.clientCompany ? ` (${value.clientCompany})` : ""}`, 110, y);
-    y += 5;
-    doc.text([value.companyEmail, value.companyWebsite].filter(Boolean).join("  ·  "), 14, y);
-    if (value.validUntil) doc.text(`Valid until: ${value.validUntil}`, 110, y);
-    y += 10;
-
-    if (value.overview) { section("Overview"); wrap(value.overview); y += 4; }
-
-    if (value.scope.some((s) => s.title || s.detail)) {
-      section("Scope of Work");
-      value.scope.forEach((s) => {
-        if (!s.title && !s.detail) return;
-        ensureSpace(5);
-        doc.setFontSize(10); doc.setTextColor(20); doc.text(s.title, 14, y); y += 5;
-        doc.setTextColor(70); wrap(s.detail); y += 2;
-      });
-      y += 2;
-    }
-
-    if (value.timeline.some((t) => t.phase || t.duration)) {
-      section("Timeline");
-      value.timeline.forEach((t) => {
-        if (!t.phase && !t.duration) return;
-        ensureSpace(5);
-        doc.setFontSize(10); doc.setTextColor(20); doc.text(t.phase, 14, y);
-        doc.setTextColor(120); doc.text(t.duration, 196, y, { align: "right" }); y += 5.5;
-      });
-      y += 4;
-    }
-
-    if (value.pricing.some((p) => p.item || p.amount)) {
-      section("Investment");
-      value.pricing.forEach((p) => {
-        if (!p.item && !p.amount) return;
-        ensureSpace(5);
-        doc.setFontSize(10); doc.setTextColor(20); doc.text(p.item, 14, y);
-        doc.setTextColor(70); doc.text(formatCurrency(parseFloat(p.amount) || 0), 196, y, { align: "right" }); y += 5.5;
-      });
-      ensureSpace(7);
-      doc.setDrawColor(220); doc.line(14, y, 196, y); y += 5;
-      doc.setFontSize(11); doc.setTextColor(r, g, b);
-      doc.text("Total", 14, y);
-      doc.text(formatCurrency(total), 196, y, { align: "right" });
-      y += 9;
-    }
-
-    if (value.terms) { section("Terms"); wrap(value.terms); }
-
-    doc.save(`${(value.title || "proposal").replace(/\s+/g, "-").toLowerCase()}.pdf`);
   };
 
   const ListEditor = <T extends { id: string }>({
@@ -294,7 +217,7 @@ export default function ProposalGenerator() {
       </div>
 
       <div className="lg:sticky lg:top-20 lg:h-fit">
-        <div className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
+        <div ref={printRef} className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
           {value.logo && (
             <div className={`mb-4 flex ${value.logoAlign === "left" ? "justify-start" : value.logoAlign === "right" ? "justify-end" : "justify-center"}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -316,7 +239,7 @@ export default function ProposalGenerator() {
           {value.scope.some((s) => s.title || s.detail) && (
             <PreviewSection title="Scope of Work" accent={value.accent}>
               {value.scope.filter((s) => s.title || s.detail).map((s) => (
-                <div key={s.id} className="mb-2">
+                <div key={s.id} data-pdf-block className="mb-2">
                   <p className="text-sm font-semibold text-slate-800">{s.title}</p>
                   <p className="text-xs text-slate-600">{s.detail}</p>
                 </div>
@@ -326,7 +249,7 @@ export default function ProposalGenerator() {
           {value.timeline.some((t) => t.phase || t.duration) && (
             <PreviewSection title="Timeline" accent={value.accent}>
               {value.timeline.filter((t) => t.phase || t.duration).map((t) => (
-                <div key={t.id} className="flex justify-between text-xs text-slate-600">
+                <div key={t.id} data-pdf-block className="flex justify-between text-xs text-slate-600">
                   <span>{t.phase}</span><span className="text-slate-400">{t.duration}</span>
                 </div>
               ))}
@@ -335,11 +258,11 @@ export default function ProposalGenerator() {
           {value.pricing.some((p) => p.item || p.amount) && (
             <PreviewSection title="Investment" accent={value.accent}>
               {value.pricing.filter((p) => p.item || p.amount).map((p) => (
-                <div key={p.id} className="flex justify-between text-xs text-slate-600">
+                <div key={p.id} data-pdf-block className="flex justify-between text-xs text-slate-600">
                   <span>{p.item}</span><span>{formatCurrency(parseFloat(p.amount) || 0)}</span>
                 </div>
               ))}
-              <div className="mt-1 flex justify-between border-t border-slate-200 pt-1 text-sm font-semibold text-slate-800">
+              <div data-pdf-block className="mt-1 flex justify-between border-t border-slate-200 pt-1 text-sm font-semibold text-slate-800">
                 <span>Total</span><span>{formatCurrency(total)}</span>
               </div>
             </PreviewSection>
@@ -357,7 +280,7 @@ export default function ProposalGenerator() {
 
 function PreviewSection({ title, accent, children }: { title: string; accent: string; children: React.ReactNode }) {
   return (
-    <div className="mt-4">
+    <div data-pdf-block className="mt-4">
       <h3 className="mb-2 text-xs font-bold uppercase tracking-wider" style={{ color: accent }}>{title}</h3>
       {children}
     </div>

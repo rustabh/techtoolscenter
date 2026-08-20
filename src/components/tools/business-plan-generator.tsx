@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
 import { showToast } from "@/components/ui/toaster";
 import { localDateISO } from "@/lib/utils";
-import { LogoEditor, fitContain, readLogoFile, type LogoAlign } from "@/components/tools/logo-editor";
+import { LogoEditor, readLogoFile, type LogoAlign } from "@/components/tools/logo-editor";
 
 interface Milestone { id: string; name: string; date: string; }
 
@@ -48,11 +48,6 @@ const ACCENTS = [
   { id: "indigo", hex: "#4f46e5" }, { id: "emerald", hex: "#059669" }, { id: "rose", hex: "#e11d48" },
   { id: "amber", hex: "#d97706" }, { id: "slate", hex: "#334155" }, { id: "sky", hex: "#0284c7" },
 ];
-
-function hexToRgb(hex: string) {
-  const int = parseInt(hex.replace("#", ""), 16);
-  return { r: (int >> 16) & 255, g: (int >> 8) & 255, b: int & 255 };
-}
 
 function initial(): BusinessPlanState {
   return {
@@ -107,6 +102,7 @@ export default function BusinessPlanGenerator() {
     logoSize: stored.logoSize ?? 45,
   };
   const [exporting, setExporting] = useState(false);
+  const printRef = useRef<HTMLDivElement>(null);
   const patch = (p: Partial<BusinessPlanState>) => set({ ...value, ...p });
 
   const patchMilestone = (id: string, p: Partial<Milestone>) =>
@@ -120,79 +116,28 @@ export default function BusinessPlanGenerator() {
     );
   const removeLogo = () => patch({ logo: undefined, logoW: undefined, logoH: undefined });
 
+  // Captures the live preview itself rather than redrawing the plan a
+  // second time with hand-placed jsPDF coordinates, so the download always
+  // matches whatever's actually on screen.
   const downloadPdf = async () => {
     if (exporting) return;
+    if (!printRef.current) {
+      showToast("Nothing to export yet", "error");
+      return;
+    }
     setExporting(true);
     try {
-      await generatePdf();
+      const { exportNodeToPdf } = await import("@/lib/pdf/capture-to-pdf");
+      await exportNodeToPdf(printRef.current, {
+        filename: `${(value.companyName || "business-plan").replace(/\s+/g, "-").toLowerCase()}-plan.pdf`,
+        captureStyle: { border: "none", boxShadow: "none", borderRadius: "0" },
+      });
       showToast("Business plan PDF downloaded");
     } catch {
       showToast("Couldn't generate the PDF — try again", "error");
     } finally {
       setExporting(false);
     }
-  };
-
-  const generatePdf = async () => {
-    const { jsPDF } = await import("jspdf");
-    const doc = new jsPDF();
-    const { r, g, b } = hexToRgb(value.accent);
-    let y = 20;
-
-    const PAGE_BOTTOM = 279;
-    const ensureSpace = (needed: number) => { if (y + needed > PAGE_BOTTOM) { doc.addPage(); y = 20; } };
-    const section = (title: string) => { ensureSpace(10); doc.setFontSize(12); doc.setTextColor(r, g, b); doc.text(title.toUpperCase(), 14, y); y += 6; doc.setTextColor(40); };
-    const wrap = (text: string, size = 9) => {
-      if (!text) return;
-      doc.setFontSize(size);
-      const lines = doc.splitTextToSize(text, 182);
-      const needed = lines.length * 5;
-      ensureSpace(needed);
-      doc.text(lines, 14, y); y += needed;
-    };
-
-    if (value.logo && value.logoW && value.logoH) {
-      const boxW = 18 + (value.logoSize / 100) * 24;
-      const fit = fitContain(value.logoW, value.logoH, boxW, 22);
-      const x = value.logoAlign === "left" ? 14 : value.logoAlign === "right" ? 196 - fit.w : 105 - fit.w / 2;
-      doc.addImage(value.logo, "PNG", x, y, fit.w, fit.h);
-      y += fit.h + 6;
-    }
-
-    doc.setFontSize(20); doc.setTextColor(20); doc.text(value.companyName || "Business Plan", 14, y); y += 7;
-    if (value.tagline) { doc.setFontSize(10); doc.setTextColor(90); doc.text(value.tagline, 14, y); y += 6; }
-    doc.setFontSize(9); doc.setTextColor(r, g, b);
-    doc.text([value.date, value.contactEmail, value.website].filter(Boolean).join("  ·  "), 14, y); y += 8;
-    doc.setDrawColor(220); doc.line(14, y, 196, y); y += 8;
-
-    const sections: [string, string][] = [
-      ["Executive Summary", value.executiveSummary],
-      ["Problem", value.problem],
-      ["Solution", value.solution],
-      ["Market", value.market],
-      ["Competition", value.competition],
-      ["Business Model", value.businessModel],
-      ["Marketing & Sales", value.marketing],
-      ["Operations", value.operations],
-      ["Team", value.team],
-    ];
-    sections.forEach(([title, text]) => { if (text) { section(title); wrap(text); y += 4; } });
-
-    if (value.milestones.some((m) => m.name || m.date)) {
-      section("Milestones");
-      value.milestones.forEach((m) => {
-        if (!m.name && !m.date) return;
-        ensureSpace(5.5);
-        doc.setFontSize(10); doc.setTextColor(20); doc.text(m.name, 14, y);
-        doc.setTextColor(120); doc.text(m.date, 196, y, { align: "right" }); y += 5.5;
-      });
-      y += 4;
-    }
-
-    if (value.financials) { section("Financial Summary"); wrap(value.financials); y += 4; }
-    if (value.fundingAsk) { section("Funding Ask"); wrap(value.fundingAsk); }
-
-    doc.save(`${(value.companyName || "business-plan").replace(/\s+/g, "-").toLowerCase()}-plan.pdf`);
   };
 
   const field = (key: keyof BusinessPlanState, label: string, placeholder: string) => (
@@ -282,7 +227,7 @@ export default function BusinessPlanGenerator() {
       </div>
 
       <div className="lg:sticky lg:top-20 lg:h-fit">
-        <div className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
+        <div ref={printRef} className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
           {value.logo && (
             <div className={`mb-4 flex ${value.logoAlign === "left" ? "justify-start" : value.logoAlign === "right" ? "justify-end" : "justify-center"}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -315,7 +260,7 @@ export default function BusinessPlanGenerator() {
           {value.milestones.some((m) => m.name || m.date) && (
             <PreviewSection title="Milestones" accent={value.accent}>
               {value.milestones.filter((m) => m.name || m.date).map((m) => (
-                <div key={m.id} className="flex justify-between text-xs text-slate-600">
+                <div key={m.id} data-pdf-block className="flex justify-between text-xs text-slate-600">
                   <span>{m.name}</span><span className="text-slate-400">{m.date}</span>
                 </div>
               ))}
@@ -340,7 +285,7 @@ export default function BusinessPlanGenerator() {
 
 function PreviewSection({ title, accent, children }: { title: string; accent: string; children: React.ReactNode }) {
   return (
-    <div className="mt-4">
+    <div data-pdf-block className="mt-4">
       <h3 className="mb-2 text-xs font-bold uppercase tracking-wider" style={{ color: accent }}>{title}</h3>
       {children}
     </div>

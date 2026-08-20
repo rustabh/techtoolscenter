@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
 import { showToast } from "@/components/ui/toaster";
 import { formatCurrency } from "@/lib/utils";
-import { LogoEditor, fitContain, readLogoFile, type LogoAlign } from "@/components/tools/logo-editor";
+import { LogoEditor, readLogoFile, type LogoAlign } from "@/components/tools/logo-editor";
 
 interface Row { id: string; label: string; amount: number; }
 interface SalaryState {
@@ -52,6 +52,8 @@ export default function SalarySlipGenerator() {
     logoAlign: stored.logoAlign ?? "center",
     logoSize: stored.logoSize ?? 45,
   };
+  const [exporting, setExporting] = useState(false);
+  const printRef = useRef<HTMLDivElement>(null);
   const totals = useMemo(() => {
     const gross = sum(value.earnings);
     const ded = sum(value.deductions);
@@ -70,44 +72,28 @@ export default function SalarySlipGenerator() {
     );
   const removeLogo = () => patch({ logo: undefined, logoW: undefined, logoH: undefined });
 
+  // Captures the live preview itself rather than redrawing the slip a
+  // second time with hand-placed jsPDF/autotable coordinates, so the
+  // download always matches whatever's actually on screen.
   const downloadPdf = async () => {
-    const { jsPDF } = await import("jspdf");
-    const autoTable = (await import("jspdf-autotable")).default;
-    const doc = new jsPDF();
-    const primary: [number, number, number] = [79, 70, 229];
-
-    let offset = 0;
-    if (value.logo && value.logoW && value.logoH) {
-      const boxW = 18 + (value.logoSize / 100) * 24;
-      const fit = fitContain(value.logoW, value.logoH, boxW, 22);
-      const x = value.logoAlign === "left" ? 14 : value.logoAlign === "right" ? 196 - fit.w : 105 - fit.w / 2;
-      doc.addImage(value.logo, "PNG", x, 14, fit.w, fit.h);
-      offset = fit.h + 6;
+    if (exporting) return;
+    if (!printRef.current) {
+      showToast("Nothing to export yet", "error");
+      return;
     }
-
-    doc.setFontSize(16); doc.setTextColor(...primary);
-    doc.text(value.company, 105, 20 + offset, { align: "center" });
-    doc.setFontSize(11); doc.setTextColor(80);
-    doc.text(`Salary Slip — ${value.month}`, 105, 28 + offset, { align: "center" });
-    doc.setFontSize(9); doc.setTextColor(40);
-    doc.text(`Employee: ${value.employee}`, 14, 40 + offset);
-    doc.text(`Designation: ${value.designation}`, 14, 46 + offset);
-    doc.text(`Employee ID: ${value.empId}`, 140, 40 + offset);
-    autoTable(doc, {
-      startY: 54 + offset,
-      head: [["Earnings", "Amount", "Deductions", "Amount"]],
-      body: Array.from({ length: Math.max(value.earnings.length, value.deductions.length) }).map((_, i) => [
-        value.earnings[i]?.label ?? "", value.earnings[i] ? formatCurrency(value.earnings[i].amount) : "",
-        value.deductions[i]?.label ?? "", value.deductions[i] ? formatCurrency(value.deductions[i].amount) : "",
-      ]),
-      foot: [["Gross", formatCurrency(totals.gross), "Total", formatCurrency(totals.ded)]],
-      headStyles: { fillColor: primary }, footStyles: { fillColor: [238, 238, 250], textColor: 20 }, styles: { fontSize: 9 },
-    });
-    const y = (doc as any).lastAutoTable.finalY + 10;
-    doc.setFillColor(...primary); doc.roundedRect(14, y, 182, 16, 3, 3, "F");
-    doc.setTextColor(255); doc.setFontSize(13);
-    doc.text(`Net Pay: ${formatCurrency(totals.net)}`, 105, y + 11, { align: "center" });
-    doc.save(`salary-slip-${value.month}.pdf`);
+    setExporting(true);
+    try {
+      const { exportNodeToPdf } = await import("@/lib/pdf/capture-to-pdf");
+      await exportNodeToPdf(printRef.current, {
+        filename: `salary-slip-${value.month}.pdf`,
+        captureStyle: { border: "none", boxShadow: "none", borderRadius: "0" },
+      });
+      showToast("Salary slip PDF downloaded");
+    } catch {
+      showToast("Couldn't generate the PDF — try again", "error");
+    } finally {
+      setExporting(false);
+    }
   };
 
   const RowEditor = ({ title, field: k }: { title: string; field: "earnings" | "deductions" }) => (
@@ -145,11 +131,11 @@ export default function SalarySlipGenerator() {
         </Card>
         {RowEditor({ title: "Earnings", field: "earnings" })}
         {RowEditor({ title: "Deductions", field: "deductions" })}
-        <ActionBar onUndo={undo} onRedo={redo} onReset={() => reset()} onDownload={downloadPdf} downloadLabel="Download PDF" canUndo={canUndo} canRedo={canRedo} />
+        <ActionBar onUndo={undo} onRedo={redo} onReset={() => reset()} onDownload={downloadPdf} downloadLabel={exporting ? "Generating…" : "Download PDF"} canUndo={canUndo} canRedo={canRedo} />
       </div>
 
       <div className="lg:sticky lg:top-20 lg:h-fit">
-        <div className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
+        <div ref={printRef} className="rounded-2xl border border-border bg-white p-8 text-slate-900 shadow-sm">
           {value.logo && (
             <div className={`mb-4 flex ${value.logoAlign === "left" ? "justify-start" : value.logoAlign === "right" ? "justify-end" : "justify-center"}`}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -158,24 +144,24 @@ export default function SalarySlipGenerator() {
           )}
           <h3 className="text-center text-lg font-bold text-indigo-600">{value.company}</h3>
           <p className="text-center text-xs text-slate-500">Salary Slip — {value.month}</p>
-          <div className="mt-4 grid grid-cols-2 gap-1 text-xs text-slate-600">
+          <div data-pdf-block className="mt-4 grid grid-cols-2 gap-1 text-xs text-slate-600">
             <p>Employee: <span className="font-medium text-slate-800">{value.employee}</span></p>
             <p>ID: <span className="font-medium text-slate-800">{value.empId}</span></p>
             <p className="col-span-2">Designation: <span className="font-medium text-slate-800">{value.designation}</span></p>
           </div>
           <div className="mt-4 grid grid-cols-2 gap-4 text-xs">
-            <div>
+            <div data-pdf-block>
               <p className="mb-1 font-semibold text-slate-700">Earnings</p>
               {value.earnings.map((r) => <div key={r.id} className="flex justify-between text-slate-600"><span>{r.label}</span><span>{formatCurrency(r.amount)}</span></div>)}
               <div className="mt-1 flex justify-between border-t border-slate-200 pt-1 font-semibold"><span>Gross</span><span>{formatCurrency(totals.gross)}</span></div>
             </div>
-            <div>
+            <div data-pdf-block>
               <p className="mb-1 font-semibold text-slate-700">Deductions</p>
               {value.deductions.map((r) => <div key={r.id} className="flex justify-between text-slate-600"><span>{r.label}</span><span>{formatCurrency(r.amount)}</span></div>)}
               <div className="mt-1 flex justify-between border-t border-slate-200 pt-1 font-semibold"><span>Total</span><span>{formatCurrency(totals.ded)}</span></div>
             </div>
           </div>
-          <div className="mt-4 rounded-xl bg-indigo-600 py-3 text-center font-bold text-white">
+          <div data-pdf-block className="mt-4 rounded-xl bg-indigo-600 py-3 text-center font-bold text-white">
             Net Pay: {formatCurrency(totals.net)}
           </div>
         </div>
