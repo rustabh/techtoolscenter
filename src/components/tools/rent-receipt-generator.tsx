@@ -67,9 +67,17 @@ function initial(): RentReceiptState {
   };
 }
 
+// `new Date("YYYY-MM-DD")` parses the string as UTC midnight, but
+// toLocaleDateString then renders it in the browser's LOCAL time zone — for
+// anyone in a negative UTC offset, the rent period and receipt date printed
+// on the actual PDF silently show the day before whatever was entered.
+// Parsing the y/m/d directly into a local Date sidesteps the UTC round-trip.
 function formatDate(iso: string): string {
   if (!iso) return "";
-  const d = new Date(iso);
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!match) return iso;
+  const [, y, m, day] = match;
+  const d = new Date(Number(y), Number(m) - 1, Number(day));
   if (isNaN(d.getTime())) return iso;
   return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" });
 }
