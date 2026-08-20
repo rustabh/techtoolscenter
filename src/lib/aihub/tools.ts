@@ -5245,6 +5245,20 @@ export const aiTools: AiTool[] = [
     ],
     "icon": "MessagesSquare",
     "addedOn": "2026-08-02"
+  },
+  {
+    "slug": "hyper3d-rodin",
+    "name": "Hyper3D Rodin",
+    "category": "3d",
+    "developer": "Deemos",
+    "officialUrl": "https://hyper3d.ai",
+    "overview": "A native 3D generative AI model that turns a text prompt or reference image into a textured, quad-mesh 3D model in under a minute, aimed at game, film and 3D-printing workflows.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "platforms": ["Web"],
+    "tags": ["text-to-3d", "image-to-3d", "3d-models", "quad-mesh", "game-assets"],
+    "icon": "Boxes",
+    "addedOn": "2026-08-20"
   }
 ];
 
