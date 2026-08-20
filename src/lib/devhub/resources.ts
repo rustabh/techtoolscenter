@@ -3218,6 +3218,82 @@ export const externalDevResources: DevResource[] = [
     "openSource": true,
     "icon": "KeyRound",
     "addedOn": "2026-08-06"
+  },
+  {
+    "slug": "keycloak",
+    "name": "Keycloak",
+    "category": "authentication",
+    "description": "An open-source identity and access management server with single sign-on, social login and standards-based protocols, self-hostable for full control over your auth stack.",
+    "officialUrl": "https://www.keycloak.org",
+    "docsUrl": "https://www.keycloak.org/documentation",
+    "tags": ["sso", "iam", "self-hosted", "oidc", "saml"],
+    "pricing": "Free",
+    "openSource": true,
+    "icon": "Key",
+    "addedOn": "2026-08-20"
+  },
+  {
+    "slug": "k6",
+    "name": "k6",
+    "category": "testing",
+    "description": "A developer-centric load and performance testing tool, scripted in JavaScript, for finding out how an API or app behaves under real traffic before users do.",
+    "officialUrl": "https://k6.io",
+    "docsUrl": "https://grafana.com/docs/k6/latest/",
+    "tags": ["load-testing", "performance", "api-testing", "open-source"],
+    "pricing": "Freemium",
+    "openSource": true,
+    "icon": "Gauge",
+    "addedOn": "2026-08-20"
+  },
+  {
+    "slug": "datadog",
+    "name": "Datadog",
+    "category": "monitoring",
+    "description": "A unified observability platform combining infrastructure metrics, log management, APM traces and real-user monitoring in one dashboard.",
+    "officialUrl": "https://www.datadoghq.com",
+    "docsUrl": "https://docs.datadoghq.com",
+    "tags": ["observability", "apm", "infrastructure", "logs"],
+    "pricing": "Freemium",
+    "icon": "BarChart3",
+    "addedOn": "2026-08-20"
+  },
+  {
+    "slug": "open-props",
+    "name": "Open Props",
+    "category": "css-libraries",
+    "description": "A set of ready-to-use, well-considered CSS custom properties — colors, easings, shadows, gradients — for styling without a full utility framework or build step.",
+    "officialUrl": "https://open-props.style",
+    "docsUrl": "https://open-props.style/#getting-started",
+    "tags": ["css-variables", "design-tokens", "lightweight", "no-build"],
+    "pricing": "Free",
+    "openSource": true,
+    "icon": "Paintbrush",
+    "addedOn": "2026-08-20"
+  },
+  {
+    "slug": "aws-amplify",
+    "name": "AWS Amplify",
+    "category": "deployment",
+    "description": "A full-stack platform for building and deploying web/mobile apps on AWS, bundling hosting, CI/CD, auth and backend resources behind one CLI and console.",
+    "officialUrl": "https://aws.amazon.com/amplify/",
+    "docsUrl": "https://docs.amplify.aws",
+    "tags": ["aws", "full-stack", "ci-cd", "hosting"],
+    "pricing": "Freemium",
+    "icon": "CloudCog",
+    "addedOn": "2026-08-20"
+  },
+  {
+    "slug": "payload-cms",
+    "name": "Payload CMS",
+    "category": "cms",
+    "description": "A TypeScript-native, self-hostable headless CMS where content models, admin UI and API are all defined in code rather than a separate visual builder.",
+    "officialUrl": "https://payloadcms.com",
+    "docsUrl": "https://payloadcms.com/docs",
+    "tags": ["headless-cms", "typescript", "self-hosted", "open-source"],
+    "pricing": "Freemium",
+    "openSource": true,
+    "icon": "Layers",
+    "addedOn": "2026-08-20"
   }
 ];
 
