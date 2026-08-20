@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import { Plus, Trash2, Upload, Printer, FileDown, ImageDown, Sparkles, Wand2, Loader2 } from "lucide-react";
+import { Plus, Trash2, Upload, Printer, FileDown, FileJson, FileUp, ImageDown, Sparkles, Wand2, Loader2 } from "lucide-react";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -11,10 +11,10 @@ import { Select } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { ActionBar } from "@/components/tools/action-bar";
 import { showToast } from "@/components/ui/toaster";
-import { formatCurrency, localDateISO } from "@/lib/utils";
+import { formatCurrency, localDateISO, slugify, downloadBlob } from "@/lib/utils";
 import { saveItem } from "@/lib/saved";
 import { newItem, subtotal, type LineItem, type Party } from "./doc-types";
-import { fitContain, readLogoFile } from "@/components/tools/logo-editor";
+import { readLogoFile } from "@/components/tools/logo-editor";
 
 /* ------------------------------------------------------------------ */
 /* Document types                                                      */
@@ -186,6 +186,7 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
   const { value: stored, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<BizState>(storageKey, initial(lockKind));
   const value: BizState = { ...stored, logoSize: stored.logoSize ?? 100, paymentStatus: stored.paymentStatus ?? "due" };
   const printRef = useRef<HTMLDivElement>(null);
+  const importInputRef = useRef<HTMLInputElement>(null);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
   const [barUrl, setBarUrl] = useState<string | null>(null);
   const [exporting, setExporting] = useState<"pdf" | "png" | null>(null);
@@ -292,12 +293,69 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
 
   const duplicate = () => patch({ number: autoNumber(kind.prefix), date: localDateISO() });
 
+  /* ---------------- Template export / import ---------------- */
+  // "Save template" previously just bookmarked a {title, href} card on the
+  // dashboard — it never stored the actual company/customer/items/logo
+  // data, so opening the saved card later landed on a blank tool instead of
+  // the filled-in template it implied. This exports/imports the real state
+  // as a JSON file the user keeps and can reuse across sessions or devices.
+  const TEMPLATE_FILE_TYPE = "techtoolscenter-business-doc-template";
+  const exportTemplate = () => {
+    const payload = { type: TEMPLATE_FILE_TYPE, version: 1, exportedAt: new Date().toISOString(), data: value };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+    const name = slugify(value.company.name || value.customer.name || kind.label);
+    downloadBlob(blob, `${kind.prefix.toLowerCase()}-template-${name || "untitled"}.json`);
+    showToast("Template exported as JSON");
+  };
+  const importTemplate = (file?: File) => {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const parsed = JSON.parse(reader.result as string);
+        const data = parsed && typeof parsed === "object" && "data" in parsed ? parsed.data : parsed;
+        if (!data || typeof data !== "object" || !Array.isArray(data.items) || !data.company) {
+          showToast("That doesn't look like a valid template file", "error");
+          return;
+        }
+        // Merge onto today's defaults so a template exported before a field
+        // (e.g. paymentStatus) existed still loads with a sane fallback,
+        // and force the kind back to whichever tool page this actually is
+        // so importing an old Invoice template into Quotation Generator
+        // doesn't silently switch the page's document type.
+        set({ ...initial(lockKind ?? data.kind), ...data, kind: lockKind ?? data.kind ?? value.kind } as BizState);
+        showToast("Template imported");
+      } catch {
+        showToast("Couldn't read that file — make sure it's a template JSON exported from this tool", "error");
+      }
+    };
+    reader.onerror = () => showToast("Couldn't read that file", "error");
+    reader.readAsText(file);
+  };
+
   /* ---------------- PDF export ---------------- */
+  // Captures the live preview node itself, rather than redrawing the
+  // document a second time with hand-placed jsPDF coordinates — the old
+  // approach only ever implemented one generic layout and ignored which of
+  // the 20 templates / 5 layouts was actually selected, so the downloaded
+  // PDF routinely didn't match what was on screen. Capturing the real DOM
+  // node makes that drift structurally impossible: whatever the preview
+  // shows is exactly what gets exported.
   const downloadPdf = async () => {
     if (exporting) return;
+    if (!printRef.current) {
+      showToast("Nothing to export yet", "error");
+      return;
+    }
     setExporting("pdf");
     try {
-      await generatePdf();
+      const { exportNodeToPdf } = await import("@/lib/pdf/capture-to-pdf");
+      await exportNodeToPdf(printRef.current, {
+        filename: `${value.number || kind.prefix}.pdf`,
+        // Strip the on-screen card chrome (border/shadow/rounded corners)
+        // so the PDF prints as a clean full-bleed page, not a floating card.
+        captureStyle: { border: "none", boxShadow: "none", borderRadius: "0" },
+      });
       showToast(`${kind.label} PDF downloaded`);
     } catch {
       showToast("Couldn't generate the PDF — try again", "error");
@@ -306,139 +364,18 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
     }
   };
 
-  const generatePdf = async () => {
-    const { jsPDF } = await import("jspdf");
-    const autoTable = (await import("jspdf-autotable")).default;
-    const doc = new jsPDF();
-    const { r, g, b } = hexToRgb(accent);
-    const primary: [number, number, number] = [r, g, b];
-
-    // A4 is 297mm tall. Neither the letterhead body nor the notes/terms/
-    // signature block below the items table previously checked remaining
-    // page space, so a long body letter or long notes/terms silently drew
-    // past the bottom edge — invisible in the exported PDF, with the
-    // signature/stamp/QR block sometimes landing entirely off-page.
-    const PAGE_BOTTOM = 279;
-    const PAGE_TOP = 20;
-    const ensureSpace = (y: number, needed: number) => {
-      if (y + needed > PAGE_BOTTOM) { doc.addPage(); return PAGE_TOP; }
-      return y;
-    };
-    // Draws one line at a time (rather than jsPDF's single-call array text,
-    // which has no concept of page boundaries) so long text breaks onto a
-    // new page instead of running off the current one.
-    const drawWrapped = (lines: string[], x: number, startY: number, lineHeight: number) => {
-      let y = startY;
-      for (const line of lines) {
-        y = ensureSpace(y, lineHeight);
-        doc.text(line, x, y);
-        y += lineHeight;
-      }
-      return y;
-    };
-
-    if (value.logo) {
-      try {
-        const box = 28 * (value.logoSize / 100);
-        const fit = value.logoW && value.logoH ? fitContain(value.logoW, value.logoH, box, box) : { w: box, h: box };
-        doc.addImage(value.logo, "PNG", 14, 12, fit.w, fit.h);
-      } catch {}
-    }
-    doc.setFontSize(22);
-    doc.setTextColor(...primary);
-    doc.text(kind.title || value.company.name || "LETTERHEAD", 196, 22, { align: "right" });
-    doc.setFontSize(10);
-    doc.setTextColor(90);
-    doc.text(`#${value.number}`, 196, 30, { align: "right" });
-    doc.text(`Date: ${value.date}`, 196, 36, { align: "right" });
-    let metaY = 36;
-    if (kind.priced && value.dueDate) { doc.text(`Due: ${value.dueDate}`, 196, 42, { align: "right" }); metaY = 42; }
-    if (kind.priced) {
-      const status = PAYMENT_STATUSES.find((s) => s.id === value.paymentStatus) ?? PAYMENT_STATUSES[0];
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(...status.rgb);
-      doc.text(status.label.toUpperCase(), 196, metaY + 6, { align: "right" });
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(90);
-    }
-
-    if (value.kind === "letterhead") {
-      doc.setTextColor(40);
-      doc.setFontSize(11);
-      const bodyLines = doc.splitTextToSize(value.bodyText, 180);
-      let y = drawWrapped(bodyLines, 14, 70, 6);
-      y = ensureSpace(y + 20, 26);
-      const signY = y;
-      if (value.stamp) { try { doc.addImage(value.stamp, "PNG", 14, signY, 26, 26); } catch {} }
-      if (qrUrl) { try { doc.addImage(qrUrl, "PNG", 60, signY + 2, 24, 24); } catch {} }
-      if (value.signature) { try { doc.addImage(value.signature, "PNG", 150, signY + 2, 40, 18); doc.text("Authorised signature", 150, signY + 26); } catch {} }
-    } else {
-      doc.setTextColor(20);
-      doc.setFontSize(11);
-      doc.text("From", 14, 54);
-      doc.text(kind.id === "purchase-order" ? "Vendor" : "Bill To", 110, 54);
-      doc.setFontSize(9);
-      doc.setTextColor(80);
-      doc.text(partyLines(value.company), 14, 60);
-      doc.text(partyLines(value.customer), 110, 60);
-
-      autoTable(doc, {
-        startY: 92,
-        head: [kind.priced ? ["#", "Description", "Qty", "Rate", "Amount"] : ["#", "Description", "Qty"]],
-        body: value.items.map((it, i) => kind.priced
-          ? [String(i + 1), it.description, String(it.qty), money(it.rate), money(it.qty * it.rate)]
-          : [String(i + 1), it.description, String(it.qty)]),
-        headStyles: { fillColor: primary },
-        styles: { fontSize: 9 },
-        theme: "striped",
-      });
-
-      let y = (doc as unknown as { lastAutoTable: { finalY: number } }).lastAutoTable.finalY + 8;
-      if (kind.priced) {
-        const put = (label: string, val: string, bold = false) => {
-          y = ensureSpace(y, bold ? 8 : 6);
-          doc.setFont("helvetica", bold ? "bold" : "normal");
-          doc.setFontSize(bold ? 12 : 10);
-          doc.setTextColor(bold ? 20 : 80);
-          doc.text(label, 140, y);
-          doc.text(val, 196, y, { align: "right" });
-          y += bold ? 8 : 6;
-        };
-        put("Subtotal", money(totals.sub));
-        if (totals.discountAmt > 0) put(`Discount (${value.discount}%)`, `- ${money(totals.discountAmt)}`);
-        taxLines.forEach((t) => put(t.label, money(t.amt)));
-        if (totals.shipping > 0) put("Shipping", money(totals.shipping));
-        put("Total", money(totals.grand), true);
-      }
-
-      y += 8;
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(9);
-      doc.setTextColor(80);
-      if (value.notes) { const lines = doc.splitTextToSize(`Notes: ${value.notes}`, 180); y = drawWrapped(lines, 14, y, 5) + 1; }
-      if (value.terms) { const lines = doc.splitTextToSize(`Terms: ${value.terms}`, 180); y = drawWrapped(lines, 14, y, 5) + 1; }
-      if (value.bankDetails) { const lines = doc.splitTextToSize(`Bank details: ${value.bankDetails}`, 180); y = drawWrapped(lines, 14, y, 5) + 1; }
-      y = ensureSpace(y, 30);
-      if (value.signature) { try { doc.addImage(value.signature, "PNG", 150, y + 4, 40, 18); doc.text("Authorised signature", 150, y + 28); } catch {} }
-      if (value.stamp) { try { doc.addImage(value.stamp, "PNG", 14, y + 2, 26, 26); } catch {} }
-      if (qrUrl) { try { doc.addImage(qrUrl, "PNG", 60, y + 2, 24, 24); } catch {} }
-    }
-
-    if (value.watermark) {
-      doc.setTextColor(230);
-      doc.setFontSize(60);
-      doc.text(value.watermark, 105, 160, { align: "center", angle: 35 });
-    }
-    doc.save(`${value.number}.pdf`);
-  };
-
   /* ---------------- PNG export ---------------- */
   const downloadPng = async () => {
     if (!printRef.current || exporting) return;
     setExporting("png");
     try {
       const { toPng } = await import("html-to-image");
-      const url = await toPng(printRef.current, { pixelRatio: 2.5, cacheBust: true, backgroundColor: "#ffffff" });
+      const url = await toPng(printRef.current, {
+        pixelRatio: 2.5,
+        cacheBust: true,
+        backgroundColor: "#ffffff",
+        style: { border: "none", boxShadow: "none", borderRadius: "0" },
+      });
       const a = document.createElement("a");
       a.href = url;
       a.download = `${value.number}.png`;
@@ -638,7 +575,15 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
           </Button>
           <Button variant="outline" size="sm" onClick={() => window.print()} aria-label="Print document"><Printer className="size-4" /> Print</Button>
           <Button variant="outline" size="sm" onClick={() => saveItem({ type: "project", title: `${kind.label} ${value.number}`, subtitle: value.customer.name || value.company.name, href: `/tools/${KIND_SLUG[value.kind]}` })}>Save project</Button>
-          <Button variant="outline" size="sm" onClick={() => saveItem({ type: "template", title: `${kind.label} · ${template.name}`, subtitle: "Template", href: `/tools/${KIND_SLUG[value.kind]}` })}>Save template</Button>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" size="sm" onClick={exportTemplate} aria-label="Export the current company, customer and item details as a reusable JSON template">
+            <FileJson className="size-4" /> Export template
+          </Button>
+          <input ref={importInputRef} type="file" accept="application/json" className="hidden" onChange={(e) => { importTemplate(e.target.files?.[0]); e.target.value = ""; }} />
+          <Button variant="outline" size="sm" onClick={() => importInputRef.current?.click()} aria-label="Import a previously exported JSON template">
+            <FileUp className="size-4" /> Import template
+          </Button>
         </div>
       </div>
 
@@ -657,7 +602,7 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
           {value.kind === "letterhead" ? (
             <>
               <p className="mt-8 whitespace-pre-line text-sm leading-relaxed text-slate-700">{value.bodyText}</p>
-              <div className="mt-8 flex items-end justify-between">
+              <div data-pdf-block className="mt-8 flex items-end justify-between">
                 <div className="flex items-end gap-4">
                   {value.stamp && (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -718,7 +663,7 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
               </table>
 
               {kind.priced && (
-                <div className={`mt-4 w-64 space-y-1 text-xs ${layout === "bold" ? "" : "ml-auto"}`}>
+                <div data-pdf-block className={`mt-4 w-64 space-y-1 text-xs ${layout === "bold" ? "" : "ml-auto"}`}>
                   <Line label="Subtotal" value={money(totals.sub)} />
                   {totals.discountAmt > 0 && <Line label={`Discount (${value.discount}%)`} value={`- ${money(totals.discountAmt)}`} />}
                   {taxLines.map((t) => <Line key={t.label} label={t.label} value={money(t.amt)} />)}
@@ -730,14 +675,14 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
               )}
 
               {(value.notes || value.terms || value.bankDetails) && (
-                <div className="mt-6 space-y-1 text-[11px] text-slate-500">
+                <div data-pdf-block className="mt-6 space-y-1 text-[11px] text-slate-500">
                   {value.notes && <p><span className="font-semibold">Notes:</span> {value.notes}</p>}
                   {value.terms && <p><span className="font-semibold">Terms:</span> {value.terms}</p>}
                   {value.bankDetails && <p><span className="font-semibold">Bank details:</span> {value.bankDetails}</p>}
                 </div>
               )}
 
-              <div className="mt-8 flex items-end justify-between">
+              <div data-pdf-block className="mt-8 flex items-end justify-between">
                 <div className="flex items-end gap-4">
                   {value.stamp && (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -908,15 +853,6 @@ function DocHeader({ layout, value, kind, accent, titleColor, barUrl }: HeaderPr
 }
 
 /* ---------- helpers ---------- */
-function hexToRgb(hex: string) {
-  const m = hex.replace("#", "");
-  const int = parseInt(m.length === 3 ? m.split("").map((c) => c + c).join("") : m, 16);
-  return { r: (int >> 16) & 255, g: (int >> 8) & 255, b: int & 255 };
-}
-function partyLines(p: Party) {
-  return [p.name, p.address, p.email, p.phone, p.gstin ? `GSTIN: ${p.gstin}` : ""].filter(Boolean);
-}
-
 function Field({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) {
   const id = useId();
   return <div className="space-y-1.5"><Label htmlFor={id}>{label}</Label><Input id={id} value={value} onChange={(e) => onChange(e.target.value)} /></div>;
