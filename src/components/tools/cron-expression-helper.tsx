@@ -19,11 +19,15 @@ const PRESETS: { label: string; expr: string }[] = [
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+// Cron treats both 0 and 7 as Sunday (a universally-supported alias); DAYS
+// only has indices 0-6, so 7 needs folding back to 0 before it's used to index.
+const normalizeDow = (n: number): number => (n === 7 ? 0 : n);
+
 function describeDow(dow: string): string {
   const range = dow.match(/^(\d)-(\d)$/);
-  if (range) return `${DAYS[Number(range[1])]}–${DAYS[Number(range[2])]}`;
-  if (/^\d$/.test(dow)) return DAYS[Number(dow)];
-  if (/^\d(,\d)+$/.test(dow)) return dow.split(",").map((d) => DAYS[Number(d)]).join(", ");
+  if (range) return `${DAYS[normalizeDow(Number(range[1]))]}–${DAYS[normalizeDow(Number(range[2]))]}`;
+  if (/^\d$/.test(dow)) return DAYS[normalizeDow(Number(dow))];
+  if (/^\d(,\d)+$/.test(dow)) return dow.split(",").map((d) => DAYS[normalizeDow(Number(d))]).join(", ");
   return dow;
 }
 
@@ -69,6 +73,7 @@ function nextRuns(expr: string, count: number, from = new Date()): Date[] {
     doms = parseField(domF, 1, 31);
     months = parseField(monF, 1, 12);
     dows = parseField(dowF, 0, 6);
+    if (dows.has(7)) { dows.delete(7); dows.add(0); } // 7 is a valid alias for Sunday
   } catch {
     return [];
   }
