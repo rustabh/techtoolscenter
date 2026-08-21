@@ -387,7 +387,7 @@ th{color:${base};font-size:12px;text-transform:uppercase;letter-spacing:.05em}.t
             <Label htmlFor="brandkit-url">Website URL</Label>
             <div className="flex gap-2">
               <Input id="brandkit-url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="example.com" onKeyDown={(e) => e.key === "Enter" && fetchMeta()} />
-              <Button onClick={fetchMeta} disabled={loading}>
+              <Button onClick={fetchMeta} disabled={loading} aria-label="Fetch brand details">
                 {loading ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
               </Button>
             </div>

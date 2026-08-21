@@ -151,8 +151,8 @@ export default function HashGenerator() {
               <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
             ) : (
               <div className="space-y-1.5">
-                <label className="text-xs font-medium text-muted-foreground">Expected checksum (optional — paste to verify)</label>
-                <Input value={expected} onChange={(e) => setExpected(e.target.value)} placeholder="Paste the published checksum here…" className="font-mono text-xs" />
+                <label htmlFor="hash-expected-checksum" className="text-xs font-medium text-muted-foreground">Expected checksum (optional — paste to verify)</label>
+                <Input id="hash-expected-checksum" value={expected} onChange={(e) => setExpected(e.target.value)} placeholder="Paste the published checksum here…" className="font-mono text-xs" />
                 {expectedMatch && (
                   <p className={`text-sm font-medium ${expectedMatch === "match" ? "text-emerald-600 dark:text-emerald-400" : "text-destructive"}`}>
                     {expectedMatch === "match" ? "✓ Matches — file is verified" : "✗ Doesn't match — file may be corrupted or tampered with"}

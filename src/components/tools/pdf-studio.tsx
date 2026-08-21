@@ -172,7 +172,7 @@ function SingleFileTab({ title, action, fields, name, showSize }: {
   return (
     <div className="space-y-4">
       <Card><CardContent className="pt-6">
-        {file ? <p className="text-sm">{file.name} <button className="ml-2 text-muted-foreground hover:text-destructive" onClick={() => setFile(null)}>✕</button></p>
+        {file ? <p className="text-sm">{file.name} <button className="ml-2 text-muted-foreground hover:text-destructive" onClick={() => setFile(null)} aria-label="Remove file">✕</button></p>
           : <Dropzone onFiles={(f) => setFile(f[0])} label="Upload a PDF" />}
       </CardContent></Card>
       {file && (
