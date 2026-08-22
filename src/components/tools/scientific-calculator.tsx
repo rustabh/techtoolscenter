@@ -25,13 +25,66 @@ function parenthesizePercent(expr: string): string {
   return expr.replace(/(\d+(?:\.\d+)?)%/g, "($1/100)");
 }
 
+// JS syntactically forbids "-<base>**<exp>" (e.g. -2**2 throws a
+// SyntaxError, even though the intended reading is unambiguous for a
+// calculator) — the base of "**" can never be a bare unary expression.
+// Rather than reinterpreting it as (-2)**2 (which flips the sign of the
+// result), this rewrites it as -(2**2), matching the standard mathematical
+// convention that unary minus binds *looser* than exponentiation — the
+// same reading every other calculator and language without this specific
+// parse restriction (e.g. Python's -2**2) already gives -4, not 4.
+function wrapNegativeBaseBeforePower(js: string): string {
+  let out = js;
+  let searchFrom = 0;
+  for (;;) {
+    const idx = out.indexOf("**", searchFrom);
+    if (idx === -1) return out;
+
+    let start = idx;
+    if (start > 0 && out[start - 1] === ")") {
+      let depth = 0;
+      let i = start - 1;
+      for (; i >= 0; i--) {
+        if (out[i] === ")") depth++;
+        else if (out[i] === "(") { depth--; if (depth === 0) break; }
+      }
+      start = i;
+    }
+    while (start > 0 && /[A-Za-z0-9_.]/.test(out[start - 1])) start--;
+
+    const before = start >= 2 ? out[start - 2] : null;
+    const isUnaryMinus = start > 0 && out[start - 1] === "-" && (before === null || "(+-*/,".includes(before));
+    if (!isUnaryMinus) {
+      searchFrom = idx + 2;
+      continue;
+    }
+
+    let end = idx + 2;
+    if (out[end] === "-") end++; // a negative exponent stays part of the same power expression
+    if (out[end] === "(") {
+      let depth = 0;
+      for (; end < out.length; end++) {
+        if (out[end] === "(") depth++;
+        else if (out[end] === ")") { depth--; if (depth === 0) { end++; break; } }
+      }
+    } else {
+      while (end < out.length && /[A-Za-z0-9_.]/.test(out[end])) end++;
+    }
+
+    const replacement = `-(${out.slice(start, end)})`;
+    out = out.slice(0, start - 1) + replacement + out.slice(end);
+    searchFrom = start - 1 + replacement.length;
+  }
+}
+
 function toJs(expr: string): string {
-  return parenthesizePercent(expr)
+  const js = parenthesizePercent(expr)
     .replace(/π/g, "Math.PI").replace(/(?<![a-z])e(?![a-z])/g, "Math.E")
     .replace(/asin\(/g, "asinD(").replace(/acos\(/g, "acosD(").replace(/atan\(/g, "atanD(")
     .replace(/sin\(/g, "sinD(").replace(/cos\(/g, "cosD(").replace(/tan\(/g, "tanD(")
     .replace(/√\(/g, "Math.sqrt(").replace(/log\(/g, "Math.log10(").replace(/ln\(/g, "Math.log(")
     .replace(/\^/g, "**").replace(/×/g, "*").replace(/÷/g, "/");
+  return wrapNegativeBaseBeforePower(js);
 }
 
 function runJs(js: string): number {
