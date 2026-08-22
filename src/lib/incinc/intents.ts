@@ -8,7 +8,7 @@ import type { IndiaService } from "@/lib/india/types";
 import { lookupGlossaryTerm } from "./glossary";
 import { lookupKnowledge } from "./knowledge";
 import { searchCatalog } from "./catalog";
-import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow, itrFilingWorkflow, loanPrepWorkflow, freelanceWorkflow } from "./workflows";
+import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow, itrFilingWorkflow, loanPrepWorkflow, freelanceWorkflow, fundraisingWorkflow } from "./workflows";
 
 function toolLink(slug: string): LinkItem | null {
   const t = getTool(slug);
@@ -184,6 +184,258 @@ const fastPaths: FastPath[] = [
         ]),
       });
     },
+  },
+  {
+    id: "quotation-generator",
+    intent: "tool",
+    test: (q) => /quotation/.test(q) || (/\bquote\b/.test(q) && /(client|customer|business|generat|template|maker)/.test(q)),
+    build: () =>
+      withIntent("tool", {
+        summary: "Create a professional price quotation in 20 designs, with a GST breakdown, logo and QR code — then export as PDF.",
+        recommendedTools: compact([toolLink("quotation-generator")]),
+        relatedBlogs: [{ label: "Proforma Invoice vs Invoice vs Quotation: What's the Difference", href: "/blog/proforma-invoice-vs-invoice-vs-quotation-difference", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "2-3 minutes",
+        difficulty: "Beginner",
+        nextStep: "Once the client accepts, convert it into an invoice using the same layout and details.",
+        actions: [{ label: "Open Quotation Generator", href: "/tools/quotation-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "estimate-maker",
+    intent: "tool",
+    test: (q) => /\bestimate\b/.test(q) && !/(loan|emi|tax|salary|age|time|read(ing)?)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Create a cost estimate for a client — line items, taxes and validity period — in a few clicks, with a downloadable PDF.",
+        recommendedTools: compact([toolLink("estimate-maker")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "2-3 minutes",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Estimate Maker", href: "/tools/estimate-maker", kind: "internal" }],
+      }),
+  },
+  {
+    id: "purchase-order-generator",
+    intent: "tool",
+    test: (q) => /purchase\s*order/.test(q) || /\bpo\s*(generat|maker|template)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Generate a purchase order with vendor details, itemised quantities and pricing — 20 designs, exported as a PDF.",
+        recommendedTools: compact([toolLink("purchase-order-generator")]),
+        relatedBlogs: [{ label: "What Is a Purchase Order? When You Need One and What to Include", href: "/blog/what-is-a-purchase-order-when-you-need-one", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "2-3 minutes",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Purchase Order Generator", href: "/tools/purchase-order-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "receipt-generator",
+    intent: "tool",
+    test: (q) => /\breceipt\b/.test(q) && !/rent/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Create a payment receipt with amount, payment mode and a paid-in-full note — 20 designs, exported as a PDF.",
+        recommendedTools: compact([toolLink("receipt-generator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1-2 minutes",
+        difficulty: "Beginner",
+        nextStep: "Need a rent receipt specifically for HRA exemption instead? Use the Rent Receipt Generator.",
+        actions: [{ label: "Open Receipt Generator", href: "/tools/receipt-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "delivery-challan",
+    intent: "tool",
+    test: (q) => /delivery\s*challan/.test(q) || /\bchallan\b/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Create a delivery challan for goods sent without an immediate invoice — job work, stock transfer or goods on approval.",
+        recommendedTools: compact([toolLink("delivery-challan")]),
+        relatedBlogs: [{ label: "Delivery Challan vs Invoice vs Packing Slip: What's the Difference", href: "/blog/delivery-challan-vs-invoice-vs-packing-slip", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "2 minutes",
+        difficulty: "Beginner",
+        nextStep: "If this movement is actually a sale, use Invoice Maker instead — a challan is only for non-sale movements.",
+        actions: [{ label: "Open Delivery Challan Maker", href: "/tools/delivery-challan", kind: "internal" }],
+      }),
+  },
+  {
+    id: "credit-note",
+    intent: "tool",
+    test: (q) => /credit\s*note/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Issue a GST credit note for returned goods, an overcharge or a post-sale adjustment, with a tax breakdown.",
+        recommendedTools: compact([toolLink("credit-note")]),
+        relatedBlogs: [{ label: "Debit Note vs Credit Note: What's the Difference and When to Issue Each", href: "/blog/debit-note-vs-credit-note-difference", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "2 minutes",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Credit Note Maker", href: "/tools/credit-note", kind: "internal" }],
+      }),
+  },
+  {
+    id: "debit-note",
+    intent: "tool",
+    test: (q) => /debit\s*note/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Raise a GST debit note for additional charges, short supply or an upward price revision, with a tax breakdown.",
+        recommendedTools: compact([toolLink("debit-note")]),
+        relatedBlogs: [{ label: "Debit Note vs Credit Note: What's the Difference and When to Issue Each", href: "/blog/debit-note-vs-credit-note-difference", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "2 minutes",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Debit Note Maker", href: "/tools/debit-note", kind: "internal" }],
+      }),
+  },
+  {
+    id: "packing-slip",
+    intent: "tool",
+    test: (q) => /packing\s*(slip|list)/.test(q) || /shipping\s*slip/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Create a packing slip listing items and quantities inside a shipment, so the recipient can verify contents on arrival.",
+        recommendedTools: compact([toolLink("packing-slip")]),
+        relatedBlogs: [{ label: "Delivery Challan vs Invoice vs Packing Slip: What's the Difference", href: "/blog/delivery-challan-vs-invoice-vs-packing-slip", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "1-2 minutes",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Packing Slip Maker", href: "/tools/packing-slip", kind: "internal" }],
+      }),
+  },
+  {
+    id: "letterhead-maker",
+    intent: "tool",
+    test: (q) => /letterhead/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Design a branded company letterhead with your logo, name and address — 20 designs, exported as a PDF or PNG.",
+        recommendedTools: compact([toolLink("letterhead-maker")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1-2 minutes",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Letterhead Maker", href: "/tools/letterhead-maker", kind: "internal" }],
+      }),
+  },
+  {
+    id: "fundraising-workflow",
+    intent: "workflow",
+    test: (q) => /(rais(e|ing))\s*(fund|money|capital|investment)/.test(q) || (/pitch/.test(q) && /investor/.test(q) && !/deck/.test(q)),
+    build: () => withIntent("workflow", fundraisingWorkflow),
+  },
+  {
+    id: "pitch-deck-generator",
+    intent: "tool",
+    test: (q) => /pitch\s*deck/.test(q) || (/investor/.test(q) && /(deck|slides|presentation)/.test(q)),
+    build: () =>
+      withIntent("tool", {
+        summary: "Build an investor pitch deck using the standard slide structure — cover, problem, solution, market, traction, ask — with images, and export a landscape PDF.",
+        recommendedTools: compact([toolLink("pitch-deck-generator"), toolLink("business-plan-generator")]),
+        relatedBlogs: [{ label: "How to Structure a Pitch Deck: The Slides Investors Actually Read", href: "/blog/how-to-structure-a-pitch-deck-slide-by-slide", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "20-30 minutes for a first draft",
+        difficulty: "Intermediate",
+        nextStep: "Need the longer, detailed version investors ask for after the pitch? Use the Business Plan Generator too.",
+        actions: [{ label: "Open Pitch Deck Generator", href: "/tools/pitch-deck-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "business-plan-generator",
+    intent: "tool",
+    test: (q) => /business\s*plan/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Write a structured business plan — executive summary, market, financials, milestones — with your logo, and export a PDF.",
+        recommendedTools: compact([toolLink("business-plan-generator"), toolLink("pitch-deck-generator")]),
+        relatedBlogs: [{ label: "How to Write a Business Plan for a Small Business (Free Template)", href: "/blog/how-to-write-a-business-plan-free-template", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "30-45 minutes for a first draft",
+        difficulty: "Intermediate",
+        nextStep: "Presenting to investors live? Turn the key sections into a short Pitch Deck instead.",
+        actions: [{ label: "Open Business Plan Generator", href: "/tools/business-plan-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "proposal-generator",
+    intent: "tool",
+    test: (q) => /\bproposal\b/.test(q) && !/marriage/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Create a client-ready business proposal — scope, timeline and pricing — with your branding, and export as a PDF.",
+        recommendedTools: compact([toolLink("proposal-generator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "10-15 minutes",
+        difficulty: "Beginner",
+        nextStep: "Once it's accepted, send a formal Quotation or Invoice using the same details.",
+        actions: [{ label: "Open Proposal Generator", href: "/tools/proposal-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "css-gradient",
+    intent: "tool",
+    test: (q) => /gradient/.test(q) && !/gradient\s*descent/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Design a linear, radial or conic CSS gradient visually, with any number of colour stops, and copy production-ready code.",
+        recommendedTools: compact([toolLink("gradient-generator")]),
+        relatedBlogs: [{ label: "CSS Gradients Explained: linear-gradient vs radial-gradient vs conic-gradient", href: "/blog/css-gradients-linear-vs-radial-vs-conic", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open CSS Gradient Generator", href: "/tools/gradient-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "contrast-checker",
+    intent: "tool",
+    test: (q) => /contrast/.test(q) && !/high\s*contrast\s*mode/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Check a text/background colour pair against WCAG contrast ratios (AA / AAA) and get a pass/fail instantly.",
+        recommendedTools: compact([toolLink("contrast-checker")]),
+        relatedBlogs: [{ label: "WCAG Color Contrast Explained: How to Pass Accessibility Audits", href: "/blog/wcag-color-contrast-explained-how-to-pass-accessibility-audits", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Contrast Checker", href: "/tools/contrast-checker", kind: "internal" }],
+      }),
+  },
+  {
+    id: "glassmorphism-generator",
+    intent: "tool",
+    test: (q) => /glassmorphism/.test(q) || (/glass/.test(q) && /(effect|css|ui|design)/.test(q)),
+    build: () =>
+      withIntent("tool", {
+        summary: "Design a frosted-glass UI card visually — blur, transparency and border — and copy the exact CSS.",
+        recommendedTools: compact([toolLink("glassmorphism-generator")]),
+        relatedBlogs: [{ label: "Glassmorphism in UI Design: What It Actually Is and How to Use It Without Overdoing It", href: "/blog/glassmorphism-ui-design-explained", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Glassmorphism Generator", href: "/tools/glassmorphism-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "excel-formula-generator",
+    intent: "tool",
+    test: (q) => /excel\s*formula/.test(q) || /\bvlookup\b/.test(q) || /\bxlookup\b/.test(q) || (/spreadsheet/.test(q) && /formula/.test(q)),
+    build: () =>
+      withIntent("tool", {
+        summary: "Describe what you want in plain English and get the matching Excel/Google Sheets formula, explained.",
+        recommendedTools: compact([toolLink("excel-formula-generator")]),
+        relatedBlogs: [{ label: "VLOOKUP vs XLOOKUP: What's the Difference (and Which Should You Use)?", href: "/blog/vlookup-vs-xlookup-difference", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Excel Formula Generator", href: "/tools/excel-formula-generator", kind: "internal" }],
+      }),
   },
   {
     id: "qr-code",

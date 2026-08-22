@@ -178,6 +178,34 @@ export const freelanceWorkflow: AssistantResponse = {
   ],
 };
 
+export const fundraisingWorkflow: AssistantResponse = {
+  summary:
+    "Raising money follows a natural document order: the business plan is the detailed internal document investors ask for, the pitch deck is the short visual summary you actually present, and a proposal is what you send a specific investor or partner afterward with concrete next steps.",
+  recommendedTools: [
+    { label: "Business Plan Generator", href: "/tools/business-plan-generator", kind: "internal", description: "The full, detailed document — market, financials, milestones — investors request after an interested first meeting." },
+    { label: "Pitch Deck Generator", href: "/tools/pitch-deck-generator", kind: "internal", description: "A short, visual 10-15 slide summary built to be presented live in a pitch meeting." },
+    { label: "Proposal Generator", href: "/tools/proposal-generator", kind: "internal", description: "A client/investor-ready proposal with scope, timeline and terms once there's real interest." },
+  ],
+  workflow: [
+    { label: "Business Plan Generator", href: "/tools/business-plan-generator", kind: "internal", description: "Write the detailed plan first — it forces you to think through every section" },
+    { label: "How to Structure a Pitch Deck", href: "/blog/how-to-structure-a-pitch-deck-slide-by-slide", kind: "internal", description: "The standard 10-15 slide order investors expect" },
+    { label: "Pitch Deck Generator", href: "/tools/pitch-deck-generator", kind: "internal", description: "Condense the plan into a short, visual deck for live pitching" },
+    { label: "Proposal Generator", href: "/tools/proposal-generator", kind: "internal", description: "Once an investor or partner is interested, formalize next steps" },
+  ],
+  relatedBlogs: [
+    { label: "How to Structure a Pitch Deck: The Slides Investors Actually Read", href: "/blog/how-to-structure-a-pitch-deck-slide-by-slide", kind: "internal" },
+    { label: "How to Write a Business Plan for a Small Business (Free Template)", href: "/blog/how-to-write-a-business-plan-free-template", kind: "internal" },
+  ],
+  officialResources: [],
+  estimatedTime: "A few hours across all three documents, spread over the days before pitching",
+  difficulty: "Intermediate",
+  nextStep: "Start with the Business Plan — writing the detailed version first makes the pitch deck faster to build, since you're condensing rather than drafting from scratch.",
+  actions: [
+    { label: "Open Business Plan Generator", href: "/tools/business-plan-generator", kind: "internal" },
+    { label: "Open Pitch Deck Generator", href: "/tools/pitch-deck-generator", kind: "internal" },
+  ],
+};
+
 export const saasStackWorkflow: AssistantResponse = {
   summary:
     "For a modern SaaS built fast by a small team, this stack covers the frontend, database/auth, hosting, payments and an AI coding workflow.",
