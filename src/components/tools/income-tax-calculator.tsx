@@ -73,20 +73,29 @@ function slabTax(taxable: number, slabs: Slab[]): number {
   return tax;
 }
 
-// Section 87A rebate zeroes out tax entirely up to the limit — but just above
-// the limit, a naive "full slab tax, no rebate" calculation creates a cliff:
-// ₹1 more income than the limit can jump tax from ₹0 to tens of thousands,
-// which isn't how the law actually works. The Finance Act's marginal relief
-// clause caps the tax at the amount of income exceeding the limit, so a
-// taxpayer never takes home less than someone just under the limit. This
-// self-limits correctly: near the cliff, full slab tax exceeds the excess
-// income and gets capped; well above the limit, the excess overtakes the
-// slab tax and the cap has no effect, so no separate upper cutoff is needed.
+// Section 87A rebate zeroes out tax entirely up to the limit. Under the new
+// regime, the Finance Act also grants marginal relief just above that limit:
+// without it, ₹1 more income than the limit could jump tax from ₹0 to tens
+// of thousands, so the relief caps the tax at the amount of income exceeding
+// the limit, and a taxpayer never takes home less than someone just under
+// the limit. This self-limits correctly: near the cliff, full slab tax
+// exceeds the excess income and gets capped; well above the limit, the
+// excess overtakes the slab tax and the cap has no effect.
 function taxWithRebateAndMarginalRelief(taxable: number, limit: number, slabs: Slab[]): number {
   if (taxable <= limit) return 0;
   const fullTax = slabTax(taxable, slabs);
   const excessOverLimit = taxable - limit;
   return Math.min(fullTax, excessOverLimit);
+}
+
+// The old regime's Section 87A rebate has never had a marginal relief
+// clause — that protection was introduced only for the new regime (first at
+// its ₹7L threshold, now ₹12L). Under the old regime, ₹1 of income over the
+// ₹5L limit loses the rebate entirely and owes full, uncapped slab tax —
+// a real, well-known cliff in the law, not a smoothing bug to fix here.
+function taxWithHardCliffRebate(taxable: number, limit: number, slabs: Slab[]): number {
+  if (taxable <= limit) return 0;
+  return slabTax(taxable, slabs);
 }
 
 interface RegimeResult {
@@ -118,7 +127,7 @@ function computeNewRegime(income: number): RegimeResult {
 function computeOldRegime(income: number, age: IncomeTaxState["age"], itemizedDeductions: number): RegimeResult {
   const standardDeduction = OLD_REGIME_STANDARD_DEDUCTION;
   const netTaxable = Math.max(income - standardDeduction - Math.max(itemizedDeductions, 0), 0);
-  const taxBeforeCess = taxWithRebateAndMarginalRelief(netTaxable, OLD_REGIME_REBATE_LIMIT, OLD_REGIME_SLABS[age]);
+  const taxBeforeCess = taxWithHardCliffRebate(netTaxable, OLD_REGIME_REBATE_LIMIT, OLD_REGIME_SLABS[age]);
   const cess = taxBeforeCess * CESS_RATE;
   const totalTax = taxBeforeCess + cess;
   return { gross: income, standardDeduction, itemizedDeductions: Math.max(itemizedDeductions, 0), netTaxable, taxBeforeCess, cess, totalTax, takeHome: income - totalTax };
