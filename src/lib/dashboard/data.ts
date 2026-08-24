@@ -207,7 +207,6 @@ export function getDashboardData() {
     performanceImprovements: fixCommits.concat(featCommits).filter((c) => /perf|bundle|dedupe|refactor/i.test(c.subject)).map((c) => c.subject),
     remainingTasks: [
       "Soft-404 issue (notFound() returns HTTP 200) — needs an architectural decision",
-      "Sitemap consolidation — 5 separate sitemap files (sitemap.ts, tools/collections/image/blog-sitemap.xml) declared individually in robots.txt rather than one sitemap index",
       "Comparison-page template — BlogPost.template ('comparison' etc.) is stored but never read by any rendering code, so comparison posts render identically to guides",
       `${content.needsRefresh.length} blog posts over ${STALE_DAYS} days without an update`,
     ],
