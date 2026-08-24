@@ -74,7 +74,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border pt-6 text-sm text-muted-foreground sm:flex-row">
           <p>
-            Copyright © 2026 {siteConfig.name}. All Rights Reserved.
+            Copyright © {new Date().getFullYear()} {siteConfig.name}. All Rights Reserved.
           </p>
           <p className="text-xs">
             Curated &amp; Coded by{" "}

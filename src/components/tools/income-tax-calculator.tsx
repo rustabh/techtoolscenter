@@ -168,7 +168,7 @@ export default function IncomeTaxCalculator() {
     return { income, newRegime, oldRegime, selected, betterRegime, savings };
   }, [value]);
 
-  const summary = `Income Tax (${value.regime} regime, FY 2025-26): Gross ${formatCurrency(result.selected.gross)}, Net taxable ${formatCurrency(result.selected.netTaxable)}, Tax ${formatCurrency(result.selected.totalTax)} (incl. 4% cess), Take-home ${formatCurrency(result.selected.takeHome)}/year`;
+  const summary = `Income Tax (${value.regime} regime, FY 2026-27): Gross ${formatCurrency(result.selected.gross)}, Net taxable ${formatCurrency(result.selected.netTaxable)}, Tax ${formatCurrency(result.selected.totalTax)} (incl. 4% cess), Take-home ${formatCurrency(result.selected.takeHome)}/year`;
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
@@ -282,7 +282,7 @@ export default function IncomeTaxCalculator() {
           </div>
 
           <div className="rounded-xl border border-border bg-muted/40 p-3 text-xs text-muted-foreground">
-            Estimates only, based on FY 2025-26 (AY 2026-27) slabs. Tax rules can change in each Union Budget — always
+            Estimates only, based on FY 2026-27 (AY 2027-28) slabs. Tax rules can change in each Union Budget — always
             confirm current rates on the official Income Tax e-filing portal (incometax.gov.in) before filing.
           </div>
           <ActionBar onCopy={() => copy(summary)} copied={copied} />

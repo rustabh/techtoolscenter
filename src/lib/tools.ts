@@ -1387,16 +1387,16 @@ export const tools: Tool[] = [
   {
     slug: "income-tax-calculator",
     name: "Income Tax Calculator",
-    description: "Compare old vs new tax regime and estimate your tax for FY 2025-26.",
+    description: "Compare old vs new tax regime and estimate your tax for FY 2026-27.",
     longDescription:
-      "Enter your annual income to see your estimated tax under both the new and old regimes for FY 2025-26 (AY 2026-27) — including standard deduction, Section 87A rebate and cess — with a clear comparison of which regime saves you more.",
+      "Enter your annual income to see your estimated tax under both the new and old regimes for FY 2026-27 (AY 2027-28) — including standard deduction, Section 87A rebate and cess — with a clear comparison of which regime saves you more.",
     category: "Calculators",
     icon: "IndianRupee",
-    keywords: ["income tax calculator", "old vs new tax regime", "tax calculator india", "87a rebate", "income tax slab 2025-26"],
+    keywords: ["income tax calculator", "old vs new tax regime", "tax calculator india", "87a rebate", "income tax slab 2026-27"],
     addedOn: "2026-07-31",
     popular: true,
     faq: [
-      { question: "Which tax year does this use?", answer: "FY 2025-26 (AY 2026-27) slabs. Tax rules can change with each Union Budget — always confirm current rates on the official Income Tax e-filing portal before filing." },
+      { question: "Which tax year does this use?", answer: "FY 2026-27 (AY 2027-28) slabs. Tax rules can change with each Union Budget — always confirm current rates on the official Income Tax e-filing portal before filing." },
       { question: "Which regime should I choose?", answer: "The calculator shows both results side by side and tells you which one saves more for the income you entered — there's no single right answer, it depends on your income and deductions." },
       { question: "Does this account for deductions like 80C or HRA?", answer: "No, this is a simplified estimate using the standard deduction only. Detailed deductions (80C, HRA, home loan interest, etc.) mainly apply under the old regime and aren't factored in here." },
     ],
