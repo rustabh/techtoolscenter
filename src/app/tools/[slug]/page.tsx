@@ -20,7 +20,7 @@ import { getLanding, landingPages } from "@/lib/landing/landing";
 import { siteConfig } from "@/lib/site";
 
 // Tools that need the network at runtime (so no offline badge).
-const NETWORK_TOOLS = new Set(["website-mockup-generator", "brand-kit-generator", "app-screenshot-generator", "tailwind-playground"]);
+const NETWORK_TOOLS = new Set(["website-mockup-generator", "brand-kit-generator", "app-screenshot-generator", "tailwind-playground", "ocr-text-extractor"]);
 
 // Every tool and landing-page slug is statically known at build time; an
 // unmatched slug should be a real, correctly-coded 404 rather than an

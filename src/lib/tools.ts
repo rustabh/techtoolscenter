@@ -2058,6 +2058,23 @@ export const tools: Tool[] = [
       { question: "Is my PDF uploaded to a server?", answer: "No — the page is rendered and the signature is embedded entirely in your browser using pdf-lib. Your file never leaves your device." },
     ],
   },
+  {
+    slug: "ocr-text-extractor",
+    name: "OCR Text Extractor",
+    description: "Pull editable text out of a photo, screenshot, or scanned PDF page, in English or Hindi.",
+    longDescription:
+      "Upload an image or a PDF and extract real, editable, copyable text from it using on-device OCR — no server upload. Works on photos, screenshots and scanned documents in English, Hindi, or both together. For PDFs, browse to the exact page you need before extracting. Edit the result, copy it, or download it as a .txt file, and revisit past extractions from history.",
+    category: "Documents",
+    icon: "ScanText",
+    keywords: ["ocr online free", "extract text from image", "image to text converter", "scanned pdf to text", "hindi ocr online", "photo to text"],
+    addedOn: "2026-08-24",
+    faq: [
+      { question: "Is my image or PDF uploaded anywhere?", answer: "No — OCR runs entirely on your device using an in-browser engine. The first time you use it, your browser downloads a small language model (a few MB, cached afterward); your file itself is never sent anywhere." },
+      { question: "Which languages are supported?", answer: "English, Hindi, or both together in a single pass — pick the language before extracting for the most accurate result." },
+      { question: "Can I extract text from a scanned PDF?", answer: "Yes — upload the PDF, browse to the page you need with the page arrows, then extract. Each page is rendered as an image before OCR runs on it." },
+      { question: "How accurate is the extracted text?", answer: "Accuracy depends on image quality — clear, well-lit, high-resolution text with good contrast works best. You can edit the result directly in the text box before copying or downloading to fix any misreads." },
+    ],
+  },
 ];
 
 // Tools added on or after this date show a "New" badge. Fixed for deterministic SSR.
