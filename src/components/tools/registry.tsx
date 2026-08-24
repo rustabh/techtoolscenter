@@ -138,6 +138,7 @@ const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> 
   "number-to-words": dynamic(() => import("./number-to-words"), { loading: ToolSkeleton, ssr: false }),
   "image-to-ascii-art": dynamic(() => import("./image-to-ascii-art"), { loading: ToolSkeleton, ssr: false }),
   "markdown-to-pdf": dynamic(() => import("./markdown-to-pdf"), { loading: ToolSkeleton, ssr: false }),
+  "bulk-qr-generator": dynamic(() => import("./bulk-qr-generator"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug, preset }: { slug: string; preset?: Record<string, unknown> }) {

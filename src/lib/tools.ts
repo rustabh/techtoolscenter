@@ -2024,6 +2024,23 @@ export const tools: Tool[] = [
       { question: "Can I reorder slides?", answer: "Yes — use the up/down arrows on each slide to move it, or add and remove slides freely." },
     ],
   },
+  {
+    slug: "bulk-qr-generator",
+    name: "Bulk QR Code Generator",
+    description: "Turn a list of URLs, text or contact details into dozens of QR codes at once, then download them all as a ZIP.",
+    longDescription:
+      "Paste a list of values — one per line: URLs, UPI IDs, Wi-Fi credentials, phone numbers, plain text, anything — and generate a QR code for every line in one go. Set the image size and margin, preview every code in a grid, and download all of them together as a single ZIP file, each named after its value. Ideal for event badges, product labels, table QR menus, or any batch where making codes one at a time would be too slow.",
+    category: "Generators",
+    icon: "QrCode",
+    keywords: ["bulk qr code generator", "batch qr code maker", "generate multiple qr codes", "qr code generator csv", "qr codes from list free"],
+    addedOn: "2026-08-24",
+    faq: [
+      { question: "How many QR codes can I generate at once?", answer: "There's no hard limit — paste as many lines as you need. Very large batches (100+) may take a few seconds since each code is rendered in your browser." },
+      { question: "What can I put in a value?", answer: "Anything a QR scanner can read: URLs, plain text, UPI payment strings, phone numbers (tel:), emails (mailto:), or Wi-Fi network strings (WIFI:T:WPA;S:name;P:password;;)." },
+      { question: "How are the downloaded files named?", answer: "Each PNG in the ZIP is numbered and named after its value (e.g. 01-https-example-com.png), so it's easy to match codes back to what they encode." },
+      { question: "Is my data uploaded anywhere?", answer: "No — every QR code is generated entirely in your browser. Nothing you type is sent to a server." },
+    ],
+  },
 ];
 
 // Tools added on or after this date show a "New" badge. Fixed for deterministic SSR.
