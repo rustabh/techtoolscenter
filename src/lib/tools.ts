@@ -2041,6 +2041,23 @@ export const tools: Tool[] = [
       { question: "Is my data uploaded anywhere?", answer: "No — every QR code is generated entirely in your browser. Nothing you type is sent to a server." },
     ],
   },
+  {
+    slug: "pdf-sign",
+    name: "PDF Sign",
+    description: "Draw or type a signature, drag it onto any page of a PDF, and download the signed document.",
+    longDescription:
+      "Upload a PDF, draw your signature with a mouse or finger (or type your name in a cursive style), then drag it directly onto a live preview of the page and resize it to fit. Switch between pages for multi-page documents, then download a signed copy of the PDF — everything renders and merges entirely in your browser, so the file is never uploaded.",
+    category: "Documents",
+    icon: "Signature",
+    keywords: ["sign pdf online free", "add signature to pdf", "pdf signature maker", "e-sign pdf", "draw signature on pdf"],
+    addedOn: "2026-08-24",
+    faq: [
+      { question: "Is this a legally binding e-signature?", answer: "No — this places a signature image you draw or type onto the PDF page itself. For legally binding e-signatures with an audit trail, use a certified e-signature provider." },
+      { question: "Can I sign a specific page in a multi-page PDF?", answer: "Yes — use the page arrows to preview and select any page, then drag your signature onto it." },
+      { question: "Can I resize or reposition the signature?", answer: "Yes — drag the signature box anywhere on the page preview, and use the size slider to scale it before downloading." },
+      { question: "Is my PDF uploaded to a server?", answer: "No — the page is rendered and the signature is embedded entirely in your browser using pdf-lib. Your file never leaves your device." },
+    ],
+  },
 ];
 
 // Tools added on or after this date show a "New" badge. Fixed for deterministic SSR.
