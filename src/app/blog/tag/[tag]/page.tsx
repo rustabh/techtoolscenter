@@ -7,6 +7,11 @@ import { blogTopics, getBlogTopic } from "@/lib/blog/topics";
 import { postsByTag } from "@/lib/blog/posts";
 import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
+// Every tag is statically known at build time; an unmatched slug should be
+// a real, correctly-coded 404 rather than an on-demand render that can race
+// with the root loading.tsx Suspense boundary and report HTTP 200.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return blogTopics.map((t) => ({ tag: t.slug }));
 }

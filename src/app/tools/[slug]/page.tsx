@@ -22,6 +22,12 @@ import { siteConfig } from "@/lib/site";
 // Tools that need the network at runtime (so no offline badge).
 const NETWORK_TOOLS = new Set(["website-mockup-generator", "brand-kit-generator", "app-screenshot-generator", "tailwind-playground"]);
 
+// Every tool and landing-page slug is statically known at build time; an
+// unmatched slug should be a real, correctly-coded 404 rather than an
+// on-demand render that can race with the root loading.tsx Suspense
+// boundary and report HTTP 200.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   const toolSlugs = new Set(tools.map((t) => t.slug));
   // Landing slugs that don't collide with a real tool.

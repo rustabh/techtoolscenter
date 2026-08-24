@@ -10,6 +10,11 @@ import { servicesByCategory } from "@/lib/india/services";
 import { breadcrumbLd } from "@/lib/seo/schema";
 import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
+// Every category is statically known at build time; an unmatched slug should
+// be a real, correctly-coded 404 rather than an on-demand render that can
+// race with the root loading.tsx Suspense boundary and report HTTP 200.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return indiaCategories.map((c) => ({ category: c.slug }));
 }

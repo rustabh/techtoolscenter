@@ -9,6 +9,11 @@ function resolve(slug: string) {
   return categories.find((c) => c.id.toLowerCase() === slug.toLowerCase());
 }
 
+// Every category is statically known at build time; an unmatched slug should
+// be a real, correctly-coded 404 rather than an on-demand render that can
+// race with the root loading.tsx Suspense boundary and report HTTP 200.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return categories.map((c) => ({ category: c.id.toLowerCase() }));
 }

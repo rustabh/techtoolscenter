@@ -6,6 +6,11 @@ import { authors, getAuthor } from "@/lib/blog/authors";
 import { postsByAuthor } from "@/lib/blog/posts";
 import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
+// Every author is statically known at build time; an unmatched slug should
+// be a real, correctly-coded 404 rather than an on-demand render that can
+// race with the root loading.tsx Suspense boundary and report HTTP 200.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return authors.map((a) => ({ slug: a.slug }));
 }

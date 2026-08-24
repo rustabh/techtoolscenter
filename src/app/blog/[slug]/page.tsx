@@ -16,6 +16,11 @@ import { defaultOgImage, socialTitle } from "@/lib/seo/metadata";
 import { relatedToolsFor } from "@/lib/seo/related";
 import { siteConfig } from "@/lib/site";
 
+// Every post is statically known at build time; an unmatched slug should be
+// a real, correctly-coded 404 rather than an on-demand render that can race
+// with the root loading.tsx Suspense boundary and report HTTP 200.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return allPosts().map((p) => ({ slug: p.slug }));
 }

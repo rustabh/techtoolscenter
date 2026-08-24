@@ -11,6 +11,11 @@ import { getIndiaService } from "@/lib/india/services";
 import { breadcrumbLd, faqPageFromItemsLd } from "@/lib/seo/schema";
 import { defaultOgImage, socialTitle } from "@/lib/seo/metadata";
 
+// Every scheme is statically known at build time; an unmatched slug should
+// be a real, correctly-coded 404 rather than an on-demand render that can
+// race with the root loading.tsx Suspense boundary and report HTTP 200.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return schemes.map((s) => ({ scheme: s.slug }));
 }

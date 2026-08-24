@@ -9,6 +9,12 @@ import { buildCollectionMetadata } from "@/lib/seo/metadata";
 import { breadcrumbLd } from "@/lib/seo/schema";
 import { siteConfig } from "@/lib/site";
 
+// Every collection is statically known at build time; an unmatched slug
+// should be a real, correctly-coded 404 rather than an on-demand render
+// that can race with the root loading.tsx Suspense boundary and report
+// HTTP 200.
+export const dynamicParams = false;
+
 export function generateStaticParams() {
   return collections.map((c) => ({ slug: c.slug }));
 }
