@@ -164,10 +164,18 @@ export function BmrCalc() {
 }
 
 /* ---------- Body Fat (US Navy) ---------- */
+// The published Navy-method constants (495, 450, 1.0324, 0.19077, 0.15456,
+// 1.29579, 0.35004, 0.221) are calibrated for circumference measurements in
+// inches — plugging in centimetres directly (what this tool's inputs are
+// labelled in) silently overstates body fat by several percentage points,
+// since log10 of a cm measurement isn't a simple linear rescale of log10 of
+// the same measurement in inches. Convert to inches for the formula only;
+// the UI itself stays in cm, which is what this site's users expect.
+const CM_TO_IN = 1 / 2.54;
 export function BodyFatCalc() {
   const [g, setG] = useState("male"), [h, setH] = useState("175"), [neck, setNeck] = useState("38"), [waist, setWaist] = useState("85"), [hip, setHip] = useState("95");
   const bf = useMemo(() => {
-    const H = +h || 1, N = +neck || 1, W = +waist || 1, Hi = +hip || 1;
+    const H = (+h || 1) * CM_TO_IN, N = (+neck || 1) * CM_TO_IN, W = (+waist || 1) * CM_TO_IN, Hi = (+hip || 1) * CM_TO_IN;
     let v: number;
     if (g === "male") v = 495 / (1.0324 - 0.19077 * Math.log10(W - N) + 0.15456 * Math.log10(H)) - 450;
     else v = 495 / (1.29579 - 0.35004 * Math.log10(W + Hi - N) + 0.221 * Math.log10(H)) - 450;
