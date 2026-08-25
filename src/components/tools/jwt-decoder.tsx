@@ -41,9 +41,17 @@ export default function JwtDecoder() {
   const payloadCopy = useCopy();
 
   const parts = useMemo(() => {
-    const [h, p] = value.trim().split(".");
-    const header = h ? decodePart(h) : null;
-    const payload = p ? decodePart(p) : null;
+    // A JWS compact token is always exactly 3 dot-separated, non-empty parts
+    // (header.payload.signature). Only checking that the first two segments
+    // happen to decode — the previous behaviour — let a truncated token
+    // missing its signature (2 parts) or a JWE-style 5-part token report as
+    // "valid", silently hiding exactly the kind of malformed/incomplete
+    // paste this tool exists to catch.
+    const segments = value.trim().split(".");
+    const [h, p, s] = segments;
+    const wellFormed = segments.length === 3 && !!h && !!p && !!s;
+    const header = wellFormed ? decodePart(h) : null;
+    const payload = wellFormed ? decodePart(p) : null;
     let expiry: string | null = null;
     let expiryMs: number | null = null;
     try {
@@ -53,7 +61,7 @@ export default function JwtDecoder() {
         expiry = new Date(expiryMs).toLocaleString();
       }
     } catch { /* ignore */ }
-    return { header, payload, expiry, expiryMs, valid: !!(header && payload) };
+    return { header, payload, expiry, expiryMs, valid: !!(header && payload), segmentCount: segments.length };
   }, [value]);
 
   const expired = parts.expiryMs !== null && parts.expiryMs < Date.now();
@@ -66,7 +74,9 @@ export default function JwtDecoder() {
         </CardContent>
       </Card>
       {!parts.valid ? (
-        <p className="rounded-xl bg-destructive/10 p-4 text-sm text-destructive">Not a valid JWT — expected header.payload.signature.</p>
+        <p className="rounded-xl bg-destructive/10 p-4 text-sm text-destructive">
+          Not a valid JWT — expected 3 dot-separated parts (header.payload.signature), found {parts.segmentCount}.
+        </p>
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           <Card>
