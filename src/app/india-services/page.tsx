@@ -10,6 +10,7 @@ import { indiaServices, popularIndiaServices, servicesByCategory, getIndiaServic
 import { indiaStates } from "@/lib/india/states";
 import { indiaCities } from "@/lib/india/cities";
 import { allPosts } from "@/lib/blog/posts";
+import { updatesByCategory } from "@/lib/updates";
 import { breadcrumbLd } from "@/lib/seo/schema";
 
 // Popular searches shown as quick chips (deep-linked to the guide).
@@ -44,6 +45,7 @@ export default function IndiaServicesPage() {
   const popularGuides = allPosts()
     .filter((p) => (p.tags ?? []).includes("india services"))
     .slice(0, 4);
+  const governmentUpdates = updatesByCategory("government").slice(0, 4);
   const crumb = breadcrumbLd([{ name: "Home", url: "/" }, { name: "India Services", url: "/india-services" }]);
 
   return (
@@ -234,23 +236,39 @@ export default function IndiaServicesPage() {
         </section>
       )}
 
-      {/* Latest government updates (placeholder — no unofficial claims) */}
-      <section className="mt-16">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-2xl font-bold tracking-tight">Latest government updates</h2>
-          <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-muted-foreground">Coming soon</span>
-        </div>
-        <div className="mt-6 rounded-2xl border border-dashed border-border bg-secondary/30 p-6 text-sm text-muted-foreground">
-          <p>
-            We&apos;re building a curated feed of important changes to official government services — new portals, deadline
-            reminders and process updates — with a link to the official source for each. Check back soon.
-          </p>
-          <p className="mt-3">
-            In the meantime, every guide shows a <span className="font-medium text-foreground">&ldquo;Last updated&rdquo;</span> date, and the official
+      {/* Latest government updates */}
+      {governmentUpdates.length > 0 && (
+        <section className="mt-16">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">Latest government updates</h2>
+              <p className="mt-1 text-sm text-muted-foreground">Notices worth knowing about — each links to the official source.</p>
+            </div>
+            <Link href="/updates/category/government"
+              className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-primary hover:underline">
+              View all <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            {governmentUpdates.map((u) => (
+              <Link key={u.slug} href={`/updates/${u.slug}`}
+                className="group flex flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg">
+                <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                  <Icon name={u.icon} className="size-4 text-primary" />
+                  <time dateTime={u.publishedOn}>{new Date(u.publishedOn).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}</time>
+                </div>
+                <h3 className="mt-2 font-semibold group-hover:text-primary">{u.title}</h3>
+                <p className="mt-1 line-clamp-2 text-sm text-muted-foreground">{u.summary}</p>
+                <span className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-primary">Read more <ArrowRight className="size-3" /></span>
+              </Link>
+            ))}
+          </div>
+          <p className="mt-4 text-xs text-muted-foreground">
+            Every guide also shows a <span className="font-medium text-foreground">&ldquo;Last updated&rdquo;</span> date, and the official
             website linked on each page is always the final authority for current details.
           </p>
-        </div>
-      </section>
+        </section>
+      )}
 
       <div className="mt-14"><IndiaDisclaimer /></div>
     </div>
