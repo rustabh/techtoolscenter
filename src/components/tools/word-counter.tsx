@@ -8,6 +8,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { ActionBar } from "@/components/tools/action-bar";
 import { downloadBlob } from "@/lib/utils";
 
+// Character limits worth checking text against. "hard" limits are enforced
+// by the platform (typing further is truncated or rejected); "guideline"
+// limits are Google's practical recommendation for how much of a meta
+// title/description reliably renders before truncation, not an enforced cap.
+// Kept consistent with the numbers already published in our own
+// social-media-character-limits and meta-titles-descriptions guides.
+const LIMITS: { label: string; limit: number; kind: "hard" | "guideline" }[] = [
+  { label: "X (Twitter) post", limit: 280, kind: "hard" },
+  { label: "SMS (single segment)", limit: 160, kind: "hard" },
+  { label: "Meta title (Google)", limit: 60, kind: "guideline" },
+  { label: "Meta description (Google)", limit: 160, kind: "guideline" },
+  { label: "Instagram / TikTok caption", limit: 2200, kind: "hard" },
+  { label: "LinkedIn post", limit: 3000, kind: "hard" },
+];
+
 const STOPWORDS = new Set([
   "the", "and", "for", "are", "but", "not", "you", "your", "with", "this", "that",
   "have", "has", "had", "was", "were", "will", "would", "can", "could", "should",
@@ -68,6 +83,34 @@ export default function WordCounter() {
           </div>
         ))}
       </div>
+      {stats.chars > 0 && (
+        <Card>
+          <CardContent className="space-y-3 pt-6">
+            <p className="text-sm font-medium text-muted-foreground">Check against common limits</p>
+            <div className="space-y-2.5">
+              {LIMITS.map((l) => {
+                const pct = Math.min(100, (stats.chars / l.limit) * 100);
+                const over = stats.chars > l.limit;
+                const barColor = over ? "bg-red-500" : pct > 90 ? "bg-amber-500" : "bg-emerald-500";
+                return (
+                  <div key={l.label}>
+                    <div className="mb-1 flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">{l.label}</span>
+                      <span className={over ? "font-medium text-red-500" : "text-muted-foreground"}>
+                        {stats.chars.toLocaleString()} / {l.limit.toLocaleString()}
+                        {over ? (l.kind === "hard" ? " — over limit" : " — over guideline") : ""}
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+                      <div className={`h-full rounded-full transition-all ${barColor}`} style={{ width: `${pct}%` }} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
       {topWords.length > 0 && (
         <Card>
           <CardContent className="pt-6">
