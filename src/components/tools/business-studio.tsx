@@ -226,19 +226,25 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
   }, [totals, value.taxType]);
 
   // QR encodes a payment/summary payload; barcode encodes the document number.
+  // The "Total" line only applies to priced document types (invoice, quotation,
+  // receipt, etc.) — Delivery Challan, Packing Slip and Letterhead never show
+  // a Rate/Amount column or total anywhere in the document, so baking a
+  // leftover/default item total into the QR code (readable by anyone who
+  // scans it) would silently claim an amount the document itself never states.
   useEffect(() => {
     let alive = true;
     (async () => {
       if (value.showQR) {
         const QRCode = (await import("qrcode")).default;
-        const payload = `${kind.title || "DOCUMENT"} ${value.number}\n${value.company.name}\nTotal: ${money(totals.grand)}`;
+        const totalLine = kind.priced ? `\nTotal: ${money(totals.grand)}` : "";
+        const payload = `${kind.title || "DOCUMENT"} ${value.number}\n${value.company.name}${totalLine}`;
         const url = await QRCode.toDataURL(payload, { width: 256, margin: 1, color: { dark: accent, light: "#ffffff" } });
         if (alive) setQrUrl(url);
       } else setQrUrl(null);
     })();
     return () => { alive = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value.showQR, value.number, value.company.name, totals.grand, accent, kind.title, sym]);
+  }, [value.showQR, value.number, value.company.name, totals.grand, accent, kind.title, kind.priced, sym]);
 
   useEffect(() => {
     let alive = true;
