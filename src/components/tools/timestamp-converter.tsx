@@ -6,8 +6,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { localDatetimeISO } from "@/lib/utils";
 import { useCopy } from "@/hooks/use-copy";
+
+// A curated set of commonly-needed IANA zones, not the full ~400-zone list —
+// enough to check a timestamp against another region without an unwieldy
+// dropdown. The visitor's own detected zone is added if it isn't already here.
+const COMMON_TIMEZONES = [
+  "UTC", "Asia/Kolkata", "America/New_York", "America/Chicago", "America/Denver",
+  "America/Los_Angeles", "Europe/London", "Europe/Paris", "Europe/Berlin",
+  "Asia/Dubai", "Asia/Singapore", "Asia/Tokyo", "Asia/Shanghai", "Australia/Sydney",
+];
 
 function relativeFromNow(ms: number): string {
   const diff = ms - Date.now();
@@ -36,6 +46,15 @@ export default function TimestampConverter() {
   const [now, setNow] = useState(Math.floor(Date.now() / 1000));
   const [ts, setTs] = useState(String(Math.floor(Date.now() / 1000)));
   const [dt, setDt] = useState(() => localDatetimeISO());
+  const [tz, setTz] = useState<string>(() => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+    } catch {
+      return "UTC";
+    }
+  });
+
+  const timezoneOptions = Array.from(new Set([tz, ...COMMON_TIMEZONES]));
 
   useEffect(() => {
     const id = setInterval(() => setNow(Math.floor(Date.now() / 1000)), 1000);
@@ -52,6 +71,19 @@ export default function TimestampConverter() {
     const ms = Math.abs(n) > 9999999999 ? n : n * 1000;
     const d = new Date(ms);
     return isNaN(d.getTime()) ? null : d;
+  })();
+
+  const inSelectedZone = (() => {
+    if (!parsed) return null;
+    try {
+      return new Intl.DateTimeFormat("en-US", {
+        timeZone: tz,
+        dateStyle: "medium",
+        timeStyle: "long",
+      }).format(parsed);
+    } catch {
+      return null;
+    }
   })();
 
   const fromDate = (() => {
@@ -79,6 +111,17 @@ export default function TimestampConverter() {
                 <CopyRow label="Local" value={parsed.toLocaleString()} />
                 <CopyRow label="UTC" value={parsed.toUTCString()} />
                 <CopyRow label="ISO" value={parsed.toISOString()} />
+              </div>
+            )}
+            <div className="space-y-1.5">
+              <Label htmlFor="ts-timezone">Check in another timezone</Label>
+              <Select id="ts-timezone" value={tz} onChange={(e) => setTz(e.target.value)}>
+                {timezoneOptions.map((z) => <option key={z} value={z}>{z.replace(/_/g, " ")}</option>)}
+              </Select>
+            </div>
+            {inSelectedZone && (
+              <div className="rounded-xl bg-secondary/50 p-3 text-sm">
+                <CopyRow label={tz.replace(/_/g, " ")} value={inSelectedZone} />
               </div>
             )}
           </CardContent>
