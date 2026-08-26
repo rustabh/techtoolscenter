@@ -165,9 +165,12 @@ export default function AiHubPage() {
               right tool for the job.
             </p>
           </div>
-          <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-semibold text-muted-foreground">
-            Coming soon
-          </span>
+          <Link
+            href="/ai-hub/learning"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+          >
+            Start learning <ArrowRight className="size-4" />
+          </Link>
         </div>
       </section>
     </div>
