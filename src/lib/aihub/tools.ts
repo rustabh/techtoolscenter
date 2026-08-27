@@ -5259,6 +5259,44 @@ export const aiTools: AiTool[] = [
     "tags": ["text-to-3d", "image-to-3d", "3d-models", "quad-mesh", "game-assets"],
     "icon": "Boxes",
     "addedOn": "2026-08-20"
+  },
+  {
+    "slug": "cocounsel",
+    "name": "CoCounsel",
+    "category": "legal",
+    "developer": "Thomson Reuters",
+    "officialUrl": "https://www.thomsonreuters.com/en/cocounsel",
+    "overview": "A legal AI assistant built on Thomson Reuters' Westlaw content for research memos, contract review, deposition prep and document summarization, aimed at law firms already inside the Westlaw ecosystem.",
+    "pricing": "Enterprise",
+    "tags": ["legal", "legal research", "westlaw", "contract-review", "law-firms"],
+    "icon": "Scale",
+    "addedOn": "2026-08-27"
+  },
+  {
+    "slug": "corti",
+    "name": "Corti",
+    "category": "healthcare",
+    "developer": "Corti",
+    "officialUrl": "https://www.corti.ai",
+    "overview": "A healthcare AI platform providing speech-to-text, medical coding and an AI scribe (Corti Assistant) that listens during a consultation and drafts clinical documentation from the conversation, with an API for EHR and telehealth integrations.",
+    "pricing": "Enterprise",
+    "apiAvailable": true,
+    "tags": ["healthcare", "clinical-documentation", "ai-scribe", "medical-coding", "api"],
+    "icon": "Stethoscope",
+    "addedOn": "2026-08-27"
+  },
+  {
+    "slug": "pocketguard",
+    "name": "PocketGuard",
+    "category": "finance",
+    "developer": "PocketGuard",
+    "officialUrl": "https://pocketguard.com",
+    "overview": "A personal budgeting app that links your accounts, tracks spending automatically and uses AI chat to answer questions about your budget, plus a debt payoff planner and bill-negotiation feature.",
+    "pricing": "Paid",
+    "platforms": ["Web", "Mobile"],
+    "tags": ["budgeting", "personal-finance", "expense-tracking", "debt-payoff"],
+    "icon": "Coins",
+    "addedOn": "2026-08-27"
   }
 ];
 
