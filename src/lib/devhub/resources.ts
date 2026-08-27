@@ -3294,6 +3294,80 @@ export const externalDevResources: DevResource[] = [
     "openSource": true,
     "icon": "Layers",
     "addedOn": "2026-08-20"
+  },
+  {
+    "slug": "daisyui",
+    "name": "DaisyUI",
+    "category": "ui-kits",
+    "description": "A Tailwind CSS plugin that adds semantic component class names (btn, card, modal) with built-in themes, so you write markup instead of stacking utility classes for every component.",
+    "officialUrl": "https://daisyui.com",
+    "docsUrl": "https://daisyui.com/docs/install/",
+    "tags": ["tailwind", "css-only", "themes", "components"],
+    "pricing": "Freemium",
+    "openSource": true,
+    "icon": "LayoutGrid",
+    "addedOn": "2026-08-27"
+  },
+  {
+    "slug": "hostinger",
+    "name": "Hostinger",
+    "category": "hosting",
+    "description": "A budget shared, WordPress and VPS hosting provider aimed at solo developers and small sites, with a free domain and SSL bundled into longer-term plans.",
+    "officialUrl": "https://www.hostinger.com",
+    "docsUrl": "https://www.hostinger.com/tutorials",
+    "tags": ["shared-hosting", "vps", "wordpress", "budget"],
+    "pricing": "Paid",
+    "icon": "HardDrive",
+    "addedOn": "2026-08-27"
+  },
+  {
+    "slug": "auto-animate",
+    "name": "AutoAnimate",
+    "category": "animations",
+    "description": "A zero-config animation utility you drop onto an existing parent element to get smooth add/remove/reorder transitions, without writing keyframes or wiring up a full animation library.",
+    "officialUrl": "https://auto-animate.formkit.com",
+    "docsUrl": "https://auto-animate.formkit.com/#usage",
+    "tags": ["animation", "zero-config", "react", "vue"],
+    "pricing": "Free",
+    "openSource": true,
+    "icon": "Sparkles",
+    "addedOn": "2026-08-27"
+  },
+  {
+    "slug": "visx",
+    "name": "visx",
+    "category": "charts",
+    "description": "Airbnb's collection of low-level, unopinionated visualization primitives that combine D3's math with React's rendering, for teams that want full control over a custom chart rather than a pre-styled chart component.",
+    "officialUrl": "https://airbnb.io/visx",
+    "docsUrl": "https://airbnb.io/visx/docs",
+    "tags": ["react", "d3", "data-visualization", "low-level"],
+    "pricing": "Free",
+    "openSource": true,
+    "icon": "ChartColumn",
+    "addedOn": "2026-08-27"
+  },
+  {
+    "slug": "pulumi",
+    "name": "Pulumi",
+    "category": "devops",
+    "description": "An infrastructure-as-code tool that lets you define cloud resources in a real programming language (TypeScript, Python, Go) instead of a domain-specific config format, with state management handled by Pulumi Cloud or your own backend.",
+    "officialUrl": "https://www.pulumi.com",
+    "docsUrl": "https://www.pulumi.com/docs",
+    "tags": ["iac", "cloud", "typescript", "automation"],
+    "pricing": "Freemium",
+    "icon": "Workflow",
+    "addedOn": "2026-08-27"
+  },
+  {
+    "slug": "javascript-info",
+    "name": "JavaScript.info",
+    "category": "learning",
+    "description": "A free, deeply detailed modern JavaScript tutorial that goes from language fundamentals through browser APIs, async patterns and more advanced topics, with runnable examples throughout.",
+    "officialUrl": "https://javascript.info",
+    "tags": ["javascript", "tutorial", "free", "fundamentals"],
+    "pricing": "Free",
+    "icon": "GraduationCap",
+    "addedOn": "2026-08-27"
   }
 ];
 
