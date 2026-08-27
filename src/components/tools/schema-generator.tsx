@@ -12,7 +12,11 @@ type SType = "Organization" | "Website" | "Article" | "Product" | "LocalBusiness
 
 // Google's structured-data guidelines treat an empty-string property as
 // invalid/misleading rather than "not provided" — omit it entirely instead
-// of shipping `"logo": ""` in the JSON-LD.
+// of shipping `"logo": ""` in the JSON-LD. A nested object (author, offers)
+// whose only surviving key is "@type" once its real fields are pruned is
+// just as misleading — e.g. `"author": {"@type": "Person"}` with no name,
+// or `"offers": {"@type": "Offer", "priceCurrency": "USD"}` with no price —
+// so those collapse to nothing too instead of shipping a hollow shell.
 function pruneEmpty<T>(obj: T): T {
   if (Array.isArray(obj)) return obj.map(pruneEmpty).filter((v) => v !== undefined) as unknown as T;
   if (obj && typeof obj === "object") {
@@ -20,7 +24,10 @@ function pruneEmpty<T>(obj: T): T {
     for (const [k, v] of Object.entries(obj as Record<string, unknown>)) {
       if (v === "" || v === null || v === undefined) continue;
       const pruned = pruneEmpty(v);
-      if (pruned && typeof pruned === "object" && !Array.isArray(pruned) && Object.keys(pruned).length === 0) continue;
+      if (pruned && typeof pruned === "object" && !Array.isArray(pruned)) {
+        const realKeys = Object.keys(pruned).filter((kk) => kk !== "@type");
+        if (realKeys.length === 0) continue;
+      }
       out[k] = pruned;
     }
     return out as T;
@@ -53,7 +60,13 @@ export default function SchemaGenerator() {
     if (type === "Organization") obj = { ...obj, name: g("name"), url: g("url"), logo: g("logo") };
     else if (type === "Website") obj = { ...obj, name: g("name"), url: g("url") };
     else if (type === "Article") obj = { ...obj, headline: g("headline"), author: { "@type": "Person", name: g("author") }, datePublished: g("datePublished"), image: g("image") };
-    else if (type === "Product") obj = { ...obj, name: g("name"), image: g("image"), offers: { "@type": "Offer", price: g("price"), priceCurrency: g("currency") || "USD" } };
+    else if (type === "Product") {
+      const price = g("price");
+      // Only default priceCurrency when a price is actually entered — an
+      // Offer with a currency but no price is meaningless, and pruneEmpty
+      // can't catch that case on its own since "USD" isn't an empty value.
+      obj = { ...obj, name: g("name"), image: g("image"), offers: { "@type": "Offer", price, ...(price ? { priceCurrency: g("currency") || "USD" } : {}) } };
+    }
     else if (type === "LocalBusiness") obj = { ...obj, name: g("name"), telephone: g("phone"), address: g("address"), url: g("url") };
     else if (type === "FAQPage") obj = { ...obj, mainEntity: faqs
       .filter((item) => item.q.trim() || item.a.trim())
