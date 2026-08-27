@@ -2075,6 +2075,24 @@ export const tools: Tool[] = [
       { question: "How accurate is the extracted text?", answer: "Accuracy depends on image quality — clear, well-lit, high-resolution text with good contrast works best. You can edit the result directly in the text box before copying or downloading to fix any misreads." },
     ],
   },
+  {
+    slug: "background-remover",
+    name: "Background Remover",
+    description: "Remove the background from any photo automatically using an on-device AI model — no upload, no subscription.",
+    longDescription:
+      "Upload a product photo, portrait or object shot and remove its background automatically using a real AI segmentation model that runs entirely in your browser — your photo is never uploaded to a server. Download the result as a transparent PNG, or drop it onto a solid white, black or custom-color background instead. Works on people, products and general objects alike.",
+    category: "Image",
+    icon: "Eraser",
+    keywords: ["remove background from image", "background remover free", "transparent background maker", "ai background remover online", "remove bg free", "product photo background removal"],
+    addedOn: "2026-08-27",
+    faq: [
+      { question: "Is my photo uploaded anywhere?", answer: "No — background removal runs entirely on your device using an in-browser AI model. Nothing is uploaded to a server at any point." },
+      { question: "Why does it take longer than other tools on this site?", answer: "It's running a real neural network in your browser, not a simple filter. Expect anywhere from a few seconds to around a minute depending on your device — the first run also downloads the AI model (roughly 45MB), which is cached afterward so later uses are faster." },
+      { question: "Does it work on product photos, not just people?", answer: "Yes — it uses a general-purpose object segmentation model, so it works on products, animals and general objects, not only portraits." },
+      { question: "Can I put a colored background instead of transparent?", answer: "Yes — after removing the background, choose white, black, or pick a custom color before downloading, and it composites onto that color locally in your browser." },
+      { question: "Why did it struggle with my photo?", answer: "Very low-resolution, low-contrast, or cluttered images (where the subject blends into the background) are the hardest cases for any background-removal model. A clear, well-lit photo with a distinct subject works best." },
+    ],
+  },
 ];
 
 // Tools added on or after this date show a "New" badge. Fixed for deterministic SSR.

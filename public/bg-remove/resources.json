@@ -1,0 +1,17 @@
+{
+  "/models/isnet_quint8": {
+    "chunks": [{ "name": "small.onnx", "offsets": [0, 44342436] }],
+    "size": 44342436,
+    "mime": "application/octet-stream"
+  },
+  "/onnxruntime-web/ort-wasm-simd-threaded.wasm": {
+    "chunks": [{ "name": "ort-wasm-simd-threaded.wasm", "offsets": [0, 12666427] }],
+    "size": 12666427,
+    "mime": "application/wasm"
+  },
+  "/onnxruntime-web/ort-wasm-simd-threaded.mjs": {
+    "chunks": [{ "name": "ort-wasm-simd-threaded.mjs", "offsets": [0, 26583] }],
+    "size": 26583,
+    "mime": "text/javascript"
+  }
+}

@@ -19,6 +19,25 @@ const nextConfig = {
       { source: "/blog/page/1", destination: "/blog", permanent: true },
     ];
   },
+  async headers() {
+    // The background remover runs a real neural net in WASM; without
+    // crossOriginIsolated, onnxruntime-web can't use SharedArrayBuffer and
+    // falls back to a single thread — tens of seconds slower per image.
+    // "credentialless" (rather than "require-corp") keeps this isolated
+    // without forcing every third-party embed on the page to opt in via
+    // CORP headers, so it doesn't need to be paired with removing ads from
+    // just this one route. Scoped to this single path — no other page is
+    // affected.
+    return [
+      {
+        source: "/tools/background-remover",
+        headers: [
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+          { key: "Cross-Origin-Embedder-Policy", value: "credentialless" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

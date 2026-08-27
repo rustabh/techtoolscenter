@@ -141,6 +141,7 @@ const registry: Record<string, ComponentType<{ preset?: Record<string, unknown> 
   "bulk-qr-generator": dynamic(() => import("./bulk-qr-generator"), { loading: ToolSkeleton, ssr: false }),
   "pdf-sign": dynamic(() => import("./pdf-sign"), { loading: ToolSkeleton, ssr: false }),
   "ocr-text-extractor": dynamic(() => import("./ocr-text-extractor"), { loading: ToolSkeleton, ssr: false }),
+  "background-remover": dynamic(() => import("./background-remover"), { loading: ToolSkeleton, ssr: false }),
 };
 
 export function ToolRenderer({ slug, preset }: { slug: string; preset?: Record<string, unknown> }) {
