@@ -14,16 +14,16 @@ export const seedPosts: CommunityPost[] = [
   // Roadmap (planned / in-progress)
   { id: "seed-road-cloud", type: "roadmap", title: "Cloud sync for your workspace", description: "Optionally sync your saved projects, templates and history across devices with an account.", status: "planned", votes: 88, createdAt: "2026-07-15", author: "TechToolsCenter", seeded: true },
   { id: "seed-road-ai", type: "roadmap", title: "Live AI models in AI Studio", description: "Connect real AI models to AI Studio for even smarter generation, on top of the built-in engine.", status: "in-progress", votes: 96, createdAt: "2026-07-14", author: "TechToolsCenter", seeded: true },
-  { id: "seed-road-ocr", type: "roadmap", title: "OCR — extract text from scanned PDFs", description: "Turn scanned PDFs and images into searchable, copyable text right in your browser.", status: "planned", votes: 73, createdAt: "2026-07-13", author: "TechToolsCenter", seeded: true },
+  { id: "seed-road-ocr", type: "announcement", title: "Released: OCR — extract text from scanned PDFs", description: "The OCR Text Extractor turns scanned PDFs and images into searchable, copyable text right in your browser.", status: "released", votes: 73, createdAt: "2026-07-13", author: "TechToolsCenter", seeded: true },
 
   // Popular tool requests
   { id: "seed-req-bg", type: "tool-request", title: "AI background remover", description: "Remove the background from a photo automatically with one click.", category: "Image", useCase: "Product photos and profile pictures", priority: "high", status: "planned", votes: 112, createdAt: "2026-07-12", author: "Community", seeded: true },
-  { id: "seed-req-merge-img", type: "tool-request", title: "Combine images into one PDF", description: "Select multiple images and export them as a single PDF.", category: "Documents", useCase: "Submitting scanned documents", priority: "medium", status: "open", votes: 57, createdAt: "2026-07-11", author: "Community", seeded: true },
-  { id: "seed-req-sign", type: "tool-request", title: "Draw & sign a PDF", description: "Add a hand-drawn signature to a PDF without printing it.", category: "Documents", useCase: "Signing contracts", priority: "high", status: "open", votes: 69, createdAt: "2026-07-10", author: "Community", seeded: true },
+  { id: "seed-req-merge-img", type: "tool-request", title: "Combine images into one PDF", description: "Shipped — the Image to PDF tool (and PDF Studio) let you select multiple images and export them as a single PDF.", category: "Documents", useCase: "Submitting scanned documents", priority: "medium", status: "released", votes: 57, createdAt: "2026-07-11", author: "Community", seeded: true },
+  { id: "seed-req-sign", type: "tool-request", title: "Draw & sign a PDF", description: "Shipped — the PDF Sign tool lets you draw, type or upload a signature and place it on any PDF, no printing needed.", category: "Documents", useCase: "Signing contracts", priority: "high", status: "released", votes: 69, createdAt: "2026-07-10", author: "Community", seeded: true },
 
   // Feature requests
   { id: "seed-feat-dark", type: "feature", title: "Remember my favourite tools order", description: "Let me reorder my pinned/favourite tools.", status: "open", votes: 24, createdAt: "2026-07-09", author: "Community", seeded: true },
-  { id: "seed-feat-batch-qr", type: "feature", title: "Bulk QR code generation", description: "Generate many QR codes at once from a list.", status: "planned", votes: 48, createdAt: "2026-07-08", author: "Community", seeded: true },
+  { id: "seed-feat-batch-qr", type: "feature", title: "Bulk QR code generation", description: "Shipped — the Bulk QR Code Generator creates many QR codes at once from a pasted list or CSV.", status: "released", votes: 48, createdAt: "2026-07-08", author: "Community", seeded: true },
 
   // Ideas
   { id: "seed-idea-templates", type: "idea", title: "Community template gallery", description: "Share and reuse invoice and brand templates made by other users.", status: "open", votes: 33, createdAt: "2026-07-07", author: "Community", seeded: true },
