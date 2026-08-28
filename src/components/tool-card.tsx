@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowUpRight, Star } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, Star } from "lucide-react";
 import { Icon } from "@/components/icon";
 import { Badge } from "@/components/ui/badge";
 import type { Tool } from "@/lib/tools";
@@ -10,7 +10,14 @@ import { getCategoryMeta, isNewTool } from "@/lib/tools";
 import { useToolPrefs } from "@/hooks/use-tool-prefs";
 import { cn } from "@/lib/utils";
 
-export function ToolCard({ tool, index = 0 }: { tool: Tool; index?: number }) {
+interface ReorderControls {
+  canMoveEarlier: boolean;
+  canMoveLater: boolean;
+  onMoveEarlier: () => void;
+  onMoveLater: () => void;
+}
+
+export function ToolCard({ tool, index = 0, reorder }: { tool: Tool; index?: number; reorder?: ReorderControls }) {
   const { isFavorite, toggleFavorite, ready } = useToolPrefs();
   const fav = ready && isFavorite(tool.slug);
   return (
@@ -30,6 +37,28 @@ export function ToolCard({ tool, index = 0 }: { tool: Tool; index?: number }) {
           </span>
           <div className="flex items-center gap-2">
             {isNewTool(tool) && <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">New</Badge>}
+            {reorder && (
+              <>
+                <button
+                  type="button"
+                  aria-label={`Move ${tool.name} earlier in favorites`}
+                  disabled={!reorder.canMoveEarlier}
+                  onClick={(e) => { e.preventDefault(); reorder.onMoveEarlier(); }}
+                  className="rounded-full p-1 text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
+                >
+                  <ChevronLeft className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  aria-label={`Move ${tool.name} later in favorites`}
+                  disabled={!reorder.canMoveLater}
+                  onClick={(e) => { e.preventDefault(); reorder.onMoveLater(); }}
+                  className="rounded-full p-1 text-muted-foreground transition-colors hover:text-foreground disabled:pointer-events-none disabled:opacity-30"
+                >
+                  <ChevronRight className="size-4" />
+                </button>
+              </>
+            )}
             <button
               type="button"
               aria-label={fav ? "Remove from favorites" : "Add to favorites"}

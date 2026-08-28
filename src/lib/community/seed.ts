@@ -22,7 +22,7 @@ export const seedPosts: CommunityPost[] = [
   { id: "seed-req-sign", type: "tool-request", title: "Draw & sign a PDF", description: "Shipped — the PDF Sign tool lets you draw, type or upload a signature and place it on any PDF, no printing needed.", category: "Documents", useCase: "Signing contracts", priority: "high", status: "released", votes: 69, createdAt: "2026-07-10", author: "Community", seeded: true },
 
   // Feature requests
-  { id: "seed-feat-dark", type: "feature", title: "Remember my favourite tools order", description: "Let me reorder my pinned/favourite tools.", status: "open", votes: 24, createdAt: "2026-07-09", author: "Community", seeded: true },
+  { id: "seed-feat-dark", type: "feature", title: "Remember my favourite tools order", description: "Shipped — use the arrow buttons on each favorited tool card (on the Tools page) to reorder your favorites; the order is saved and remembered.", status: "released", votes: 24, createdAt: "2026-07-09", author: "Community", seeded: true },
   { id: "seed-feat-batch-qr", type: "feature", title: "Bulk QR code generation", description: "Shipped — the Bulk QR Code Generator creates many QR codes at once from a pasted list or CSV.", status: "released", votes: 48, createdAt: "2026-07-08", author: "Community", seeded: true },
 
   // Ideas

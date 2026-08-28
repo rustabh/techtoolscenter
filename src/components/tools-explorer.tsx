@@ -13,7 +13,7 @@ export function ToolsExplorer() {
   const params = useSearchParams();
   const [q, setQ] = useState(params.get("q") ?? "");
   const [active, setActive] = useState<string>("all");
-  const { favorites, recents, ready } = useToolPrefs();
+  const { favorites, recents, ready, moveFavorite } = useToolPrefs();
   const cols = collectionsWithCounts();
 
   const favTools = favorites.map(getTool).filter(Boolean);
@@ -73,7 +73,14 @@ export function ToolsExplorer() {
       </div>
 
       {showCollections && favTools.length > 0 && (
-        <Collection title="Your favorites" icon={<Star className="size-4 fill-amber-400 text-amber-400" />} items={favTools as typeof tools} />
+        <Collection
+          title="Your favorites"
+          icon={<Star className="size-4 fill-amber-400 text-amber-400" />}
+          items={favTools as typeof tools}
+          reorderable
+          onMoveEarlier={(slug) => moveFavorite(slug, -1)}
+          onMoveLater={(slug) => moveFavorite(slug, 1)}
+        />
       )}
       {showCollections && recentTools.length > 0 && (
         <Collection title="Recently used" icon={<History className="size-4 text-primary" />} items={recentTools as typeof tools} />
@@ -97,13 +104,35 @@ export function ToolsExplorer() {
   );
 }
 
-function Collection({ title, icon, items }: { title: string; icon: React.ReactNode; items: typeof tools }) {
+function Collection({ title, icon, items, reorderable, onMoveEarlier, onMoveLater }: {
+  title: string;
+  icon: React.ReactNode;
+  items: typeof tools;
+  reorderable?: boolean;
+  onMoveEarlier?: (slug: string) => void;
+  onMoveLater?: (slug: string) => void;
+}) {
   return (
     <div>
-      <h2 className="mb-4 flex items-center gap-2 text-sm font-semibold">{icon} {title}</h2>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="flex items-center gap-2 text-sm font-semibold">{icon} {title}</h2>
+        {reorderable && items.length > 1 && (
+          <p className="text-xs text-muted-foreground">Use the arrows to reorder</p>
+        )}
+      </div>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((t, i) => (
-          <ToolCard key={t.slug} tool={t} index={i} />
+          <ToolCard
+            key={t.slug}
+            tool={t}
+            index={i}
+            reorder={reorderable ? {
+              canMoveEarlier: i > 0,
+              canMoveLater: i < items.length - 1,
+              onMoveEarlier: () => onMoveEarlier?.(t.slug),
+              onMoveLater: () => onMoveLater?.(t.slug),
+            } : undefined}
+          />
         ))}
       </div>
     </div>

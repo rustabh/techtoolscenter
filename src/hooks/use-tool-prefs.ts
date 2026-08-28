@@ -50,10 +50,22 @@ export function useToolPrefs() {
     write(FAV_KEY, next);
   }, []);
 
+  // Swaps a favorite with its neighbour in the saved order (-1 = move
+  // earlier, 1 = move later) — a no-op at either end of the list.
+  const moveFavorite = useCallback((slug: string, direction: -1 | 1) => {
+    const current = read(FAV_KEY);
+    const i = current.indexOf(slug);
+    const j = i + direction;
+    if (i === -1 || j < 0 || j >= current.length) return;
+    const next = [...current];
+    [next[i], next[j]] = [next[j], next[i]];
+    write(FAV_KEY, next);
+  }, []);
+
   const addRecent = useCallback((slug: string) => {
     const current = read(RECENT_KEY).filter((s) => s !== slug);
     write(RECENT_KEY, [slug, ...current].slice(0, 8));
   }, []);
 
-  return { favorites, recents, ready, toggleFavorite, addRecent, isFavorite: (s: string) => favorites.includes(s) };
+  return { favorites, recents, ready, toggleFavorite, moveFavorite, addRecent, isFavorite: (s: string) => favorites.includes(s) };
 }
