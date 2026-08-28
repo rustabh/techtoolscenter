@@ -8,9 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Check, Copy } from "lucide-react";
 
 function hexToRgb(hex: string) {
-  const m = hex.replace("#", "");
-  const n = m.length === 3 ? m.split("").map((c) => c + c).join("") : m;
-  const int = parseInt(n, 16);
+  const raw = hex.replace("#", "").trim();
+  // Accept 3-digit (#rgb) or 4-digit (#rgba) shorthand, and 6-digit
+  // (#rrggbb) or 8-digit (#rrggbbaa) — including a HEX8 value pasted back
+  // from this same tool's own output — by keeping only the RGB portion
+  // before parsing. Without this, an 8-digit paste silently shifted every
+  // channel by a byte instead of just dropping the trailing alpha pair.
+  const rgbPart = raw.length === 3 || raw.length === 4
+    ? raw.slice(0, 3).split("").map((c) => c + c).join("")
+    : raw.slice(0, 6).padEnd(6, "0");
+  const int = parseInt(rgbPart, 16);
   return { r: (int >> 16) & 255, g: (int >> 8) & 255, b: int & 255 };
 }
 function toHex2(n: number) {
