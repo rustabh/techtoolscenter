@@ -3460,22 +3460,45 @@ export interface IndiaSearchResult {
   category: string;
 }
 
+const SEARCH_STOPWORDS = new Set([
+  "a", "an", "the", "for", "to", "of", "in", "on", "is", "are", "how", "do", "does",
+  "i", "my", "me", "can", "you", "please", "get", "and", "or", "with", "about",
+]);
+
+function searchTokens(s: string): string[] {
+  return s.split(/[^a-z0-9]+/i).map((w) => w.toLowerCase()).filter((w) => w.length > 1 && !SEARCH_STOPWORDS.has(w));
+}
+
+// A natural-language query like "apply for a passport" previously matched
+// nothing: it isn't a substring of the "apply passport" intent key (the
+// inserted "for a" breaks the literal match), and it's far too long to be a
+// substring of any service's keyword haystack either — that comparison only
+// ever worked for near-exact short phrases. Falling back to token overlap
+// (every significant word of the shorter side present in the longer side)
+// catches ordinary phrasing without losing the precision of the original
+// exact/substring checks, which still run first.
 export function searchIndiaServices(query: string, limit = 8): IndiaSearchResult[] {
   const q = query.trim().toLowerCase();
   if (!q) return [];
+  const qTokens = searchTokens(q);
   const seen = new Set<string>();
   const out: IndiaSearchResult[] = [];
   const add = (svc?: IndiaService) => {
     if (svc && !seen.has(svc.slug)) { seen.add(svc.slug); out.push({ slug: svc.slug, name: svc.name, category: svc.category }); }
   };
   for (const intent of INDIA_INTENTS) {
-    if (intent.keys.some((k) => q.includes(k) || k.includes(q))) add(getIndiaService(intent.slug));
+    const matched = intent.keys.some((k) => {
+      if (q.includes(k) || k.includes(q)) return true;
+      const kTokens = searchTokens(k);
+      return kTokens.length > 0 && kTokens.every((t) => qTokens.includes(t));
+    });
+    if (matched) add(getIndiaService(intent.slug));
     if (out.length >= limit) break;
   }
   if (out.length < limit) {
     for (const s of indiaServices) {
       const hay = `${s.name} ${s.keywords.join(" ")} ${s.officialName}`.toLowerCase();
-      if (hay.includes(q)) add(s);
+      if (hay.includes(q) || (qTokens.length > 0 && qTokens.every((t) => hay.includes(t)))) add(s);
       if (out.length >= limit) break;
     }
   }
