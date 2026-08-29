@@ -1124,6 +1124,40 @@ const fastPaths: FastPath[] = [
       }),
   },
   {
+    id: "sign-document",
+    intent: "tool",
+    // Distinct from the plain "signature" fast path above — someone asking
+    // to sign a document usually has an actual PDF to put the signature
+    // onto, not just a signature image on its own.
+    test: (q) => /\bsign(ing)?\b/.test(q) && /(contract|document|agreement|pdf|paper|form|deed)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Draw or type your signature, drag it onto the exact spot on the page, and download the signed PDF — nothing is uploaded to a server.",
+        recommendedTools: compact([toolLink("pdf-sign"), toolLink("signature-maker")]),
+        relatedBlogs: [{ label: "How to Sign a PDF Online for Free (Draw or Type Your Signature)", href: "/blog/how-to-sign-a-pdf-online-free", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "1-2 minutes",
+        difficulty: "Beginner",
+        nextStep: "This produces a visual signature for everyday use — for a legally certified e-signature (e-stamping, audit trail), use a dedicated certified provider instead.",
+        actions: [{ label: "Open PDF Sign", href: "/tools/pdf-sign", kind: "internal" }],
+      }),
+  },
+  {
+    id: "generate-favicon",
+    intent: "tool",
+    test: (q) => /favicon/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Generate a complete favicon set — every size, favicon.ico, Apple/Android icons, a web manifest and ready-to-paste HTML — from text, an emoji, or an image.",
+        recommendedTools: compact([toolLink("favicon-generator")]),
+        relatedBlogs: [{ label: "How to Create a Favicon for Your Website (All Sizes, Free)", href: "/blog/how-to-create-a-favicon-for-your-website", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "1 minute",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Favicon Generator", href: "/tools/favicon-generator", kind: "internal" }],
+      }),
+  },
+  {
     id: "typing-speed-test",
     intent: "tool",
     test: (q) => (/typing/.test(q) && /(speed|test)/.test(q)) || /\bwpm\b/.test(q),

@@ -123,6 +123,14 @@ export const glossary: GlossaryTerm[] = [
     explanation:
       "A CDN (Content Delivery Network) is a network of servers spread across many locations that serve a website's files from the copy closest to the visitor, making pages load faster.",
   },
+  {
+    term: "Webhook",
+    aliases: ["webhooks"],
+    explanation:
+      "A webhook is a way for one system to notify another the instant something happens — instead of your app repeatedly asking \"anything new yet?\", the other service sends a message to a URL you provide as soon as the event occurs.",
+    learnMoreHref: "/blog/what-is-a-webhook-how-is-it-different-from-an-api",
+    learnMoreLabel: "Webhook vs API, explained",
+  },
 ];
 
 function normalize(text: string): string {
