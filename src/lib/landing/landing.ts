@@ -546,6 +546,54 @@ const invoiceLandings: LandingPage[] = invoiceVariants.map((v) => ({
   tags: ["invoice template", v.label.toLowerCase(), "invoice maker", "billing"],
 }));
 
+/* ================================================================== *
+ * QUOTATION GENERATOR landing pages (core: quotation-generator)      *
+ * ================================================================== */
+const quotationVariants: { slug: string; label: string; use: string; note: string; example: string }[] = [
+  { slug: "quotation-template-for-construction", label: "Construction", use: "quote a build or renovation job with labour, materials and a validity period clearly stated", note: "separate labour, materials and any subcontracted work into distinct line items, and always set a validity date since material costs shift", example: "A contractor quoting a bathroom renovation with separate labour and materials lines" },
+  { slug: "quotation-template-for-interior-design", label: "Interior Design", use: "quote a room or full-home project covering design fees, furnishings and execution", note: "separate your design/consultation fee from sourced furnishings and execution costs so the client sees the full scope before committing", example: "An interior designer quoting a living room makeover covering design fee and furniture sourcing" },
+  { slug: "quotation-template-for-printing-services", label: "Printing Services", use: "quote a print job by quantity, paper stock and finishing options", note: "list quantity-based pricing and any finishing (lamination, binding, foiling) as separate line items, since price scales differently for each", example: "A print shop quoting 500 flyers with matte lamination and same-day turnaround" },
+  { slug: "quotation-template-for-event-management", label: "Event Management", use: "quote a full event covering venue, vendors and planning fees before the client commits", note: "list each vendor category (venue, catering, decor) plus your planning fee separately, so the client can see exactly where the budget goes", example: "An event planner quoting a corporate event covering venue, catering and AV setup" },
+  { slug: "quotation-template-for-it-services", label: "IT Services", use: "quote a project, retainer or implementation scope before work begins", note: "break the quote into project phases or deliverables with a validity period, since scope and pricing for IT work often needs client sign-off before starting", example: "An IT services firm quoting a CRM implementation project in three phases" },
+  { slug: "quotation-template-for-manufacturers", label: "Manufacturers", use: "quote a bulk order with per-unit pricing, MOQ and delivery timelines", note: "state the minimum order quantity, per-unit price at that quantity, and expected delivery timeline clearly, since B2B buyers compare all three", example: "A manufacturer quoting a bulk order of 5,000 units with a 4-week delivery timeline" },
+  { slug: "quotation-template-for-logistics-and-transport", label: "Logistics & Transport", use: "quote a shipment or recurring transport contract with distance and load-based pricing", note: "separate base transport cost, distance/fuel surcharge and any handling or insurance fee into distinct line items", example: "A logistics provider quoting a recurring weekly freight route with a fuel surcharge line item" },
+  { slug: "quotation-template-for-landscaping", label: "Landscaping", use: "quote a one-time or seasonal landscaping project with labour and materials itemised", note: "separate labour, plants/materials and any ongoing maintenance plan into distinct line items with a clear validity period", example: "A landscaping company quoting a garden redesign plus an optional monthly maintenance add-on" },
+  { slug: "quotation-template-for-solar-installation", label: "Solar Installation", use: "quote a solar panel installation covering equipment, labour and expected system size", note: "itemise panel/inverter equipment separately from installation labour, and state the system's expected capacity clearly since that drives the customer's decision", example: "A solar installer quoting a 5kW rooftop system with separate equipment and installation lines" },
+  { slug: "quotation-template-for-cleaning-services", label: "Cleaning Services", use: "quote a one-time deep clean or a recurring contract before the client commits", note: "separate one-time setup/deep-clean pricing from any recurring contract rate, since customers often compare both options side by side", example: "A commercial cleaning company quoting a one-time deep clean plus a proposed monthly contract rate" },
+  { slug: "quotation-template-for-web-design-agencies", label: "Web Design Agencies", use: "quote a website project by phase or deliverable before the client signs off", note: "break the quote into phases (design, development, launch) with a validity period, since scope commonly gets refined before the client approves it", example: "A web design agency quoting a 3-phase website rebuild with a 30-day validity period" },
+];
+const quotationRelated = ["quotation-generator", "invoice-maker", "estimate-maker"];
+
+const quotationLandings: LandingPage[] = quotationVariants.map((v) => ({
+  slug: v.slug,
+  core: "quotation-generator",
+  h1: `Quotation Template for ${v.label}`,
+  title: `Quotation Template for ${v.label} — Free Online Quotation Generator`,
+  description: `Create a free price quotation for ${v.label.toLowerCase()}. ${v.use[0].toUpperCase() + v.use.slice(1)}. GST breakdown, logo, validity period, export to PDF.`,
+  intro: `${v.label} businesses need a quotation that sets clear expectations before work begins. This quotation generator opens ready to ${v.use}, with your logo and a proper GST/tax breakdown if you need one — no accounting software required.`,
+  benefits: [
+    `Built to ${v.use}`,
+    (v.note.charAt(0).toUpperCase() + v.note.slice(1)),
+    "Add your logo and a validity period so the client knows how long the price holds",
+    "Export to PDF, PNG or print directly — free and unlimited",
+  ],
+  howTo: [
+    "Open the quotation generator — a sample quotation loads so you can see the layout.",
+    "Add your business details, logo and the client's details.",
+    `List your line items — ${v.note}.`,
+    "Set a validity period, add GST/tax if applicable, then export to PDF or print.",
+  ],
+  examples: [{ title: `Quotation for ${v.label.toLowerCase()}`, input: v.example, output: "A polished, itemised PDF quotation ready to send" }],
+  faq: [
+    { question: `What should a ${v.label.toLowerCase()} quotation include?`, answer: `Your business details, the client's details, itemised pricing, and a validity period. ${(v.note.charAt(0).toUpperCase() + v.note.slice(1))}.` },
+    { question: "What's the difference between a quotation and an invoice?", answer: "A quotation is sent before work begins to propose a price; an invoice is sent after (or during) work to request payment. Once a client accepts your quotation, you can convert the same details into an invoice." },
+    ...commonFaq("quotation generator"),
+  ],
+  relatedTools: quotationRelated,
+  relatedBlog: ["proforma-invoice-vs-invoice-vs-quotation-difference"],
+  tags: ["quotation template", v.label.toLowerCase(), "quotation generator", "price quote"],
+}));
+
 /* ================================================================== */
 export const landingPages: LandingPage[] = [
   ...imageLandings,
@@ -557,6 +605,7 @@ export const landingPages: LandingPage[] = [
   ...resizerLandings,
   ...resumeLandings,
   ...invoiceLandings,
+  ...quotationLandings,
 ];
 
 export function getLanding(slug: string): LandingPage | undefined {
