@@ -148,14 +148,14 @@ const fastPaths: FastPath[] = [
     build: () =>
       withIntent("tool", {
         summary:
-          "For a plain / solid background, Image Studio does it free and privately in your browser. For complex backgrounds (people, hair, busy scenes), an AI background remover gives cleaner edges.",
-        recommendedTools: compact([toolLink("image-studio"), aiToolLink("remove-bg"), aiToolLink("clipdrop")]),
-        relatedBlogs: [],
+          "For a busy, natural background (people, hair, outdoor scenes), the Background Remover uses a real AI model — free, private, runs entirely in your browser. For a plain, solid-colour backdrop, Image Studio's color-based removal is faster.",
+        recommendedTools: compact([toolLink("background-remover"), toolLink("image-studio")]),
+        relatedBlogs: [{ label: "How to Remove the Background from Any Photo Using AI (Free, No Upload)", href: "/blog/ai-background-remover-free-guide", kind: "internal" }],
         officialResources: [],
-        estimatedTime: "1 minute",
+        estimatedTime: "10-60 seconds",
         difficulty: "Beginner",
-        nextStep: "Try Image Studio first — it's free and your image never leaves your device.",
-        actions: [{ label: "Open Image Studio", href: "/tools/image-studio", kind: "internal" }],
+        nextStep: "Not a plain backdrop? Use the AI Background Remover — it handles busy or natural backgrounds Image Studio's color-based method can't.",
+        actions: [{ label: "Open Background Remover", href: "/tools/background-remover", kind: "internal" }],
       }),
   },
   {
