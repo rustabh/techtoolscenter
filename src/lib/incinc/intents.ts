@@ -8,7 +8,7 @@ import type { IndiaService } from "@/lib/india/types";
 import { lookupGlossaryTerm } from "./glossary";
 import { lookupKnowledge } from "./knowledge";
 import { searchCatalog } from "./catalog";
-import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow, itrFilingWorkflow, loanPrepWorkflow, freelanceWorkflow, fundraisingWorkflow } from "./workflows";
+import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow, itrFilingWorkflow, loanPrepWorkflow, freelanceWorkflow, fundraisingWorkflow, sellOnlineWorkflow } from "./workflows";
 
 function toolLink(slug: string): LinkItem | null {
   const t = getTool(slug);
@@ -632,6 +632,15 @@ const fastPaths: FastPath[] = [
     intent: "workflow",
     test: (q) => /saas/.test(q) && /(build|start|launch|create|make)/.test(q),
     build: () => withIntent("workflow", saasStackWorkflow),
+  },
+  {
+    id: "sell-online-workflow",
+    intent: "workflow",
+    // Checked before the more generic "start a business" pattern below, since
+    // "start an online store" would otherwise also match that one — this is
+    // the more specific, more useful match for a product-selling query.
+    test: (q) => (/sell(ing)?/.test(q) && /(online|product|marketplace|amazon|flipkart|meesho|store|shop)/.test(q)) || /(start|open|launch).*(online\s*store|online\s*shop|e-?commerce)/.test(q),
+    build: () => withIntent("workflow", sellOnlineWorkflow),
   },
   {
     id: "start-business",

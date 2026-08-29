@@ -206,6 +206,40 @@ export const fundraisingWorkflow: AssistantResponse = {
   ],
 };
 
+export const sellOnlineWorkflow: AssistantResponse = {
+  summary:
+    "Selling products online comes together in this order: clean product photos first (they matter more than almost anything else for conversions), then the business paperwork — Udyam registration, GST if it applies — then start invoicing correctly.",
+  recommendedTools: [
+    { label: "Background Remover", href: "/tools/background-remover", kind: "internal", description: "Cut products out of ordinary photos with AI and drop them onto a clean white or branded background." },
+    { label: "Image Resizer", href: "/tools/image-resizer", kind: "internal", description: "Resize product photos to the exact dimensions your marketplace or store platform requires." },
+    { label: "Image Compressor", href: "/tools/image-compressor", kind: "internal", description: "Keep listing photos fast-loading without visibly losing quality." },
+    { label: "Invoice Maker", href: "/tools/invoice-maker", kind: "internal", description: "GST-compliant invoices for every sale, from your very first order." },
+    { label: "GST Calculator", href: "/tools/gst-calculator", kind: "internal", description: "Work out the GST to add once you're registered and liable to charge it." },
+  ],
+  workflow: [
+    { label: "Background Remover", href: "/tools/background-remover", kind: "internal", description: "Clean up product photos — a consistent, distraction-free background lifts conversion rates on almost every marketplace" },
+    { label: "Image Resizer", href: "/tools/image-resizer", kind: "internal", description: "Fit your platform's exact required listing dimensions" },
+    { label: "Image Compressor", href: "/tools/image-compressor", kind: "internal", description: "Shrink file size for fast-loading listing pages" },
+    { label: "Udyam (MSME) Registration", href: "/india-services/business-tax/msme-udyam", kind: "internal", description: "Free, ~10 minutes — often required by marketplaces and unlocks MSME lending benefits" },
+    { label: "GST Registration", href: "/india-services/business-tax/gst-registration", kind: "internal", description: "Required once you cross the turnover threshold, and mandatory to sell on most major marketplaces regardless of turnover" },
+    { label: "Invoice Maker", href: "/tools/invoice-maker", kind: "internal", description: "Start issuing proper, GST-compliant invoices for every order" },
+  ],
+  relatedBlogs: [
+    { label: "How to Remove the Background from Any Photo Using AI (Free, No Upload)", href: "/blog/ai-background-remover-free-guide", kind: "internal" },
+  ],
+  officialResources: [
+    { label: "Udyam Registration Portal", href: "https://udyamregistration.gov.in", kind: "external" },
+    { label: "GST Portal", href: "https://www.gst.gov.in", kind: "external" },
+  ],
+  estimatedTime: "30-60 minutes for photos and paperwork combined, before your first listing goes live",
+  difficulty: "Beginner",
+  nextStep: "Start with your product photos — clean, consistent images affect conversion far more than most sellers expect, and it's the fastest step to knock out first.",
+  actions: [
+    { label: "Open Background Remover", href: "/tools/background-remover", kind: "internal" },
+    { label: "Open Invoice Maker", href: "/tools/invoice-maker", kind: "internal" },
+  ],
+};
+
 export const saasStackWorkflow: AssistantResponse = {
   summary:
     "For a modern SaaS built fast by a small team, this stack covers the frontend, database/auth, hosting, payments and an AI coding workflow.",
