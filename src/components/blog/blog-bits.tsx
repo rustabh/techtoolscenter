@@ -1,11 +1,32 @@
 import Link from "next/link";
-import { Clock, ArrowRight } from "lucide-react";
+import { Clock, ArrowRight, Scale } from "lucide-react";
 import { Icon } from "@/components/icon";
 import { getAuthor } from "@/lib/blog/authors";
 import { getBlogCategory } from "@/lib/blog/categories";
 import { estimateReadingMinutes } from "@/lib/blog/posts";
 import type { BlogPost } from "@/lib/blog/types";
 import type { Author } from "@/lib/blog/types";
+
+export function ComparisonHeader({ subjects }: { subjects: string[] }) {
+  return (
+    <div className="mt-6 flex flex-wrap items-center justify-center gap-3 rounded-2xl border border-primary/20 bg-primary/5 p-5">
+      {subjects.map((s, i) => (
+        <span key={s} className="flex items-center gap-3">
+          {i > 0 && <span className="rounded-full bg-primary px-2.5 py-1 text-[11px] font-bold tracking-wide text-primary-foreground">VS</span>}
+          <span className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-semibold shadow-sm">{s}</span>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+export function ComparisonBadge() {
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary">
+      <Scale className="size-3" /> Comparison
+    </span>
+  );
+}
 
 export function BlogCard({ post, featured }: { post: BlogPost; featured?: boolean }) {
   const cat = getBlogCategory(post.category);

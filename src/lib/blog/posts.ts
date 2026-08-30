@@ -10680,6 +10680,21 @@ export function estimateReadingMinutes(post: BlogPost): number {
   return Math.max(1, Math.round(words / 200));
 }
 
+/** Derives the items a "comparison" template post is actually comparing
+ *  (e.g. "GSTR-1 vs GSTR-3B: ..." -> ["GSTR-1", "GSTR-3B"]) straight from the
+ *  real, already-written title — never fabricated — so the comparison header
+ *  can render real subjects without needing separate per-post data. Returns
+ *  null when the title doesn't cleanly split into 2-4 short subjects, so the
+ *  header can fall back to a plain "Comparison" badge instead of showing
+ *  something mangled. */
+export function extractComparisonSubjects(title: string): string[] | null {
+  const subject = title.split(/[:—]/)[0].replace(/^What Is\s+/i, "").replace(/\?$/, "").trim();
+  const parts = subject.split(/\s+vs\.?\s+/i).map((s) => s.trim()).filter(Boolean);
+  if (parts.length < 2 || parts.length > 4) return null;
+  if (parts.some((p) => p.length === 0 || p.length > 34)) return null;
+  return parts;
+}
+
 function byNewest(a: BlogPost, b: BlogPost) {
   return new Date(b.publishedOn).getTime() - new Date(a.publishedOn).getTime();
 }

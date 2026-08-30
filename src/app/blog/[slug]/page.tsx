@@ -7,8 +7,8 @@ import { Icon } from "@/components/icon";
 import { Accordion } from "@/components/ui/accordion";
 import { PostContent } from "@/components/blog/post-content";
 import { PremiumAd } from "@/components/ads/premium-ad";
-import { AuthorBox, BlogCard, TableOfContents } from "@/components/blog/blog-bits";
-import { allPosts, getPost, relatedPosts, tableOfContents, estimateReadingMinutes } from "@/lib/blog/posts";
+import { AuthorBox, BlogCard, TableOfContents, ComparisonHeader, ComparisonBadge } from "@/components/blog/blog-bits";
+import { allPosts, getPost, relatedPosts, tableOfContents, estimateReadingMinutes, extractComparisonSubjects } from "@/lib/blog/posts";
 import { getAuthor } from "@/lib/blog/authors";
 import { getBlogCategory } from "@/lib/blog/categories";
 import { articleLd, faqPageFromItemsLd, breadcrumbLd } from "@/lib/seo/schema";
@@ -57,6 +57,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const toc = tableOfContents(post);
   const related = relatedPosts(post);
   const relatedTools = relatedToolsFor(post.relatedTools, { category: post.category, tags: post.tags });
+  const comparisonSubjects = post.template === "comparison" ? extractComparisonSubjects(post.title) : null;
 
   const schemas = [
     articleLd({ slug: post.slug, title: post.title, description: post.excerpt, authorName: author?.name ?? siteConfig.name, publishedOn: post.publishedOn, updatedOn: post.updatedOn }),
@@ -82,11 +83,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <header className="mb-8">
             <div className="flex flex-wrap items-center gap-2 text-xs">
               {cat && <Link href={`/blog/category/${cat.slug}`} className="inline-flex items-center gap-1 rounded-full bg-accent px-2.5 py-1 font-medium text-accent-foreground"><Icon name={cat.icon} className="size-3" /> {cat.name}</Link>}
+              {post.template === "comparison" && <ComparisonBadge />}
               <span className="flex items-center gap-1 text-muted-foreground"><CalendarDays className="size-3" /> {new Date(post.publishedOn).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
               <span className="flex items-center gap-1 text-muted-foreground"><Clock className="size-3" /> {estimateReadingMinutes(post)} min read</span>
             </div>
             <h1 className="mt-4 text-4xl font-bold leading-tight tracking-tight">{post.title}</h1>
             <p className="mt-3 text-lg text-muted-foreground">{post.excerpt}</p>
+            {comparisonSubjects && <ComparisonHeader subjects={comparisonSubjects} />}
             {author && (
               <Link href={`/blog/author/${author.slug}`} className="mt-4 inline-flex items-center gap-2 text-sm">
                 <span className="grid size-8 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">{author.avatarInitials}</span>
