@@ -219,10 +219,19 @@ export function TimeCalc() {
 }
 
 /* ---------- Working Days ---------- */
+// `new Date("2026-07-06")` parses a date-only string as UTC midnight, so
+// x.getDay() (which reads the LOCAL calendar day) silently shifts every date
+// back by one for anyone west of UTC — e.g. a Mon-Fri range gets misread as
+// Sun-Thu, reporting 4 working days + 1 weekend day instead of 5 + 0.
+// Parsing the Y/M/D components into a local-time Date sidesteps this.
+function parseLocalDate(s: string): Date {
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(y, (m || 1) - 1, d || 1);
+}
 export function WorkingDaysCalc() {
   const [from, setFrom] = useState("2026-07-01"), [to, setTo] = useState("2026-07-31");
   const d = useMemo(() => {
-    const a = new Date(from), b = new Date(to);
+    const a = parseLocalDate(from), b = parseLocalDate(to);
     if (isNaN(a.getTime()) || isNaN(b.getTime()) || b < a) return null;
     let work = 0, weekend = 0;
     for (let x = new Date(a); x <= b; x.setDate(x.getDate() + 1)) {
