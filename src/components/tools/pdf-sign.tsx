@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { PDFDocument } from "pdf-lib";
+import { PDFDocument, degrees } from "pdf-lib";
 import { Signature, Eraser, ChevronLeft, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -202,14 +202,33 @@ export default function PdfSign() {
       const doc = await PDFDocument.load(await file.arrayBuffer());
       const pngImage = await doc.embedPng(pngBytes);
       const page = doc.getPages()[pageIndex];
+      // page.getSize() returns the page's raw, UNROTATED MediaBox — but the
+      // preview (rendered via pdf.js's viewport, which swaps width/height for
+      // a 90/270-rotated page) shows the VISUAL orientation. Without
+      // accounting for that mismatch, the signature lands at the wrong
+      // position (and wrong aspect ratio) on any rotated page — common for
+      // scanned/photographed documents. Positions below are computed in
+      // visual space, then mapped into pdf-lib's raw space per rotation case
+      // (verified empirically: image rotate = the page's own rotation angle
+      // exactly cancels it out, and each 90/270 case swaps which raw axis
+      // the visual x/y and width/height land on).
       const { width: pw, height: ph } = page.getSize();
+      const rotation = ((page.getRotation().angle % 360) + 360) % 360;
+      const visualW = rotation === 90 || rotation === 270 ? ph : pw;
+      const visualH = rotation === 90 || rotation === 270 ? pw : ph;
 
-      const sigWidth = (widthPct / 100) * pw;
+      const sigWidth = (widthPct / 100) * visualW;
       const sigHeight = sigWidth * (SIG_H / SIG_W);
-      const x = (xPct / 100) * pw;
-      const y = ph - (yPct / 100) * ph - sigHeight;
+      const vx1 = (xPct / 100) * visualW;
+      const vy1 = visualH - (yPct / 100) * visualH - sigHeight;
 
-      page.drawImage(pngImage, { x, y, width: sigWidth, height: sigHeight });
+      let x: number, y: number;
+      if (rotation === 90) { x = pw - vy1; y = vx1; }
+      else if (rotation === 180) { x = pw - vx1; y = ph - vy1; }
+      else if (rotation === 270) { x = vy1; y = ph - vx1; }
+      else { x = vx1; y = vy1; }
+
+      page.drawImage(pngImage, { x, y, width: sigWidth, height: sigHeight, rotate: degrees(rotation) });
 
       const bytes = await doc.save();
       downloadBlob(new Blob([bytes as BlobPart], { type: "application/pdf" }), `signed-${file.name}`);
