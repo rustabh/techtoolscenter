@@ -696,25 +696,6 @@ export const externalDevResources: DevResource[] = [
     "addedOn": "2026-07-31"
   },
   {
-    "slug": "daisyui",
-    "name": "DaisyUI",
-    "category": "component-libraries",
-    "description": "A plugin for Tailwind CSS that adds semantic component class names like btn and card on top of Tailwind's utility classes.",
-    "officialUrl": "https://daisyui.com",
-    "docsUrl": "https://daisyui.com/docs/install",
-    "tags": [
-      "tailwind",
-      "plugin",
-      "components",
-      "class-names"
-    ],
-    "pricing": "Freemium",
-    "openSource": true,
-    "badge": "Popular",
-    "icon": "Gem",
-    "addedOn": "2026-07-31"
-  },
-  {
     "slug": "node-js",
     "name": "Node.js",
     "category": "backend",
@@ -3305,6 +3286,7 @@ export const externalDevResources: DevResource[] = [
     "tags": ["tailwind", "css-only", "themes", "components"],
     "pricing": "Freemium",
     "openSource": true,
+    "badge": "Popular",
     "icon": "LayoutGrid",
     "addedOn": "2026-08-27"
   },
