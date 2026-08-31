@@ -3,6 +3,8 @@ import { posts as blogPosts } from "../blog/posts";
 import type { BlogPost } from "../blog/types";
 import { indiaServices } from "../india/services";
 import { landingPages } from "../landing/landing";
+import { aiTools } from "../aihub/tools";
+import { externalDevResources } from "../devhub/resources";
 
 /**
  * The actual QA check logic — shared between `scripts/qa-audit.ts` (CLI,
@@ -68,12 +70,28 @@ export function runQaChecks(): QaFinding[] {
       if (!blogSlugs.has(slug)) findings.push({ severity: "critical", category: "broken-link", location: `india-services/${svc.slug}`, detail: `relatedBlog references non-existent post slug "${slug}"` });
     }
   }
+  // AI Hub tools link back to our own /tools/[slug] pages the same way blog
+  // posts and India services do, but were never validated here — a stale or
+  // typo'd slug would otherwise render as a silently dead link.
+  for (const t of aiTools) {
+    for (const slug of t.relatedTools ?? []) {
+      if (!toolSlugs.has(slug)) findings.push({ severity: "critical", category: "broken-link", location: `ai-hub/${t.slug}`, detail: `relatedTools references non-existent tool slug "${slug}"` });
+    }
+  }
+  // Same class of link, on Developer Hub resources.
+  for (const r of externalDevResources) {
+    if (r.internalToolSlug && !toolSlugs.has(r.internalToolSlug)) {
+      findings.push({ severity: "critical", category: "broken-link", location: `developer-hub/${r.slug}`, detail: `internalToolSlug references non-existent tool slug "${r.internalToolSlug}"` });
+    }
+  }
 
   // 2. Duplicate titles/descriptions within a content type
   findDuplicates(tools.map((t) => ({ key: t.slug, title: t.seoTitle ?? t.name })), "Tools", "title", findings);
   findDuplicates(blogPosts.map((p) => ({ key: p.slug, title: p.seoTitle ?? p.title })), "Blog posts", "title", findings);
   findDuplicates(blogPosts.map((p) => ({ key: p.slug, title: p.seoDescription ?? p.excerpt })), "Blog posts", "description", findings);
   findDuplicates(indiaServices.map((s) => ({ key: s.slug, title: s.seoTitle ?? s.name })), "India services", "title", findings);
+  findDuplicates(aiTools.map((t) => ({ key: t.slug, title: t.name })), "AI Hub tools", "name", findings);
+  findDuplicates(externalDevResources.map((r) => ({ key: r.slug, title: r.name })), "Developer Hub resources", "name", findings);
 
   // 3. Thin content
   for (const post of blogPosts) {
