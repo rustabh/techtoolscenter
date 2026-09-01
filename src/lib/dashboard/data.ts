@@ -206,7 +206,7 @@ export function getDashboardData() {
     seoImprovements: fixCommits.filter((c) => /seo|title|meta|schema|canonical|og|sitemap/i.test(c.subject)).map((c) => c.subject),
     performanceImprovements: fixCommits.concat(featCommits).filter((c) => /perf|bundle|dedupe|refactor/i.test(c.subject)).map((c) => c.subject),
     remainingTasks: [
-      "Comparison-page template — BlogPost.template ('comparison' etc.) is stored but never read by any rendering code, so comparison posts render identically to guides",
+      "16 old India-guide blog posts remain under the 300-word thin-content floor — flagged for editorial rewrite, not auto-padded",
       `${content.needsRefresh.length} blog posts over ${STALE_DAYS} days without an update`,
     ],
   };
