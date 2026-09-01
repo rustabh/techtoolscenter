@@ -27,7 +27,13 @@ export default function FindAndReplace() {
       if (wholeWord && !useRegex) pattern = `\\b${pattern}\\b`;
       const re = new RegExp(pattern, caseSensitive ? "g" : "gi");
       const matches = value.match(re);
-      return { output: value.replace(re, replace), count: matches?.length ?? 0, error: "" };
+      // In plain (non-regex) mode the replacement text should be inserted
+      // exactly as typed — but String.replace() always treats "$&", "$$",
+      // "$1" etc. as special substitution tokens, regex mode or not. Without
+      // escaping, replacing with literal text like "$&" silently duplicates
+      // the matched text instead. Only regex mode should get real $-substitution.
+      const safeReplace = useRegex ? replace : replace.replace(/\$/g, "$$$$");
+      return { output: value.replace(re, safeReplace), count: matches?.length ?? 0, error: "" };
     } catch (e) {
       return { output: value, count: 0, error: (e as Error).message };
     }
