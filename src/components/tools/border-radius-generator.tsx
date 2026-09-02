@@ -1,27 +1,34 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useCopy } from "@/hooks/use-copy";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { ActionBar } from "@/components/tools/action-bar";
+
+interface RadiusState {
+  topLeft: number;
+  topRight: number;
+  bottomRight: number;
+  bottomLeft: number;
+  linked: boolean;
+}
+const initial: RadiusState = { topLeft: 24, topRight: 24, bottomRight: 24, bottomLeft: 24, linked: true };
 
 export default function BorderRadiusGenerator() {
-  const [topLeft, setTopLeft] = useState(24);
-  const [topRight, setTopRight] = useState(24);
-  const [bottomRight, setBottomRight] = useState(24);
-  const [bottomLeft, setBottomLeft] = useState(24);
-  const [linked, setLinked] = useState(true);
+  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<RadiusState>("uh:border-radius", initial);
+  const { topLeft, topRight, bottomRight, bottomLeft, linked } = value;
   const { copied, copy } = useCopy();
 
-  const setCorner = (setter: (v: number) => void, value: number) => {
+  const setLinked = (updater: (v: boolean) => boolean) => set((v) => ({ ...v, linked: updater(v.linked) }));
+
+  const setCorner = (corner: "topLeft" | "topRight" | "bottomRight" | "bottomLeft", val: number) => {
     if (linked) {
-      setTopLeft(value);
-      setTopRight(value);
-      setBottomRight(value);
-      setBottomLeft(value);
+      set((v) => ({ ...v, topLeft: val, topRight: val, bottomRight: val, bottomLeft: val }));
     } else {
-      setter(value);
+      set((v) => ({ ...v, [corner]: val }));
     }
   };
 
@@ -60,7 +67,7 @@ export default function BorderRadiusGenerator() {
               min={0}
               max={100}
               value={topLeft}
-              onChange={(e) => setCorner(setTopLeft, Number(e.target.value))}
+              onChange={(e) => setCorner("topLeft", Number(e.target.value))}
               className="w-full accent-[hsl(var(--primary))]"
             />
           </div>
@@ -73,7 +80,7 @@ export default function BorderRadiusGenerator() {
               min={0}
               max={100}
               value={topRight}
-              onChange={(e) => setCorner(setTopRight, Number(e.target.value))}
+              onChange={(e) => setCorner("topRight", Number(e.target.value))}
               className="w-full accent-[hsl(var(--primary))]"
             />
           </div>
@@ -86,7 +93,7 @@ export default function BorderRadiusGenerator() {
               min={0}
               max={100}
               value={bottomRight}
-              onChange={(e) => setCorner(setBottomRight, Number(e.target.value))}
+              onChange={(e) => setCorner("bottomRight", Number(e.target.value))}
               className="w-full accent-[hsl(var(--primary))]"
             />
           </div>
@@ -99,10 +106,12 @@ export default function BorderRadiusGenerator() {
               min={0}
               max={100}
               value={bottomLeft}
-              onChange={(e) => setCorner(setBottomLeft, Number(e.target.value))}
+              onChange={(e) => setCorner("bottomLeft", Number(e.target.value))}
               className="w-full accent-[hsl(var(--primary))]"
             />
           </div>
+
+          <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
         </CardContent>
       </Card>
       <Card>
