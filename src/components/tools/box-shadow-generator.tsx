@@ -1,10 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useCopy } from "@/hooks/use-copy";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { ActionBar } from "@/components/tools/action-bar";
 
 interface ShadowLayer {
   id: string;
@@ -44,8 +46,10 @@ function layerToCss(layer: ShadowLayer): string {
   return `${layer.inset ? "inset " : ""}${layer.offsetX}px ${layer.offsetY}px ${layer.blur}px ${layer.spread}px ${color}`;
 }
 
+const initialLayers: ShadowLayer[] = [createLayer()];
+
 export default function BoxShadowGenerator() {
-  const [layers, setLayers] = useState<ShadowLayer[]>([createLayer()]);
+  const { value: layers, set: setLayers, undo, redo, reset, canUndo, canRedo } = useLocalStorage<ShadowLayer[]>("uh:box-shadow", initialLayers);
   const { copied, copy } = useCopy();
 
   const updateLayer = (id: string, patch: Partial<ShadowLayer>) => {
@@ -177,6 +181,7 @@ export default function BoxShadowGenerator() {
           <Button type="button" variant="outline" size="sm" onClick={addLayer} className="w-full">
             Add Shadow Layer
           </Button>
+          <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
         </CardContent>
       </Card>
       <Card>
