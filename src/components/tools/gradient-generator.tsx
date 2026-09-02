@@ -1,23 +1,30 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { History, Plus, Trash2 } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { useGenerationHistory } from "@/hooks/use-generation-history";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { ActionBar } from "@/components/tools/action-bar";
 import { GenerationHistoryPanel } from "@/components/tools/generation-history-panel";
 
 interface Stop { id: string; color: string; }
+interface GradientState {
+  stops: Stop[];
+  angle: number;
+  type: "linear" | "radial" | "conic";
+}
 
 const rid = () => Math.random().toString(36).slice(2);
+const initial: GradientState = { stops: [{ id: "1", color: "#6366f1" }, { id: "2", color: "#22d3ee" }], angle: 135, type: "linear" };
 
 export default function GradientGenerator() {
-  const [stops, setStops] = useState<Stop[]>([{ id: "1", color: "#6366f1" }, { id: "2", color: "#22d3ee" }]);
-  const [angle, setAngle] = useState(135);
-  const [type, setType] = useState<"linear" | "radial" | "conic">("linear");
+  const { value, set, undo, redo, reset, canUndo, canRedo } = useLocalStorage<GradientState>("uh:gradient-generator", initial);
+  const { stops, angle, type } = value;
   const { copied, copy } = useCopy();
   const { history, add, remove, clear } = useGenerationHistory("uh:history:gradient-generator");
 
@@ -30,6 +37,10 @@ export default function GradientGenerator() {
   }, [type, angle, colorList]);
 
   const full = `background: ${css};`;
+
+  const setStops = (updater: (prev: Stop[]) => Stop[]) => set((v) => ({ ...v, stops: updater(v.stops) }));
+  const setAngle = (n: number) => set((v) => ({ ...v, angle: n }));
+  const setType = (t: GradientState["type"]) => set((v) => ({ ...v, type: t }));
 
   const addStop = () => setStops((s) => [...s, { id: rid(), color: "#ffffff" }]);
   const removeStop = (id: string) => setStops((s) => (s.length > 2 ? s.filter((x) => x.id !== id) : s));
@@ -66,6 +77,7 @@ export default function GradientGenerator() {
               <input id="gradient-angle" type="range" min={0} max={360} value={angle} onChange={(e) => setAngle(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
             </div>
           )}
+          <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
         </CardContent>
       </Card>
       <div className="space-y-4">
