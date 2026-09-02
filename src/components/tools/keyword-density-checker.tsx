@@ -19,6 +19,29 @@ function phrases(words: string[], n: number) {
   return [...map.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
 }
 
+// An n-word phrase can only start at one of (total - n + 1) positions in the
+// text, not at any of the `total` word positions — dividing by the raw word
+// count instead understates every multi-word phrase's density (a bigram that
+// occupies both of its only 2 possible slots would read as sub-100%).
+function ngramWindowCount(total: number, n: number): number {
+  return Math.max(total - n + 1, 0);
+}
+
+// Counts every overlapping occurrence of `target` inside `words` — a plain
+// global regex match on the raw text (the previous approach) advances past
+// the whole match it just found, so "seo seo" inside "seo seo seo" only
+// finds 1 occurrence instead of the 2 overlapping ones, undercounting any
+// repeating phrase relative to the phrase tables below (which do count
+// overlaps via a sliding window).
+function countOverlapping(words: string[], target: string[]): number {
+  if (target.length === 0 || target.length > words.length) return 0;
+  let count = 0;
+  for (let i = 0; i <= words.length - target.length; i++) {
+    if (target.every((w, j) => words[i + j] === w)) count++;
+  }
+  return count;
+}
+
 // Common SEO guidance: under ~0.5% and the keyword barely appears; over
 // ~2.5-3% starts reading as keyword stuffing to both readers and search
 // engines. This mirrors the density formula the existing tables below
@@ -43,27 +66,33 @@ export default function KeywordDensityChecker() {
   const targetStats = useMemo(() => {
     const kw = target.trim().toLowerCase();
     if (!kw) return null;
-    const escaped = kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+");
-    const count = (value.toLowerCase().match(new RegExp(`\\b${escaped}\\b`, "g")) || []).length;
-    const pct = data.total > 0 ? (count / data.total) * 100 : 0;
+    const targetWords = kw.replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
+    if (targetWords.length === 0) return null;
+    const words = value.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(Boolean);
+    const count = countOverlapping(words, targetWords);
+    const windowCount = ngramWindowCount(words.length, targetWords.length);
+    const pct = windowCount > 0 ? (count / windowCount) * 100 : 0;
     return { count, pct };
-  }, [target, value, data.total]);
+  }, [target, value]);
 
-  const Table = ({ title, rows }: { title: string; rows: [string, number][] }) => (
-    <Card>
-      <CardContent className="pt-6">
-        <h3 className="mb-3 text-sm font-semibold">{title}</h3>
-        <div className="space-y-1.5">
-          {rows.length === 0 ? <p className="text-sm text-muted-foreground">—</p> : rows.map(([w, c]) => (
-            <div key={w} className="flex items-center justify-between text-sm">
-              <span className="truncate">{w}</span>
-              <span className="ml-2 shrink-0 text-muted-foreground">{c} · {((c / (data.total || 1)) * 100).toFixed(1)}%</span>
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
-  );
+  const Table = ({ title, n, rows }: { title: string; n: number; rows: [string, number][] }) => {
+    const windowCount = ngramWindowCount(data.total, n) || 1;
+    return (
+      <Card>
+        <CardContent className="pt-6">
+          <h3 className="mb-3 text-sm font-semibold">{title}</h3>
+          <div className="space-y-1.5">
+            {rows.length === 0 ? <p className="text-sm text-muted-foreground">—</p> : rows.map(([w, c]) => (
+              <div key={w} className="flex items-center justify-between text-sm">
+                <span className="truncate">{w}</span>
+                <span className="ml-2 shrink-0 text-muted-foreground">{c} · {((c / windowCount) * 100).toFixed(1)}%</span>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <div className="space-y-6">
@@ -87,9 +116,9 @@ export default function KeywordDensityChecker() {
         </CardContent>
       </Card>
       <div className="grid gap-4 md:grid-cols-3">
-        <Table title="Single words" rows={data.one} />
-        <Table title="Two-word phrases" rows={data.two} />
-        <Table title="Three-word phrases" rows={data.three} />
+        <Table title="Single words" n={1} rows={data.one} />
+        <Table title="Two-word phrases" n={2} rows={data.two} />
+        <Table title="Three-word phrases" n={3} rows={data.three} />
       </div>
     </div>
   );
