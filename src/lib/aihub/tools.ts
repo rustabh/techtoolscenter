@@ -4620,6 +4620,24 @@ export const aiTools: AiTool[] = [
     "addedOn": "2026-08-02"
   },
   {
+    "slug": "loudly",
+    "name": "Loudly",
+    "category": "music-generation",
+    "developer": "Loudly",
+    "officialUrl": "https://www.loudly.com",
+    "overview": "Loudly generates royalty-free AI music tracks for social videos and content, and also runs a separate AI DJ / music-remixing product built on the same generation engine.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "tags": [
+      "music generation",
+      "royalty-free",
+      "social-media-music",
+      "api"
+    ],
+    "icon": "Music2",
+    "addedOn": "2026-09-03"
+  },
+  {
     "slug": "auphonic",
     "name": "Auphonic",
     "category": "audio-generation",
@@ -4653,6 +4671,24 @@ export const aiTools: AiTool[] = [
     ],
     "icon": "Mic",
     "addedOn": "2026-08-02"
+  },
+  {
+    "slug": "riverside",
+    "name": "Riverside",
+    "category": "audio-generation",
+    "developer": "Riverside.fm",
+    "officialUrl": "https://riverside.fm",
+    "overview": "Riverside records each remote participant's audio and video locally in the browser for studio-quality podcast and video interviews, then uses AI for automatic transcription, show notes and short-clip generation.",
+    "pricing": "Freemium",
+    "platforms": ["Web"],
+    "tags": [
+      "podcast recording",
+      "remote interviews",
+      "transcription",
+      "video podcast"
+    ],
+    "icon": "Mic",
+    "addedOn": "2026-09-03"
   },
   {
     "slug": "prowritingaid",
@@ -4892,6 +4928,24 @@ export const aiTools: AiTool[] = [
     ],
     "icon": "Mail",
     "addedOn": "2026-08-02"
+  },
+  {
+    "slug": "boomerang",
+    "name": "Boomerang",
+    "category": "email",
+    "developer": "Baydin",
+    "officialUrl": "https://www.boomeranggmail.com",
+    "overview": "A long-running Gmail and Outlook add-on that schedules emails to send later, reminds you to follow up if a message goes unanswered, and uses AI (Respondable) to flag tone and clarity issues before you hit send.",
+    "pricing": "Freemium",
+    "platforms": ["Web", "Chrome Extension"],
+    "tags": [
+      "email-scheduling",
+      "follow-up-reminders",
+      "gmail-extension",
+      "writing-assistant"
+    ],
+    "icon": "Mail",
+    "addedOn": "2026-09-03"
   },
   {
     "slug": "omneky",
@@ -5188,6 +5242,28 @@ export const aiTools: AiTool[] = [
     ],
     "icon": "Eye",
     "addedOn": "2026-08-02"
+  },
+  {
+    "slug": "mindee",
+    "name": "Mindee",
+    "category": "ocr",
+    "developer": "Mindee",
+    "officialUrl": "https://www.mindee.com",
+    "overview": "Mindee provides pre-trained and custom AI document-parsing APIs that turn receipts, invoices, IDs and passports into structured, ready-to-use data for developers to integrate directly.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "tags": [
+      "ocr",
+      "document-parsing",
+      "invoice-data",
+      "api"
+    ],
+    "relatedTools": [
+      "invoice-maker",
+      "gst-calculator"
+    ],
+    "icon": "Eye",
+    "addedOn": "2026-09-03"
   },
   {
     "slug": "adobe-acrobat-ai-assistant",
