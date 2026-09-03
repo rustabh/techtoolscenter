@@ -15,7 +15,11 @@ const CATS: Record<string, { base: string; units: Units }> = {
   Length: { base: "m", units: { mm: 0.001, cm: 0.01, m: 1, km: 1000, inch: 0.0254, foot: 0.3048, yard: 0.9144, mile: 1609.344 } },
   Weight: { base: "kg", units: { mg: 1e-6, g: 0.001, kg: 1, ton: 1000, ounce: 0.0283495, pound: 0.453592 } },
   Area: { base: "m²", units: { "mm²": 1e-6, "cm²": 1e-4, "m²": 1, "km²": 1e6, hectare: 10000, acre: 4046.86, "ft²": 0.092903 } },
-  Volume: { base: "L", units: { ml: 0.001, L: 1, "m³": 1000, gallon: 3.78541, quart: 0.946353, pint: 0.473176, cup: 0.24 } },
+  // cup = gallon/16 (= 8 fl oz = 16 tbsp), matching the fl oz/tbsp values
+  // below — using the "legal" 240 mL cup here instead would make the
+  // converter's own "2 cups = 1 pint" and "16 tbsp = 1 cup" come out wrong
+  // by about 1.4%, since those are derived from this same gallon.
+  Volume: { base: "L", units: { ml: 0.001, L: 1, "m³": 1000, gallon: 3.78541, quart: 0.946353, pint: 0.473176, cup: 0.236588 } },
   Speed: { base: "m/s", units: { "m/s": 1, "km/h": 0.277778, "mph": 0.44704, knot: 0.514444, "ft/s": 0.3048 } },
   Storage: { base: "byte", units: { bit: 0.125, byte: 1, KB: 1024, MB: 1048576, GB: 1073741824, TB: 1.0995e12, PB: 1.1259e15 } },
   "Data rate": { base: "bps", units: { bps: 1, Kbps: 1000, Mbps: 1e6, Gbps: 1e9, "KB/s": 8000, "MB/s": 8e6 } },
@@ -25,7 +29,11 @@ const CATS: Record<string, { base: string; units: Units }> = {
   Energy: { base: "J", units: { J: 1, kJ: 1000, cal: 4.184, kcal: 4184, Wh: 3600, kWh: 3.6e6, BTU: 1055.06 } },
   Angle: { base: "deg", units: { deg: 1, rad: 57.2958, grad: 0.9, arcmin: 0.016667, turn: 360 } },
   Typography: { base: "px", units: { px: 1, pt: 1.3333, pc: 16, in: 96, cm: 37.7952, mm: 3.77952, em: 16, rem: 16 } },
-  Cooking: { base: "ml", units: { ml: 1, tsp: 4.92892, tbsp: 14.7868, cup: 240, "fl oz": 29.5735, L: 1000 } },
+  // cup = 16 tbsp = 8 fl oz (236.588 mL), consistent with the tbsp/fl oz
+  // values in the same row — 240 mL (the US FDA "legal" cup used only on
+  // nutrition labels) would make this converter's own 16-tbsp/8-fl-oz
+  // conversions to cups wrong by about 1.4%.
+  Cooking: { base: "ml", units: { ml: 1, tsp: 4.92892, tbsp: 14.7868, cup: 236.588, "fl oz": 29.5735, L: 1000 } },
 };
 const TEMP_UNITS = ["°C", "°F", "K"];
 
