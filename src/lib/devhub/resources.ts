@@ -3003,6 +3003,18 @@ export const externalDevResources: DevResource[] = [
     "addedOn": "2026-08-01"
   },
   {
+    "slug": "hetzner-cloud",
+    "name": "Hetzner Cloud",
+    "category": "cloud",
+    "description": "A German cloud provider known for notably low per-hour VM pricing and European data centers, a common pick for indie developers and small teams running their own infrastructure.",
+    "officialUrl": "https://www.hetzner.com/cloud",
+    "docsUrl": "https://docs.hetzner.com/cloud/",
+    "tags": ["vps", "cloud", "compute", "europe"],
+    "pricing": "Paid",
+    "icon": "Server",
+    "addedOn": "2026-09-03"
+  },
+  {
     "slug": "mozilla-observatory",
     "name": "Mozilla Observatory",
     "category": "security",
@@ -3151,6 +3163,19 @@ export const externalDevResources: DevResource[] = [
     "addedOn": "2026-08-06"
   },
   {
+    "slug": "poetry",
+    "name": "Poetry",
+    "category": "package-managers",
+    "description": "A Python dependency and packaging manager that resolves versions deterministically via a lockfile and handles building and publishing packages, replacing the older pip + setup.py + virtualenv combination for many projects.",
+    "officialUrl": "https://python-poetry.org",
+    "docsUrl": "https://python-poetry.org/docs/",
+    "tags": ["python", "dependency-management", "packaging", "lockfile"],
+    "pricing": "Free",
+    "openSource": true,
+    "icon": "Package",
+    "addedOn": "2026-09-03"
+  },
+  {
     "slug": "rive",
     "name": "Rive",
     "category": "animations",
@@ -3227,6 +3252,19 @@ export const externalDevResources: DevResource[] = [
     "addedOn": "2026-08-20"
   },
   {
+    "slug": "testing-library",
+    "name": "Testing Library",
+    "category": "testing",
+    "description": "A family of DOM-testing utilities (React, Vue, Angular and more) that encourages writing tests around how users actually interact with your app, rather than its internal implementation details.",
+    "officialUrl": "https://testing-library.com",
+    "docsUrl": "https://testing-library.com/docs/",
+    "tags": ["unit-testing", "dom-testing", "react", "accessibility"],
+    "pricing": "Free",
+    "openSource": true,
+    "icon": "Microscope",
+    "addedOn": "2026-09-03"
+  },
+  {
     "slug": "datadog",
     "name": "Datadog",
     "category": "monitoring",
@@ -3275,6 +3313,19 @@ export const externalDevResources: DevResource[] = [
     "openSource": true,
     "icon": "Layers",
     "addedOn": "2026-08-20"
+  },
+  {
+    "slug": "ghost",
+    "name": "Ghost",
+    "category": "cms",
+    "description": "An open-source publishing platform built specifically for blogging and newsletters, with built-in memberships, subscriptions and email newsletter delivery rather than a general-purpose page builder.",
+    "officialUrl": "https://ghost.org",
+    "docsUrl": "https://ghost.org/docs/",
+    "tags": ["cms", "blogging", "newsletter", "self-hosted"],
+    "pricing": "Freemium",
+    "openSource": true,
+    "icon": "Rss",
+    "addedOn": "2026-09-03"
   },
   {
     "slug": "daisyui",
@@ -3329,6 +3380,19 @@ export const externalDevResources: DevResource[] = [
     "addedOn": "2026-08-27"
   },
   {
+    "slug": "plotly-js",
+    "name": "Plotly.js",
+    "category": "charts",
+    "description": "A high-level, declarative charting library with strong support for scientific and statistical chart types (3D surfaces, contour plots, box plots) that most everyday chart libraries don't cover out of the box.",
+    "officialUrl": "https://plotly.com/javascript/",
+    "docsUrl": "https://plotly.com/javascript/getting-started/",
+    "tags": ["charts", "data-visualization", "scientific", "d3-based"],
+    "pricing": "Free",
+    "openSource": true,
+    "icon": "ChartColumn",
+    "addedOn": "2026-09-03"
+  },
+  {
     "slug": "pulumi",
     "name": "Pulumi",
     "category": "devops",
@@ -3341,6 +3405,18 @@ export const externalDevResources: DevResource[] = [
     "addedOn": "2026-08-27"
   },
   {
+    "slug": "circleci",
+    "name": "CircleCI",
+    "category": "devops",
+    "description": "A hosted CI/CD platform for building, testing and deploying code on every push, with a config-as-code YAML pipeline definition and a generous free tier for smaller projects.",
+    "officialUrl": "https://circleci.com",
+    "docsUrl": "https://circleci.com/docs/",
+    "tags": ["ci-cd", "automation", "pipelines", "testing"],
+    "pricing": "Freemium",
+    "icon": "Workflow",
+    "addedOn": "2026-09-03"
+  },
+  {
     "slug": "javascript-info",
     "name": "JavaScript.info",
     "category": "learning",
@@ -3350,6 +3426,17 @@ export const externalDevResources: DevResource[] = [
     "pricing": "Free",
     "icon": "GraduationCap",
     "addedOn": "2026-08-27"
+  },
+  {
+    "slug": "frontend-masters",
+    "name": "Frontend Masters",
+    "category": "learning",
+    "description": "A subscription video-course platform focused on in-depth, expert-taught frontend and full-stack engineering courses, aimed at working developers rather than absolute beginners.",
+    "officialUrl": "https://frontendmasters.com",
+    "tags": ["courses", "video-learning", "frontend", "subscription"],
+    "pricing": "Paid",
+    "icon": "MonitorPlay",
+    "addedOn": "2026-09-03"
   }
 ];
 
