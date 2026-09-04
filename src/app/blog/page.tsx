@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icon } from "@/components/icon";
 import { BlogCard, Pagination } from "@/components/blog/blog-bits";
 import { BlogSearch } from "@/components/blog/blog-search";
-import { allPosts, paginate } from "@/lib/blog/posts";
+import { allPosts, blogSearchIndex, estimateReadingMinutes, paginate } from "@/lib/blog/posts";
 import { blogCategories } from "@/lib/blog/categories";
 import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
@@ -30,7 +30,7 @@ export default function BlogIndex() {
         <p className="mt-3 max-w-xl text-muted-foreground">Guides, tutorials and tips to help you get more done with free, private, browser-based tools.</p>
       </header>
 
-      <div className="mb-10"><BlogSearch posts={all} /></div>
+      <div className="mb-10"><BlogSearch posts={blogSearchIndex()} /></div>
 
       {/* Categories */}
       <div className="mb-12 flex flex-wrap gap-2">
@@ -46,7 +46,7 @@ export default function BlogIndex() {
       <section>
         <h2 className="mb-5 text-xl font-bold tracking-tight">Latest articles</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((p) => <BlogCard key={p.slug} post={p} />)}
+          {items.map((p) => <BlogCard key={p.slug} post={p} readingMinutes={estimateReadingMinutes(p)} />)}
         </div>
         <Pagination base="/blog" current={current} total={total} />
       </section>

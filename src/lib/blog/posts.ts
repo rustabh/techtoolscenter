@@ -12469,7 +12469,7 @@ export const posts: BlogPost[] = [
 ];
 
 /* ---------------- helpers ---------------- */
-export function estimateReadingMinutes(post: BlogPost): number {
+export function estimateReadingMinutes(post: Pick<BlogPost, "content" | "readingMinutes">): number {
   if (post.readingMinutes) return post.readingMinutes;
   const words = post.content.reduce((n, b) => {
     if (b.type === "ul" || b.type === "ol") return n + b.items.join(" ").split(/\s+/).length;
@@ -12477,6 +12477,40 @@ export function estimateReadingMinutes(post: BlogPost): number {
     return n;
   }, 0);
   return Math.max(1, Math.round(words / 200));
+}
+
+/** A slim projection of every post for the client-side search box — just
+ *  what BlogCard needs to render a result card, with reading time
+ *  precomputed server-side. Passing the full BlogPost[] (every post's full
+ *  content/FAQ) into that client component previously serialized the
+ *  entire blog's text into the page just to power a search input,
+ *  ballooning /blog's First Load JS to ~744 kB versus ~150-220 kB for
+ *  every other route — this, combined with BlogCard no longer importing
+ *  anything at value-level from this module, keeps this module's data out
+ *  of the client bundle entirely. */
+export type BlogSearchEntry = Pick<BlogPost, "slug" | "title" | "excerpt" | "category" | "author" | "tags"> & {
+  readingMinutes: number;
+};
+export function blogSearchIndex(): BlogSearchEntry[] {
+  return allPosts().map((p) => ({
+    slug: p.slug,
+    title: p.title,
+    excerpt: p.excerpt,
+    category: p.category,
+    author: p.author,
+    tags: p.tags,
+    readingMinutes: estimateReadingMinutes(p),
+  }));
+}
+
+/** Slug + title of the newest post, for the sidebar's "Latest Blog" widget.
+ *  Called only from a Server Component (the root layout), which passes the
+ *  result down as a small prop/context value — never imported directly by
+ *  the client-side widget itself, which would otherwise pull this entire
+ *  module's full post data into the client bundle. */
+export function latestPostSummary(): { slug: string; title: string } | null {
+  const [latest] = allPosts();
+  return latest ? { slug: latest.slug, title: latest.title } : null;
 }
 
 /** Derives the items a "comparison" template post is actually comparing

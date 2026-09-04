@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icon } from "@/components/icon";
 import { BlogCard } from "@/components/blog/blog-bits";
 import { blogTopics, getBlogTopic } from "@/lib/blog/topics";
-import { postsByTag } from "@/lib/blog/posts";
+import { estimateReadingMinutes, postsByTag } from "@/lib/blog/posts";
 import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
 // Every tag is statically known at build time; an unmatched slug should be
@@ -44,7 +44,7 @@ export default async function BlogTagPage({ params }: { params: Promise<{ tag: s
         </div>
       </header>
       {items.length ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((p) => <BlogCard key={p.slug} post={p} />)}</div>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((p) => <BlogCard key={p.slug} post={p} readingMinutes={estimateReadingMinutes(p)} />)}</div>
       ) : (
         <p className="rounded-xl border border-dashed border-border p-6 text-muted-foreground">No articles for this topic yet — check back soon.</p>
       )}

@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { AuthorBox, BlogCard } from "@/components/blog/blog-bits";
 import { authors, getAuthor } from "@/lib/blog/authors";
-import { postsByAuthor } from "@/lib/blog/posts";
+import { estimateReadingMinutes, postsByAuthor } from "@/lib/blog/posts";
 import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
 // Every author is statically known at build time; an unmatched slug should
@@ -37,7 +37,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
       <Breadcrumbs items={[{ label: "Blog", href: "/blog" }, { label: author.name }]} />
       <div className="mt-6 mb-8"><AuthorBox author={author} /></div>
       <h2 className="mb-5 text-xl font-bold tracking-tight">Articles by {author.name}</h2>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((p) => <BlogCard key={p.slug} post={p} />)}</div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{items.map((p) => <BlogCard key={p.slug} post={p} readingMinutes={estimateReadingMinutes(p)} />)}</div>
     </div>
   );
 }

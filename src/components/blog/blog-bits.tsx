@@ -3,7 +3,6 @@ import { Clock, ArrowRight, Scale } from "lucide-react";
 import { Icon } from "@/components/icon";
 import { getAuthor } from "@/lib/blog/authors";
 import { getBlogCategory } from "@/lib/blog/categories";
-import { estimateReadingMinutes } from "@/lib/blog/posts";
 import type { BlogPost } from "@/lib/blog/types";
 import type { Author } from "@/lib/blog/types";
 
@@ -28,7 +27,16 @@ export function ComparisonBadge() {
   );
 }
 
-export function BlogCard({ post, featured }: { post: BlogPost; featured?: boolean }) {
+// Only what a card actually renders — narrower than the full BlogPost so a
+// slim search-result entry (no article body/FAQ) can be passed here too.
+// Deliberately excludes `content`: reading time is passed in as a plain
+// number instead of computed here, so this file never needs a value-level
+// import from lib/blog/posts — that import is what previously dragged the
+// entire ~227-post dataset (all article bodies, FAQs) into the client
+// bundle via BlogSearch, ballooning /blog's First Load JS to ~744 kB.
+export type BlogCardPost = Pick<BlogPost, "slug" | "title" | "excerpt" | "category" | "author">;
+
+export function BlogCard({ post, readingMinutes, featured }: { post: BlogCardPost; readingMinutes: number; featured?: boolean }) {
   const cat = getBlogCategory(post.category);
   const author = getAuthor(post.author);
   return (
@@ -36,7 +44,7 @@ export function BlogCard({ post, featured }: { post: BlogPost; featured?: boolea
       className="group flex flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-lg">
       <div className="flex items-center gap-2 text-xs">
         {cat && <span className="inline-flex items-center gap-1 rounded-full bg-accent px-2.5 py-1 font-medium text-accent-foreground"><Icon name={cat.icon} className="size-3" /> {cat.name}</span>}
-        <span className="flex items-center gap-1 text-muted-foreground"><Clock className="size-3" /> {estimateReadingMinutes(post)} min</span>
+        <span className="flex items-center gap-1 text-muted-foreground"><Clock className="size-3" /> {readingMinutes} min</span>
       </div>
       <h3 className={`mt-3 font-bold tracking-tight transition-colors group-hover:text-primary ${featured ? "text-xl" : "text-lg"}`}>{post.title}</h3>
       <p className="mt-2 flex-1 text-sm text-muted-foreground">{post.excerpt}</p>

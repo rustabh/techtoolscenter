@@ -14,6 +14,7 @@ import { useSidebarState } from "@/hooks/use-sidebar-state";
 import { useSidebarDynamic, type SidebarLinkItem } from "@/hooks/use-sidebar-dynamic";
 import { KeyboardShortcutsDialog } from "./keyboard-shortcuts-dialog";
 import { AiToolOfWeekWidget, RecentlyAddedToolWidget, GovernmentUpdateWidget, LatestBlogWidget, DailyFooterWidgets } from "./sidebar-widgets";
+import { LatestBlogPostContext, type LatestBlogPost } from "./latest-blog-context";
 
 const SECTION_WIDGETS: Record<string, React.ComponentType> = {
   productivity: RecentlyAddedToolWidget,
@@ -203,7 +204,7 @@ function SidebarContent({
   );
 }
 
-export function WorkspaceSidebar() {
+export function WorkspaceSidebar({ latestBlogPost = null }: { latestBlogPost?: LatestBlogPost | null }) {
   const { mounted, collapsed, setCollapsed, hidden, setHidden, openSections, toggleSection } = useSidebarState();
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
   const [hovering, setHovering] = useState(false);
@@ -228,7 +229,7 @@ export function WorkspaceSidebar() {
   const visualExpanded = !collapsed || hovering;
 
   return (
-    <>
+    <LatestBlogPostContext.Provider value={latestBlogPost}>
       <KeyboardShortcutsDialog open={shortcutsOpen} onClose={() => setShortcutsOpen(false)} />
 
       {/* Desktop: full-height floating rail (collapsed), panel (expanded/peeked),
@@ -335,6 +336,6 @@ export function WorkspaceSidebar() {
           and on real devices visibly collided with the Incinc launcher FAB.
           This panel's extra content (widgets, keyboard shortcuts, quick
           actions) remains fully available on desktop. */}
-    </>
+    </LatestBlogPostContext.Provider>
   );
 }

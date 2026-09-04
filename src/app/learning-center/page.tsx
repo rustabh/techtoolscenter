@@ -4,7 +4,7 @@ import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icon } from "@/components/icon";
 import { BlogCard } from "@/components/blog/blog-bits";
 import { blogCategories } from "@/lib/blog/categories";
-import { postsByCategory } from "@/lib/blog/posts";
+import { estimateReadingMinutes, postsByCategory } from "@/lib/blog/posts";
 import { devCategories } from "@/lib/devhub/categories";
 import { resourcesByCategory } from "@/lib/devhub/resources";
 import { prompts as aiPrompts } from "@/lib/aihub/prompts";
@@ -47,7 +47,7 @@ export default function LearningCenterPage() {
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredGuides.map((p) => <BlogCard key={p.slug} post={p} />)}
+          {featuredGuides.map((p) => <BlogCard key={p.slug} post={p} readingMinutes={estimateReadingMinutes(p)} />)}
         </div>
       </section>
 
@@ -123,7 +123,7 @@ export default function LearningCenterPage() {
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {indiaGuides.map((p) => <BlogCard key={p.slug} post={p} />)}
+          {indiaGuides.map((p) => <BlogCard key={p.slug} post={p} readingMinutes={estimateReadingMinutes(p)} />)}
         </div>
       </section>
     </div>

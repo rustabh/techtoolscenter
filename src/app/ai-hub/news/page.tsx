@@ -5,7 +5,7 @@ import { Icon } from "@/components/icon";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { BlogCard } from "@/components/blog/blog-bits";
 import { Badge } from "@/components/ui/badge";
-import { getPost } from "@/lib/blog/posts";
+import { estimateReadingMinutes, getPost } from "@/lib/blog/posts";
 import { recentlyAddedAiTools } from "@/lib/aihub/tools";
 import { getAiCategory } from "@/lib/aihub/categories";
 import { buildSimpleMetadata } from "@/lib/seo/metadata";
@@ -134,7 +134,7 @@ export default function AiNewsPage() {
             </Link>
           </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {editorial.map((p) => <BlogCard key={p.slug} post={p} />)}
+            {editorial.map((p) => <BlogCard key={p.slug} post={p} readingMinutes={estimateReadingMinutes(p)} />)}
           </div>
         </section>
       )}

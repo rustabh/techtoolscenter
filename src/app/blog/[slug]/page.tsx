@@ -140,7 +140,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           {related.length > 0 && (
             <section className="mt-12">
               <h2 className="mb-5 text-2xl font-bold tracking-tight">Related articles</h2>
-              <div className="grid gap-4 sm:grid-cols-3">{related.map((p) => <BlogCard key={p.slug} post={p} />)}</div>
+              <div className="grid gap-4 sm:grid-cols-3">{related.map((p) => <BlogCard key={p.slug} post={p} readingMinutes={estimateReadingMinutes(p)} />)}</div>
             </section>
           )}
         </div>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { BlogCard, Pagination } from "@/components/blog/blog-bits";
-import { allPosts, paginate, totalBlogPages } from "@/lib/blog/posts";
+import { allPosts, estimateReadingMinutes, paginate, totalBlogPages } from "@/lib/blog/posts";
 import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
 // Any page number outside the statically-generated set (including page 1,
@@ -34,7 +34,7 @@ export default async function BlogPaged({ params }: { params: Promise<{ page: st
       <Breadcrumbs items={[{ label: "Blog", href: "/blog" }, { label: `Page ${current}` }]} />
       <h1 className="mt-6 mb-8 text-3xl font-bold tracking-tight">All articles — page {current}</h1>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {items.map((p) => <BlogCard key={p.slug} post={p} />)}
+        {items.map((p) => <BlogCard key={p.slug} post={p} readingMinutes={estimateReadingMinutes(p)} />)}
       </div>
       <Pagination base="/blog" current={current} total={total} />
     </div>

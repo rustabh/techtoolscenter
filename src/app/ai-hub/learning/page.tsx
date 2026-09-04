@@ -4,7 +4,7 @@ import { ArrowRight, GitCompareArrows, Sparkles } from "lucide-react";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 import { Icon } from "@/components/icon";
 import { BlogCard } from "@/components/blog/blog-bits";
-import { getPost } from "@/lib/blog/posts";
+import { estimateReadingMinutes, getPost } from "@/lib/blog/posts";
 import { prompts } from "@/lib/aihub/prompts";
 import { aiCategories } from "@/lib/aihub/categories";
 import { buildSimpleMetadata } from "@/lib/seo/metadata";
@@ -55,7 +55,7 @@ export default function AiLearningPage() {
           </Link>
         </div>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {guides.map((p) => <BlogCard key={p.slug} post={p} />)}
+          {guides.map((p) => <BlogCard key={p.slug} post={p} readingMinutes={estimateReadingMinutes(p)} />)}
         </div>
       </section>
 

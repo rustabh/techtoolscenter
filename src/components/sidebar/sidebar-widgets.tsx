@@ -9,7 +9,7 @@ import { pickForDay, pickForWeek } from "@/lib/home/daily";
 import { getRecentTools } from "@/lib/tools";
 import { aiTools } from "@/lib/aihub/tools";
 import { updates } from "@/lib/updates/updates";
-import { posts } from "@/lib/blog/posts";
+import { useLatestBlogPost } from "./latest-blog-context";
 
 function WidgetCard({ eyebrow, title, href, external, icon }: { eyebrow: string; title: string; href: string; external?: boolean; icon?: React.ReactNode }) {
   const inner = (
@@ -60,14 +60,15 @@ export function GovernmentUpdateWidget() {
   return <WidgetCard eyebrow="Government Update" title={latest.title} href={`/updates/${latest.slug}`} />;
 }
 
-/** Latest Blog — attached under the Learning section. */
+/** Latest Blog — attached under the Learning section. The post's slug/title
+ *  come from context (see latest-blog-context.tsx), computed server-side in
+ *  the root layout — not imported here, which would otherwise pull every
+ *  post's full article body and FAQ into this client-side sidebar bundle. */
 export function LatestBlogWidget() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  if (!mounted) return null;
-  const sorted = [...posts].sort((a, b) => (a.publishedOn < b.publishedOn ? 1 : -1));
-  const latest = sorted[0];
-  if (!latest) return null;
+  const latest = useLatestBlogPost();
+  if (!mounted || !latest) return null;
   return <WidgetCard eyebrow="Latest Blog" title={latest.title} href={`/blog/${latest.slug}`} />;
 }
 

@@ -16,6 +16,7 @@ import { Analytics } from "@/components/analytics";
 import { ConsentBanner } from "@/components/consent-banner";
 import { IncincLauncher } from "@/components/incinc/incinc-launcher";
 import { WorkspaceSidebar } from "@/components/sidebar/workspace-sidebar";
+import { latestPostSummary } from "@/lib/blog/posts";
 import { MobileBottomNav } from "@/components/navbar/mobile-bottom-nav";
 import { ChromeGate } from "@/components/chrome-gate";
 
@@ -79,6 +80,7 @@ export const viewport: Viewport = {
 
 const orgJsonLd = organizationLd();
 const siteJsonLd = websiteLd();
+const latestBlogPost = latestPostSummary();
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -100,7 +102,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <PwaProvider />
             <FileDropProvider />
             <ConsentBanner />
-            <WorkspaceSidebar />
+            <WorkspaceSidebar latestBlogPost={latestBlogPost} />
             <IncincLauncher />
             <MobileBottomNav />
           </ChromeGate>

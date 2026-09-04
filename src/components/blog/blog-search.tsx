@@ -3,10 +3,15 @@
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { BlogCard } from "@/components/blog/blog-bits";
-import type { BlogPost } from "@/lib/blog/types";
+import type { BlogSearchEntry } from "@/lib/blog/posts";
 
-/** Lightweight client search over the blog — indexes titles, excerpts and tags. */
-export function BlogSearch({ posts }: { posts: BlogPost[] }) {
+/** Lightweight client search over the blog — indexes titles, excerpts and
+ *  tags. Takes the slim BlogSearchEntry[] projection (see blogSearchIndex in
+ *  lib/blog/posts), not full BlogPost[] — this component and its props cross
+ *  the server/client boundary, so shipping every post's full article body
+ *  and FAQ here would serialize the entire blog into the page just to power
+ *  this search input. */
+export function BlogSearch({ posts }: { posts: BlogSearchEntry[] }) {
   const [q, setQ] = useState("");
   const results = useMemo(() => {
     const term = q.trim().toLowerCase();
@@ -32,7 +37,7 @@ export function BlogSearch({ posts }: { posts: BlogPost[] }) {
         <div className="mt-4">
           {results.length ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {results.map((p) => <BlogCard key={p.slug} post={p} />)}
+              {results.map((p) => <BlogCard key={p.slug} post={p} readingMinutes={p.readingMinutes} />)}
             </div>
           ) : (
             <p className="rounded-xl border border-dashed border-border p-4 text-sm text-muted-foreground">No articles found for “{q}”.</p>
