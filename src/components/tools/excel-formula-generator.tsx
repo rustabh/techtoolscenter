@@ -10,16 +10,26 @@ import { Button } from "@/components/ui/button";
 
 type Op = "sum" | "average" | "count" | "if" | "sumif" | "countif" | "vlookup" | "xlookup" | "iferror" | "text" | "concat" | "round" | "percent";
 
+// IF/IFERROR's true/false and fallback values used to always be wrapped in
+// quotes, even when the user typed a plain number — e.g. an IFERROR
+// fallback of "0" became the literal string "0" (=IFERROR(A1/B1, "0")),
+// not the number 0, silently breaking any SUM/math done on that cell
+// afterwards. Only quote it when it isn't a plain number.
+function autoQuote(value: string, fallback: string): string {
+  const v = value || fallback;
+  return /^-?\d+(\.\d+)?$/.test(v) ? v : `"${v}"`;
+}
+
 const build: Record<Op, (a: string, b: string, c: string) => { formula: string; explain: string }> = {
   sum: (a) => ({ formula: `=SUM(${a || "A1:A10"})`, explain: "Adds up all numbers in the range." }),
   average: (a) => ({ formula: `=AVERAGE(${a || "A1:A10"})`, explain: "Returns the mean of the range." }),
   count: (a) => ({ formula: `=COUNT(${a || "A1:A10"})`, explain: "Counts how many cells contain numbers." }),
-  if: (a, b, c) => ({ formula: `=IF(${a || "A1>10"}, "${b || "Yes"}", "${c || "No"}")`, explain: "Returns one value if the condition is true, another if false." }),
+  if: (a, b, c) => ({ formula: `=IF(${a || "A1>10"}, ${autoQuote(b, "Yes")}, ${autoQuote(c, "No")})`, explain: "Returns one value if the condition is true, another if false." }),
   sumif: (a, b, c) => ({ formula: `=SUMIF(${a || "A1:A10"}, "${b || ">100"}", ${c || "B1:B10"})`, explain: "Adds cells that meet the given condition." }),
   countif: (a, b) => ({ formula: `=COUNTIF(${a || "A1:A10"}, "${b || ">100"}")`, explain: "Counts cells that meet the condition." }),
   vlookup: (a, b, c) => ({ formula: `=VLOOKUP(${a || "A2"}, ${b || "D:F"}, ${c || "3"}, FALSE)`, explain: "Looks up a value in the first column of a range and returns a value from another column." }),
   xlookup: (a, b, c) => ({ formula: `=XLOOKUP(${a || "A2"}, ${b || "D:D"}, ${c || "F:F"})`, explain: "Modern replacement for VLOOKUP — looks up a value and returns a match from any column, left or right, without counting columns." }),
-  iferror: (a, b) => ({ formula: `=IFERROR(${a || "A1/B1"}, "${b || "Error"}")`, explain: "Runs the formula normally, but shows a fallback value instead of an error (like #DIV/0!) if it fails." }),
+  iferror: (a, b) => ({ formula: `=IFERROR(${a || "A1/B1"}, ${autoQuote(b, "Error")})`, explain: "Runs the formula normally, but shows a fallback value instead of an error (like #DIV/0!) if it fails." }),
   text: (a, b) => ({ formula: `=TEXT(${a || "A1"}, "${b || "dd-mmm-yyyy"}")`, explain: "Formats a number or date as text in the given format (e.g. dates, currency, percentages)." }),
   concat: (a, b) => ({ formula: `=CONCATENATE(${a || "A1"}, " ", ${b || "B1"})`, explain: "Joins text from multiple cells together." }),
   round: (a, b) => ({ formula: `=ROUND(${a || "A1"}, ${b || "2"})`, explain: "Rounds a number to the given number of decimal places." }),
