@@ -19,6 +19,40 @@ function byteLength(s: string) {
   return new TextEncoder().encode(s).length;
 }
 
+// The live preview below renders whatever the visitor pastes or uploads via
+// dangerouslySetInnerHTML — and SVG has real script-execution vectors beyond
+// <script> (which the browser already refuses to run when inserted this way):
+// event-handler attributes like <image onerror>, <animate onbegin>, or even a
+// bare onpointerover on the root element that fires just from hovering the
+// preview. A malicious SVG downloaded from elsewhere and pasted in "to see
+// what's inside" would otherwise run arbitrary JS on this origin. This strips
+// <script> elements, every "on*" attribute, and javascript: URLs before the
+// markup ever reaches the preview — the raw text in the textarea (and what
+// gets optimized/copied/downloaded) is never touched.
+function sanitizeSvgForPreview(source: string): string {
+  try {
+    const doc = new DOMParser().parseFromString(source, "image/svg+xml");
+    if (doc.querySelector("parsererror")) return "";
+    const strip = (el: Element) => {
+      if (el.tagName.toLowerCase() === "script") {
+        el.remove();
+        return;
+      }
+      for (const attr of Array.from(el.attributes)) {
+        const name = attr.name.toLowerCase();
+        const isEventHandler = name.startsWith("on");
+        const isScriptUrl = (name === "href" || name === "xlink:href") && /^\s*javascript:/i.test(attr.value);
+        if (isEventHandler || isScriptUrl) el.removeAttribute(attr.name);
+      }
+      Array.from(el.children).forEach(strip);
+    };
+    if (doc.documentElement) strip(doc.documentElement);
+    return new XMLSerializer().serializeToString(doc);
+  } catch {
+    return "";
+  }
+}
+
 /**
  * Hand-rolled SVG optimizer (no SVGO dependency). Applies a sequence of
  * safe, regex-based cleanups: strip comments/doctype, drop editor cruft,
@@ -94,6 +128,8 @@ export default function SvgOptimizer() {
 
   const output = useMemo(() => (input.trim() ? optimizeSvg(input, removeTitleDesc) : ""), [input, removeTitleDesc]);
 
+  const originalPreviewHtml = useMemo(() => (input.trim() ? sanitizeSvgForPreview(input) : ""), [input]);
+  const optimizedPreviewHtml = useMemo(() => (output ? sanitizeSvgForPreview(output) : ""), [output]);
   const originalBytes = useMemo(() => byteLength(input), [input]);
   const optimizedBytes = useMemo(() => byteLength(output), [output]);
   const reduction = originalBytes > 0 ? Math.max(0, Math.round(((originalBytes - optimizedBytes) / originalBytes) * 1000) / 10) : 0;
@@ -145,7 +181,7 @@ export default function SvgOptimizer() {
               <div
                 id="svg-original-preview"
                 className="flex h-40 items-center justify-center overflow-hidden rounded-xl border border-border bg-secondary/30 p-3 [&_svg]:max-h-full [&_svg]:max-w-full"
-                dangerouslySetInnerHTML={{ __html: input }}
+                dangerouslySetInnerHTML={{ __html: originalPreviewHtml }}
               />
               <p className="text-xs text-muted-foreground">Size: {formatBytes(originalBytes)}</p>
             </div>
@@ -188,7 +224,7 @@ export default function SvgOptimizer() {
               <div
                 id="svg-optimized-preview"
                 className="flex h-40 items-center justify-center overflow-hidden rounded-xl border border-border bg-secondary/30 p-3 [&_svg]:max-h-full [&_svg]:max-w-full"
-                dangerouslySetInnerHTML={{ __html: output }}
+                dangerouslySetInnerHTML={{ __html: optimizedPreviewHtml }}
               />
               <p className="text-xs text-muted-foreground">Size: {formatBytes(optimizedBytes)}</p>
             </div>
