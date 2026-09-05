@@ -8,7 +8,8 @@ import type { IndiaService } from "@/lib/india/types";
 import { lookupGlossaryTerm } from "./glossary";
 import { lookupKnowledge } from "./knowledge";
 import { searchCatalog } from "./catalog";
-import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow, itrFilingWorkflow, loanPrepWorkflow, freelanceWorkflow, fundraisingWorkflow, sellOnlineWorkflow } from "./workflows";
+import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow, itrFilingWorkflow, loanPrepWorkflow, freelanceWorkflow, fundraisingWorkflow, sellOnlineWorkflow, jobSearchWorkflow } from "./workflows";
+import { resourcesByCategory } from "@/lib/devhub/resources";
 
 function toolLink(slug: string): LinkItem | null {
   const t = getTool(slug);
@@ -1274,6 +1275,55 @@ const fastPaths: FastPath[] = [
     intent: "workflow",
     test: (q) => /loan/.test(q) && !/(kisan|kcc|credit\s*card)/.test(q),
     build: () => withIntent("workflow", loanPrepWorkflow),
+  },
+  {
+    // "job card" is a distinct, real MGNREGA government service — excluded so
+    // it still falls through to the government-service intent below instead
+    // of being swallowed by this workflow.
+    id: "job-search-workflow",
+    intent: "workflow",
+    test: (q) => /\bjob\b/.test(q) && /(search|hunt|apply|applying|looking|find|land|get\s+a\s+job)/.test(q) && !/card/.test(q),
+    build: () => withIntent("workflow", jobSearchWorkflow),
+  },
+  {
+    id: "cover-letter",
+    intent: "workflow",
+    test: (q) => /cover\s*letter/.test(q),
+    build: () => withIntent("workflow", jobSearchWorkflow),
+  },
+  {
+    id: "brand-logo",
+    intent: "tool",
+    test: (q) => /\blogo\b/.test(q) && /(make|create|design|generate|need|build)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary:
+          "Brand Kit Generator detects a logo, colours and fonts from a website URL or an uploaded logo (or just a business name) and builds a complete matching logo pack — PNG, SVG and transparent versions, plus favicons and app icons — in one download.",
+        recommendedTools: compact([toolLink("brand-kit-generator")]),
+        relatedBlogs: [],
+        officialResources: [],
+        estimatedTime: "1-2 minutes",
+        difficulty: "Beginner",
+        nextStep: "Enter your business name, a website URL, or upload an existing logo, then download the full brand kit as one ZIP.",
+        actions: [{ label: "Open Brand Kit Generator", href: "/tools/brand-kit-generator", kind: "internal" }],
+      }),
+  },
+  {
+    id: "learn-to-code",
+    intent: "tool",
+    test: (q) => /learn\s*(to\s*)?(code|coding|programming|web\s*dev(elopment)?|javascript|python|html|css)/.test(q),
+    build: () => {
+      const learning = resourcesByCategory("learning").slice(0, 6);
+      return withIntent("tool", {
+        summary: "Developer Hub curates free places to actually learn to code — documentation, interactive tutorials and full courses, not just a list of links.",
+        recommendedTools: learning.map((r) => ({ label: r.name, href: r.internalToolSlug ? `/tools/${r.internalToolSlug}` : r.officialUrl, kind: r.internalToolSlug ? "internal" as const : "external" as const, description: r.description, meta: r.pricing })),
+        relatedBlogs: [],
+        officialResources: [],
+        difficulty: "Beginner",
+        nextStep: "Pick one resource and stick with it rather than jumping between several at once.",
+        actions: [{ label: "Open Developer Hub: Learning", href: "/developer-hub/learning", kind: "internal" }],
+      });
+    },
   },
 ];
 

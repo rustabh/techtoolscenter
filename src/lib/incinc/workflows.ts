@@ -274,3 +274,33 @@ export const saasStackWorkflow: AssistantResponse = {
     { label: "Browse Developer Hub", href: "/developer-hub", kind: "internal" },
   ],
 };
+
+export const jobSearchWorkflow: AssistantResponse = {
+  summary:
+    "Job hunting comes together in this order: a genuinely ATS-friendly resume first, a cover letter that's actually read second, then — once an offer lands — checking what it's really worth before you negotiate.",
+  recommendedTools: [
+    { label: "Resume Builder", href: "/tools/resume-builder", kind: "internal", description: "Ready-made, ATS-friendly templates — fill in your details and export a polished PDF." },
+    { label: "CTC to In-Hand Salary Calculator", href: "/tools/ctc-calculator", kind: "internal", description: "Turn a CTC figure in an offer letter into your actual monthly take-home before you decide or negotiate." },
+  ],
+  workflow: [
+    { label: "Resume Builder", href: "/tools/resume-builder", kind: "internal", description: "Start from an ATS-friendly template rather than a blank page" },
+    { label: "How to Build an ATS-Friendly Resume", href: "/blog/how-to-build-ats-friendly-resume-free", kind: "internal", description: "What actually gets a resume past automated screening" },
+    { label: "How to Use AI to Write a Better Resume", href: "/blog/how-to-use-ai-to-write-a-better-resume", kind: "internal", description: "Tighten bullet points and phrasing before you send it out" },
+    { label: "How to Write a Cover Letter That Gets Read", href: "/blog/how-to-write-a-cover-letter-that-gets-read", kind: "internal", description: "A cover letter that adds real information, not a repeat of the resume" },
+    { label: "CTC to In-Hand Salary Calculator", href: "/tools/ctc-calculator", kind: "internal", description: "Once an offer arrives, work out what the CTC actually pays you monthly" },
+    { label: "How to Negotiate a Job Offer", href: "/blog/how-to-negotiate-a-job-offer", kind: "internal", description: "What's actually negotiable, and how to ask without losing the offer" },
+  ],
+  relatedBlogs: [
+    { label: "How to Build an ATS-Friendly Resume for Free", href: "/blog/how-to-build-ats-friendly-resume-free", kind: "internal" },
+    { label: "How to Write a Cover Letter That Actually Gets Read", href: "/blog/how-to-write-a-cover-letter-that-gets-read", kind: "internal" },
+    { label: "How to Negotiate a Job Offer (Without Losing It)", href: "/blog/how-to-negotiate-a-job-offer", kind: "internal" },
+  ],
+  officialResources: [],
+  estimatedTime: "20-30 minutes for the resume and cover letter",
+  difficulty: "Beginner",
+  nextStep: "Start with the resume — an ATS-friendly one first, then tailor the cover letter to each specific role.",
+  actions: [
+    { label: "Open Resume Builder", href: "/tools/resume-builder", kind: "internal" },
+    { label: "Read Cover Letter Guide", href: "/blog/how-to-write-a-cover-letter-that-gets-read", kind: "internal" },
+  ],
+};
