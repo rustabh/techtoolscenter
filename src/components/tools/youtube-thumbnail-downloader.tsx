@@ -30,7 +30,11 @@ function extractVideoId(input: string): string | null {
       const id = url.pathname.slice(1, 12);
       return /^[\w-]{11}$/.test(id) ? id : null;
     }
-    if (url.hostname.includes("youtube.com")) {
+    // "Enable privacy-enhanced mode" in YouTube's own share dialog — and
+    // several privacy-conscious CMS embed plugins — produce embed links on
+    // youtube-nocookie.com instead of youtube.com. This tool already claims
+    // to support "embed links" generally, so that domain needs to match too.
+    if (url.hostname.includes("youtube.com") || url.hostname.includes("youtube-nocookie.com")) {
       if (url.pathname === "/watch") return url.searchParams.get("v");
       const match = url.pathname.match(/\/(?:shorts|embed|live)\/([\w-]{11})/);
       if (match) return match[1];
