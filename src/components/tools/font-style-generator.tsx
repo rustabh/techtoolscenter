@@ -47,7 +47,14 @@ const regional = (t: string) => [...t.toUpperCase()].map((ch) => { const i = A.i
 
 const UPSIDE: Record<string, string> = { a: "ɐ", b: "q", c: "ɔ", d: "p", e: "ǝ", f: "ɟ", g: "ƃ", h: "ɥ", i: "ᴉ", j: "ɾ", k: "ʞ", l: "l", m: "ɯ", n: "u", o: "o", p: "d", q: "b", r: "ɹ", s: "s", t: "ʇ", u: "n", v: "ʌ", w: "ʍ", x: "x", y: "ʎ", z: "z", "1": "Ɩ", "2": "ᄅ", "3": "Ɛ", "4": "ㄣ", "5": "ϛ", "6": "9", "7": "ㄥ", "8": "8", "9": "6", "0": "0", "?": "¿", "!": "¡", ".": "˙", ",": "'" };
 const SMALLCAPS: Record<string, string> = { a: "ᴀ", b: "ʙ", c: "ᴄ", d: "ᴅ", e: "ᴇ", f: "ꜰ", g: "ɢ", h: "ʜ", i: "ɪ", j: "ᴊ", k: "ᴋ", l: "ʟ", m: "ᴍ", n: "ɴ", o: "ᴏ", p: "ᴘ", q: "Q", r: "ʀ", s: "s", t: "ᴛ", u: "ᴜ", v: "ᴠ", w: "ᴡ", x: "x", y: "ʏ", z: "ᴢ" };
-const SUPER: Record<string, string> = { a: "ᵃ", b: "ᵇ", c: "ᶜ", d: "ᵈ", e: "ᵉ", f: "ᶠ", g: "ᵍ", h: "ʰ", i: "ⁱ", j: "ʲ", k: "ᵏ", l: "ˡ", m: "ᵐ", n: "ⁿ", o: "ᵒ", p: "ᵖ", q: "۹", r: "ʳ", s: "ˢ", t: "ᵗ", u: "ᵘ", v: "ᵛ", w: "ʷ", x: "ˣ", y: "ʸ", z: "ᶻ", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
+// No superscript "q" exists anywhere in Unicode — it's the one Latin letter
+// the superscript blocks skip entirely. Leaving it out of this map means
+// byMap()'s fallback (map[c] ?? map[c.toLowerCase()] ?? c) passes the plain
+// letter through unchanged, which reads far better than the Arabic-Indic
+// digit nine (۹) this previously substituted — a character with no visual
+// resemblance to "q" that turned "quick"/"request"/"question" into garbled
+// text mixing an out-of-place foreign numeral into otherwise-Latin output.
+const SUPER: Record<string, string> = { a: "ᵃ", b: "ᵇ", c: "ᶜ", d: "ᵈ", e: "ᵉ", f: "ᶠ", g: "ᵍ", h: "ʰ", i: "ⁱ", j: "ʲ", k: "ᵏ", l: "ˡ", m: "ᵐ", n: "ⁿ", o: "ᵒ", p: "ᵖ", r: "ʳ", s: "ˢ", t: "ᵗ", u: "ᵘ", v: "ᵛ", w: "ʷ", x: "ˣ", y: "ʸ", z: "ᶻ", "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹" };
 const CYR: Record<string, string> = { a: "а", b: "б", c: "ᴄ", e: "е", h: "н", k: "к", m: "м", o: "о", p: "р", r: "я", t: "т", u: "и", w: "ш", x: "х", y: "у", n: "и", d: "д", g: "г", i: "і", l: "л" };
 const GREEK: Record<string, string> = { a: "α", b: "β", c: "ς", d: "δ", e: "ε", g: "γ", h: "η", i: "ι", k: "κ", l: "λ", m: "μ", n: "π", o: "θ", p: "ρ", r: "г", s: "σ", t: "τ", u: "υ", w: "ω", x: "χ", y: "γ", z: "ζ" };
 
