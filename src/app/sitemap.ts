@@ -35,10 +35,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/india-services`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${base}/useful-websites`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${base}/business-templates`, lastModified: now, changeFrequency: "monthly", priority: 0.6 },
+    { url: `${base}/templates`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
+    { url: `${base}/learning-center`, lastModified: now, changeFrequency: "weekly", priority: 0.7 },
     { url: `${base}/community`, lastModified: now, changeFrequency: "daily", priority: 0.6 },
     { url: `${base}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
     { url: `${base}/contact`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
     { url: `${base}/privacy`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
+    { url: `${base}/editorial-policy`, lastModified: now, changeFrequency: "monthly", priority: 0.4 },
   ];
 
   const categoryRoutes: MetadataRoute.Sitemap = categories.map((c) => ({
