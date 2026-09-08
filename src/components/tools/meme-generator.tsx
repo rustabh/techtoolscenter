@@ -10,9 +10,14 @@ import { downloadBlob } from "@/lib/utils";
 import { showToast } from "@/components/ui/toaster";
 import { FileDropzone } from "@/components/tools/file-dropzone";
 
+// Top/bottom halves are joined with "\n\n" (not a single "\n") so every
+// prompt splits the same way in randomize() below — a lone "\n" here would
+// land the whole two-line prompt in the single-line "Top text" input
+// instead (which can't render the embedded newline at all) while leaving
+// "Bottom text" untouched.
 const SAMPLE_PROMPTS = [
-  "WHEN THE CODE\nWORKS ON THE FIRST TRY",
-  "ME EXPLAINING\nWHY I NEED ANOTHER TAB OPEN",
+  "WHEN THE CODE\n\nWORKS ON THE FIRST TRY",
+  "ME EXPLAINING\n\nWHY I NEED ANOTHER TAB OPEN",
   "NOBODY:\n\nME AT 2 AM",
 ];
 
@@ -120,9 +125,9 @@ export default function MemeGenerator() {
 
   const randomize = () => {
     const pick = SAMPLE_PROMPTS[Math.floor(Math.random() * SAMPLE_PROMPTS.length)];
-    const [top, bottom] = pick.split("\n\n").length > 1 ? pick.split("\n\n") : [pick, bottomText];
+    const [top, bottom] = pick.split("\n\n");
     setTopText(top);
-    if (pick.includes("\n\n")) setBottomText(bottom);
+    setBottomText(bottom);
   };
 
   return (
