@@ -114,11 +114,17 @@ export default function AgeCalculator() {
                 <Big value={result.months} label="months" />
                 <Big value={result.days} label="days" />
               </div>
+              {/* "en-IN" pinned explicitly: bare toLocaleString() takes the
+                  visitor's browser locale, so anyone not on an en-IN/hi-IN
+                  device saw Western grouping ("262,800") on a site whose
+                  every other number (formatCurrency) is Indian-grouped
+                  ("2,62,800") — inconsistent, and wrong for most visitors
+                  here once totals cross 1,00,000 (~11 years of age in hours). */}
               <div className="grid grid-cols-2 gap-3 text-sm">
-                <Stat label="Total months" value={result.totalMonths.toLocaleString()} />
-                <Stat label="Total weeks" value={result.totalWeeks.toLocaleString()} />
-                <Stat label="Total days" value={result.totalDays.toLocaleString()} />
-                <Stat label="Total hours" value={result.totalHours.toLocaleString()} />
+                <Stat label="Total months" value={result.totalMonths.toLocaleString("en-IN")} />
+                <Stat label="Total weeks" value={result.totalWeeks.toLocaleString("en-IN")} />
+                <Stat label="Total days" value={result.totalDays.toLocaleString("en-IN")} />
+                <Stat label="Total hours" value={result.totalHours.toLocaleString("en-IN")} />
               </div>
               <div className="rounded-xl bg-primary/10 p-4 text-center text-sm font-medium text-primary">
                 🎂 {result.daysToBirthday} days until the next birthday
@@ -131,7 +137,7 @@ export default function AgeCalculator() {
                     {result.milestones.map((m) => (
                       <div key={m.age} className="flex items-center justify-between rounded-lg bg-secondary/60 px-3 py-2 text-sm">
                         <span>{m.age}th birthday</span>
-                        <span className="text-muted-foreground">{m.daysAway === 0 ? "Today!" : `in ${m.daysAway.toLocaleString()} days`}</span>
+                        <span className="text-muted-foreground">{m.daysAway === 0 ? "Today!" : `in ${m.daysAway.toLocaleString("en-IN")} days`}</span>
                       </div>
                     ))}
                   </div>
