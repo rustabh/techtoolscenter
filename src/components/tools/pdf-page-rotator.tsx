@@ -77,8 +77,8 @@ export default function PdfPageRotator() {
         <Card>
           <CardContent className="space-y-4 pt-6">
             <div className="space-y-1.5">
-              <Label>Rotate</Label>
-              <div className="grid grid-cols-3 gap-2">
+              <Label id="pdf-rotate-angle-label">Rotate</Label>
+              <div className="grid grid-cols-3 gap-2" role="group" aria-labelledby="pdf-rotate-angle-label">
                 {[90, 180, 270].map((a) => (
                   <button
                     key={a}
@@ -95,8 +95,8 @@ export default function PdfPageRotator() {
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label>Which pages</Label>
-              <div className="grid grid-cols-2 gap-2">
+              <Label id="pdf-rotate-scope-label">Which pages</Label>
+              <div className="grid grid-cols-2 gap-2" role="group" aria-labelledby="pdf-rotate-scope-label">
                 <button
                   type="button"
                   aria-pressed={scope === "all"}
@@ -119,9 +119,10 @@ export default function PdfPageRotator() {
                 </button>
               </div>
               {scope === "range" && (
-                <div className="pt-1">
-                  <Input value={range} onChange={(e) => setRange(e.target.value)} placeholder="e.g. 1-3, 5, 8" />
-                  <p className="mt-1 text-xs text-muted-foreground">Use ranges (1-3) and single pages (5), separated by commas.</p>
+                <div className="space-y-1 pt-1">
+                  <Label htmlFor="pdf-rotate-range" className="text-xs">Page numbers</Label>
+                  <Input id="pdf-rotate-range" value={range} onChange={(e) => setRange(e.target.value)} placeholder="e.g. 1-3, 5, 8" />
+                  <p className="text-xs text-muted-foreground">Use ranges (1-3) and single pages (5), separated by commas.</p>
                 </div>
               )}
             </div>
