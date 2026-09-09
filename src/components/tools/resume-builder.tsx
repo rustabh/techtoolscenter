@@ -83,11 +83,23 @@ export default function ResumeBuilder() {
         {value[field].map((e) => (
           <div key={e.id} className="space-y-2 rounded-xl border border-border p-3">
             <div className="grid grid-cols-2 gap-2">
-              <Input placeholder="Title" value={e.title} onChange={(ev) => patchEntry(field, e.id, { title: ev.target.value })} />
-              <Input placeholder="Organisation" value={e.subtitle} onChange={(ev) => patchEntry(field, e.id, { subtitle: ev.target.value })} />
+              <div className="space-y-1">
+                <Label htmlFor={`${field}-title-${e.id}`} className="text-xs">Title</Label>
+                <Input id={`${field}-title-${e.id}`} placeholder="e.g. Senior Developer" value={e.title} onChange={(ev) => patchEntry(field, e.id, { title: ev.target.value })} />
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor={`${field}-subtitle-${e.id}`} className="text-xs">Organisation</Label>
+                <Input id={`${field}-subtitle-${e.id}`} placeholder="e.g. Acme Inc." value={e.subtitle} onChange={(ev) => patchEntry(field, e.id, { subtitle: ev.target.value })} />
+              </div>
             </div>
-            <Input placeholder="Date range" value={e.date} onChange={(ev) => patchEntry(field, e.id, { date: ev.target.value })} />
-            <Textarea placeholder="Details" value={e.detail} onChange={(ev) => patchEntry(field, e.id, { detail: ev.target.value })} />
+            <div className="space-y-1">
+              <Label htmlFor={`${field}-date-${e.id}`} className="text-xs">Date range</Label>
+              <Input id={`${field}-date-${e.id}`} placeholder="e.g. 2021 — Present" value={e.date} onChange={(ev) => patchEntry(field, e.id, { date: ev.target.value })} />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor={`${field}-detail-${e.id}`} className="text-xs">Details</Label>
+              <Textarea id={`${field}-detail-${e.id}`} placeholder="What did you do, and what was the impact?" value={e.detail} onChange={(ev) => patchEntry(field, e.id, { detail: ev.target.value })} />
+            </div>
             <Button variant="ghost" size="sm" aria-label="Remove" onClick={() => patch({ [field]: value[field].filter((x) => x.id !== e.id) })}><Trash2 className="size-4" /> Remove</Button>
           </div>
         ))}
@@ -102,13 +114,34 @@ export default function ResumeBuilder() {
         <Card>
           <CardHeader><CardTitle>Personal</CardTitle></CardHeader>
           <CardContent className="grid grid-cols-2 gap-3">
-            <Input placeholder="Name" value={value.name} onChange={(e) => patch({ name: e.target.value })} />
-            <Input placeholder="Role" value={value.role} onChange={(e) => patch({ role: e.target.value })} />
-            <Input placeholder="Email" value={value.email} onChange={(e) => patch({ email: e.target.value })} />
-            <Input placeholder="Phone" value={value.phone} onChange={(e) => patch({ phone: e.target.value })} />
-            <Input placeholder="Location" value={value.location} onChange={(e) => patch({ location: e.target.value })} />
-            <Input placeholder="Website" value={value.website} onChange={(e) => patch({ website: e.target.value })} />
-            <Textarea className="col-span-2" placeholder="Summary" value={value.summary} onChange={(e) => patch({ summary: e.target.value })} />
+            <div className="space-y-1">
+              <Label htmlFor="resume-name" className="text-xs">Name</Label>
+              <Input id="resume-name" placeholder="e.g. Alex Doe" value={value.name} onChange={(e) => patch({ name: e.target.value })} />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="resume-role" className="text-xs">Role</Label>
+              <Input id="resume-role" placeholder="e.g. Full-Stack Developer" value={value.role} onChange={(e) => patch({ role: e.target.value })} />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="resume-email" className="text-xs">Email</Label>
+              <Input id="resume-email" type="email" placeholder="e.g. alex@email.com" value={value.email} onChange={(e) => patch({ email: e.target.value })} />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="resume-phone" className="text-xs">Phone</Label>
+              <Input id="resume-phone" type="tel" placeholder="e.g. +1 555 0100" value={value.phone} onChange={(e) => patch({ phone: e.target.value })} />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="resume-location" className="text-xs">Location</Label>
+              <Input id="resume-location" placeholder="e.g. Remote" value={value.location} onChange={(e) => patch({ location: e.target.value })} />
+            </div>
+            <div className="space-y-1">
+              <Label htmlFor="resume-website" className="text-xs">Website</Label>
+              <Input id="resume-website" placeholder="e.g. alexdoe.dev" value={value.website} onChange={(e) => patch({ website: e.target.value })} />
+            </div>
+            <div className="col-span-2 space-y-1">
+              <Label htmlFor="resume-summary" className="text-xs">Summary</Label>
+              <Textarea id="resume-summary" placeholder="A short, 1-2 sentence pitch of who you are professionally" value={value.summary} onChange={(e) => patch({ summary: e.target.value })} />
+            </div>
             <div className="col-span-2 space-y-1.5">
               <Label>Accent color</Label>
               <div className="flex flex-wrap gap-2">
@@ -137,7 +170,10 @@ export default function ResumeBuilder() {
         {EntryEditor({ title: "Education", field: "education" })}
         <Card>
           <CardHeader><CardTitle>Skills</CardTitle></CardHeader>
-          <CardContent><Textarea value={value.skills} onChange={(e) => patch({ skills: e.target.value })} placeholder="Comma-separated skills" /></CardContent>
+          <CardContent className="space-y-1">
+            <Label htmlFor="resume-skills" className="text-xs">Skills</Label>
+            <Textarea id="resume-skills" value={value.skills} onChange={(e) => patch({ skills: e.target.value })} placeholder="Comma-separated, e.g. TypeScript, React, Node.js" />
+          </CardContent>
         </Card>
         <ActionBar onUndo={undo} onRedo={redo} onReset={() => reset()} onDownload={downloadPdf} downloadLabel={exporting ? "Generating…" : "Download PDF"} canUndo={canUndo} canRedo={canRedo} />
       </div>
