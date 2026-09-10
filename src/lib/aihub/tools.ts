@@ -5373,6 +5373,59 @@ export const aiTools: AiTool[] = [
     "tags": ["budgeting", "personal-finance", "expense-tracking", "debt-payoff"],
     "icon": "Coins",
     "addedOn": "2026-08-27"
+  },
+  {
+    "slug": "luma-ai-genie",
+    "name": "Luma AI (Genie)",
+    "category": "3d",
+    "developer": "Luma AI",
+    "officialUrl": "https://lumalabs.ai/genie",
+    "overview": "A text-to-3D generative tool from Luma AI that turns a short prompt into a textured 3D mesh in seconds, aimed at quick concept iteration for games and virtual scenes rather than production-final assets.",
+    "pricing": "Freemium",
+    "platforms": ["Web"],
+    "tags": ["text-to-3d", "3d-generation", "mesh-generation", "game-assets"],
+    "icon": "Box",
+    "addedOn": "2026-09-10"
+  },
+  {
+    "slug": "csm-ai",
+    "name": "CSM (Common Sense Machines)",
+    "category": "3d",
+    "developer": "Common Sense Machines",
+    "officialUrl": "https://csm.ai",
+    "overview": "An image-to-3D and text-to-3D platform that generates rigged, game-ready 3D assets with an API for developers who need to generate assets programmatically at scale rather than one at a time in a web UI.",
+    "pricing": "Freemium",
+    "apiAvailable": true,
+    "platforms": ["Web"],
+    "tags": ["image-to-3d", "text-to-3d", "3d-generation", "api", "game-assets"],
+    "icon": "Boxes",
+    "addedOn": "2026-09-10"
+  },
+  {
+    "slug": "updf",
+    "name": "UPDF",
+    "category": "pdf-ai",
+    "developer": "Superace Software / UPDF",
+    "officialUrl": "https://www.updf.com",
+    "overview": "A PDF editor and reader with an AI chat assistant built in for summarizing, translating and answering questions about the open document, alongside standard editing, annotation and conversion tools.",
+    "pricing": "Freemium",
+    "platforms": ["Web", "Desktop", "Mobile"],
+    "tags": ["pdf-editor", "pdf-chat", "summarize", "annotation"],
+    "icon": "FileText",
+    "addedOn": "2026-09-10"
+  },
+  {
+    "slug": "pdfgear",
+    "name": "PDFgear",
+    "category": "pdf-ai",
+    "developer": "PDFgear",
+    "officialUrl": "https://www.pdfgear.com",
+    "overview": "A free PDF toolkit (edit, merge, convert, sign) with an added AI copilot for summarizing documents and answering questions about their content directly inside the desktop app or browser.",
+    "pricing": "Freemium",
+    "platforms": ["Web", "Desktop"],
+    "tags": ["pdf-editor", "pdf-chat", "summarize", "free-pdf-tool"],
+    "icon": "FileText",
+    "addedOn": "2026-09-10"
   }
 ];
 
