@@ -37,6 +37,7 @@ type Fields = Record<string, any>;
 // spec-compliant scanner, so free-text values must be escaped before joining.
 const escWifi = (s: string) => s.replace(/([\\;,:"])/g, "\\$1");
 const escVcard = (s: string) => s.replace(/([\\;,])/g, "\\$1");
+const escIcs = (s: string) => s.replace(/([\\;,])/g, "\\$1").replace(/\n/g, "\\n");
 function buildValue(type: QrType, f: Fields): string {
   const g = (k: string) => (f[k] ?? "").toString().trim();
   switch (type) {
@@ -56,10 +57,20 @@ function buildValue(type: QrType, f: Fields): string {
       return ["BEGIN:VCARD", "VERSION:3.0", `N:${escVcard(g("name"))}`, `FN:${escVcard(g("name"))}`, g("org") && `ORG:${escVcard(g("org"))}`,
         g("title") && `TITLE:${escVcard(g("title"))}`, g("phone") && `TEL:${escVcard(g("phone"))}`, g("email") && `EMAIL:${escVcard(g("email"))}`,
         g("url") && `URL:${escVcard(g("url"))}`, "END:VCARD"].filter(Boolean).join("\n");
-    case "event":
-      return ["BEGIN:VEVENT", `SUMMARY:${g("title")}`, g("location") && `LOCATION:${g("location")}`,
+    case "event": {
+      // A bare VEVENT isn't valid, scannable calendar data on its own — RFC
+      // 5545 requires it nested inside a VCALENDAR component, which is what
+      // every calendar app and QR scanner actually looks for before offering
+      // "Add to Calendar". Without the wrapper (and a UID/DTSTAMP, which
+      // several parsers require too), the QR just silently failed to open
+      // as an event anywhere.
+      const uid = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}@techtoolscenter.com`;
+      const dtstamp = new Date().toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+      return ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//TechToolsCenter//QR Generator//EN", "BEGIN:VEVENT",
+        `UID:${uid}`, `DTSTAMP:${dtstamp}`, `SUMMARY:${escIcs(g("title"))}`, g("location") && `LOCATION:${escIcs(g("location"))}`,
         g("start") && `DTSTART:${g("start").replace(/[-:]/g, "")}00`, g("end") && `DTEND:${g("end").replace(/[-:]/g, "")}00`,
-        "END:VEVENT"].filter(Boolean).join("\n");
+        "END:VEVENT", "END:VCALENDAR"].filter(Boolean).join("\n");
+    }
     case "crypto": return g("address");
     default: return "";
   }
