@@ -3437,6 +3437,55 @@ export const externalDevResources: DevResource[] = [
     "pricing": "Paid",
     "icon": "MonitorPlay",
     "addedOn": "2026-09-03"
+  },
+  {
+    "slug": "workos",
+    "name": "WorkOS",
+    "category": "authentication",
+    "description": "Enterprise-readiness APIs for SaaS apps — SSO (SAML/OIDC), SCIM directory sync and audit logs that plug into an existing auth setup instead of replacing it, aimed at teams selling to enterprise customers.",
+    "officialUrl": "https://workos.com",
+    "docsUrl": "https://workos.com/docs",
+    "tags": ["sso", "saml", "scim", "enterprise-auth", "directory-sync"],
+    "pricing": "Freemium",
+    "icon": "ShieldCheck",
+    "addedOn": "2026-09-10"
+  },
+  {
+    "slug": "ory",
+    "name": "Ory",
+    "category": "authentication",
+    "description": "An open-source identity and access-management stack (Kratos for identity, Hydra for OAuth2/OIDC, Keto for permissions) that can be self-hosted or used as a managed cloud service.",
+    "officialUrl": "https://www.ory.sh",
+    "docsUrl": "https://www.ory.sh/docs",
+    "tags": ["identity", "oauth2", "oidc", "open-source", "self-hosted"],
+    "pricing": "Freemium",
+    "openSource": true,
+    "icon": "KeySquare",
+    "addedOn": "2026-09-10"
+  },
+  {
+    "slug": "new-relic",
+    "name": "New Relic",
+    "category": "monitoring",
+    "description": "A full-stack observability platform combining APM, infrastructure monitoring, logs and distributed tracing in one place, with a perpetual free tier for a single full-access seat.",
+    "officialUrl": "https://newrelic.com",
+    "docsUrl": "https://docs.newrelic.com",
+    "tags": ["apm", "observability", "tracing", "infrastructure-monitoring"],
+    "pricing": "Freemium",
+    "icon": "BarChart3",
+    "addedOn": "2026-09-10"
+  },
+  {
+    "slug": "checkly",
+    "name": "Checkly",
+    "category": "monitoring",
+    "description": "Synthetic monitoring and uptime checks written as code (Playwright-based browser checks plus API checks), built for teams that already treat their infrastructure as code.",
+    "officialUrl": "https://www.checklyhq.com",
+    "docsUrl": "https://www.checklyhq.com/docs",
+    "tags": ["uptime", "synthetic-monitoring", "playwright", "api-monitoring"],
+    "pricing": "Freemium",
+    "icon": "Radar",
+    "addedOn": "2026-09-10"
   }
 ];
 
