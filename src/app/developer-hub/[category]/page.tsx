@@ -7,6 +7,28 @@ import { resourcesByCategory } from "@/lib/devhub/resources";
 import { siteConfig } from "@/lib/site";
 import { buildSimpleMetadata } from "@/lib/seo/metadata";
 
+// Built-in tools store officialUrl as a site-relative path (e.g.
+// "/tools/json-formatter"), unlike external resources' absolute URLs —
+// structured data needs an absolute URL either way, so relative ones get
+// resolved against the site origin before going into the ItemList.
+function absoluteUrl(url: string): string {
+  return url.startsWith("/") ? `${siteConfig.url}${url}` : url;
+}
+
+function categoryItemListLd(categoryName: string, items: { name: string; officialUrl: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `${categoryName} Developer Resources`,
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      url: absoluteUrl(item.officialUrl),
+    })),
+  };
+}
+
 // Every category is statically known at build time; an unmatched slug should
 // be a real, correctly-coded 404 rather than an on-demand render that can
 // race with the root loading.tsx Suspense boundary and report HTTP 200.
@@ -34,9 +56,11 @@ export default async function DevHubCategoryPage({ params }: { params: Promise<{
   if (!cat) notFound();
 
   const items = resourcesByCategory(cat.slug);
+  const itemListLd = categoryItemListLd(cat.name, items);
 
   return (
     <div className="container-tight py-12">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListLd) }} />
       <Breadcrumbs items={[{ label: "Developer Hub", href: "/developer-hub" }, { label: cat.name }]} />
       <header className="mt-6">
         <h1 className="text-4xl font-bold tracking-tight">{cat.name}</h1>
