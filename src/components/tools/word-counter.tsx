@@ -97,7 +97,13 @@ export default function WordCounter() {
                     <div className="mb-1 flex items-center justify-between text-xs">
                       <span className="text-muted-foreground">{l.label}</span>
                       <span className={over ? "font-medium text-red-500" : "text-muted-foreground"}>
-                        {stats.chars.toLocaleString()} / {l.limit.toLocaleString()}
+                        {/* "en-IN" pinned explicitly, same reasoning as the site's
+                            formatCurrency() — bare toLocaleString() takes the
+                            visitor's browser locale, so pasting a large document
+                            (>1,00,000 characters) showed Western grouping
+                            ("150,000") on a site whose every other number is
+                            Indian-grouped ("1,50,000"). */}
+                        {stats.chars.toLocaleString("en-IN")} / {l.limit.toLocaleString("en-IN")}
                         {over ? (l.kind === "hard" ? " — over limit" : " — over guideline") : ""}
                       </span>
                     </div>
