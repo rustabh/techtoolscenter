@@ -164,8 +164,8 @@ export default function ProposalGenerator() {
                 onAlign={(a) => patch({ logoAlign: a })} onSize={(n) => patch({ logoSize: n })} />
             </div>
             <div className="col-span-2 space-y-1.5">
-              <Label>Accent color</Label>
-              <div className="flex flex-wrap gap-2">
+              <Label id="proposal-accent-label">Accent color</Label>
+              <div className="flex flex-wrap gap-2" role="group" aria-labelledby="proposal-accent-label">
                 {ACCENTS.map((a) => (
                   <button key={a.id} type="button" aria-label={`Use ${a.id} accent`} onClick={() => patch({ accent: a.hex })}
                     className={`size-7 rounded-full border-2 transition-transform ${value.accent === a.hex ? "scale-110 border-foreground" : "border-transparent"}`}

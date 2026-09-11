@@ -50,8 +50,8 @@ export default function TipCalculator() {
             <input id="tip-people" type="range" min={1} max={20} value={people} onChange={(e) => setPeople(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
           </div>
           <div className="space-y-2">
-            <Label>Round each share up to nearest</Label>
-            <div className="flex flex-wrap gap-2">
+            <Label id="tip-round-label">Round each share up to nearest</Label>
+            <div className="flex flex-wrap gap-2" role="group" aria-labelledby="tip-round-label">
               {ROUND_OPTIONS.map((r) => (
                 <Button key={r} size="sm" variant={roundTo === r ? "default" : "outline"} onClick={() => setRoundTo(r)}>{r === 0 ? "Exact" : `₹${r}`}</Button>
               ))}

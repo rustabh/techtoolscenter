@@ -135,10 +135,10 @@ export default function SocialMediaKit() {
           <CardHeader><CardTitle>Style</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1.5">
-              <Label>Background</Label>
-              <div className="flex flex-wrap gap-2">
-                {GRADIENTS.map((g) => (
-                  <button key={g} onClick={() => setBg(g)} aria-label="Background"
+              <Label id="smk-background-label">Background</Label>
+              <div className="flex flex-wrap gap-2" role="group" aria-labelledby="smk-background-label">
+                {GRADIENTS.map((g, i) => (
+                  <button key={g} onClick={() => setBg(g)} aria-label={`Background style ${i + 1}`}
                     className={`size-9 rounded-lg border-2 ${bg === g ? "border-primary" : "border-transparent"}`} style={{ background: g }} />
                 ))}
               </div>
@@ -146,8 +146,8 @@ export default function SocialMediaKit() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1.5"><Label htmlFor="smk-textcolor">Text colour</Label><Input id="smk-textcolor" type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} className="h-10 p-1" /></div>
               <div className="space-y-1.5">
-                <Label>Align</Label>
-                <div className="grid grid-cols-2 gap-1">
+                <Label id="smk-align-label">Align</Label>
+                <div className="grid grid-cols-2 gap-1" role="group" aria-labelledby="smk-align-label">
                   {(["left", "center"] as const).map((a) => (
                     <button key={a} onClick={() => setAlign(a)}
                       className={`rounded-lg border px-2 py-2 text-xs capitalize ${align === a ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-secondary"}`}>{a}</button>

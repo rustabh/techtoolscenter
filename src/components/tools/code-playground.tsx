@@ -152,12 +152,12 @@ export default function CodePlayground() {
           />
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Label>Console</Label>
+              <Label id="playground-console-label">Console</Label>
               {consoleLog.length > 0 && (
                 <Button type="button" size="sm" variant="ghost" onClick={() => setConsoleLog([])}>Clear</Button>
               )}
             </div>
-            <div className="h-28 overflow-auto rounded-xl bg-secondary/50 p-2 font-mono text-xs">
+            <div role="log" aria-labelledby="playground-console-label" className="h-28 overflow-auto rounded-xl bg-secondary/50 p-2 font-mono text-xs">
               {consoleLog.length === 0 ? (
                 <p className="p-1 text-muted-foreground">console.log output will appear here…</p>
               ) : (

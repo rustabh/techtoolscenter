@@ -106,8 +106,8 @@ export default function ImageToAsciiArt() {
               <input id="ascii-width" type="range" min={40} max={220} step={10} value={width} onChange={(e) => setWidth(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
             </div>
             <div className="space-y-1.5">
-              <Label>Character set</Label>
-              <div className="grid grid-cols-3 gap-2">
+              <Label id="ascii-charset-label">Character set</Label>
+              <div className="grid grid-cols-3 gap-2" role="group" aria-labelledby="ascii-charset-label">
                 {(Object.keys(RAMPS) as RampName[]).map((r) => (
                   <button
                     key={r}

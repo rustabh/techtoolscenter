@@ -99,8 +99,8 @@ export default function GstCalculator() {
             )}
           </div>
           <div className="space-y-1.5">
-            <Label>Type</Label>
-            <div className="grid grid-cols-2 gap-2">
+            <Label id="gst-type-label">Type</Label>
+            <div className="grid grid-cols-2 gap-2" role="group" aria-labelledby="gst-type-label">
               {(["exclusive", "inclusive"] as const).map((m) => (
                 <button
                   key={m}
@@ -115,8 +115,8 @@ export default function GstCalculator() {
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label>Transaction</Label>
-            <div className="grid grid-cols-2 gap-2">
+            <Label id="gst-transaction-label">Transaction</Label>
+            <div className="grid grid-cols-2 gap-2" role="group" aria-labelledby="gst-transaction-label">
               <button
                 onClick={() => set({ ...value, gstType: "split" })}
                 className={`rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors ${

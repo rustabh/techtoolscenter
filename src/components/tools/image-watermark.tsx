@@ -125,8 +125,8 @@ export default function ImageWatermark() {
               <Input id="iw-text" value={text} onChange={(e) => setText(e.target.value)} placeholder="e.g. © Your Name" maxLength={60} />
             </div>
             <div className="space-y-1.5">
-              <Label>Position</Label>
-              <div className="grid grid-cols-3 gap-2">
+              <Label id="iw-position-label">Position</Label>
+              <div className="grid grid-cols-3 gap-2" role="group" aria-labelledby="iw-position-label">
                 {([
                   ["top-left", "Top left"], ["center", "Center"], ["top-right", "Top right"],
                   ["bottom-left", "Bottom left"], ["tiled", "Tiled"], ["bottom-right", "Bottom right"],

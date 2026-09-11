@@ -287,8 +287,8 @@ export default function QrGenerator({ preset }: { preset?: Record<string, unknow
           <CardHeader><CardTitle>Design</CardTitle></CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-1.5">
-              <Label>Templates</Label>
-              <div className="grid grid-cols-4 gap-2">
+              <Label id="qr-templates-label">Templates</Label>
+              <div className="grid grid-cols-4 gap-2" role="group" aria-labelledby="qr-templates-label">
                 {TEMPLATES.map((t) => (
                   <button key={t.name} onClick={() => applyTemplate(t)} title={t.name}
                     className="rounded-lg border-2 border-transparent p-2 text-[10px] font-medium hover:border-primary/40"

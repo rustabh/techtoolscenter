@@ -95,8 +95,8 @@ export default function ColorPaletteGenerator() {
         ))}
       </div>
       <div className="space-y-1.5">
-        <Label>Export format</Label>
-        <div className="flex flex-wrap gap-1.5">
+        <Label id="palette-export-label">Export format</Label>
+        <div className="flex flex-wrap gap-1.5" role="group" aria-labelledby="palette-export-label">
           {([
             { id: "css", label: "CSS variables" },
             { id: "scss", label: "SCSS" },

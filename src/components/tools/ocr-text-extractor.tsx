@@ -148,8 +148,8 @@ export default function OcrTextExtractor() {
             <img src={imgUrl} alt="Preview to extract text from" className="mx-auto max-h-64 rounded-lg border border-border object-contain" />
           )}
           <div className="space-y-1.5">
-            <Label>Language</Label>
-            <div className="grid grid-cols-3 gap-2">
+            <Label id="ocr-language-label">Language</Label>
+            <div className="grid grid-cols-3 gap-2" role="group" aria-labelledby="ocr-language-label">
               {(Object.keys(LANG_LABELS) as Lang[]).map((l) => (
                 <button
                   key={l}

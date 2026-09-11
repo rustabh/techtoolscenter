@@ -101,8 +101,8 @@ export default function PdfPageNumbers() {
         <Card>
           <CardContent className="space-y-4 pt-6">
             <div className="space-y-1.5">
-              <Label>Position</Label>
-              <div className="grid grid-cols-3 gap-2">
+              <Label id="pdfpagenum-position-label">Position</Label>
+              <div className="grid grid-cols-3 gap-2" role="group" aria-labelledby="pdfpagenum-position-label">
                 {POSITIONS.map((p) => (
                   <button
                     key={p.key}
@@ -119,8 +119,8 @@ export default function PdfPageNumbers() {
               </div>
             </div>
             <div className="space-y-1.5">
-              <Label>Format</Label>
-              <div className="grid grid-cols-3 gap-2">
+              <Label id="pdfpagenum-format-label">Format</Label>
+              <div className="grid grid-cols-3 gap-2" role="group" aria-labelledby="pdfpagenum-format-label">
                 {FORMATS.map((f) => (
                   <button
                     key={f.key}

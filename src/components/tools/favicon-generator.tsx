@@ -215,8 +215,8 @@ export default function FaviconGenerator() {
               {mode !== "image" && <div className="space-y-1.5"><Label htmlFor="favicon-fg">Foreground</Label><Input id="favicon-fg" type="color" value={fg} onChange={(e) => setFg(e.target.value)} className="h-10 p-1" /></div>}
             </div>
             <div className="space-y-1.5">
-              <Label>Shape</Label>
-              <div className="grid grid-cols-3 gap-2">
+              <Label id="favicon-shape-label">Shape</Label>
+              <div className="grid grid-cols-3 gap-2" role="group" aria-labelledby="favicon-shape-label">
                 {(["rounded", "circle", "square"] as Shape[]).map((s) => (
                   <button key={s} onClick={() => setShape(s)}
                     className={`rounded-xl border px-3 py-2 text-sm capitalize transition-colors ${shape === s ? "border-primary bg-primary text-primary-foreground" : "border-border hover:bg-secondary"}`}>
@@ -258,12 +258,12 @@ export default function FaviconGenerator() {
 
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label>HTML snippet</Label>
+                <Label id="favicon-snippet-label">HTML snippet</Label>
                 <Button variant="ghost" size="sm" onClick={() => copy(HTML_SNIPPET)}>
                   {copied ? <Check className="size-4 text-emerald-500" /> : <Copy className="size-4" />} Copy
                 </Button>
               </div>
-              <pre className="overflow-auto rounded-xl bg-secondary/50 p-3 text-[11px] leading-relaxed">{HTML_SNIPPET}</pre>
+              <pre aria-labelledby="favicon-snippet-label" className="overflow-auto rounded-xl bg-secondary/50 p-3 text-[11px] leading-relaxed">{HTML_SNIPPET}</pre>
             </div>
           </CardContent>
         </Card>

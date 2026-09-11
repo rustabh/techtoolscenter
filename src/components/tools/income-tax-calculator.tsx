@@ -188,8 +188,8 @@ export default function IncomeTaxCalculator() {
             />
           </div>
           <div className="space-y-1.5">
-            <Label>Tax regime</Label>
-            <div className="grid grid-cols-2 gap-2">
+            <Label id="itc-regime-label">Tax regime</Label>
+            <div className="grid grid-cols-2 gap-2" role="group" aria-labelledby="itc-regime-label">
               {(["new", "old"] as const).map((r) => (
                 <button
                   key={r}
@@ -207,8 +207,8 @@ export default function IncomeTaxCalculator() {
             </div>
           </div>
           <div className="space-y-1.5">
-            <Label>Age band (affects old regime exemption)</Label>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            <Label id="itc-age-label">Age band (affects old regime exemption)</Label>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3" role="group" aria-labelledby="itc-age-label">
               {(
                 [
                   { key: "below60", label: "Below 60" },

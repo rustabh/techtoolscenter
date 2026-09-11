@@ -188,6 +188,29 @@ export default function PdfSign() {
   };
   const onBoxPointerUp = () => { boxDragging.current = false; };
 
+  // The box was previously mouse/touch-drag only, with no way for a
+  // keyboard user to reposition it at all — arrow keys nudge it in the
+  // same pixel space the pointer handler clamps against, so the reachable
+  // range matches exactly.
+  const onBoxKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    const deltas: Record<string, [number, number]> = {
+      ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1],
+    };
+    const delta = deltas[e.key];
+    if (!delta || !containerRef.current) return;
+    e.preventDefault();
+    const rect = containerRef.current.getBoundingClientRect();
+    const boxWidthPx = (widthPct / 100) * rect.width;
+    const boxHeightPx = boxWidthPx * (SIG_H / SIG_W);
+    const step = e.shiftKey ? 5 : 1.5; // percent of container per press
+    let leftPx = (xPct / 100) * rect.width + (delta[0] * step / 100) * rect.width;
+    let topPx = (yPct / 100) * rect.height + (delta[1] * step / 100) * rect.height;
+    leftPx = Math.min(Math.max(0, leftPx), Math.max(0, rect.width - boxWidthPx));
+    topPx = Math.min(Math.max(0, topPx), Math.max(0, rect.height - boxHeightPx));
+    setXPct((leftPx / rect.width) * 100);
+    setYPct((topPx / rect.height) * 100);
+  };
+
   // --- Embed & download --------------------------------------------------------
 
   const signAndDownload = async () => {
@@ -348,7 +371,11 @@ export default function PdfSign() {
                 <img src={pageImg.url} alt={`Page ${pageIndex + 1} preview`} className="block w-full" draggable={false} />
                 <div
                   onPointerDown={onBoxPointerDown}
-                  className={`absolute cursor-move rounded border-2 ${hasSig ? "border-primary bg-white/70" : "border-dashed border-muted-foreground/50 bg-muted/30"}`}
+                  onKeyDown={onBoxKeyDown}
+                  role="button"
+                  tabIndex={0}
+                  aria-label="Signature position — drag, or focus and use arrow keys to move (Shift for bigger steps)"
+                  className={`absolute cursor-move rounded border-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${hasSig ? "border-primary bg-white/70" : "border-dashed border-muted-foreground/50 bg-muted/30"}`}
                   style={{ left: `${xPct}%`, top: `${yPct}%`, width: `${widthPct}%`, aspectRatio: `${SIG_W} / ${SIG_H}` }}
                 >
                   {hasSig && (
@@ -362,7 +389,7 @@ export default function PdfSign() {
               <Label htmlFor="sig-width">Signature size: {widthPct}% of page width</Label>
               <input id="sig-width" type="range" min={10} max={60} value={widthPct} onChange={(e) => setWidthPct(Number(e.target.value))} className="w-full accent-[hsl(var(--primary))]" />
             </div>
-            <p className="text-xs text-muted-foreground">Drag the box on the preview to position your signature, then sign and download.</p>
+            <p className="text-xs text-muted-foreground">Drag the box on the preview to position your signature, or focus it and use arrow keys, then sign and download.</p>
             <Button onClick={signAndDownload} disabled={busy || !hasSig} className="w-full">
               {busy ? "Signing…" : "Sign PDF & download"}
             </Button>

@@ -52,8 +52,8 @@ export default function GradientGenerator() {
         <CardHeader><CardTitle>Gradient</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Colors ({stops.length})</Label>
-            <div className="space-y-2">
+            <Label id="gradient-colors-label">Colors ({stops.length})</Label>
+            <div className="space-y-2" role="group" aria-labelledby="gradient-colors-label">
               {stops.map((s) => (
                 <div key={s.id} className="flex items-center gap-2">
                   <Input type="color" aria-label={`Color stop ${s.color}`} value={s.color} onChange={(e) => patchStop(s.id, e.target.value)} className="h-10 w-16 shrink-0 p-1" />

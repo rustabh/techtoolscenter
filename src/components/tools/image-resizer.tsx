@@ -194,8 +194,8 @@ export default function ImageResizer({ preset }: { preset?: Record<string, unkno
                 )}
               </div>
               <div className="space-y-1.5">
-                <Label>Presets</Label>
-                <div className="grid grid-cols-2 gap-1.5">
+                <Label id="imgresize-presets-label">Presets</Label>
+                <div className="grid grid-cols-2 gap-1.5" role="group" aria-labelledby="imgresize-presets-label">
                   {PRESETS.map((p) => (
                     <button key={p.label} onClick={() => applyPreset(p.w, p.h)}
                       className={`rounded-lg border px-2 py-1.5 text-left text-xs transition-colors ${width === p.w && height === p.h ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}>

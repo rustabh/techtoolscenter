@@ -165,8 +165,8 @@ export default function PdfCompress({ preset }: { preset?: Record<string, unknow
           <CardContent className="space-y-5">
             {/* Presets */}
             <div className="space-y-1.5">
-              <Label>Smart presets</Label>
-              <div className="flex flex-wrap gap-1.5">
+              <Label id="pdfcompress-presets-label">Smart presets</Label>
+              <div className="flex flex-wrap gap-1.5" role="group" aria-labelledby="pdfcompress-presets-label">
                 {PDF_PRESETS.map((p) => (
                   <button key={p.id} onClick={() => applyPreset(p)}
                     className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${presetId === p.id ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"}`}>{p.label}</button>

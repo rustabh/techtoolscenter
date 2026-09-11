@@ -136,8 +136,8 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
             <CardHeader><CardTitle>Settings</CardTitle></CardHeader>
             <CardContent className="space-y-5">
               <div className="space-y-1.5">
-                <Label>Smart presets</Label>
-                <div className="flex flex-wrap gap-1.5">
+                <Label id="imgcompress-presets-label">Smart presets</Label>
+                <div className="flex flex-wrap gap-1.5" role="group" aria-labelledby="imgcompress-presets-label">
                   {IMG_PRESETS.map((p) => (
                     <button key={p.id} onClick={() => applyPreset(p)}
                       className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${presetId === p.id ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"}`}>{p.label}</button>
@@ -146,7 +146,7 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
                     className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${presetId === "custom" ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"}`}>Custom</button>
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-2 gap-2" role="group" aria-label="Compression mode">
                 <button onClick={() => { setMode("quality"); setPresetId("custom"); }}
                   className={`rounded-xl border px-3 py-2 text-sm font-medium transition-colors ${mode === "quality" ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}>By quality</button>
                 <button onClick={() => { setMode("target"); setPresetId("custom"); }}
@@ -154,8 +154,8 @@ export default function ImageCompressor({ preset }: { preset?: Record<string, un
               </div>
 
               <div className="space-y-1.5">
-                <Label>Output format</Label>
-                <div className="flex flex-wrap gap-1.5">
+                <Label id="imgcompress-format-label">Output format</Label>
+                <div className="flex flex-wrap gap-1.5" role="group" aria-labelledby="imgcompress-format-label">
                   {(["auto", "webp", "jpeg", "png"] as OutputFormat[]).map((f) => (
                     <button key={f} onClick={() => setFormat(f)}
                       className={`rounded-lg border px-2.5 py-1 text-xs font-medium transition-colors ${format === f ? "border-primary bg-primary/10 text-primary" : "border-border hover:bg-secondary"}`}>

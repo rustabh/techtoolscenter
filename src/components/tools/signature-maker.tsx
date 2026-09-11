@@ -128,8 +128,8 @@ export default function SignatureMaker() {
                 <Input id="sig-text" value={typedText} onChange={(e) => setTypedText(e.target.value)} maxLength={40} />
               </div>
               <div className="space-y-1.5">
-                <Label>Style</Label>
-                <div className="flex flex-wrap gap-2">
+                <Label id="sig-style-label">Style</Label>
+                <div className="flex flex-wrap gap-2" role="group" aria-labelledby="sig-style-label">
                   {FONTS.map((f, i) => (
                     <button
                       key={f}

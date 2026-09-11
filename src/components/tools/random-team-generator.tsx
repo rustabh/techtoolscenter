@@ -72,8 +72,8 @@ export default function RandomTeamGenerator() {
             <p className="text-xs text-muted-foreground">{names.length} name{names.length === 1 ? "" : "s"} entered</p>
           </div>
           <div className="space-y-1.5">
-            <Label>Split by</Label>
-            <div className="grid grid-cols-2 gap-2">
+            <Label id="team-splitby-label">Split by</Label>
+            <div className="grid grid-cols-2 gap-2" role="group" aria-labelledby="team-splitby-label">
               <Button type="button" variant={splitMode === "count" ? "default" : "outline"} size="sm" onClick={() => setSplitMode("count")}>Number of teams</Button>
               <Button type="button" variant={splitMode === "size" ? "default" : "outline"} size="sm" onClick={() => setSplitMode("size")}>People per team</Button>
             </div>

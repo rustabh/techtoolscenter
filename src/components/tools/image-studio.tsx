@@ -270,6 +270,37 @@ function CropTab({ img }: { img: HTMLImageElement }) {
   };
   const endDrag = () => { dragRef.current = null; };
 
+  // Move and resize were previously pointer-drag only, with no way for a
+  // keyboard user to adjust the crop box at all. Arrow keys apply the same
+  // per-step delta the pointer handler would for an equivalent drag
+  // distance, reusing its exact move/resize math so behaviour matches.
+  const onHandleKeyDown = (handle: Handle) => (e: React.KeyboardEvent) => {
+    const deltas: Record<string, [number, number]> = {
+      ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1],
+    };
+    const dir = deltas[e.key];
+    if (!dir) return;
+    e.preventDefault();
+    const step = (e.shiftKey ? 20 : 5) as number;
+    const [dx, dy] = [dir[0] * step, dir[1] * step];
+    const s = sel;
+    let next: Rect = { ...s };
+    if (handle === "move") {
+      next.x = s.x + dx; next.y = s.y + dy;
+    } else {
+      if (handle === "se" || handle === "ne") next.w = s.w + dx;
+      if (handle === "sw" || handle === "nw") { next.w = s.w - dx; next.x = s.x + dx; }
+      if (ratio) {
+        next.h = next.w / ratio;
+        if (handle === "ne" || handle === "nw") next.y = s.y + (s.h - next.h);
+      } else {
+        if (handle === "se" || handle === "sw") next.h = s.h + dy;
+        if (handle === "ne" || handle === "nw") { next.h = s.h - dy; next.y = s.y + dy; }
+      }
+    }
+    setSel(clamp(next));
+  };
+
   const applyRatio = (r: number | null) => {
     setRatio(r);
     if (r) setSel((s) => clamp({ ...s, h: s.w / r }));
@@ -294,15 +325,15 @@ function CropTab({ img }: { img: HTMLImageElement }) {
         <CardHeader><CardTitle>Crop</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1.5">
-            <Label>Aspect ratio</Label>
-            <div className="flex flex-wrap gap-2">
+            <Label id="imgstudio-ratio-label">Aspect ratio</Label>
+            <div className="flex flex-wrap gap-2" role="group" aria-labelledby="imgstudio-ratio-label">
               {CROP_RATIOS.map(([label, r]) => (
                 <Button key={label} size="sm" variant={ratio === r ? "default" : "outline"} onClick={() => applyRatio(r)}>{label}</Button>
               ))}
             </div>
           </div>
           <Button className="w-full" onClick={download}><Download /> Download cropped image</Button>
-          <p className="text-xs text-muted-foreground">Drag the corner handles to resize, or drag inside the box to move it.</p>
+          <p className="text-xs text-muted-foreground">Drag the corner handles to resize, or drag inside the box to move it. Keyboard: focus a handle and use arrow keys.</p>
         </CardContent>
       </Card>
       <Card>
@@ -322,16 +353,24 @@ function CropTab({ img }: { img: HTMLImageElement }) {
             <div className="absolute bg-black/50" style={{ left: 0, top: sel.y, width: sel.x, height: sel.h }} />
             <div className="absolute bg-black/50" style={{ left: sel.x + sel.w, right: 0, top: sel.y, height: sel.h }} />
             <div
-              className="absolute cursor-move border-2 border-white"
+              className="absolute cursor-move border-2 border-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               style={{ left: sel.x, top: sel.y, width: sel.w, height: sel.h }}
               onPointerDown={startDrag("move")}
+              onKeyDown={onHandleKeyDown("move")}
+              role="button"
+              tabIndex={0}
+              aria-label="Crop area — drag, or focus and use arrow keys to move (Shift for bigger steps)"
             >
               {(["nw", "ne", "sw", "se"] as const).map((h) => (
                 <span
                   key={h}
                   onPointerDown={startDrag(h)}
+                  onKeyDown={onHandleKeyDown(h)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Resize crop from ${h === "nw" ? "top-left" : h === "ne" ? "top-right" : h === "sw" ? "bottom-left" : "bottom-right"} corner — drag, or focus and use arrow keys`}
                   className={cn(
-                    "absolute size-4 rounded-full border-2 border-white bg-primary",
+                    "absolute size-4 rounded-full border-2 border-white bg-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     h === "nw" && "-left-2 -top-2 cursor-nwse-resize",
                     h === "ne" && "-right-2 -top-2 cursor-nesw-resize",
                     h === "sw" && "-left-2 -bottom-2 cursor-nesw-resize",

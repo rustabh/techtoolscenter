@@ -421,8 +421,8 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
           <CardContent className="space-y-4">
             {!lockKind && (
               <div className="space-y-1.5">
-                <Label>Type</Label>
-                <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
+                <Label id="bs-doctype-label">Type</Label>
+                <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3" role="group" aria-labelledby="bs-doctype-label">
                   {DOC_TYPES.map((d) => (
                     <button key={d.id} onClick={() => changeKind(d.id)}
                       className={`rounded-lg border px-2 py-1.5 text-xs font-medium transition-colors ${value.kind === d.id ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}>
@@ -433,8 +433,8 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
               </div>
             )}
             <div className="space-y-1.5">
-              <Label>Design ({TEMPLATES.length})</Label>
-              <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4">
+              <Label id="bs-design-label">Design ({TEMPLATES.length})</Label>
+              <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-4" role="group" aria-labelledby="bs-design-label">
                 {TEMPLATES.map((t) => (
                   <button key={t.id} onClick={() => patch({ templateId: t.id })} title={`${t.name} · ${t.layout}`}
                     className={`flex items-center gap-1.5 rounded-lg border px-2 py-1.5 text-[11px] transition-colors ${value.templateId === t.id ? "border-primary bg-primary/10" : "border-border hover:bg-secondary"}`}>
@@ -457,8 +457,8 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
             </div>
             {kind.priced && (
               <div className="space-y-1.5">
-                <Label>Payment status</Label>
-                <div className="grid grid-cols-3 gap-1.5">
+                <Label id="bs-paymentstatus-label">Payment status</Label>
+                <div className="grid grid-cols-3 gap-1.5" role="group" aria-labelledby="bs-paymentstatus-label">
                   {PAYMENT_STATUSES.map((s) => (
                     <button
                       key={s.id}

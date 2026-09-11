@@ -143,8 +143,8 @@ export default function ResumeBuilder() {
               <Textarea id="resume-summary" placeholder="A short, 1-2 sentence pitch of who you are professionally" value={value.summary} onChange={(e) => patch({ summary: e.target.value })} />
             </div>
             <div className="col-span-2 space-y-1.5">
-              <Label>Accent color</Label>
-              <div className="flex flex-wrap gap-2">
+              <Label id="resume-accent-label">Accent color</Label>
+              <div className="flex flex-wrap gap-2" role="group" aria-labelledby="resume-accent-label">
                 {ACCENTS.map((a) => (
                   <button
                     key={a.id}
