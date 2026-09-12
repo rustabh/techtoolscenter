@@ -827,6 +827,35 @@ const fastPaths: FastPath[] = [
       }),
   },
   {
+    // "how to save tax" previously fell through to a generic catalog
+    // search that surfaced only loosely related posts (refund status, HRA)
+    // without ever pointing at the actual tax-saving instruments and the
+    // calculator that shows the real rupee impact of using them.
+    id: "tax-saving-options",
+    intent: "knowledge",
+    test: (q) => /(save|saving|reduce|lower)\s+(on\s+|my\s+)?tax/.test(q) || /tax[\s-]*sav(e|ing)/.test(q) || /\b80c\b/.test(q),
+    build: () =>
+      withIntent("knowledge", {
+        summary: "Most legal tax-saving in India runs through Section 80C (₹1.5 lakh limit — PPF, ELSS, life insurance, EPF) plus the extra ₹50,000 under 80CCD(1B) for NPS, on top of standard deductions like HRA. Which regime (old vs new) actually saves you more depends entirely on how many of these you use — check both before assuming one is better.",
+        recommendedTools: compact([
+          toolLink("income-tax-calculator"),
+          { label: "PPF Account", href: "/india-services/banking/ppf-account", kind: "internal" as const, description: "Full 80C deduction, tax-free interest and maturity." },
+          { label: "NPS Registration", href: "/india-services/banking/nps-registration", kind: "internal" as const, description: "Extra ₹50,000 deduction under 80CCD(1B), beyond 80C." },
+        ]),
+        relatedBlogs: [
+          { label: "Old vs New Tax Regime: Which Should You Choose?", href: "/blog/old-vs-new-tax-regime-which-to-choose", kind: "internal" },
+          { label: "HRA Exemption Explained", href: "/blog/hra-exemption-explained-how-much-is-tax-free", kind: "internal" },
+        ],
+        officialResources: [],
+        difficulty: "Intermediate",
+        nextStep: "Run the Income Tax Calculator under both regimes with your real numbers — the \"better\" regime depends entirely on how many deductions you actually use.",
+        actions: [
+          { label: "Open Income Tax Calculator", href: "/tools/income-tax-calculator", kind: "internal" },
+          { label: "Read Old vs New Regime Guide", href: "/blog/old-vs-new-tax-regime-which-to-choose", kind: "internal" },
+        ],
+      }),
+  },
+  {
     id: "gst-calculator",
     intent: "tool",
     test: (q) => /gst/.test(q) && /(calculat|add|remove|split|inclusive|exclusive)/.test(q),
