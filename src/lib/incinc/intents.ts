@@ -8,7 +8,7 @@ import type { IndiaService } from "@/lib/india/types";
 import { lookupGlossaryTerm } from "./glossary";
 import { lookupKnowledge } from "./knowledge";
 import { searchCatalog } from "./catalog";
-import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow, itrFilingWorkflow, loanPrepWorkflow, freelanceWorkflow, fundraisingWorkflow, sellOnlineWorkflow, jobSearchWorkflow } from "./workflows";
+import { passportWorkflow, instagramWorkflow, saasStackWorkflow, startBusinessWorkflow, itrFilingWorkflow, loanPrepWorkflow, freelanceWorkflow, fundraisingWorkflow, sellOnlineWorkflow, jobSearchWorkflow, retirementPlanningWorkflow } from "./workflows";
 import { resourcesByCategory } from "@/lib/devhub/resources";
 
 function toolLink(slug: string): LinkItem | null {
@@ -1275,6 +1275,17 @@ const fastPaths: FastPath[] = [
     intent: "workflow",
     test: (q) => /loan/.test(q) && !/(kisan|kcc|credit\s*card)/.test(q),
     build: () => withIntent("workflow", loanPrepWorkflow),
+  },
+  {
+    // A broad "retirement" query (planning, saving, best options) should
+    // walk through the layered PPF/NPS/APY/SCSS/POMIS picture rather than
+    // resolving to just one scheme — a query naming one scheme specifically
+    // (e.g. "what is NPS") is already handled by knowledgeIntent before
+    // fastPaths ever runs, so there's no overlap.
+    id: "retirement-planning-workflow",
+    intent: "workflow",
+    test: (q) => /retir/.test(q) && /(plan|saving|save|invest|income|pension|scheme|option)/.test(q),
+    build: () => withIntent("workflow", retirementPlanningWorkflow),
   },
   {
     // "job card" is a distinct, real MGNREGA government service — excluded so

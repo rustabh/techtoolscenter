@@ -304,3 +304,40 @@ export const jobSearchWorkflow: AssistantResponse = {
     { label: "Read Cover Letter Guide", href: "/blog/how-to-write-a-cover-letter-that-gets-read", kind: "internal" },
   ],
 };
+
+export const retirementPlanningWorkflow: AssistantResponse = {
+  summary:
+    "Retirement planning in India usually layers a few government-backed instruments rather than betting on one — here's a sensible order to evaluate them, from where most people start to where lump-sum, near-retirement money often goes.",
+  recommendedTools: [
+    { label: "PPF Account", href: "/india-services/banking/ppf-account", kind: "internal", description: "A 15-year, fully tax-free (EEE) base most people start with — interest, and the maturity amount, are both tax-free." },
+    { label: "NPS Registration", href: "/india-services/banking/nps-registration", kind: "internal", description: "Market-linked growth plus an extra ₹50,000 deduction under Section 80CCD(1B), on top of your regular 80C limit." },
+    { label: "Income Tax Calculator", href: "/tools/income-tax-calculator", kind: "internal", description: "Check how much these contributions actually save you under the old regime before deciding how much to commit." },
+    { label: "Senior Citizen Savings Scheme", href: "/india-services/banking/senior-citizen-savings-scheme", kind: "internal", description: "Usually the highest rate among small savings schemes once you're 60 (or retired under VRS)." },
+  ],
+  workflow: [
+    { label: "PPF Account", href: "/india-services/banking/ppf-account", kind: "internal", description: "Start here for a long-term, fully tax-free base — 15-year lock-in, EEE tax treatment" },
+    { label: "NPS Registration", href: "/india-services/banking/nps-registration", kind: "internal", description: "Add market-linked growth and the extra 80CCD(1B) deduction beyond 80C" },
+    { label: "Atal Pension Yojana", href: "/blog/atal-pension-yojana-explained-eligibility-and-how-to-apply", kind: "internal", description: "If you want a small, fixed, government-guaranteed pension floor from 60 — especially relevant without an employer-linked NPS" },
+    { label: "Income Tax Calculator", href: "/tools/income-tax-calculator", kind: "internal", description: "Confirm the actual tax saving from your contributions before committing larger amounts" },
+    { label: "Senior Citizen Savings Scheme", href: "/india-services/banking/senior-citizen-savings-scheme", kind: "internal", description: "Once eligible, typically the best rate for a lump sum with quarterly payouts" },
+    { label: "POMIS or NSC/KVP", href: "/blog/post-office-monthly-income-scheme-pomis-explained", kind: "internal", description: "Choose POMIS for a fixed monthly payout, or NSC/KVP if you'd rather let a lump sum compound to a maturity payout instead" },
+  ],
+  relatedBlogs: [
+    { label: "PPF Explained: Eligibility, Interest Rate, Tax Benefits and How It Compares to NPS", href: "/blog/ppf-explained-eligibility-interest-rate-vs-nps", kind: "internal" },
+    { label: "NPS Explained: How to Open a National Pension System Account Online", href: "/blog/nps-national-pension-system-how-to-open-account", kind: "internal" },
+    { label: "Atal Pension Yojana Explained", href: "/blog/atal-pension-yojana-explained-eligibility-and-how-to-apply", kind: "internal" },
+    { label: "Senior Citizen Savings Scheme (SCSS) Explained", href: "/blog/senior-citizen-savings-scheme-scss-explained", kind: "internal" },
+    { label: "Post Office Monthly Income Scheme (POMIS) Explained", href: "/blog/post-office-monthly-income-scheme-pomis-explained", kind: "internal" },
+  ],
+  officialResources: [
+    { label: "National Savings Institute (PPF/NSC/KVP/SCSS/POMIS)", href: "https://www.nsiindia.gov.in", kind: "external" },
+    { label: "eNPS (National Pension System)", href: "https://enps.nsdl.com", kind: "external" },
+  ],
+  estimatedTime: "30-45 minutes to compare and decide your mix",
+  difficulty: "Intermediate",
+  nextStep: "Start with PPF if you don't already have a long-term tax-free base — then layer NPS on top for the extra 80CCD(1B) deduction.",
+  actions: [
+    { label: "Open PPF Guide", href: "/india-services/banking/ppf-account", kind: "internal" },
+    { label: "Open NPS Guide", href: "/india-services/banking/nps-registration", kind: "internal" },
+  ],
+};
