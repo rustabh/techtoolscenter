@@ -17,7 +17,14 @@ const transforms: Record<Mode, (s: string) => string> = {
   upper: (s) => s.toUpperCase(),
   lower: (s) => s.toLowerCase(),
   title: (s) => s.replace(/\w\S*/g, (w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()),
-  sentence: (s) => s.toLowerCase().replace(/(^\s*\w|[.!?]\s*\w)/g, (c) => c.toUpperCase()),
+  // Capitalizes the first letter of the string and after each sentence-
+  // ending punctuation mark, skipping over any quotes/brackets/other
+  // non-letter characters in between — the previous regex required the
+  // very next character after the boundary to be a word character, so a
+  // sentence starting or resuming with a quote or parenthesis (very common
+  // in real writing — quoted dialogue, a parenthetical aside) silently
+  // never got capitalized at all.
+  sentence: (s) => s.toLowerCase().replace(/(^|[.!?]\s*)([^a-zA-Z]*)([a-zA-Z])/g, (_m, boundary, gap, letter) => boundary + gap + letter.toUpperCase()),
   camel: (s) => {
     // A leading separator (" hello world", "-hello-world") makes the first
     // match start at position 0, which capitalizes the first letter too —
