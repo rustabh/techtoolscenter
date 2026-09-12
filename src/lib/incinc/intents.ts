@@ -856,6 +856,24 @@ const fastPaths: FastPath[] = [
       }),
   },
   {
+    // SIP queries previously fell through to a generic catalog search that
+    // matched almost nothing relevant (watermark tools, unrelated blogs) —
+    // there's a real explainer post and calculator for exactly this.
+    id: "sip-explainer",
+    intent: "knowledge",
+    test: (q) => /\bsip\b/.test(q) || /systematic\s+investment\s+plan/.test(q),
+    build: () =>
+      withIntent("knowledge", {
+        summary: "A SIP (Systematic Investment Plan) is a fixed amount invested in a mutual fund on a set schedule (usually monthly) rather than as one lump sum — the real benefit is compounding over time plus averaging your purchase price across market ups and downs. TechToolsCenter doesn't recommend specific funds (that would need real, current market data this tool doesn't have) — the explainer below covers how the compounding math actually works so you can evaluate any fund's projected returns yourself.",
+        recommendedTools: compact([toolLink("calculator-hub")]),
+        relatedBlogs: [{ label: "SIP Calculator Explained: How Compounding Builds Wealth", href: "/blog/sip-calculator-explained-how-compounding-builds-wealth", kind: "internal" }],
+        officialResources: [],
+        difficulty: "Beginner",
+        nextStep: "Read how the compounding math works, then use Calculator Hub to project a specific monthly amount over your own time horizon.",
+        actions: [{ label: "Read SIP Explainer", href: "/blog/sip-calculator-explained-how-compounding-builds-wealth", kind: "internal" }],
+      }),
+  },
+  {
     id: "gst-calculator",
     intent: "tool",
     test: (q) => /gst/.test(q) && /(calculat|add|remove|split|inclusive|exclusive)/.test(q),
