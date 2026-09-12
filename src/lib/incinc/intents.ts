@@ -802,6 +802,31 @@ const fastPaths: FastPath[] = [
       }),
   },
   {
+    // Previously fell through to generic government-service search, which
+    // matched "PF" in "PPF" and surfaced the unrelated EPFO/Provident Fund
+    // page instead of the comparison the user actually asked for — there's
+    // a dedicated blog post for exactly this question.
+    id: "ppf-vs-nps",
+    intent: "knowledge",
+    test: (q) => /ppf/.test(q) && /nps/.test(q),
+    build: () =>
+      withIntent("knowledge", {
+        summary: "PPF is a 15-year, fully tax-free (EEE) fixed-return account with a government-set rate. NPS is market-linked, has an extra ₹50,000 deduction under Section 80CCD(1B) beyond the regular 80C limit, and stays locked in until retirement (60) rather than 15 years. Most people use both rather than choosing just one.",
+        recommendedTools: compact([
+          { label: "PPF Account", href: "/india-services/banking/ppf-account", kind: "internal" as const, description: "15-year lock-in, fully tax-free interest and maturity." },
+          { label: "NPS Registration", href: "/india-services/banking/nps-registration", kind: "internal" as const, description: "Market-linked, with the extra 80CCD(1B) deduction." },
+        ]),
+        relatedBlogs: [{ label: "PPF Explained: Eligibility, Interest Rate, Tax Benefits and How It Compares to NPS", href: "/blog/ppf-explained-eligibility-interest-rate-vs-nps", kind: "internal" }],
+        officialResources: [],
+        difficulty: "Intermediate",
+        nextStep: "Read the full comparison, then use the Income Tax Calculator to see how much either deduction actually saves you.",
+        actions: [
+          { label: "Read PPF vs NPS Comparison", href: "/blog/ppf-explained-eligibility-interest-rate-vs-nps", kind: "internal" },
+          { label: "Open Income Tax Calculator", href: "/tools/income-tax-calculator", kind: "internal" },
+        ],
+      }),
+  },
+  {
     id: "gst-calculator",
     intent: "tool",
     test: (q) => /gst/.test(q) && /(calculat|add|remove|split|inclusive|exclusive)/.test(q),
