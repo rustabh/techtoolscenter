@@ -199,16 +199,17 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
 
   const totals = useMemo(() => {
     const sub = subtotal(value.items);
-    // Clamp to 0 so a negative Discount/Shipping (invalid input) can't inflate
-    // the total or desync the preview's `> 0` line-item guard from the PDF's.
-    const discountPct = Math.max(0, value.discount || 0);
+    // Clamp discount to 0-100 and shipping to >= 0 so invalid input (negative
+    // values, or a discount over 100%) can't push the subtotal negative and
+    // produce a nonsensical negative tax/grand total on the invoice.
+    const discountPct = Math.min(100, Math.max(0, value.discount || 0));
     const shipping = Math.max(0, value.shipping || 0);
     const discountAmt = (sub * discountPct) / 100;
     const taxable = sub - discountAmt;
     const rate = value.taxType === "none" ? 0 : value.taxRate || 0;
     const taxAmt = (taxable * rate) / 100;
     const grand = taxable + taxAmt + shipping;
-    return { sub, discountAmt, taxable, taxAmt, grand, rate, shipping };
+    return { sub, discountPct, discountAmt, taxable, taxAmt, grand, rate, shipping };
   }, [value.items, value.discount, value.shipping, value.taxType, value.taxRate]);
 
   // Individual tax lines to render (label + amount) based on the chosen mode.
@@ -534,7 +535,7 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
               <Card>
                 <CardHeader><CardTitle>Charges</CardTitle></CardHeader>
                 <CardContent className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5"><Label htmlFor="bs-discount">Discount (%)</Label><Input id="bs-discount" type="number" min={0} value={value.discount} onChange={(e) => patch({ discount: Number(e.target.value) })} /></div>
+                  <div className="space-y-1.5"><Label htmlFor="bs-discount">Discount (%)</Label><Input id="bs-discount" type="number" min={0} max={100} value={value.discount} onChange={(e) => patch({ discount: Number(e.target.value) })} /></div>
                   <div className="space-y-1.5"><Label htmlFor="bs-shipping">Shipping</Label><Input id="bs-shipping" type="number" min={0} value={value.shipping} onChange={(e) => patch({ shipping: Number(e.target.value) })} /></div>
                   <div className="space-y-1.5"><Label htmlFor="bs-taxtype">Tax type</Label>
                     <Select id="bs-taxtype" value={value.taxType} onChange={(e) => patch({ taxType: e.target.value as TaxMode })}>
@@ -671,7 +672,7 @@ export default function BusinessStudio({ lockKind }: { lockKind?: DocKind }) {
               {kind.priced && (
                 <div data-pdf-block className={`mt-4 w-64 space-y-1 text-xs ${layout === "bold" ? "" : "ml-auto"}`}>
                   <Line label="Subtotal" value={money(totals.sub)} />
-                  {totals.discountAmt > 0 && <Line label={`Discount (${value.discount}%)`} value={`- ${money(totals.discountAmt)}`} />}
+                  {totals.discountAmt > 0 && <Line label={`Discount (${totals.discountPct}%)`} value={`- ${money(totals.discountAmt)}`} />}
                   {taxLines.map((t) => <Line key={t.label} label={t.label} value={money(t.amt)} />)}
                   {totals.shipping > 0 && <Line label="Shipping" value={money(totals.shipping)} />}
                   <div className={`flex justify-between border-t border-slate-200 pt-1.5 text-sm font-bold ${layout === "modern" || layout === "bold" ? "rounded-md px-2 py-1.5 text-white" : ""}`} style={layout === "modern" || layout === "bold" ? { background: accent } : undefined}>
