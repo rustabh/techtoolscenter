@@ -102,16 +102,33 @@ function nextRuns(expr: string, count: number, from = new Date()): Date[] {
   return results;
 }
 
+// Describes a minute/hour field that isn't a plain wildcard or exact number —
+// step ("*/15"), range ("9-17") or list ("9,17") values — so the fallback
+// branch below never has to fall back to printing the raw cron syntax as if
+// it were a number (e.g. "at 09:*/15" or "at 9-17:00").
+function describeField(f: string, unit: string): string | null {
+  if (f.startsWith("*/")) return `every ${f.slice(2)} ${unit}s`;
+  if (/^\d+-\d+$/.test(f)) return `${unit}s ${f.replace("-", " to ")}`;
+  if (/^\d+(,\d+)+$/.test(f)) return `${unit}s ${f.split(",").join(", ")}`;
+  return null;
+}
+
 function describe(expr: string): string {
   const parts = expr.trim().split(/\s+/);
   if (parts.length !== 5) return "Enter a valid 5-field cron expression.";
   const [min, hour, dom, mon, dow] = parts;
+  const isExact = (f: string) => /^\d+$/.test(f);
   const bits: string[] = [];
   if (min === "*" && hour === "*") bits.push("every minute");
   else if (min.startsWith("*/") && hour === "*") bits.push(`every ${min.slice(2)} minutes`);
-  else if (hour === "*") bits.push(`at minute ${min} of every hour`);
-  else if (min === "*") bits.push(`every minute during hour ${hour}`);
-  else bits.push(`at ${hour.padStart(2, "0")}:${min.padStart(2, "0")}`);
+  else if (hour === "*" && isExact(min)) bits.push(`at minute ${min} of every hour`);
+  else if (min === "*" && isExact(hour)) bits.push(`every minute during hour ${hour}`);
+  else if (isExact(min) && isExact(hour)) bits.push(`at ${hour.padStart(2, "0")}:${min.padStart(2, "0")}`);
+  else {
+    const minDesc = describeField(min, "minute") ?? (min === "*" ? "every minute" : `minute ${min}`);
+    const hourDesc = describeField(hour, "hour") ?? (hour === "*" ? "every hour" : `hour ${hour}`);
+    bits.push(`${minDesc}, ${hourDesc}`);
+  }
   if (dom !== "*") bits.push(`on day-of-month ${dom}`);
   if (mon !== "*") bits.push(`in month ${mon}`);
   if (dow !== "*") bits.push(`on ${describeDow(dow)}`);
