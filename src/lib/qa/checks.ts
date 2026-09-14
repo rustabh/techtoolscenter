@@ -84,9 +84,26 @@ export function runQaChecks(): QaFinding[] {
       findings.push({ severity: "critical", category: "broken-link", location: `developer-hub/${r.slug}`, detail: `internalToolSlug references non-existent tool slug "${r.internalToolSlug}"` });
     }
   }
+  // Programmatic-SEO landing pages were never covered by this check, despite
+  // having the same relatedTools/relatedBlog shape as blog posts — and their
+  // `core` field is a harder dependency than any "related" link: it's the
+  // actual tool component <LandingView> renders for the page, so a typo'd
+  // core silently breaks the page's real functionality, not just a link.
+  for (const l of landingPages) {
+    if (!toolSlugs.has(l.core)) {
+      findings.push({ severity: "critical", category: "broken-link", location: `tools/${l.slug}`, detail: `core references non-existent tool slug "${l.core}" — this landing page's actual tool component won't render` });
+    }
+    for (const slug of l.relatedTools ?? []) {
+      if (!toolSlugs.has(slug)) findings.push({ severity: "critical", category: "broken-link", location: `tools/${l.slug}`, detail: `relatedTools references non-existent tool slug "${slug}"` });
+    }
+    for (const slug of l.relatedBlog ?? []) {
+      if (!blogSlugs.has(slug)) findings.push({ severity: "critical", category: "broken-link", location: `tools/${l.slug}`, detail: `relatedBlog references non-existent post slug "${slug}"` });
+    }
+  }
 
   // 2. Duplicate titles/descriptions within a content type
   findDuplicates(tools.map((t) => ({ key: t.slug, title: t.seoTitle ?? t.name })), "Tools", "title", findings);
+  findDuplicates(landingPages.map((l) => ({ key: l.slug, title: l.title })), "Landing pages", "title", findings);
   findDuplicates(blogPosts.map((p) => ({ key: p.slug, title: p.seoTitle ?? p.title })), "Blog posts", "title", findings);
   findDuplicates(blogPosts.map((p) => ({ key: p.slug, title: p.seoDescription ?? p.excerpt })), "Blog posts", "description", findings);
   findDuplicates(indiaServices.map((s) => ({ key: s.slug, title: s.seoTitle ?? s.name })), "India services", "title", findings);
