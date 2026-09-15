@@ -16069,6 +16069,604 @@ export const posts: BlogPost[] = [
     seoDescription: "Term insurance explained: why it's cheaper than endowment/ULIP plans, how to calculate the cover you actually need, term length, riders, and Section 80C/10(10D) tax treatment.",
   },
 
+  {
+    slug: "how-to-apply-eshram-card-online",
+    title: "How to Apply for an e-Shram Card Online (Unorganised Workers)",
+    excerpt: "A free, portable ID for India's unorganised workforce — construction labourers, domestic workers, gig workers and more. Here's who qualifies, what you need, and how to register online or through a CSC.",
+    category: "guides",
+    author: "editorial",
+    template: "tutorial",
+    publishedOn: "2026-09-15",
+    tags: [
+      "eshram",
+      "india services",
+      "unorganised workers",
+      "government schemes",
+      "uan"
+    ],
+    relatedTools: [
+      "image-compressor",
+      "pdf-compress"
+    ],
+    content: [
+      {
+        "type": "p",
+        "text": "India's unorganised workforce — construction labourers, domestic workers, street vendors, agricultural labourers, gig and platform workers, and millions of others without a formal employer-employee relationship — has historically had no single, unified record of who they are or what work they do, which made it genuinely hard for any welfare scheme to actually reach them. The **e-Shram card** is the government's attempt to fix that: a free, portable, universal ID number (the UAN, or Universal Account Number) issued to any unorganised worker who registers on the eShram portal, meant to become the single database welfare schemes and social security benefits are eventually delivered through. If you work outside a formal salaried job with EPFO or ESIC coverage, this is very likely the one registration worth doing first, since a growing number of state and central schemes now check eligibility against the eShram database directly."
+      },
+      {
+        "type": "p",
+        "text": "This guide walks through who's eligible, exactly what you need before you start, the registration steps themselves (both self-service and CSC-assisted), what the card actually gets you, and the mistakes that most commonly trip people up. For the official portal link and a quick reference, see our [eShram Card service page](/india-services/employment/eshram)."
+      },
+      {
+        "type": "h2",
+        "text": "Who is actually eligible for an e-Shram card"
+      },
+      {
+        "type": "p",
+        "text": "Eligibility is defined by exclusion as much as inclusion: you qualify as an unorganised worker if you're between 16 and 59 years of age, and you are **not** an active member of EPFO (Employees' Provident Fund Organisation) or ESIC (Employees' State Insurance Corporation), and you are **not** a government employee covered under a formal pension scheme. In practice this covers an extremely broad range of occupations — construction workers, migrant labourers, domestic and household workers, street vendors and hawkers, agricultural and landless labourers, rickshaw pullers, small artisans and handicraft workers, beedi and tobacco workers, and increasingly, gig and platform workers (delivery riders, cab drivers on aggregator platforms) who don't have a traditional employer providing EPFO/ESIC coverage."
+      },
+      {
+        "type": "p",
+        "text": "A useful way to think about it: if your income comes from daily wage work, self-employment, or informal/contractual work without EPFO deductions showing on a payslip, you almost certainly qualify. If you're a salaried employee with EPF contributions already being deducted, you're outside the scope of e-Shram and should instead be relying on your existing EPFO-linked benefits."
+      },
+      {
+        "type": "h2",
+        "text": "What you need before you start"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Aadhaar number, with a mobile number linked to it for OTP verification — this is the backbone of the entire registration, since the portal fetches most of your basic demographic details directly from Aadhaar once verified.",
+          "The Aadhaar-linked mobile number itself, in hand, since the OTP is sent there and there's no alternate verification path if you don't have access to it.",
+          "Bank account details (account number and IFSC code) for the account you want welfare payments and any scheme benefits credited to, though this can also be added or corrected after initial registration.",
+          "Basic details about your occupation, the sector you work in, and your educational qualification, since the portal asks you to self-classify these during registration."
+        ]
+      },
+      {
+        "type": "callout",
+        "text": "If your mobile number isn't linked to your Aadhaar, registration through the self-service portal won't work, since the OTP has nowhere valid to go — you'll need to either update your Aadhaar mobile number first through UIDAI, or register through a Common Service Centre (CSC), where the operator can complete registration using biometric authentication instead of an OTP."
+      },
+      {
+        "type": "h2",
+        "text": "Step-by-step: registering yourself online"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "Go to the official eShram portal (eshram.gov.in) and select the \"Register on eShram\" option on the homepage.",
+          "Enter your Aadhaar-linked mobile number and complete the captcha, then request and enter the OTP sent to that number.",
+          "Confirm you're not an EPFO/ESIC member and not a government employee when the eligibility declaration is shown — this is a mandatory self-declaration step.",
+          "Verify your Aadhaar by entering your Aadhaar number and completing the second OTP sent for Aadhaar e-KYC verification.",
+          "Review the personal details auto-fetched from Aadhaar (name, date of birth, address, gender) for accuracy — these come from UIDAI's records, so any Aadhaar-side error will carry over here too.",
+          "Fill in additional details: educational qualification, occupation type and sector (there's a structured list to pick from), monthly income range, and any specific skill training you have.",
+          "Add your bank account number and IFSC code for benefit disbursement.",
+          "Review the complete form, submit, and download the generated e-Shram card — it carries your unique 12-digit Universal Account Number (UAN), which is what you'll quote for any scheme application going forward."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Registering through a Common Service Centre (CSC) instead"
+      },
+      {
+        "type": "p",
+        "text": "Not everyone has a smartphone, reliable internet, or a mobile number properly linked to Aadhaar, and the government anticipated exactly this by making CSCs (the network of local digital-service kiosks found in most towns and villages) an equally valid registration channel — critically, at no cost to you, since eShram registration is free regardless of which channel you use. At a CSC, the operator verifies your identity using Aadhaar biometric authentication (fingerprint or iris) instead of an OTP, which sidesteps the linked-mobile-number requirement entirely, then completes the same registration form on your behalf and hands you the printed or digital card. If you don't have a working Aadhaar-linked mobile number and don't want to go through UIDAI's mobile update process first, a CSC visit is genuinely the more practical path, not a fallback for people who \"can't do it properly\" online."
+      },
+      {
+        "type": "h2",
+        "text": "What the e-Shram card actually gets you"
+      },
+      {
+        "type": "p",
+        "text": "The card itself carries an accident insurance component under the Pradhan Mantri Suraksha Bima Yojana (PMSBY) framework built into registration — a defined payout in case of accidental death or permanent total disability, and a lower payout for partial disability, at no separate premium cost to the worker for the first year of coverage tied to registration. Beyond that immediate benefit, the UAN itself is increasingly the eligibility backbone for a growing list of central and state welfare schemes — from cash transfer schemes during emergencies (as seen during COVID-19 relief disbursements) to specific sector schemes for construction workers, street vendors and others. The database is also explicitly designed to let central and state governments identify and reach unorganised workers directly for future scheme rollouts, meaning the actual value of holding a card tends to grow over time as more schemes plug into it, rather than being fixed at the point of registration."
+      },
+      {
+        "type": "h2",
+        "text": "Updating your details after registration"
+      },
+      {
+        "type": "p",
+        "text": "Life circumstances change — a new bank account, a change of occupation, an address update — and the eShram portal allows updating most self-declared fields (occupation, sector, income range, bank details, address) after initial registration by logging back in with your registered mobile number and UAN. Details that are pulled directly from Aadhaar (name, date of birth, gender) generally need to be corrected at the Aadhaar/UIDAI level first, since the eShram record continues to sync from there rather than allowing an independent override that would create a mismatch between the two records."
+      },
+      {
+        "type": "h2",
+        "text": "e-Shram vs EPFO and ESIC — how they actually differ"
+      },
+      {
+        "type": "p",
+        "text": "It's worth being precise about why these are separate systems rather than overlapping ones: EPFO and ESIC exist specifically for the **organised**, formally employed workforce — where an employer is legally required to register the establishment and make defined contributions on the employee's behalf — while eShram exists precisely because the unorganised workforce has no employer in that same formal sense to make any such contribution. A worker cannot meaningfully be registered in both systems for the same employment, since eligibility for eShram explicitly excludes active EPFO/ESIC members. If your employment status changes — say, you move from gig/informal work into a salaried role with EPF deductions — you'd naturally transition out of active eShram-scheme eligibility for that period, even though your existing UAN and card remain on record."
+      },
+      {
+        "type": "h2",
+        "text": "Common mistakes people make"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Registering with a mobile number that isn't actually Aadhaar-linked, causing the OTP verification step to fail repeatedly without realising the mobile number itself is the problem.",
+          "Skipping the eligibility self-declaration honestly — declaring active EPFO/ESIC status incorrectly (in either direction) can create downstream issues if a scheme later cross-checks eligibility.",
+          "Not updating bank details after a bank account is closed or changed, which can cause any scheme-linked payment to fail to a stale account.",
+          "Assuming the card is a one-time paper document rather than checking back periodically — since new benefits are periodically linked to the UAN, it's worth treating the registration as an ongoing record, not a one-off form to file away.",
+          "Paying a private agent or middleman for registration, when the process is entirely free through both the self-service portal and CSCs."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Is eShram registration free, and is it mandatory"
+      },
+      {
+        "type": "p",
+        "text": "Registration is completely free through both the official portal and any Common Service Centre — there is no government fee at any point in the process, and anyone asking for payment to \"process\" your registration is not operating through an official channel. It is not strictly mandatory in the sense of a legal requirement to hold one, but given how many welfare schemes now check eligibility against the eShram database, an unregistered unorganised worker risks being excluded from benefits they would otherwise qualify for simply because there's no record of them in the system the scheme is checking against."
+      },
+      {
+        "type": "h2",
+        "text": "Keeping a digital copy handy"
+      },
+      {
+        "type": "p",
+        "text": "Once issued, your e-Shram card (and its UAN) is worth saving as a digital copy alongside your other key documents — a scanned or downloaded PDF you can produce quickly when a scheme application or a CSC visit asks for it, rather than depending on locating a printed copy each time. If you're compressing a scanned copy or a photo of the card to keep the file size manageable for an online upload, a free tool like our [Image Compressor](/tools/image-compressor) or [PDF Compressor](/tools/pdf-compress) handles that entirely in your browser without uploading the document anywhere."
+      },
+      {
+        "type": "h2",
+        "text": "e-Shram vs Udyam registration — don't confuse the two"
+      },
+      {
+        "type": "p",
+        "text": "Udyam registration is a separate system entirely, aimed at registering micro, small and medium **enterprises** (MSMEs) — a small business owner registering their shop, workshop, or trading firm to access MSME-specific benefits like collateral-free loans and priority sector lending. e-Shram, by contrast, registers **individual workers**, not businesses, and specifically those without a formal employer relationship. The confusion is understandable since both are free, Aadhaar-based, government digital registrations aimed at parts of the economy that have historically been under-documented, but they serve entirely different purposes and populations — a self-employed street vendor might reasonably want an e-Shram card as an individual worker, while a small manufacturing unit they might eventually set up would separately need Udyam registration as a business entity."
+      },
+      {
+        "type": "h2",
+        "text": "How eShram interacts with state labour welfare boards"
+      },
+      {
+        "type": "p",
+        "text": "Several states run their own labour welfare boards — construction worker welfare boards being among the most established, offering benefits like scholarship support for workers' children, medical assistance, and pension contributions specifically for registered construction labourers. These state boards generally operate independently of the central eShram database, with their own separate registration process, though the broader policy direction has been toward eventually linking state welfare board data with the central eShram UAN so a worker isn't registering the same basic details separately in multiple disconnected systems. In practice, this means a construction worker, for instance, may reasonably need to register with both their state's welfare board (for the specific state benefits it administers) and eShram (for the central schemes tied to the UAN) rather than assuming one registration automatically covers the other."
+      },
+      {
+        "type": "h2",
+        "text": "eShram for migrant workers specifically"
+      },
+      {
+        "type": "p",
+        "text": "Migrant workers — those who travel from their home state to work in another, often seasonally, in construction, manufacturing, or agriculture — are one of the specific groups the eShram database was built to better track, since inter-state migrant labour has historically been especially hard for any single state's welfare system to reach reliably. Because eShram registration is tied to Aadhaar rather than to a current physical address, a migrant worker's UAN and registration record travel with them regardless of which state they're currently working in, which is a meaningful improvement over benefit systems that were historically tied to a fixed home-state residence proof. This is also why keeping your registered mobile number current matters more for a migrant worker than for someone in a fixed location — it's the one detail the system uses to reach you directly, wherever you currently are."
+      },
+      {
+        "type": "h2",
+        "text": "Does the e-Shram card expire, and do you need to renew it"
+      },
+      {
+        "type": "p",
+        "text": "The UAN itself is a permanent number, issued once and not subject to periodic renewal or expiry in the way a licence or a permit might be — once registered, your UAN stays valid for life. What does need periodic attention is keeping your self-declared details (current occupation, bank account, address, income range) accurate and up to date, since a scheme checking your eligibility against the eShram database is checking your current record, not your original registration snapshot from years earlier. Treating it as a static, one-time task rather than a living record is a common oversight that can quietly make you ineligible for a scheme you'd otherwise qualify for, simply because the database still shows outdated information."
+      },
+      {
+        "type": "h2",
+        "text": "What to do if registration fails or gets stuck"
+      },
+      {
+        "type": "p",
+        "text": "If OTP verification repeatedly fails, the most common underlying cause is a mobile number that either isn't actually linked to Aadhaar or has since changed without the Aadhaar record being updated — checking your Aadhaar-linked mobile number directly through UIDAI's own portal, before assuming the eShram portal itself is at fault, saves considerable frustration. If the portal shows a duplicate-registration error, it typically means an Aadhaar number is already associated with an existing UAN — in that case, the portal provides an option to retrieve your existing UAN using your registered mobile number rather than creating a fresh duplicate registration, which is the correct path rather than repeatedly trying to register as if it were a first-time signup. For any issue that doesn't resolve through the self-service portal, the eShram helpline and any nearby CSC can assist directly, and since registration is free either way, there's no cost penalty to switching from the self-service route to CSC assistance partway through if you get stuck."
+      }
+    ],
+    faq: [
+      {
+        "question": "Who is eligible for an e-Shram card?",
+        "answer": "Any unorganised worker aged 16-59 who is not an active EPFO or ESIC member and not a government employee under a formal pension scheme — this covers construction workers, domestic workers, street vendors, agricultural labourers, gig/platform workers and many other informal occupations."
+      },
+      {
+        "question": "Is e-Shram registration free?",
+        "answer": "Yes, completely free through both the official eshram.gov.in portal and any Common Service Centre (CSC). Anyone charging a fee to register you is not an official channel."
+      },
+      {
+        "question": "What do I need to register?",
+        "answer": "An Aadhaar number with a mobile number linked to it for OTP verification, your bank account details, and basic information about your occupation, sector and educational qualification."
+      },
+      {
+        "question": "What if my mobile number isn't linked to Aadhaar?",
+        "answer": "You can register through a Common Service Centre instead, where the operator verifies your identity using Aadhaar biometric authentication rather than an OTP."
+      },
+      {
+        "question": "What benefits does the e-Shram card actually provide?",
+        "answer": "It includes accident insurance coverage under the PMSBY framework at registration, and its Universal Account Number (UAN) is increasingly used as the eligibility database for central and state welfare schemes targeting unorganised workers."
+      },
+      {
+        "question": "Can I update my details after registering?",
+        "answer": "Yes — self-declared details like occupation, bank account and address can be updated by logging back in with your registered mobile number and UAN. Aadhaar-sourced details like name and date of birth need correction at the UIDAI level first."
+      },
+      {
+        "question": "Can I hold both an e-Shram card and EPFO membership?",
+        "answer": "No — eShram eligibility specifically excludes active EPFO/ESIC members, since those systems serve the organised, formally employed workforce. If your employment status changes to a salaried role with EPF deductions, you'd move out of active eShram-scheme eligibility for that period."
+      }
+    ],
+    seoTitle: "e-Shram Card: How to Register Online (Unorganised Workers Guide)",
+    seoDescription: "How to apply for an e-Shram card online — eligibility, required documents, step-by-step registration, CSC-assisted registration, and what the UAN actually gets you.",
+  },
+  {
+    slug: "how-to-apply-death-certificate-online-india",
+    title: "How to Apply for a Death Certificate Online in India",
+    excerpt: "Banks, insurers and property registrars all require an original death certificate before they'll act — here's how registration actually works, what documents you need, and what changes for a delayed registration.",
+    category: "guides",
+    author: "editorial",
+    template: "tutorial",
+    publishedOn: "2026-09-15",
+    tags: [
+      "death certificate",
+      "india services",
+      "certificates",
+      "civil registration"
+    ],
+    relatedTools: [
+      "image-compressor",
+      "pdf-compress"
+    ],
+    content: [
+      {
+        "type": "p",
+        "text": "A death certificate is one of those documents nobody wants to think about in advance, but its absence causes real, practical problems at an already difficult time — a bank account stays frozen, an insurance claim can't be filed, a pension doesn't transfer, and property or asset transfer to legal heirs simply can't proceed without it. Like a birth certificate, it's issued through India's Civil Registration System (CRS), and understanding the process ahead of time — even briefly — makes it considerably easier to handle when it's actually needed. For the official portal reference, see our [Death Certificate service page](/india-services/certificates/death-certificate)."
+      },
+      {
+        "type": "h2",
+        "text": "Who is responsible for registering a death"
+      },
+      {
+        "type": "p",
+        "text": "Under the Registration of Births and Deaths Act, a death must be reported to the local registrar, and responsibility for reporting typically falls to the head of the household where the death occurred, or to the medical institution if the death happened in a hospital or nursing home — most hospitals now initiate this reporting directly as part of their discharge and documentation process, similar to how many hospitals handle birth registration. For a death at home, it usually falls to a family member or the head of household to report it to the local municipal or panchayat registrar within the prescribed window set by the Act."
+      },
+      {
+        "type": "h2",
+        "text": "The standard registration window, and what changes if you miss it"
+      },
+      {
+        "type": "p",
+        "text": "Every state sets its own specific timeline for what counts as \"on-time\" registration under the central framework, but the general principle across states is that registering promptly — within the standard window — is a straightforward process requiring only the basic supporting documents. Registering after that window has passed generally introduces additional steps: a late fee scaled to how far past the deadline the report is, and for registrations attempted well after the fact, an affidavit or, in some cases, an order from the district registrar or a magistrate before the certificate can be issued. This mirrors how delayed birth registration works, and for the same underlying reason — the system is designed to make prompt registration the easy path and treat a long delay as something requiring extra verification."
+      },
+      {
+        "type": "h2",
+        "text": "Step-by-step: registering a death and obtaining the certificate"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "Report the death to the local registrar (the municipal corporation, municipality, or gram panchayat covering where the death occurred) within the standard window, either directly or through the hospital if the death occurred there.",
+          "If the death occurred in a hospital, confirm with hospital administration whether they've already submitted the death report on the family's behalf — many do this automatically, similar to birth registration.",
+          "Submit the required supporting documents (covered below) along with the death report form.",
+          "For deaths at home, in some states this can be completed through the state's civil registration or e-District portal; in others, an in-person visit to the local registrar's office is still required.",
+          "Once the registrar processes and approves the registration, the death certificate becomes available — either for download through the portal or for physical collection, depending on the state's process.",
+          "Request multiple certified copies at the time of issue, since several institutions (bank, insurer, employer, property registrar) will each need their own certified copy, not photocopies of a single original."
+        ]
+      },
+      {
+        "type": "callout",
+        "text": "Requesting more certified copies than you think you'll immediately need is worth doing at the point of issue — a bank, an insurance company, an employer's HR department, and a property sub-registrar's office may all separately require an original certified copy rather than accepting a photocopy, and going back to the registrar's office later purely for additional copies is an avoidable extra trip during an already difficult time."
+      },
+      {
+        "type": "h2",
+        "text": "Documents typically required"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Proof of the death itself — a hospital-issued death report/certificate if the death occurred in a medical institution, or a certificate from an attending physician for a death at home.",
+          "Identity proof of the deceased (Aadhaar, PAN, voter ID, or similar).",
+          "Identity proof of the person reporting or applying (usually a family member or the head of household).",
+          "Address proof establishing the place of death, since registration jurisdiction depends on where the death occurred, not necessarily where the deceased permanently resided.",
+          "For a delayed registration, an affidavit explaining the reason for the delay, and in some states, supporting witness statements."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Registering a death with no timely record — a genuinely delayed case"
+      },
+      {
+        "type": "p",
+        "text": "For a death that was never formally registered at the time — sometimes discovered only when a family is trying to settle an estate or claim an inherited asset years later — the process leans on alternative evidence in much the same way a very late birth registration does: witness affidavits, any surviving medical or institutional records, and in many states, an order from a magistrate or the district registrar authorising a delayed entry into the civil registration record. This process takes meaningfully longer than a standard or even a modestly delayed registration, so if you know a death was never formally registered, it's worth starting this well ahead of whenever the certificate is actually needed for a specific transaction, rather than waiting until an asset transfer or claim is already time-pressured."
+      },
+      {
+        "type": "h2",
+        "text": "What a death certificate is actually needed for"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Closing or transferring bank accounts and fixed deposits held by the deceased.",
+          "Filing a life insurance claim — insurers require an original certified death certificate before processing any payout.",
+          "Transferring property or other assets to legal heirs, often alongside a succession certificate or legal heir certificate depending on whether there was a will.",
+          "Claiming or transferring a pension, provident fund balance, or gratuity linked to the deceased's employment.",
+          "Cancelling or updating government records — voter ID, ration card, Aadhaar status — associated with the deceased.",
+          "Settling insurance, loans, or any joint financial obligation where the co-holder needs to formally establish the death."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Death certificate vs legal heir certificate — they're not the same thing"
+      },
+      {
+        "type": "p",
+        "text": "A death certificate only establishes that a person died, when, and where — it says nothing about who the legal heirs are or how the deceased's assets should be distributed. For that, a separate **legal heir certificate** (or, for more complex estates, a succession certificate from a civil court) is typically required, and most institutions will ask for both documents together for anything involving asset transfer or a financial claim, not the death certificate alone. If you're navigating this process, our guide on [how to get a legal heir certificate](/blog/how-to-get-legal-heir-certificate-india) covers that separate step in detail."
+      },
+      {
+        "type": "h2",
+        "text": "How long does it actually take"
+      },
+      {
+        "type": "p",
+        "text": "A straightforward, on-time registration with complete documentation is typically processed within a matter of days in most states, similar to how a well-documented birth registration is handled. A delayed registration, particularly one requiring an affidavit or magistrate's order, can take considerably longer — sometimes weeks — since it involves an additional layer of verification. If the certificate is needed for a time-sensitive matter (an insurance claim with its own filing deadline, for instance), it's worth flagging the urgency directly with the registrar's office and starting the process as early as realistically possible."
+      },
+      {
+        "type": "h2",
+        "text": "Common mistakes"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Assuming the hospital automatically completed registration without directly confirming it — similar to the birth-registration process, this should be explicitly verified rather than assumed.",
+          "Requesting only one certified copy and then discovering multiple institutions each need their own original.",
+          "Not registering a death promptly and later having to navigate the more involved delayed-registration process for what could have been a simple one.",
+          "Confusing a death certificate with a legal heir or succession certificate, and being surprised when a bank or property registrar asks for the second document as well.",
+          "Providing inconsistent details between the death report and the deceased's other identity records (a misspelled name, a mismatched date of birth), which can cause the certificate to be rejected by an institution later for not matching other records on file."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Correcting an error on an issued certificate"
+      },
+      {
+        "type": "p",
+        "text": "Just as with a birth certificate, an error discovered on an already-issued death certificate — a misspelled name, an incorrect date — is corrected through an application to the same registrar's office rather than by re-registering from scratch, and typically requires supporting proof of the correct detail (a hospital record, an identity document, an affidavit). It's worth checking a newly issued certificate carefully against the deceased's other official records immediately after receiving it, since catching a mismatch early avoids it causing a rejection later at a bank or property office when the certificate is actually being used for a transaction."
+      },
+      {
+        "type": "h2",
+        "text": "Unnatural or accidental deaths — what changes"
+      },
+      {
+        "type": "p",
+        "text": "A death that's unnatural, unexplained, or the result of an accident follows a meaningfully different path before civil registration can even happen: it typically requires a police report (an FIR, in many cases) and a post-mortem examination conducted at a government hospital, with the post-mortem report and police documentation then feeding into the eventual death certificate registration, rather than a straightforward medical-institution death report. This process is understandably slower and more procedurally involved than a death from illness or natural causes in a hospital, since establishing the cause of death is itself part of a legal process, not just an administrative formality. Families navigating this should expect the certificate to take longer than the standard timeline, and it's worth keeping copies of the FIR and post-mortem report alongside the eventual death certificate, since an insurer or property registrar handling an unnatural-death case may separately ask to see them."
+      },
+      {
+        "type": "h2",
+        "text": "Death certificate vs post-mortem report — different documents, different purposes"
+      },
+      {
+        "type": "p",
+        "text": "A post-mortem (autopsy) report is a medical-legal document establishing the cause and circumstances of death, produced by a government medical examiner specifically in cases requiring one — it is not itself the civil registration document and doesn't substitute for a death certificate at a bank or property office. The death certificate is the civil registration record confirming that a death was registered, when, and where; the post-mortem report, where one exists, is supporting medical-legal evidence that fed into that registration in specific cases (typically unnatural or unexplained deaths) but isn't required or produced for the large majority of natural deaths, which is why most people never need to think about the distinction at all."
+      },
+      {
+        "type": "h2",
+        "text": "Registering the death of an NRI or a death occurring abroad"
+      },
+      {
+        "type": "p",
+        "text": "A death occurring outside India, of an Indian citizen, is registered through the Indian Embassy or Consulate covering that country rather than through India's domestic Civil Registration System — mirroring how birth registration abroad works. The embassy-issued death certificate or report is what's used for Indian-side purposes (settling an Indian bank account, transferring Indian property, an Indian insurance claim), and the exact documentation the specific mission requires can differ based on the local country's own death registration process, so confirming directly with the relevant embassy or consulate is the reliable path rather than assuming a single uniform international procedure applies everywhere."
+      },
+      {
+        "type": "h2",
+        "text": "DigiLocker and keeping a digital copy"
+      },
+      {
+        "type": "p",
+        "text": "Once issued, a death certificate is worth keeping as both a physical original (since institutions frequently want to see or retain the original certified copy) and a digital backup you can produce quickly. Many states support linking civil registration documents to [DigiLocker](/blog/how-to-use-digilocker-to-store-documents-digitally), the government's digital document wallet, giving families a verified digital copy accepted by many government systems. Where direct DigiLocker linking isn't yet available for a specific state's certificate, scanning and storing a compressed copy in your own cloud storage remains a reasonable fallback — the goal is simply not being dependent on locating one physical original across several separate institutional processes (bank, insurer, property office) that may all need to see it around the same time."
+      },
+      {
+        "type": "h2",
+        "text": "Why the exact process varies so much by state"
+      },
+      {
+        "type": "p",
+        "text": "Just as with birth registration, death registration operates under one central Act but is administered by each state and its local municipal or panchayat bodies — which is why the exact portal, document checklist, and typical processing time can differ noticeably depending on where the death occurred. A friend or relative's experience registering a death in a different state is a useful general reference for what to expect, but shouldn't be treated as a precise checklist for your own state's specific requirements, since the underlying framework being common doesn't mean the local implementation is identical everywhere. Checking your own state's civil registration or e-District portal directly, or calling the local registrar's office ahead of a visit, remains the most reliable way to confirm exactly what's needed before you go."
+      }
+    ],
+    faq: [
+      {
+        "question": "Who is responsible for reporting a death for registration?",
+        "answer": "Typically the head of the household where the death occurred, or the medical institution if the death happened in a hospital — many hospitals now initiate the report directly as part of discharge documentation."
+      },
+      {
+        "question": "What is the standard time window to register a death?",
+        "answer": "Each state sets its own specific window under the central Registration of Births and Deaths Act. Registering promptly within that window is a straightforward process; registering later requires a late fee and, for longer delays, an affidavit or magistrate's order."
+      },
+      {
+        "question": "What documents are needed to register a death?",
+        "answer": "A hospital-issued death report or a physician's certificate for a death at home, identity proof of the deceased, identity proof of the person applying, and address proof establishing where the death occurred."
+      },
+      {
+        "question": "How many certified copies of the death certificate should I request?",
+        "answer": "More than one — banks, insurers, employers and property registrars typically each require their own original certified copy, not photocopies of a single original, so requesting 3-4 copies at issue avoids repeated trips back to the registrar."
+      },
+      {
+        "question": "Is a death certificate the same as a legal heir certificate?",
+        "answer": "No — a death certificate only establishes that a death occurred, when and where. A separate legal heir certificate (or succession certificate for more complex estates) is needed to establish who the legal heirs are for asset transfer or financial claims."
+      },
+      {
+        "question": "What if a death was never formally registered at the time?",
+        "answer": "This requires a delayed-registration process relying on alternative evidence — witness affidavits, surviving medical records, and often a magistrate's or district registrar's order — which takes considerably longer than a standard registration, so it's worth starting well ahead of when the certificate is actually needed."
+      },
+      {
+        "question": "What is a death certificate actually used for?",
+        "answer": "Closing or transferring bank accounts, filing life insurance claims, transferring property to heirs, claiming a pension or provident fund balance, and updating or cancelling government records associated with the deceased."
+      }
+    ],
+    seoTitle: "Death Certificate Online in India: How to Apply (Full Process)",
+    seoDescription: "How to register a death and get a death certificate online in India — required documents, the standard vs delayed registration process, and what it's actually needed for.",
+  },
+  {
+    slug: "what-is-a-reverse-proxy-vs-load-balancer",
+    title: "What Is a Reverse Proxy, and How Is It Different From a Load Balancer?",
+    excerpt: "Nginx and HAProxy get called both a reverse proxy and a load balancer, and that's not a contradiction — here's what each term actually means and why the same software commonly does both jobs.",
+    category: "developer",
+    author: "techtoolscenter-team",
+    template: "comparison",
+    publishedOn: "2026-09-15",
+    tags: [
+      "reverse proxy",
+      "load balancer",
+      "nginx",
+      "networking",
+      "web infrastructure"
+    ],
+    content: [
+      {
+        "type": "p",
+        "text": "\"Reverse proxy\" and \"load balancer\" get used almost interchangeably in casual conversation, and in practice a single piece of software (Nginx, HAProxy, Envoy) often does both jobs at once — which is exactly why the distinction gets blurry. But they solve different problems, and understanding which one you actually need (or that you need both, layered together) matters once you're designing anything beyond a single server handling all your traffic directly."
+      },
+      {
+        "type": "h2",
+        "text": "What a reverse proxy actually does"
+      },
+      {
+        "type": "p",
+        "text": "A reverse proxy sits in front of one or more backend servers and intercepts client requests on their behalf, forwarding each request to an appropriate backend and returning that backend's response back to the client — from the client's point of view, they're talking to the proxy itself, with no visibility into what's actually serving the request behind it. This is the mirror image of a **forward proxy**, which sits in front of clients and makes requests to the internet on their behalf (a corporate network's outbound proxy, for instance) — a reverse proxy protects and represents servers, while a forward proxy protects and represents clients. The name genuinely reflects which direction it's facing relative to the request."
+      },
+      {
+        "type": "h2",
+        "text": "Why put a reverse proxy in front of your servers at all"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "**Hiding backend topology** — clients only ever see the proxy's address, never the actual internal server addresses, ports, or architecture, which is a real security and flexibility benefit since backend servers can be added, removed, or moved without clients noticing anything changed.",
+          "**TLS termination** — the reverse proxy can handle HTTPS/TLS encryption and decryption once, at the edge, so backend servers only need to speak plain HTTP internally, simplifying certificate management to one place instead of every server.",
+          "**Centralised caching** — a reverse proxy can cache responses for frequently requested content, serving repeat requests directly without hitting the backend at all, reducing load on the actual application servers.",
+          "**Compression and request/response rewriting** — handling gzip/br compression, adding security headers, or rewriting URLs centrally rather than configuring it identically on every backend server.",
+          "**Routing by path or domain** — a single entry point can route `/api/*` to one backend service and `/images/*` to another, letting you run multiple distinct services behind what looks like one unified address to the outside world."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "What a load balancer actually does"
+      },
+      {
+        "type": "p",
+        "text": "A load balancer's specific job is distributing incoming traffic across multiple servers that are all capable of handling the same request, so no single server gets overwhelmed while others sit idle — the core problem it solves is horizontal scaling: instead of one increasingly large server handling everything, many smaller servers share the load, and the load balancer decides which one handles each incoming request. It typically also performs health checks, continuously verifying which backend servers are actually up and responsive, and automatically routing traffic away from any server that's failed a health check — turning a single dead server into a transparent, uninterrupted failover instead of a visible outage. Our own [load balancer explainer](/blog/what-is-a-load-balancer-how-does-it-work) covers the specific distribution algorithms (round robin, least connections, and others) in more depth."
+      },
+      {
+        "type": "h2",
+        "text": "So where's the actual overlap?"
+      },
+      {
+        "type": "p",
+        "text": "A reverse proxy, by definition, can forward a request to any of several backend servers — which means the moment it's choosing between more than one backend for the same type of request, it's *also* doing load balancing, whether or not that was the primary reason it was deployed. This is precisely why software like Nginx and HAProxy is described as both a reverse proxy and a load balancer: the reverse-proxy layer (intercepting and forwarding client requests, terminating TLS, hiding backend topology) and the load-balancing layer (choosing which specific backend instance handles this particular request, health-checking backends) are complementary functions the same piece of software commonly performs together, not two competing categories of tool you'd choose between."
+      },
+      {
+        "type": "callout",
+        "text": "A genuinely useful mental model: a reverse proxy is defined by *what it does* (represents servers to clients, sitting between the two), while a load balancer is defined by *why* — specifically to distribute load across multiple equivalent servers. Something can be a reverse proxy without load balancing (forwarding to a single backend, purely for TLS termination or caching), and in principle a dedicated load balancer can exist without every reverse-proxy feature — but in most real deployments, the same software layer handles both together."
+      },
+      {
+        "type": "h2",
+        "text": "A concrete example: a typical web app's request path"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "A client's browser resolves your domain via DNS and connects to a public-facing reverse proxy (say, Nginx or a managed cloud load balancer).",
+          "The proxy terminates TLS, decrypting the HTTPS connection so the rest of the infrastructure can speak plain HTTP internally.",
+          "Based on the request path, the proxy routes `/api/*` traffic to your application server pool and static asset requests to a CDN or static file server.",
+          "For the application server pool, the proxy (now acting as a load balancer) picks one of several running instances — using round robin, least connections, or another algorithm — and forwards the request there.",
+          "The chosen backend server processes the request and returns a response, which the proxy relays back to the client, potentially caching it along the way if it's cacheable content."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Reverse proxy vs CDN — another commonly confused pair"
+      },
+      {
+        "type": "p",
+        "text": "A [CDN](/blog/what-is-a-cdn-how-does-it-work) is, in a sense, a globally distributed reverse proxy — it sits between clients and your origin server, caching and serving content from edge locations physically closer to each client, which is exactly the reverse-proxy pattern of intercepting client requests and deciding how to fulfil them, applied at a global geographic scale. The distinction that matters in practice is scope and purpose: a CDN's edge network is optimised specifically for caching and serving static (and increasingly dynamic) content from locations near the end user to reduce latency, while a reverse proxy in front of your own infrastructure is typically solving a narrower, more application-specific set of problems — routing, TLS termination, and load distribution across your own backend fleet, often working alongside a CDN rather than replacing it."
+      },
+      {
+        "type": "h2",
+        "text": "Common reverse proxy software you'll actually run into"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "**Nginx** — extremely widely used both as a reverse proxy and a general-purpose web server, known for handling large numbers of concurrent connections efficiently.",
+          "**HAProxy** — historically strong specifically as a load balancer and reverse proxy for TCP and HTTP traffic, common in high-availability setups.",
+          "**Envoy** — a modern proxy built with microservices and service-mesh architectures in mind, commonly used inside Kubernetes clusters for both edge and internal service-to-service traffic.",
+          "**Traefik** — designed to automatically discover backend services in dynamic, container-based environments (Docker, Kubernetes) and reconfigure routing without manual restarts.",
+          "**Cloud-managed load balancers** (AWS ALB/NLB, Google Cloud Load Balancing, Azure Load Balancer) — the same reverse-proxy-plus-load-balancing role, provided as a managed service rather than software you run and patch yourself."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Do you need one if you're just running a single server?"
+      },
+      {
+        "type": "p",
+        "text": "Even with a single backend server, a reverse proxy in front of it is a common and reasonable setup — you still get TLS termination in one place, the ability to add caching or rate limiting later without touching the application itself, and critically, the option to add a second backend server later purely by changing the proxy's configuration rather than re-architecting anything client-facing. This is a big part of why reverse proxies are so ubiquitous even for modest deployments: they're cheap to add early and make scaling out later a configuration change rather than a redesign."
+      },
+      {
+        "type": "h2",
+        "text": "Common misconceptions"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Assuming a reverse proxy and a load balancer are two different products you'd pick between — in most real deployments, one piece of software does both jobs together.",
+          "Assuming load balancing requires a dedicated hardware appliance — modern software load balancers (and managed cloud offerings) handle the vast majority of real-world traffic today.",
+          "Confusing a reverse proxy with a forward proxy because both have \"proxy\" in the name — they face opposite directions and solve different problems (protecting servers vs protecting clients).",
+          "Thinking a CDN replaces the need for a reverse proxy in front of your own origin servers — a CDN typically caches in front of your origin, but your origin's own backend fleet often still needs its own reverse proxy/load balancer layer behind the CDN."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Layer 4 vs Layer 7 — the distinction that actually matters for load balancing"
+      },
+      {
+        "type": "p",
+        "text": "Load balancers (and reverse proxies acting as one) generally operate at one of two levels of the network stack, and which one matters a lot for what routing decisions are actually possible. A **Layer 4** load balancer works at the transport layer — it sees IP addresses and TCP/UDP ports, and makes routing decisions based purely on that connection-level information, without inspecting the actual HTTP request inside it. It's fast and protocol-agnostic (it'll happily balance any TCP traffic, not just HTTP), but it can't route based on a URL path, a header, or a cookie, because it never looks that deep. A **Layer 7** load balancer, by contrast, operates at the application layer — it actually parses the HTTP request, which is exactly what makes path-based routing (`/api/*` to one pool, `/images/*` to another), header-based routing, and cookie-based session affinity possible. Nginx, HAProxy and most reverse proxies discussed here typically operate at Layer 7 when handling HTTP traffic, which is why they can make the kind of content-aware routing decisions a pure Layer 4 balancer structurally can't."
+      },
+      {
+        "type": "h2",
+        "text": "Sticky sessions — when load balancing needs to remember the client"
+      },
+      {
+        "type": "p",
+        "text": "Distributing every request to a random backend works cleanly for stateless applications, but plenty of real applications store some session state in server memory (a shopping cart, a login session not backed by a shared store) — and for those, sending a client's *second* request to a different server than their first can mean that server has no idea who they are. **Sticky sessions** (session affinity) solve this by having the load balancer consistently route a given client's requests to the same backend server, typically using a cookie the proxy sets or client IP-based hashing. This is a reasonable short-term fix, but it's worth recognising as a workaround rather than a design goal — an application that keeps session state in a shared store (Redis, a database) instead of server memory doesn't need sticky sessions at all, and scales more cleanly as a result, since any backend can serve any request without needing to \"remember\" the client itself."
+      },
+      {
+        "type": "h2",
+        "text": "Reverse proxy vs API gateway"
+      },
+      {
+        "type": "p",
+        "text": "An **API gateway** is best understood as a reverse proxy with a specific job description layered on top: in addition to routing and load balancing, it typically also handles authentication/authorization for API requests, rate limiting per client or API key, request/response transformation between an external API contract and internal service formats, and often API analytics and billing metering. Every API gateway is, structurally, a reverse proxy — but not every reverse proxy is trying to be an API gateway, since a basic reverse proxy in front of a single web application has no need for API-key-based auth or per-client rate limiting. The distinction is mostly about which additional, application-aware features are layered onto the same underlying reverse-proxy pattern, particularly relevant in a microservices architecture where an API gateway is the single, consistent entry point in front of many internal services."
+      },
+      {
+        "type": "h2",
+        "text": "Security benefits a reverse proxy provides almost for free"
+      },
+      {
+        "type": "p",
+        "text": "Beyond routing and performance, putting a reverse proxy in front of your backend servers closes off a meaningful attack surface simply by design — backend servers are never directly reachable from the public internet, which means a vulnerability in a specific backend's network stack or an exposed internal port isn't independently exploitable from outside. Many reverse proxies also support Web Application Firewall (WAF) rules, filtering known attack patterns (SQL injection attempts, malformed requests) before they ever reach the application, and can absorb a meaningful amount of basic denial-of-service traffic at the edge, in front of application servers that would otherwise have to handle that load themselves. None of this makes backend-level security unnecessary, but it does mean the reverse proxy layer is a genuinely useful, centralised place to enforce baseline protections once, rather than duplicating them across every backend service individually."
+      }
+    ],
+    faq: [
+      {
+        "question": "What's the simplest way to tell a reverse proxy and a load balancer apart?",
+        "answer": "A reverse proxy is defined by what it does — sitting between clients and servers, representing servers to the outside world. A load balancer is defined by why — specifically distributing traffic across multiple equivalent servers. Most real software does both together."
+      },
+      {
+        "question": "Is a reverse proxy the same as a forward proxy?",
+        "answer": "No — they face opposite directions. A forward proxy sits in front of clients and makes requests to the internet on their behalf (like a corporate outbound proxy). A reverse proxy sits in front of servers and represents them to clients."
+      },
+      {
+        "question": "Do I need a reverse proxy if I only run one server?",
+        "answer": "It's still commonly worth it — you get TLS termination, caching, and rate limiting in one place, plus the option to add a second backend later as a configuration change rather than a redesign."
+      },
+      {
+        "question": "Is a CDN the same thing as a reverse proxy?",
+        "answer": "A CDN is essentially a globally distributed reverse proxy, caching content at edge locations near end users. The difference is scope: a CDN is optimised for geographic content delivery, while a reverse proxy in front of your own servers typically handles routing, TLS and load distribution across your own backend fleet."
+      },
+      {
+        "question": "What software is commonly used as a reverse proxy?",
+        "answer": "Nginx and HAProxy are the most common, alongside Envoy (popular in Kubernetes/service-mesh setups), Traefik (designed for dynamic container environments), and managed cloud load balancers from AWS, Google Cloud and Azure."
+      },
+      {
+        "question": "Does a reverse proxy always do load balancing?",
+        "answer": "Only if it's forwarding to more than one backend for the same type of request — a reverse proxy forwarding to a single backend (purely for TLS termination or caching) isn't load balancing anything, even though it's still acting as a reverse proxy."
+      }
+    ],
+    seoTitle: "Reverse Proxy vs Load Balancer: What's the Actual Difference?",
+    seoDescription: "Reverse proxy vs load balancer explained in plain English — what each one actually does, why Nginx and HAProxy are called both, and how they fit alongside a CDN.",
+  },
 ];
 
 /* ---------------- helpers ---------------- */
