@@ -18,8 +18,13 @@ export default function DiscountCalculator() {
 
   const r = useMemo(() => {
     const price = parseFloat(value.price) || 0;
-    const disc = parseFloat(value.discount) || 0;
-    const extraDisc = parseFloat(value.extraDiscount) || 0;
+    // A discount above 100% (or below 0%) isn't a real-world discount — left
+    // unclamped it drives the final price negative and "savings" above the
+    // original price, e.g. a 150% discount on ₹2,000 showing "Final price
+    // -₹1,000" and "You save ₹3,000". Clamp to the only range a discount
+    // percentage can actually mean.
+    const disc = Math.min(100, Math.max(0, parseFloat(value.discount) || 0));
+    const extraDisc = Math.min(100, Math.max(0, parseFloat(value.extraDiscount) || 0));
     // Stacked discounts multiply the remaining price, they don't add — "25%
     // off + extra 10% off" is NOT 35% off. A common real-world point of
     // confusion, so the breakdown below is shown step by step.
@@ -27,7 +32,7 @@ export default function DiscountCalculator() {
     const afterSecond = afterFirst - (afterFirst * extraDisc) / 100;
     const saved = price - afterSecond;
     const effectivePct = price > 0 ? (saved / price) * 100 : 0;
-    return { saved, final: afterSecond, afterFirst, effectivePct, hasExtra: extraDisc > 0 };
+    return { saved, final: afterSecond, afterFirst, effectivePct, hasExtra: extraDisc > 0, disc, extraDisc };
   }, [value]);
 
   return (
@@ -36,10 +41,10 @@ export default function DiscountCalculator() {
         <CardHeader><CardTitle>Enter details</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-1.5"><Label htmlFor="discount-price">Original price (₹)</Label><Input id="discount-price" type="number" value={value.price} onChange={(e) => set({ ...value, price: e.target.value })} /></div>
-          <div className="space-y-1.5"><Label htmlFor="discount-pct">Discount (%)</Label><Input id="discount-pct" type="number" value={value.discount} onChange={(e) => set({ ...value, discount: e.target.value })} /></div>
+          <div className="space-y-1.5"><Label htmlFor="discount-pct">Discount (%)</Label><Input id="discount-pct" type="number" min={0} max={100} value={value.discount} onChange={(e) => set({ ...value, discount: e.target.value })} /></div>
           <div className="space-y-1.5">
             <Label htmlFor="discount-extra">Extra stacked discount (%, optional)</Label>
-            <Input id="discount-extra" type="number" value={value.extraDiscount} onChange={(e) => set({ ...value, extraDiscount: e.target.value })} />
+            <Input id="discount-extra" type="number" min={0} max={100} value={value.extraDiscount} onChange={(e) => set({ ...value, extraDiscount: e.target.value })} />
             <p className="text-xs text-muted-foreground">Applied on top of the price after the first discount — not simply added to it.</p>
           </div>
           <ActionBar onUndo={undo} onRedo={redo} onReset={reset} canUndo={canUndo} canRedo={canRedo} />
@@ -50,8 +55,8 @@ export default function DiscountCalculator() {
         <CardContent className="space-y-4">
           {r.hasExtra && (
             <div className="space-y-1 rounded-xl bg-secondary/60 p-3 text-sm">
-              <div className="flex items-center justify-between"><span className="text-muted-foreground">After {value.discount}% off</span><span className="font-medium">{formatCurrency(r.afterFirst)}</span></div>
-              <div className="flex items-center justify-between"><span className="text-muted-foreground">After extra {value.extraDiscount}% off</span><span className="font-medium">{formatCurrency(r.final)}</span></div>
+              <div className="flex items-center justify-between"><span className="text-muted-foreground">After {r.disc}% off</span><span className="font-medium">{formatCurrency(r.afterFirst)}</span></div>
+              <div className="flex items-center justify-between"><span className="text-muted-foreground">After extra {r.extraDisc}% off</span><span className="font-medium">{formatCurrency(r.final)}</span></div>
               <div className="flex items-center justify-between border-t border-border pt-1"><span className="text-muted-foreground">Effective discount</span><span className="font-semibold text-primary">{Math.round(r.effectivePct * 100) / 100}%</span></div>
             </div>
           )}
