@@ -58,7 +58,13 @@ export default function ColorConverter() {
   const rgb = `rgb(${r}, ${g}, ${b})`;
   const hsl = `hsl(${h}, ${s}%, ${l}%)`;
   const cmyk = `cmyk(${c}%, ${cmykM}%, ${y}%, ${k}%)`;
-  const hex8 = `${hex}${toHex2(alpha / 100 * 255)}`;
+  // Built from the parsed r/g/b, not the raw `hex` input — appending the
+  // alpha suffix directly onto `hex` breaks the moment that input already
+  // has one (e.g. an 8-digit HEX8 value pasted back from this tool's own
+  // output), producing a malformed 10-digit string like "#4f46e5cccc"
+  // instead of the correct "#4f46e5cc".
+  const hex6 = `#${toHex2(r)}${toHex2(g)}${toHex2(b)}`;
+  const hex8 = `${hex6}${toHex2(alpha / 100 * 255)}`;
   const rgba = `rgba(${r}, ${g}, ${b}, ${a})`;
   const hsla = `hsla(${h}, ${s}%, ${l}%, ${a})`;
   const { copied, copy } = useCopy();
@@ -104,7 +110,7 @@ export default function ColorConverter() {
       <Card>
         <CardHeader><CardTitle>Values</CardTitle></CardHeader>
         <CardContent className="space-y-3">
-          <Row label="HEX" val={hex.toUpperCase()} />
+          <Row label="HEX" val={hex6.toUpperCase()} />
           <Row label="RGB" val={rgb} />
           <Row label="HSL" val={hsl} />
           <Row label="CMYK" val={cmyk} />
