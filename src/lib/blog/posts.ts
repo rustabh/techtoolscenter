@@ -18718,6 +18718,596 @@ export const posts: BlogPost[] = [
     seoTitle: "Cryptocurrency Tax India: How Bitcoin & Crypto Are Taxed",
     seoDescription: "How cryptocurrency is taxed in India — the flat 30% rate, why crypto losses can't offset gains, 1% TDS under Section 194S, and how crypto-to-crypto trades are taxed.",
   },
+  {
+    slug: "how-to-add-update-nominee-bank-insurance-investments",
+    title: "How to Add or Update a Nominee for Bank Accounts, Insurance and Investments",
+    excerpt: "A nominee isn't the same as a legal heir — here's what nomination actually does, why it can differ from who inherits under your will, and how to update it across every account you hold.",
+    category: "guides",
+    author: "techtoolscenter-team",
+    template: "guide",
+    publishedOn: "2026-09-16",
+    tags: [
+      "nominee",
+      "financial planning",
+      "life insurance",
+      "mutual funds",
+      "estate planning"
+    ],
+    relatedTools: [
+      "income-tax-calculator"
+    ],
+    content: [
+      {
+        "type": "p",
+        "text": "A nominee is one of the most consequential forms most people ever fill out — or, far more commonly, never get around to filling out at all — because the moment it actually matters is also the moment the account holder is no longer around to fix an outdated or missing one. Adding or updating a nominee across every bank account, insurance policy and investment you hold takes maybe twenty minutes in total, and it's genuinely one of the highest-leverage pieces of financial admin most people leave undone for years."
+      },
+      {
+        "type": "h2",
+        "text": "What a nominee actually is — and what it isn't"
+      },
+      {
+        "type": "p",
+        "text": "A nominee is the person a bank, insurer or investment provider is instructed to pay out to when the account holder dies — but crucially, a nominee is a **trustee/receiver** of the money for the purpose of a smooth payout process, not automatically the **legal owner** of it under succession law. If the account holder left a will, or if the legal heirs under succession law differ from the nominee, the money the nominee actually receives is still expected to be distributed according to the will or the succession law that applies — the nominee's role is to make sure the institution has someone to hand the funds to quickly, not to override who's legally entitled to keep it. This distinction surprises a lot of people, and it's the single most important thing to understand before treating nominee selection as equivalent to inheritance planning."
+      },
+      {
+        "type": "h2",
+        "text": "Why nominee and legal heir can genuinely be different people"
+      },
+      {
+        "type": "p",
+        "text": "It's entirely possible, and not even unusual, for a nominee and the actual legal heir(s) to be different — a person might nominate one child on a bank account for convenience (perhaps the child who lives nearby and can handle the paperwork) while their will or the applicable succession law entitles all their children equally to the underlying estate. In that scenario, the named child receives the payout from the bank as nominee, but is then expected to distribute it according to the will or succession law — a legal and moral obligation, even though the bank itself has no further role or oversight over that redistribution once it's paid out. This is exactly why nominee selection shouldn't be treated as a substitute for a will when there's a real intention behind who should ultimately benefit — see the companion sections below on how nominee and will/succession planning fit together."
+      },
+      {
+        "type": "h2",
+        "text": "Bank accounts and fixed deposits"
+      },
+      {
+        "type": "p",
+        "text": "Nomination on a savings account, current account or fixed deposit can typically be added or changed anytime by visiting your bank branch (or, increasingly, through net banking/the bank's app) and submitting a simple nomination form — you don't need the consent of any existing nominee to change it, since it's solely your instruction as the account holder. A joint account has its own specific rules on how nomination interacts with the surviving joint holder, which is worth confirming with your specific bank, since joint-holder rights and nominee rights can interact differently across account types. It's genuinely common for a nomination to be left blank at account opening simply because it felt unnecessary at the time — checking your existing accounts for a blank or outdated nomination is worth doing specifically because most people opened at least one account years before their current life situation (marriage, children) existed."
+      },
+      {
+        "type": "h2",
+        "text": "Insurance policies"
+      },
+      {
+        "type": "p",
+        "text": "Every life insurance policy allows (and effectively requires, for a smooth claim) a named nominee, and India's insurance framework distinguishes between a nominee and a **beneficial nominee** — the latter being a nominee who is also a specific close relative (spouse, child, parent) entitled to keep the payout absolutely rather than merely receiving it as a trustee for the estate. This is a meaningful legal nuance: naming your spouse or child as a beneficial nominee on a life insurance policy gives them a stronger, more direct claim to the payout than naming a more distant relative or a non-family member, whose claim is more clearly just as a receiving trustee for the estate. Updating a life insurance nominee after a major life event — marriage, the birth of a child, a divorce — is worth doing immediately rather than assuming the original nomination still reflects your actual wishes."
+      },
+      {
+        "type": "h2",
+        "text": "Mutual funds and demat/trading accounts"
+      },
+      {
+        "type": "p",
+        "text": "Nomination on mutual fund folios and demat accounts has become an area of specific regulatory focus in recent years — SEBI has, at various points, required investors to either register a nominee or explicitly opt out in writing, precisely because a large number of demat and mutual fund accounts historically had no nomination at all, leaving processing an inheritance claim considerably slower and more document-heavy for the family. If you haven't explicitly confirmed your nomination status on your demat account and mutual fund folios recently, it's worth logging in and checking directly, since a folio or account without a valid nomination on file specifically requires legal heirship documentation (succession certificate, legal heir certificate, or probate depending on the amount and complexity) before a claim can be processed — a meaningfully slower and more expensive path for your family than a valid nomination would have been."
+      },
+      {
+        "type": "h2",
+        "text": "EPF, PPF and NPS"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "**EPF (Employees' Provident Fund)** — nomination is mandatory, and EPFO specifically requires updating it if your family situation changes (marriage, children), since an EPF nomination made while single is legally required to be updated once you have family members.",
+          "**PPF (Public Provident Fund)** — nomination can be added or changed at your PPF account's home branch/post office using a simple form, and multiple nominees with specified percentage shares are allowed.",
+          "**NPS (National Pension System)** — nomination is managed through your NPS account online (via the CRA — Central Recordkeeping Agency — portal) or through your point of presence, and can be updated whenever your circumstances change."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "How to actually update a nomination — the general process"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "Log in to net banking, the relevant app, or the provider's portal — many nomination updates for banks, PPF, NPS and mutual funds can now be done fully online without a branch visit.",
+          "Where online self-service isn't available, obtain the specific nomination form from the branch or provider (bank nomination form, insurance nomination endorsement form, etc.).",
+          "Fill in the nominee's full name, relationship to you, date of birth, and address — accuracy here matters since a mismatch with the nominee's own identity documents can delay a future claim.",
+          "For a minor nominee, additionally name an appointee (an adult who will receive and manage the funds on the minor's behalf until they turn 18).",
+          "Submit the form (or online request) and retain the acknowledgement — some institutions issue a confirmation, which is worth saving alongside your other important documents."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "What happens if there's no nominee at all"
+      },
+      {
+        "type": "p",
+        "text": "Without a valid nomination on file, a claim after the account holder's death generally requires the claimant(s) to produce legal heirship documentation — a succession certificate from a court, a legal heir certificate, or in some cases a full probate of a will — before the institution will release the funds, a process that can take months and involve real legal cost, compared to a same-week payout to a properly named nominee who simply produces a death certificate and identity proof. This is precisely the gap nomination exists to close, and it's the single biggest practical reason to treat it as a completed, current task rather than something to get to eventually."
+      },
+      {
+        "type": "h2",
+        "text": "Updating nominations after a major life event"
+      },
+      {
+        "type": "p",
+        "text": "A nomination made at account opening — often years or decades before marriage, children, or a change in family circumstances — quietly becomes outdated the moment life changes, and unlike a will (which most people never write in the first place, see below), a nomination is something almost everyone technically already has on file, just possibly for the wrong person. Marriage, divorce, the birth of a child, or the death of a previously-named nominee are all moments that specifically warrant checking every account, policy and investment for whether the nomination still reflects who you'd actually want to receive the funds today."
+      },
+      {
+        "type": "h2",
+        "text": "Common mistakes"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Assuming nomination and will/succession planning are the same thing, and that naming a nominee settles who ultimately inherits the money.",
+          "Leaving nomination blank on demat accounts and mutual fund folios, not realising it materially slows down a future claim for the family.",
+          "Not updating a nomination after marriage, divorce, or a nominee's own death, leaving an outdated or invalid name on file for years.",
+          "Naming a minor as nominee without also naming an appointee to manage the funds until they come of age.",
+          "Assuming a joint account automatically resolves inheritance questions the same way nomination does — the two have different legal mechanics depending on the account type and bank."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "How nominee planning and a will actually work together"
+      },
+      {
+        "type": "p",
+        "text": "The cleanest approach most financial planners recommend is treating nomination and a will as complementary, not redundant: nomination ensures whoever you name can access the funds quickly and with minimal paperwork after your death, while a will (or, absent one, the applicable succession law) determines who's legally entitled to actually keep that money. Naming the same person as both your nominee and your intended beneficiary under your will removes the extra step of the nominee redistributing funds to other heirs — but where you genuinely want the money split among multiple people, a will explicitly saying so, alongside a nominee who understands they're receiving it as a trustee for distribution, is a more complete plan than nomination alone."
+      },
+      {
+        "type": "h2",
+        "text": "Real estate and property nomination"
+      },
+      {
+        "type": "p",
+        "text": "Unlike a bank account or insurance policy, immovable property in India generally doesn't have a formal \"nomination\" mechanism in the same sense — some housing societies allow a nominee to be recorded for the purpose of continuing membership and initial handling of the flat/unit after a member's death, but this is distinct from, and doesn't override, legal ownership under a will or succession law. A society nominee typically holds the property in trust for the actual legal heirs in much the same way a bank nominee holds funds in trust, rather than becoming the outright owner — a distinction worth understanding clearly if your estate includes a housing society flat, since it's easy to mistakenly assume a recorded society nominee has settled ownership when it hasn't."
+      },
+      {
+        "type": "h2",
+        "text": "Employer-provided benefits — gratuity and group insurance"
+      },
+      {
+        "type": "p",
+        "text": "Beyond the accounts you personally manage, employer-provided benefits carry their own separate nomination requirements worth not overlooking: gratuity nomination is filed with your employer (typically via Form F under the Payment of Gratuity Act) and group life/health insurance nomination is usually managed through your employer's HR or benefits portal, both entirely separate from any nomination you've set up on your personal bank accounts or policies. Because these are set up during onboarding — often years before marriage or children — and rarely revisited afterward, they're a commonly overlooked category worth specifically checking alongside your personal accounts whenever you do a nomination review."
+      },
+      {
+        "type": "h2",
+        "text": "A practical annual nomination checklist"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "List every bank account, fixed deposit, life and health insurance policy, mutual fund folio, demat account, PPF, EPF and NPS account you hold.",
+          "For each one, confirm who's currently named as nominee and whether that still matches who you'd actually want to receive the funds today.",
+          "Update anything outdated, prioritising accounts and policies you haven't touched since opening them.",
+          "Check employer-provided gratuity and group insurance nominations separately, since these are managed outside your personal banking relationships.",
+          "Repeat this check after any major life event, and otherwise treat it as a once-a-year review alongside other routine financial housekeeping."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Telling your family what you've done"
+      },
+      {
+        "type": "p",
+        "text": "A correctly updated nomination that no one in your family knows exists provides only partial protection — beyond actually filling in the forms, it's worth telling at least one trusted family member (or your intended nominee directly) roughly which accounts and policies you hold and that they're nominated, so a claim can actually be initiated promptly rather than family members discovering an account's existence only by chance, months or years later, while going through paperwork."
+      }
+    ],
+    faq: [
+      {
+        "question": "Is a nominee the same as a legal heir?",
+        "answer": "No — a nominee receives the payout as a trustee to enable a quick, simple claim process, but the will (or succession law if there's no will) still determines who's legally entitled to keep the money if that differs from the nominee."
+      },
+      {
+        "question": "Can I have more than one nominee?",
+        "answer": "Yes, for most accounts and investments (PPF, mutual funds, and others) you can name multiple nominees with specified percentage shares, though some products still only allow a single nominee — check the specific institution's rules."
+      },
+      {
+        "question": "What happens if there's no nominee at all?",
+        "answer": "Claimants generally need to produce legal heirship documentation — a succession certificate, legal heir certificate, or probate depending on the amount — which takes considerably longer and costs more than a payout to a valid nominee."
+      },
+      {
+        "question": "Can I name a minor as my nominee?",
+        "answer": "Yes, but you must also name an appointee — an adult who will receive and manage the funds on the minor's behalf until they turn 18."
+      },
+      {
+        "question": "Does updating my nominee require the old nominee's consent?",
+        "answer": "No — nomination is solely the account holder's instruction and can be changed anytime without needing agreement from the previous or new nominee."
+      },
+      {
+        "question": "Why does SEBI require a nomination or opt-out on demat accounts?",
+        "answer": "Because a large number of demat and mutual fund accounts historically had no nomination on file, which considerably slowed down inheritance claims — the requirement ensures every account has an explicit nomination status recorded."
+      }
+    ],
+    seoTitle: "How to Add/Update a Nominee: Bank, Insurance & Investments",
+    seoDescription: "How to add or update a nominee across bank accounts, insurance policies, mutual funds, PPF and NPS — and why nominee and legal heir aren't always the same person.",
+  },
+  {
+    slug: "gst-input-tax-credit-itc-explained",
+    title: "GST Input Tax Credit (ITC) Explained: How It Works and Who Can Claim It",
+    excerpt: "ITC is what stops GST from taxing the same value twice as goods move through a supply chain — but your eligibility to claim it depends partly on your supplier's own compliance. Here's exactly how it works.",
+    category: "business",
+    author: "techtoolscenter-team",
+    template: "guide",
+    publishedOn: "2026-09-16",
+    tags: [
+      "gst",
+      "input tax credit",
+      "itc",
+      "reverse charge mechanism",
+      "tax compliance"
+    ],
+    relatedTools: [
+      "gst-calculator"
+    ],
+    content: [
+      {
+        "type": "p",
+        "text": "Input Tax Credit (ITC) is the single mechanism that makes GST work as a genuine value-added tax rather than a tax that compounds at every stage of a supply chain — and it's also one of the most common sources of GST compliance errors, since claiming ITC incorrectly (or failing to claim it when eligible) directly affects how much cash a business actually needs to pay out each period."
+      },
+      {
+        "type": "h2",
+        "text": "The basic idea — why ITC exists at all"
+      },
+      {
+        "type": "p",
+        "text": "Without ITC, GST paid on every purchase a business makes (raw materials, services, equipment) would simply be an added cost, on top of which the business would then charge GST again on its own sale — taxing the same value multiple times as it moves through a supply chain, an effect economists call \"tax cascading.\" ITC solves this by letting a registered business **subtract** the GST it already paid on its eligible purchases from the GST it collects on its sales, remitting only the net difference to the government. This is precisely why GST is described as a value-added tax — each business in the chain effectively pays tax only on the value it personally added, not on the full price of the good or service."
+      },
+      {
+        "type": "h2",
+        "text": "A simple worked example"
+      },
+      {
+        "type": "p",
+        "text": "A furniture maker buys wood and pays ₹1,800 in GST on that purchase (input tax). They then sell the finished furniture and collect ₹5,000 in GST from their customer (output tax) on the sale. Without ITC, the maker would owe the full ₹5,000 to the government despite having already paid ₹1,800 in GST on their own inputs. With ITC, the maker claims the ₹1,800 they already paid as a credit against the ₹5,000 they collected, and remits only the ₹3,200 difference — the tax on the value they actually added by turning wood into furniture, not on the full sale price."
+      },
+      {
+        "type": "h2",
+        "text": "Who can claim ITC, and the basic conditions"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "You must be a **registered GST taxpayer** — unregistered businesses and those under the Composition Scheme cannot claim ITC at all (a specific trade-off of opting for the [Composition Scheme](/blog/gst-composition-scheme-explained), covered in more detail there).",
+          "The purchase must be for a **business purpose** — GST paid on purely personal expenses isn't eligible, even if the business happens to pay for it.",
+          "You must hold a **valid tax invoice** (or debit note) from the supplier for the purchase.",
+          "The supplier must have actually **filed their own GST return and paid the tax** to the government — a condition that shifts real risk onto the buyer if a supplier fails to comply, covered further below.",
+          "You must have actually **received the goods or services** — ITC on an invoice for goods not yet delivered generally can't be claimed until receipt."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "The 2A/2B matching requirement — why your supplier's compliance affects you"
+      },
+      {
+        "type": "p",
+        "text": "This is the detail that surprises many businesses claiming ITC for the first time: your eligibility to claim credit on a purchase isn't determined solely by having a valid invoice from your supplier — it also depends on that supplier having correctly reported the same sale in their own GST return (reflected in your auto-populated GSTR-2B statement). If a supplier fails to file their return, or reports the sale incorrectly, the corresponding ITC may not show as available to you even though you paid the GST and hold a valid invoice, meaning your own cash-flow and compliance position is genuinely exposed to your suppliers' compliance behaviour, not just your own. This is a major reason many businesses now specifically vet suppliers for GST compliance reliability, not just price and quality, before establishing a purchasing relationship."
+      },
+      {
+        "type": "h2",
+        "text": "Common purchases where ITC is blocked entirely"
+      },
+      {
+        "type": "p",
+        "text": "Certain categories of purchase are specifically excluded from ITC eligibility under Section 17(5) of the CGST Act, regardless of whether they're otherwise for business purposes — this list exists mainly to prevent claiming credit on items with significant personal-use potential or that the law treats as final consumption rather than a business input."
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Motor vehicles for personal transport of persons (with specific exceptions for vehicles used in further supply, transportation of passengers as a business, or driving training).",
+          "Food, beverages, outdoor catering, and similar hospitality-related services, unless they're used to make a further outward taxable supply of the same category.",
+          "Membership of a club, health and fitness centre.",
+          "Works contract services for construction of immovable property, except where it's for further supply of works contract services.",
+          "Goods or services used for personal consumption, and goods lost, stolen, destroyed, or given away as free samples or gifts."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Reversal of ITC — when credit already claimed has to be given back"
+      },
+      {
+        "type": "p",
+        "text": "ITC isn't a one-way, permanent claim — several situations require **reversing** (giving back) previously claimed credit, most commonly when a purchased input is later used for an exempt supply or for a non-business purpose, when payment to the supplier isn't made within 180 days of the invoice date, or when goods are lost, stolen, or written off. Reversal is calculated and reported in the relevant GST return, and failing to reverse credit that's no longer eligible is a common audit finding — it's worth building a periodic review of these specific trigger conditions into regular GST compliance, not just a one-time check at claim time."
+      },
+      {
+        "type": "h2",
+        "text": "Time limit for claiming ITC"
+      },
+      {
+        "type": "p",
+        "text": "ITC on an invoice must generally be claimed by a specific deadline tied to the financial year the invoice belongs to — commonly the earlier of the due date for filing the September return of the following financial year, or the date of filing the annual return for that year. Missing this window means the credit is permanently forfeited, which is exactly why reconciling purchase records against GSTR-2B regularly (rather than only at year-end) matters — a supplier invoice discovered late, after the claim window has closed, represents a real, unrecoverable cash cost to the business."
+      },
+      {
+        "type": "h2",
+        "text": "ITC on capital goods"
+      },
+      {
+        "type": "p",
+        "text": "GST paid on capital goods (machinery, equipment, and similar long-term business assets) is generally eligible for ITC in full at the time of purchase, rather than being spread out over the asset's useful life the way depreciation works for accounting purposes — a meaningful cash-flow benefit for businesses making a large capital purchase, since the credit is available immediately rather than gradually. If capital goods are later used partly for exempt supplies or personal purposes, a proportionate reversal applies, calculated under specific rules rather than an arbitrary estimate."
+      },
+      {
+        "type": "h2",
+        "text": "Reverse Charge Mechanism — when the buyer, not the seller, pays GST directly"
+      },
+      {
+        "type": "p",
+        "text": "Under most transactions, the supplier collects GST from the buyer and remits it to the government. **Reverse Charge Mechanism (RCM)** flips this for specific notified categories of supply (certain services from unregistered suppliers, imports of services, and other specifically notified goods/services) — the buyer pays the GST directly to the government instead of to the supplier, and can then separately claim that same amount as ITC, subject to the usual eligibility conditions. This is a genuinely common source of confusion for businesses new to GST, since it means correctly identifying which specific purchases fall under RCM is itself a compliance step, distinct from and in addition to the normal ITC claim process on regular invoices."
+      },
+      {
+        "type": "h2",
+        "text": "How ITC interacts with your GST returns"
+      },
+      {
+        "type": "p",
+        "text": "ITC eligibility and claims flow through your monthly/quarterly GSTR-3B return, referencing the auto-populated GSTR-2B statement generated from your suppliers' GSTR-1 filings — this is part of why our [GSTR-1 vs GSTR-3B](/blog/gstr-1-vs-gstr-3b-difference) breakdown and this ITC explainer are meant to be read together: GSTR-1 is what your suppliers file to make your ITC visible in the first place, and GSTR-3B is where you actually declare and net off the credit you're claiming against your output tax liability."
+      },
+      {
+        "type": "h2",
+        "text": "Common mistakes businesses make with ITC"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Claiming ITC based solely on holding an invoice, without checking that it's actually reflected in GSTR-2B (meaning the supplier has correctly filed their own return).",
+          "Missing the ITC claim deadline for a financial year because purchase records weren't reconciled regularly against GSTR-2B.",
+          "Claiming ITC on a blocked category (personal vehicle use, club memberships, employee catering) that Section 17(5) specifically excludes.",
+          "Forgetting to reverse ITC when payment to a supplier isn't made within 180 days of the invoice.",
+          "Not identifying Reverse Charge Mechanism transactions correctly, leading to either a missed tax payment or a missed corresponding credit claim."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Why ITC discipline matters beyond just compliance"
+      },
+      {
+        "type": "p",
+        "text": "Beyond the legal obligation, disciplined ITC tracking is a genuine cash-flow lever for a business — every rupee of eligible credit not claimed (through poor reconciliation, missed deadlines, or simply not knowing a purchase qualified) is a rupee paid in tax that didn't need to be paid, on top of whatever's legitimately owed. For a business with meaningful purchase volume, the difference between careful and careless ITC management over a year can be a material, avoidable cost — which is exactly why larger businesses invest in dedicated GST reconciliation processes rather than treating it as an afterthought at return-filing time."
+      },
+      {
+        "type": "h2",
+        "text": "Provisional ITC and the shift to a stricter matching regime"
+      },
+      {
+        "type": "p",
+        "text": "Earlier in GST's implementation, businesses were allowed to provisionally claim a certain additional percentage of ITC beyond what appeared in their supplier-matched statement, as a buffer for timing mismatches in supplier filings. This provisional allowance has since been removed — under the current rules, ITC can generally only be claimed to the extent it's actually reflected in GSTR-2B, full stop, with no cushion for credit a business believes it's owed but that hasn't yet shown up from the supplier's side. This tightening is exactly why supplier compliance vetting and regular reconciliation have become more operationally important than they were in GST's earlier years, when the provisional buffer offered some room for timing lags."
+      },
+      {
+        "type": "h2",
+        "text": "ITC refunds — when a business can claim cash back, not just an offset"
+      },
+      {
+        "type": "p",
+        "text": "In most cases, ITC is simply netted against output tax liability each period. But certain situations entitle a business to an actual **cash refund** of accumulated, unutilised ITC — most notably for exporters (since exports are zero-rated, meaning no output GST is collected to net the input credit against) and for businesses facing an \"inverted duty structure,\" where the GST rate on inputs is higher than the rate on the output supply, causing credit to accumulate faster than it can be used. Claiming these refunds involves a specific application process through the GST portal with its own documentation and time limits, and businesses in either category that aren't actively tracking and claiming these refunds are effectively leaving working capital tied up unnecessarily."
+      },
+      {
+        "type": "h2",
+        "text": "Job work and ITC on goods sent out for processing"
+      },
+      {
+        "type": "p",
+        "text": "A business that sends raw materials or semi-finished goods to a third party for job work (further processing before return) doesn't lose ITC eligibility on those goods simply because they've left the business's own premises — provided the goods are received back within the prescribed time limit (generally one year for inputs, three years for capital goods). If the goods aren't received back within that window, the ITC originally claimed must be reversed, treating the despatch as if it were a taxable supply to the job worker instead. This is a specific compliance trap for manufacturing businesses relying heavily on external job work, since tracking the return timeline for each despatch adds an operational layer beyond standard purchase-invoice reconciliation."
+      },
+      {
+        "type": "h2",
+        "text": "Getting started with disciplined ITC tracking"
+      },
+      {
+        "type": "p",
+        "text": "For a small business just formalising its GST processes, the practical starting point is simple: reconcile purchase invoices against GSTR-2B every month rather than only at filing deadlines, flag any supplier whose filings are consistently late or missing for a direct conversation, and maintain a running list of any capital goods or job-work despatches with their applicable time limits so nothing quietly lapses unnoticed. None of this requires expensive software for a small business — a disciplined monthly spreadsheet reconciliation against the portal's GSTR-2B download is a perfectly adequate starting point before investing in dedicated GST reconciliation tools as purchase volume grows, and the habit itself matters far more than which specific spreadsheet or software is used to maintain it consistently."
+      }
+    ],
+    faq: [
+      {
+        "question": "What is Input Tax Credit (ITC) under GST?",
+        "answer": "It's the mechanism that lets a registered business subtract the GST it already paid on eligible purchases from the GST it collects on sales, remitting only the net difference — preventing the same value from being taxed multiple times through a supply chain."
+      },
+      {
+        "question": "Can a business under the Composition Scheme claim ITC?",
+        "answer": "No — businesses registered under the GST Composition Scheme cannot claim ITC at all, which is one of the specific trade-offs of opting into that simplified scheme."
+      },
+      {
+        "question": "Why does my supplier's GST compliance affect my ITC claim?",
+        "answer": "Your ITC eligibility depends on the purchase being reflected in your GSTR-2B statement, which is auto-populated from your suppliers' GSTR-1 filings — if a supplier fails to file correctly, your credit may not show as available even with a valid invoice."
+      },
+      {
+        "question": "What purchases are blocked from ITC entirely?",
+        "answer": "Personal-use motor vehicles, food and outdoor catering (with exceptions), club memberships, and works contract services for immovable property construction are among the categories specifically excluded under Section 17(5) of the CGST Act."
+      },
+      {
+        "question": "What is the Reverse Charge Mechanism (RCM)?",
+        "answer": "For specific notified categories, the buyer pays GST directly to the government instead of to the supplier, and can then separately claim that amount as ITC — flipping the usual supplier-collects-and-remits pattern."
+      },
+      {
+        "question": "Is there a deadline to claim ITC on an invoice?",
+        "answer": "Yes — generally the earlier of the due date for filing the September return of the following financial year, or the date the annual return is filed. Missing this window forfeits the credit permanently."
+      }
+    ],
+    seoTitle: "GST Input Tax Credit (ITC) Explained: Rules & Eligibility",
+    seoDescription: "GST Input Tax Credit explained — how ITC prevents tax cascading, eligibility conditions, blocked categories under Section 17(5), reversal rules, and the GSTR-2B matching requirement.",
+  },
+  {
+    slug: "how-to-write-a-will-in-india-practical-guide",
+    title: "How to Write a Will in India: A Practical Guide",
+    excerpt: "Dying without a will means a fixed, predetermined formula decides who inherits — not your actual wishes. Here's what makes a will legally valid, whether you need a lawyer, and when probate actually applies.",
+    category: "guides",
+    author: "techtoolscenter-team",
+    template: "guide",
+    publishedOn: "2026-09-16",
+    tags: [
+      "will",
+      "estate planning",
+      "succession",
+      "inheritance",
+      "probate"
+    ],
+    relatedTools: [
+      "income-tax-calculator"
+    ],
+    content: [
+      {
+        "type": "p",
+        "text": "A surprisingly large share of adults in India — including many with meaningful assets, property and dependents — have never written a will, often assuming it's something only relevant to the wealthy, or something to get to \"eventually.\" In reality, a will is one of the simplest, cheapest legal documents to create relative to the complexity it prevents for the people left behind, and understanding what it actually requires demystifies a task most people postpone purely out of unfamiliarity, not genuine difficulty."
+      },
+      {
+        "type": "h2",
+        "text": "What happens if you die without a will"
+      },
+      {
+        "type": "p",
+        "text": "Dying without a will (intestate) means your assets are distributed according to the succession law that applies to your religion — the Hindu Succession Act for Hindus, Buddhists, Jains and Sikhs; the Indian Succession Act's provisions for Christians and Parsis; and Muslim personal law (Sharia-based inheritance rules) for Muslims, since Muslim personal law isn't codified into a single succession statute the way the others are. These laws specify exactly which relatives inherit and in what proportion — a fixed, predetermined formula that applies regardless of your actual wishes, your relationship with specific family members, or any informal understanding you may have communicated verbally to your family. For many families, the legally mandated distribution under intestate succession doesn't match what the deceased would have actually wanted — which is precisely the gap a will closes."
+      },
+      {
+        "type": "h2",
+        "text": "Who can write a valid will in India"
+      },
+      {
+        "type": "p",
+        "text": "Under the Indian Succession Act (which governs will-making for all religions, even though intestate succession differs by religion), any person of sound mind who is not a minor can make a valid will — there's no requirement to be wealthy, own property, or have complex assets. A will can be as simple as a single page distributing a modest bank balance among named beneficiaries, or as detailed as a multi-page document covering real estate, business interests, specific bequests of individual items, and guardianship arrangements for minor children."
+      },
+      {
+        "type": "h2",
+        "text": "What actually makes a will legally valid"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "**Written form** — while Indian law technically permits an oral will in extremely limited circumstances (privileged wills for certain armed forces personnel), a written will is the standard and strongly recommended form for everyone else.",
+          "**Testator's signature** — the person making the will (the testator) must sign it, or in certain cases direct someone to sign on their behalf in their presence.",
+          "**Two witnesses** — the will must be signed in the presence of at least two witnesses, who each also sign the will attesting that they witnessed the testator's signature. Witnesses should ideally not be beneficiaries under the will, to avoid any appearance of undue influence on their own inheritance.",
+          "**Sound mental state** — the testator must be of sound mind and not acting under coercion, fraud, or undue influence at the time of signing."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Do you need a lawyer, and does a will need to be registered?"
+      },
+      {
+        "type": "p",
+        "text": "A will does not legally need to be drafted by a lawyer or registered to be valid in India — a properly signed and witnessed will, even handwritten, is legally enforceable. That said, registering a will with the local Sub-Registrar's office (a straightforward, inexpensive process) adds a meaningful practical benefit: it creates an official, dated record that's much harder to challenge or claim was fabricated after the fact, and it removes any ambiguity about whether a particular version is the testator's final, genuine will. For anyone with even moderately complex assets, involving a lawyer to draft the will — even if registration and legal drafting aren't strictly mandatory — reduces the risk of ambiguous wording that could later be contested or misinterpreted by beneficiaries or a court."
+      },
+      {
+        "type": "h2",
+        "text": "What a will should actually cover"
+      },
+      {
+        "type": "ol",
+        "items": [
+          "**A clear statement of intent** — identifying yourself, stating this is your last will, and revoking any previous wills you may have made.",
+          "**Specific bequests** — naming particular assets (a specific property, a bank account, jewellery, a vehicle) and exactly who should receive each one.",
+          "**A residuary clause** — covering anything not specifically named (assets acquired after the will was written, or simply anything overlooked), so nothing accidentally falls outside the will's coverage and defaults to intestate succession rules instead.",
+          "**An executor** — the person responsible for carrying out the will's instructions after your death, ideally someone you trust and who has explicitly agreed to take on the role.",
+          "**Guardianship provisions** — if you have minor children, naming who should act as their guardian, which courts generally give significant weight to even though final guardianship decisions ultimately rest with the court.",
+          "**Signatures and witness attestation** — completed correctly per the requirements above."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Probate — what it is and when it's actually required"
+      },
+      {
+        "type": "p",
+        "text": "Probate is a court process that formally validates a will and authorises the executor to act on it — but it isn't universally required everywhere in India for every will. Probate is mandatory for wills made in the presidency towns of Mumbai, Chennai and Kolkata (and for property located within their original civil jurisdiction), and for wills made by Christians in those areas, but is generally not mandatory elsewhere in the country, where a will can typically be acted upon by the executor and beneficiaries directly, with a probate or letters of administration sought only if a specific institution (bank, property registrar) insists on it or if the will is contested. Given how much this varies by location and religion, it's worth confirming directly whether probate applies to your specific situation rather than assuming a blanket answer."
+      },
+      {
+        "type": "h2",
+        "text": "Can a will be challenged, and on what grounds"
+      },
+      {
+        "type": "p",
+        "text": "Yes — a will can be contested in court, most commonly on grounds that the testator lacked mental capacity at the time of signing, was subject to undue influence or coercion (particularly relevant if a will unexpectedly favours one beneficiary over others who might reasonably have expected a share), that the will wasn't properly executed (missing witness signatures, for instance), or that a more recent, valid will supersedes it. This is precisely why the formal requirements (proper witnessing, sound mind, absence of coercion) matter beyond being a legal checkbox — a will drafted carelessly, without witnesses who aren't themselves beneficiaries, is measurably more vulnerable to a successful challenge than one executed by the book."
+      },
+      {
+        "type": "h2",
+        "text": "Updating a will over time"
+      },
+      {
+        "type": "p",
+        "text": "A will isn't a one-time document — it should be revisited after major life events: marriage, divorce, the birth of a child, the death of a named beneficiary or executor, acquiring significant new assets, or simply a change of mind about who should receive what. A will can be updated either by writing an entirely new will (which should explicitly revoke all previous wills) or through a **codicil** — a formal, separately witnessed amendment to an existing will that changes or adds specific provisions without rewriting the entire document. For a substantial change, a fresh will is generally cleaner and less prone to ambiguity than accumulating multiple codicils over the years."
+      },
+      {
+        "type": "h2",
+        "text": "How a will interacts with nominations"
+      },
+      {
+        "type": "p",
+        "text": "This is worth stating explicitly since it's a common point of confusion covered from the other direction in our guide on [updating nominees for bank accounts, insurance and investments](/blog/how-to-add-update-nominee-bank-insurance-investments): a nominee named on a bank account, insurance policy or investment receives the funds as a trustee for quick payout, but a will is what actually determines who's legally entitled to keep that money if it differs from the nominee. Naming beneficiaries clearly in your will, alongside keeping your nominations up to date, is the combination that actually delivers on your real intentions — relying on nomination alone leaves the underlying legal entitlement to default succession law rather than your own stated wishes."
+      },
+      {
+        "type": "h2",
+        "text": "Storing a will safely"
+      },
+      {
+        "type": "p",
+        "text": "A will that can't be found when needed is functionally almost as bad as no will at all — informing your executor and at least one trusted family member where the original signed will is kept (a bank locker, with your lawyer, or registered with the Sub-Registrar) avoids the situation where a genuinely valid will exists but nobody knows to look for it, or where only a photocopy can be located and its authenticity as the true final version is disputed."
+      },
+      {
+        "type": "h2",
+        "text": "Common mistakes people make with wills in India"
+      },
+      {
+        "type": "ul",
+        "items": [
+          "Assuming a will is only necessary for the wealthy or those with complex estates, when even a simple estate benefits from clear, legally binding instructions.",
+          "Using witnesses who are also beneficiaries under the will, which can create legal complications around their own inheritance and invite challenges.",
+          "Never updating the will after a major life change, leaving it reflecting an outdated family or asset situation.",
+          "Not naming a residuary beneficiary, leaving newly acquired or overlooked assets to fall back on intestate succession rules instead of the testator's actual wishes.",
+          "Keeping the only copy somewhere no one else knows about, or failing to tell the executor they've been named.",
+          "Confusing nomination with inheritance, and assuming naming a bank nominee eliminates the need for a will entirely."
+        ]
+      },
+      {
+        "type": "h2",
+        "text": "Special provisions for armed forces personnel — privileged wills"
+      },
+      {
+        "type": "p",
+        "text": "The Indian Succession Act carves out a specific, more relaxed set of rules for members of the armed forces engaged in actual military operations or expedition — a **privileged will** can, in these narrow circumstances, be made orally in front of witnesses, or through an informal, even unsigned written document, and still be treated as legally valid. This exception exists precisely because the standard formalities (finding two witnesses, arranging proper signing) may not be practically possible in the specific circumstances the exception is designed for, but it's a narrow, specific carve-out rather than a general relaxation — anyone not covered by these specific conditions should follow the standard formal requirements described above."
+      },
+      {
+        "type": "h2",
+        "text": "Wills and jointly-owned property"
+      },
+      {
+        "type": "p",
+        "text": "A will only has authority over assets the testator actually, individually owns — property held jointly with a right of survivorship (common in some joint bank accounts and certain jointly-held assets) typically passes directly to the surviving joint holder by operation of that joint-holding arrangement, regardless of what the deceased's will says about it, since the deceased's individual share in a survivorship-style joint holding may not exist as a separate asset to bequeath in the first place. This is a genuinely important nuance for anyone assuming their will covers everything they're associated with — it's worth explicitly identifying which specific assets are solely owned (and therefore actually covered by the will) versus jointly held under an arrangement that has its own independent transfer mechanism."
+      },
+      {
+        "type": "h2",
+        "text": "Digital assets and online accounts in a will"
+      },
+      {
+        "type": "p",
+        "text": "An increasingly relevant, often-overlooked category: online accounts, digital wallets, cryptocurrency holdings, and other purely digital assets don't automatically get accounted for in a traditional will unless specifically addressed, since many people don't think of a digital wallet or an online brokerage account the same way they think of a bank account or physical property. Explicitly naming digital assets and how to access them (without literally writing passwords into the will itself, which becomes a public document if probated) — perhaps by referencing a separately maintained, secure record of digital account details for your executor — closes a gap that traditional will templates from a few decades ago simply never anticipated."
+      },
+      {
+        "type": "h2",
+        "text": "A simple starting point if you've never written one"
+      },
+      {
+        "type": "p",
+        "text": "The most common reason people cite for not having a will is that it feels like a large, daunting task to get exactly right — but a straightforward will covering your major assets, a clearly named executor, and a residuary clause is genuinely achievable in an afternoon for most estates, and a simple, valid will covering the basics is unambiguously better than no will at all, even if it isn't drafted to the same standard a specialist estate lawyer might produce for a genuinely complex estate. Treating an imperfect but valid will as a starting point you can refine later with a codicil is far more useful than delaying indefinitely while waiting for the ideal moment to get everything perfectly drafted in one sitting, since the real risk was never an imperfect will — it's leaving no will at all for your family to find."
+      }
+    ],
+    faq: [
+      {
+        "question": "What happens if I die without a will in India?",
+        "answer": "Your assets are distributed according to the succession law that applies to your religion — the Hindu Succession Act, Indian Succession Act provisions for Christians/Parsis, or Muslim personal law — which follows a fixed formula regardless of your actual wishes."
+      },
+      {
+        "question": "Does a will need to be registered to be valid?",
+        "answer": "No — a properly signed and witnessed will is legally valid without registration. Registering it with the Sub-Registrar is optional but creates a harder-to-challenge, officially dated record."
+      },
+      {
+        "question": "Do I need a lawyer to write a will?",
+        "answer": "Not legally required — a handwritten will with proper witnessing is enforceable. A lawyer is still worth involving for anything beyond a simple estate, to reduce the risk of ambiguous wording that could be contested later."
+      },
+      {
+        "question": "Is probate required for every will in India?",
+        "answer": "No — probate is mandatory only for wills made in Mumbai, Chennai and Kolkata (or covering property in their original civil jurisdiction) and for Christian wills in those areas. Elsewhere it's generally not mandatory unless a specific institution requires it or the will is contested."
+      },
+      {
+        "question": "Can beneficiaries witness a will?",
+        "answer": "They technically can, but it's strongly discouraged — a witness who is also a beneficiary invites challenges over undue influence on their own inheritance."
+      },
+      {
+        "question": "How is a nominee different from a will beneficiary?",
+        "answer": "A nominee receives a payout as a trustee for quick processing, while a will determines who's actually legally entitled to keep the money — the two can name different people, and both should be kept consistent with your actual wishes."
+      }
+    ],
+    seoTitle: "How to Write a Will in India: Requirements & Probate Guide",
+    seoDescription: "How to write a legally valid will in India — requirements for validity, whether you need a lawyer or registration, when probate actually applies, and how wills interact with nominations.",
+  },
 ];
 
 /* ---------------- helpers ---------------- */
