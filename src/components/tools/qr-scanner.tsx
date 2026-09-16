@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import jsQR from "jsqr";
-import { Camera, Upload, Copy, Check, ExternalLink, CircleX } from "lucide-react";
+import { Camera, Copy, Check, ExternalLink, CircleX } from "lucide-react";
 import { useCopy } from "@/hooks/use-copy";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { track } from "@/lib/stats/stats";
 import { useGenerationHistory } from "@/hooks/use-generation-history";
 import { GenerationHistoryPanel } from "@/components/tools/generation-history-panel";
+import { FileDropzone } from "@/components/tools/file-dropzone";
 
 function looksLikeUrl(text: string) {
   return /^https?:\/\//i.test(text.trim());
@@ -19,7 +20,6 @@ export default function QrScanner() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const frameRef = useRef<number | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [scanning, setScanning] = useState(false);
   const [cameraError, setCameraError] = useState("");
@@ -126,28 +126,26 @@ export default function QrScanner() {
           <CardTitle>Scan a QR code</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="overflow-hidden rounded-2xl border border-border bg-black">
-            <video ref={videoRef} className={scanning ? "aspect-square w-full object-cover" : "hidden"} muted playsInline />
-            {!scanning && (
-              <div className="flex aspect-square w-full flex-col items-center justify-center gap-3 bg-secondary/40 p-6 text-center">
-                <Camera className="size-8 text-muted-foreground" />
-                <p className="text-sm text-muted-foreground">Camera preview appears here</p>
-              </div>
-            )}
+          <div className={scanning ? "overflow-hidden rounded-2xl border border-border bg-black" : "hidden"}>
+            <video ref={videoRef} className="aspect-square w-full object-cover" muted playsInline />
           </div>
+          {!scanning && (
+            <FileDropzone
+              icon={Camera}
+              title="Click or drop a QR code image here"
+              subtitle="JPG, PNG or WebP · processed locally"
+              accept="image/*"
+              onFiles={(files) => files[0] && onFile(files[0])}
+            />
+          )}
           <canvas ref={canvasRef} className="hidden" />
 
           <div className="flex flex-wrap gap-2">
             {!scanning ? (
-              <Button onClick={startCamera}><Camera /> Start camera</Button>
+              <Button variant="outline" onClick={startCamera}><Camera /> Or start your camera instead</Button>
             ) : (
               <Button variant="outline" onClick={stopCamera}><CircleX /> Stop</Button>
             )}
-            <input ref={fileInputRef} type="file" accept="image/*" className="hidden"
-              onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
-            <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
-              <Upload /> Upload QR image instead
-            </Button>
           </div>
 
           {cameraError && (
