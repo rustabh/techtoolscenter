@@ -4494,6 +4494,26 @@ export const aiTools: AiTool[] = [
     "addedOn": "2026-08-02"
   },
   {
+    "slug": "cascadeur",
+    "name": "Cascadeur",
+    "category": "animation",
+    "developer": "Cascadeur",
+    "officialUrl": "https://cascadeur.com",
+    "overview": "Cascadeur uses AI-assisted physics and pose estimation to help animators create realistic character motion and keyframes faster than manual rigging alone.",
+    "pricing": "Freemium",
+    "platforms": [
+      "Desktop"
+    ],
+    "tags": [
+      "3d animation",
+      "character rigging",
+      "physics simulation",
+      "keyframe animation"
+    ],
+    "icon": "PersonStanding",
+    "addedOn": "2026-09-17"
+  },
+  {
     "slug": "sora",
     "name": "Sora",
     "category": "video-generation",
