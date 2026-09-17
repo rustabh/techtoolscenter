@@ -45,14 +45,27 @@ export default function TypingSpeedTest() {
 
   const onChange = (value: string) => {
     if (finishedAt) return;
-    if (!startedAt && value.length > 0) setStartedAt(Date.now());
+    // `now` only starts ticking once startedAt is set (see the effect above),
+    // so it's still sitting at its stale mount-time value here — usually
+    // several seconds behind, since a passage is meant to be read before
+    // typing starts. Syncing both to the same timestamp keeps elapsedMs at
+    // a clean 0 instead of a large negative number on this first render.
+    if (!startedAt && value.length > 0) {
+      const start = Date.now();
+      setStartedAt(start);
+      setNow(start);
+    }
     const clamped = value.slice(0, passage.length);
     setInput(clamped);
     if (clamped.length === passage.length) setFinishedAt(Date.now());
   };
 
   const elapsedMs = (finishedAt ?? now) - (startedAt ?? now);
-  const elapsedMin = Math.max(elapsedMs / 60000, 1 / 60000);
+  // Floor elapsed time at 1 second (1/60 min), not 1/60000 min (1
+  // millisecond) — a floor that small does nothing to stop WPM from
+  // blowing up (e.g. 5 correct characters typed near-instantly at the
+  // clamp's edge previously showed as 60,000 WPM instead of a sane number).
+  const elapsedMin = Math.max(elapsedMs / 60000, 1 / 60);
 
   const stats = useMemo(() => {
     let correct = 0;
