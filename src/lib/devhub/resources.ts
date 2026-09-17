@@ -3486,6 +3486,58 @@ export const externalDevResources: DevResource[] = [
     "pricing": "Freemium",
     "icon": "Radar",
     "addedOn": "2026-09-10"
+  },
+  {
+    "slug": "rust",
+    "name": "Rust",
+    "category": "languages",
+    "description": "A memory-safe systems language with no garbage collector, enforced at compile time by its ownership model — widely adopted for performance-critical backends, CLIs and increasingly parts of the web toolchain itself.",
+    "officialUrl": "https://www.rust-lang.org",
+    "docsUrl": "https://doc.rust-lang.org/book/",
+    "tags": ["systems", "memory-safety", "compiled", "performance"],
+    "pricing": "Free",
+    "openSource": true,
+    "badge": "Trending",
+    "icon": "Cog",
+    "addedOn": "2026-09-17"
+  },
+  {
+    "slug": "headless-ui",
+    "name": "Headless UI",
+    "category": "ui-kits",
+    "description": "Completely unstyled, fully accessible UI components from the Tailwind CSS team, designed to be styled entirely with your own utility classes rather than a bundled design system.",
+    "officialUrl": "https://headlessui.com",
+    "docsUrl": "https://headlessui.com/react/menu",
+    "tags": ["headless", "accessibility", "tailwind", "unstyled"],
+    "pricing": "Free",
+    "openSource": true,
+    "icon": "Component",
+    "addedOn": "2026-09-17"
+  },
+  {
+    "slug": "semgrep",
+    "name": "Semgrep",
+    "category": "security",
+    "description": "A fast, open-source static analysis tool that scans code for security vulnerabilities and bad patterns using lightweight, readable rules instead of a heavyweight full compiler pipeline.",
+    "officialUrl": "https://semgrep.dev",
+    "docsUrl": "https://semgrep.dev/docs/",
+    "tags": ["static-analysis", "sast", "code-scanning", "open-source"],
+    "pricing": "Freemium",
+    "openSource": true,
+    "icon": "ShieldCheck",
+    "addedOn": "2026-09-17"
+  },
+  {
+    "slug": "fork",
+    "name": "Fork",
+    "category": "version-control",
+    "description": "A fast, native Git client for Mac and Windows with a clean interactive rebase and conflict-resolution UI, positioned as a lighter alternative to GitKraken or Sourcetree.",
+    "officialUrl": "https://git-fork.com",
+    "docsUrl": "https://git-fork.com/faq",
+    "tags": ["git-client", "gui", "rebase", "desktop-app"],
+    "pricing": "Freemium",
+    "icon": "GitBranch",
+    "addedOn": "2026-09-17"
   }
 ];
 
