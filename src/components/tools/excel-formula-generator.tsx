@@ -20,13 +20,26 @@ function autoQuote(value: string, fallback: string): string {
   return /^-?\d+(\.\d+)?$/.test(v) ? v : `"${v}"`;
 }
 
+// SUMIF/COUNTIF criteria always got wrapped in quotes, even when the user
+// typed a cell reference for dynamic criteria (a very common pattern —
+// =SUMIF(A1:A10, D1, B1:B10) uses whatever threshold is in D1). Quoting it
+// turned that into =SUMIF(A1:A10, "D1", B1:B10) — a literal text match for
+// the string "D1" instead of using the cell's actual value. Leave a bare
+// cell reference or range unquoted; everything else (an operator like
+// ">100", a text criterion, a plain number) still gets quoted as before.
+function autoQuoteCriteria(value: string, fallback: string): string {
+  const v = value || fallback;
+  const isCellRefOrRange = /^\$?[A-Za-z]{1,3}\$?\d+(:\$?[A-Za-z]{1,3}\$?\d+)?$/.test(v);
+  return isCellRefOrRange ? v : `"${v}"`;
+}
+
 const build: Record<Op, (a: string, b: string, c: string) => { formula: string; explain: string }> = {
   sum: (a) => ({ formula: `=SUM(${a || "A1:A10"})`, explain: "Adds up all numbers in the range." }),
   average: (a) => ({ formula: `=AVERAGE(${a || "A1:A10"})`, explain: "Returns the mean of the range." }),
   count: (a) => ({ formula: `=COUNT(${a || "A1:A10"})`, explain: "Counts how many cells contain numbers." }),
   if: (a, b, c) => ({ formula: `=IF(${a || "A1>10"}, ${autoQuote(b, "Yes")}, ${autoQuote(c, "No")})`, explain: "Returns one value if the condition is true, another if false." }),
-  sumif: (a, b, c) => ({ formula: `=SUMIF(${a || "A1:A10"}, "${b || ">100"}", ${c || "B1:B10"})`, explain: "Adds cells that meet the given condition." }),
-  countif: (a, b) => ({ formula: `=COUNTIF(${a || "A1:A10"}, "${b || ">100"}")`, explain: "Counts cells that meet the condition." }),
+  sumif: (a, b, c) => ({ formula: `=SUMIF(${a || "A1:A10"}, ${autoQuoteCriteria(b, ">100")}, ${c || "B1:B10"})`, explain: "Adds cells that meet the given condition." }),
+  countif: (a, b) => ({ formula: `=COUNTIF(${a || "A1:A10"}, ${autoQuoteCriteria(b, ">100")})`, explain: "Counts cells that meet the condition." }),
   vlookup: (a, b, c) => ({ formula: `=VLOOKUP(${a || "A2"}, ${b || "D:F"}, ${c || "3"}, FALSE)`, explain: "Looks up a value in the first column of a range and returns a value from another column." }),
   xlookup: (a, b, c) => ({ formula: `=XLOOKUP(${a || "A2"}, ${b || "D:D"}, ${c || "F:F"})`, explain: "Modern replacement for VLOOKUP — looks up a value and returns a match from any column, left or right, without counting columns." }),
   iferror: (a, b) => ({ formula: `=IFERROR(${a || "A1/B1"}, ${autoQuote(b, "Error")})`, explain: "Runs the formula normally, but shows a fallback value instead of an error (like #DIV/0!) if it fails." }),
