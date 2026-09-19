@@ -131,6 +131,94 @@ export const glossary: GlossaryTerm[] = [
     learnMoreHref: "/blog/what-is-a-webhook-how-is-it-different-from-an-api",
     learnMoreLabel: "Webhook vs API, explained",
   },
+  {
+    term: "Redis",
+    aliases: [],
+    explanation:
+      "Redis is an in-memory data store, most often used as a fast cache in front of a slower database, since reading from RAM is dramatically quicker than reading from disk. It also doubles as a simple queue and pub/sub system in many backends.",
+    learnMoreHref: "/blog/what-is-redis-why-developers-use-it-for-caching",
+    learnMoreLabel: "What Is Redis?",
+  },
+  {
+    term: "Docker",
+    aliases: ["container", "containers", "containerization", "containerisation"],
+    explanation:
+      "Docker packages an application together with everything it needs to run — code, dependencies, system libraries — into a single container image, so it behaves identically on a developer's laptop, a test server, and production.",
+    learnMoreHref: "/blog/what-is-docker-containers-explained-for-beginners",
+    learnMoreLabel: "What Is Docker?",
+  },
+  {
+    term: "Kubernetes",
+    aliases: ["k8s"],
+    explanation:
+      "Kubernetes is a system for running many containers across a cluster of machines automatically — restarting ones that crash, scaling up under load, and rolling out new versions without downtime.",
+    learnMoreHref: "/blog/what-is-kubernetes-container-orchestration-explained",
+    learnMoreLabel: "What Is Kubernetes?",
+  },
+  {
+    term: "RAG",
+    aliases: ["retrieval augmented generation", "retrieval-augmented generation"],
+    explanation:
+      "RAG (Retrieval-Augmented Generation) is a pattern where an AI system first searches a knowledge base for the most relevant information, then hands that information to a language model as context — so it answers using real, specific content instead of only what it learned during training.",
+    learnMoreHref: "/blog/what-is-rag-retrieval-augmented-generation-explained",
+    learnMoreLabel: "What Is RAG?",
+  },
+  {
+    term: "Vector Database",
+    aliases: ["vector db", "vector store"],
+    explanation:
+      "A vector database stores content as numerical embeddings and searches by meaning rather than exact match — finding the records most similar to a query, which is what powers semantic search and RAG pipelines for AI.",
+    learnMoreHref: "/blog/what-is-a-vector-database-explained",
+    learnMoreLabel: "What Is a Vector Database?",
+  },
+  {
+    term: "CI/CD",
+    aliases: ["cicd", "continuous integration", "continuous deployment", "continuous delivery"],
+    explanation:
+      "CI/CD automates the path from a code commit to a tested, deployed change — running the test suite and build on every push, then packaging and releasing it — so every change goes through the same reliable process instead of a manual, error-prone one.",
+    learnMoreHref: "/blog/what-is-ci-cd-continuous-integration-deployment-explained",
+    learnMoreLabel: "What Is CI/CD?",
+  },
+  {
+    term: "Message Queue",
+    aliases: ["message queues", "job queue"],
+    explanation:
+      "A message queue holds tasks or events for a separate process to work through, one at a time, so the sender doesn't have to wait for the work to finish — useful for surviving traffic spikes and decoupling slow work from a fast user-facing request.",
+    learnMoreHref: "/blog/what-is-a-message-queue-when-do-you-need-one",
+    learnMoreLabel: "What Is a Message Queue?",
+  },
+  {
+    term: "Idempotency",
+    aliases: ["idempotent"],
+    explanation:
+      "An idempotent API request produces the same end result no matter how many times it's sent — so if a network hiccup causes a client to accidentally retry a request, it doesn't double-charge a card or create a duplicate order.",
+    learnMoreHref: "/blog/what-is-idempotency-in-apis",
+    learnMoreLabel: "What Is Idempotency?",
+  },
+  {
+    term: "AI Agent",
+    aliases: ["ai agents", "agentic ai"],
+    explanation:
+      "An AI agent doesn't just answer a question the way a chatbot does — it can take multi-step actions on its own (searching, calling tools, checking its own results) to actually complete a task, deciding what to do next based on what happened at each step.",
+    learnMoreHref: "/blog/what-is-an-ai-agent-vs-chatbot",
+    learnMoreLabel: "AI Agent vs Chatbot",
+  },
+  {
+    term: "Prompt Injection",
+    aliases: ["prompt injection attack"],
+    explanation:
+      "Prompt injection is an attack where malicious instructions are hidden inside content an AI system processes — a webpage, a document, an email — trying to hijack the AI into ignoring its actual instructions and following the attacker's instead.",
+    learnMoreHref: "/blog/what-is-prompt-injection-ai-security",
+    learnMoreLabel: "What Is Prompt Injection?",
+  },
+  {
+    term: "Load Balancer",
+    aliases: ["load balancing", "load balancers"],
+    explanation:
+      "A load balancer sits in front of multiple servers and spreads incoming requests across them, so no single server gets overwhelmed and traffic keeps flowing even if one server goes down.",
+    learnMoreHref: "/blog/what-is-a-load-balancer-how-does-it-work",
+    learnMoreLabel: "What Is a Load Balancer?",
+  },
 ];
 
 function normalize(text: string): string {
