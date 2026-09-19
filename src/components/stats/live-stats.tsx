@@ -48,7 +48,12 @@ function StatTile({ emoji, label, value }: { emoji: string; label: string; value
   return (
     <div ref={ref} className="rounded-2xl border border-border bg-card p-5 text-center shadow-sm">
       <div className="text-2xl">{emoji}</div>
-      <div className="mt-2 text-3xl font-bold tabular-nums tracking-tight">{display.toLocaleString()}</div>
+      {/* "en-IN" pinned explicitly, same reasoning as the site's
+          formatCurrency() — bare toLocaleString() takes the visitor's
+          browser locale, so a heavy user crossing 1,00,000 in a counter saw
+          Western grouping ("150,000") instead of the Indian grouping every
+          other number on the site uses ("1,50,000"). */}
+      <div className="mt-2 text-3xl font-bold tabular-nums tracking-tight">{display.toLocaleString("en-IN")}</div>
       <div className="mt-1 text-sm text-muted-foreground">{label}</div>
     </div>
   );

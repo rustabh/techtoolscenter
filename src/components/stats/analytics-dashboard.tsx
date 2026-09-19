@@ -117,7 +117,12 @@ function Kpi({ label, value, trend, icon }: { label: string; value: number | str
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
       <p className="flex items-center gap-1.5 text-xs text-muted-foreground">{icon} {label}</p>
-      <p className="mt-1 text-2xl font-bold tabular-nums">{typeof value === "number" ? value.toLocaleString() : value}</p>
+      {/* "en-IN" pinned explicitly, same reasoning as the site's
+          formatCurrency() — bare toLocaleString() takes the visitor's
+          browser locale, so a KPI crossing 1,00,000 showed Western grouping
+          ("150,000") instead of the Indian grouping every other number on
+          the site uses ("1,50,000"). */}
+      <p className="mt-1 text-2xl font-bold tabular-nums">{typeof value === "number" ? value.toLocaleString("en-IN") : value}</p>
       {TrendIcon && <p className={`mt-0.5 flex items-center gap-1 text-xs font-medium ${color}`}><TrendIcon className="size-3" /> {trend! > 0 ? "+" : ""}{trend}% vs last week</p>}
     </div>
   );
