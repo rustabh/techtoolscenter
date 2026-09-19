@@ -439,6 +439,22 @@ const fastPaths: FastPath[] = [
       }),
   },
   {
+    id: "qr-scan",
+    intent: "tool",
+    test: (q) => /\bqr\b/.test(q) && /(scan|read|decode|check)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Scan a QR code straight from your camera, or drop in a photo of one — decoded entirely in your browser, nothing uploaded.",
+        recommendedTools: compact([toolLink("qr-scanner"), toolLink("qr-generator")]),
+        relatedBlogs: [{ label: "How to Scan a QR Code Safely, Without Installing an App", href: "/blog/how-to-scan-qr-code-safely-without-an-app", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        nextStep: "Allow camera access, or click to upload a photo of the QR code instead.",
+        actions: [{ label: "Open QR Scanner", href: "/tools/qr-scanner", kind: "internal" }],
+      }),
+  },
+  {
     id: "qr-code",
     intent: "tool",
     test: (q) => /\bqr\b/.test(q) || /qr\s*code/.test(q),
@@ -572,6 +588,52 @@ const fastPaths: FastPath[] = [
         estimatedTime: "instant",
         difficulty: "Beginner",
         actions: [{ label: "Open Timestamp Converter", href: "/tools/timestamp-converter", kind: "internal" }],
+      }),
+  },
+  {
+    id: "ocr-text-extractor",
+    intent: "tool",
+    test: (q) => /\bocr\b/.test(q) || ((/extract|get|pull|copy|grab/.test(q) && /text/.test(q) && /(image|photo|picture|scan|pdf)/.test(q)) || (/(scanned|image|photo|picture)/.test(q) && /text/.test(q) && /(editable|searchable)/.test(q))),
+    build: () =>
+      withIntent("tool", {
+        summary: "Pull editable text out of a scanned image or PDF — runs entirely in your browser, supports English and Hindi.",
+        recommendedTools: compact([toolLink("ocr-text-extractor")]),
+        relatedBlogs: [{ label: "How to Extract Text from a Scanned PDF or Image (Free OCR)", href: "/blog/how-to-extract-text-from-scanned-pdf-or-image-free-ocr", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "10-30 seconds",
+        difficulty: "Beginner",
+        nextStep: "Upload the image or PDF page, pick the language, then copy or download the extracted text.",
+        actions: [{ label: "Open OCR Text Extractor", href: "/tools/ocr-text-extractor", kind: "internal" }],
+      }),
+  },
+  {
+    id: "diff-checker",
+    intent: "tool",
+    test: (q) => (/diff\b/.test(q) && !/gradient\s*descent/.test(q)) || (/compare/.test(q) && /(text|file|document|version)s?\b/.test(q)) || /(what'?s|what\s+is)\s+(the\s+)?difference\s+between\s+(these|two)\b/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Paste or upload two versions of text or a file and see exactly what changed — additions, deletions and moved lines highlighted side by side.",
+        recommendedTools: compact([toolLink("diff-checker")]),
+        relatedBlogs: [{ label: "How to Compare Two Files or Blocks of Text Online (Diff Checker Explained)", href: "/blog/how-to-compare-two-files-or-text-online-diff-checker-explained", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Diff Checker", href: "/tools/diff-checker", kind: "internal" }],
+      }),
+  },
+  {
+    id: "color-converter",
+    intent: "tool",
+    test: (q) => /(hex|rgba?|hsl)\b/.test(q) && /(color|colour|convert|code)/.test(q),
+    build: () =>
+      withIntent("tool", {
+        summary: "Convert a colour between HEX, RGB, RGBA and HSL instantly, with a live preview and one-click copy for each format.",
+        recommendedTools: compact([toolLink("color-converter")]),
+        relatedBlogs: [{ label: "HEX to RGBA: How to Add Transparency to Any Colour", href: "/blog/hex-to-rgba-how-to-add-transparency-to-any-color", kind: "internal" }],
+        officialResources: [],
+        estimatedTime: "instant",
+        difficulty: "Beginner",
+        actions: [{ label: "Open Color Converter", href: "/tools/color-converter", kind: "internal" }],
       }),
   },
   {
